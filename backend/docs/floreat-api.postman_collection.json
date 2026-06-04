@@ -1,0 +1,166 @@
+{
+	"info": {
+		"name": "Floreat API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"auth": {
+		"type": "noauth"
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"pm.request.headers.add({ key: 'x-dev-user-id', value: pm.variables.get('devUserId') });"
+				]
+			}
+		}
+	],
+	"item": [
+		{
+			"name": "User",
+			"item": [
+				{
+					"name": "Get Me",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{baseUrl}}/api/me",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "me"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Jobs",
+			"item": [
+				{
+					"name": "Create Job",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"projectNo\": \"PRJ-001\",\n\t\"subject\": \"New Warehouse Design\",\n\t\"refNo\": \"REF-2026-001\",\n\t\"date\": \"2026-06-05\",\n\t\"designedByName\": \"John Doe\",\n\t\"designedByMobile\": \"+919876543210\",\n\t\"clientName\": \"ABC Corp\",\n\t\"estimationEngineerName\": \"Jane Smith\",\n\t\"estimationEngineerMobile\": \"+919876543211\",\n\t\"headOfSalesName\": \"Bob Wilson\",\n\t\"headOfSalesMobile\": \"+919876543212\",\n\t\"firmName\": \"Floreat Engineering\",\n\t\"buildingUsage\": \"Warehouse\",\n\t\"numberOfBuilding\": 2,\n\t\"frameType\": \"Steel\",\n\t\"configuration\": \"Standard\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/jobs",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "jobs"]
+						}
+					}
+				},
+				{
+					"name": "Get All Jobs",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{baseUrl}}/api/jobs?page=1&pageSize=10",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "jobs"],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "pageSize",
+									"value": "10"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Job by ID",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{baseUrl}}/api/jobs/:id",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "jobs", ":id"],
+							"variable": [
+								{
+									"key": "id",
+									"value": ""
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Update Job",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"subject\": \"Updated Subject\",\n\t\"buildingUsage\": \"Factory\",\n\t\"numberOfBuilding\": 3\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/jobs/:id",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "jobs", ":id"],
+							"variable": [
+								{
+									"key": "id",
+									"value": ""
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Delete Job",
+					"request": {
+						"method": "DELETE",
+						"url": {
+							"raw": "{{baseUrl}}/api/jobs/:id",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "jobs", ":id"],
+							"variable": [
+								{
+									"key": "id",
+									"value": ""
+								}
+							]
+						}
+					}
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:3000"
+		},
+		{
+			"key": "devUserId",
+			"value": "user_your_clerk_id_here"
+		}
+	]
+}
