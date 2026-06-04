@@ -1,3 +1,7 @@
+/**
+ * Prisma client instance configured with the PostgreSQL adapter.
+ * Uses a connection pool for efficient database access.
+ */
 import { PrismaClient } from '../generated/prisma/client.js'
 import { PrismaPg } from '@prisma/adapter-pg'
 import pg from 'pg'

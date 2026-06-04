@@ -1,29 +1,28 @@
+/**
+ * Application entry point.
+ * Bootstraps Fastify with CORS, Clerk auth plugin, and API routes.
+ */
 import Fastify from 'fastify'
 import cors from '@fastify/cors'
 import { clerkPlugin } from '@clerk/fastify'
-import { authMiddleware } from './middlewares/auth.js'
-import { syncUser } from './middlewares/sync-user.js'
-import { prisma } from './lib/prisma.js'
+import { config } from './config/index.js'
+import { registerRoutes } from './routes/index.js'
 
 const fastify = Fastify({ logger: true })
 
+// Attach userId placeholder so Fastify recognizes the decorated property
 fastify.decorateRequest('userId', '')
 
 await fastify.register(cors, {
-  origin: 'http://localhost:5173',
+  origin: config.corsOrigin,
   credentials: true,
 })
 
 await fastify.register(clerkPlugin)
+await registerRoutes(fastify)
 
-// Protected routes
-fastify.get('/api/me', { preHandler: [authMiddleware, syncUser] }, async (request) => {
-  return prisma.user.findUnique({ where: { clerkId: request.userId } })
-})
-
-// Start
 try {
-  await fastify.listen({ port: 3000 })
+  await fastify.listen({ port: config.port })
 } catch (err) {
   fastify.log.error(err)
   process.exit(1)
