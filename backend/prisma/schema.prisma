@@ -22,3 +22,25 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
+
+model Job {
+  id                        String   @id @default(cuid())
+  projectNo                 String
+  subject                   String
+  refNo                     String
+  date                      String
+  designedByName            String
+  designedByMobile          String
+  clientName                String?
+  estimationEngineerName    String?
+  estimationEngineerMobile  String?
+  headOfSalesName           String?
+  headOfSalesMobile         String?
+  firmName                  String?
+  buildingUsage             String
+  numberOfBuilding          Int
+  frameType                 String
+  configuration             String
+  createdAt                 DateTime @default(now())
+  updatedAt                 DateTime @updatedAt
+}
