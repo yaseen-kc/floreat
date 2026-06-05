@@ -44,3 +44,41 @@ export function makeUser(overrides = {}) {
     ...overrides,
   }
 }
+
+export function makeRoofInput(jobId = faker.string.uuid()) {
+  return {
+    jobId,
+    buildingOverallLength: 30,
+    buildingOverallWidth: 15,
+    eaveHeight: 5.645,
+    roofSlope: 6,
+    mainRoofFrames: 4,
+    endRoofFrames: 2,
+    roofPurlinSpacing: 1.27,
+    claddingPurlins: 2,
+    internalColumnsForMainRoofFrames: 2,
+    internalColumnsForEndRoofFrames: 2,
+    roofFrameBaseFixing: 'FOUNDATION_BOLT' as const,
+  }
+}
+
+export function makeRoof(overrides = {}) {
+  return {
+    id: faker.string.uuid(),
+    ...makeRoofInput(),
+    member: null,
+    purlin: null,
+    covering: null,
+    flangeBrace: null,
+    polycarbonate: null,
+    windBracing: null,
+    claddingOpening: null,
+    fasciaBoard: null,
+    sideExtension: null,
+    roofMaterialStrengthOrGuide: null,
+    sidewalls: [],
+    createdAt: new Date(),
+    updatedAt: new Date(),
+    ...overrides,
+  }
+}

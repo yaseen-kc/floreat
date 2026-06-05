@@ -8,7 +8,7 @@ export const createJobSchema = z.object({
   projectNo: z.string().min(1),
   subject: z.string().min(1),
   refNo: z.string().min(1),
-  date: z.string().min(1),
+  date: z.coerce.date(),
   designedByName: z.string().min(1),
   designedByMobile: z.string().min(1),
   clientName: z.string().optional(),

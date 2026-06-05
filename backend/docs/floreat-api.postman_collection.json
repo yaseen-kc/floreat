@@ -152,6 +152,83 @@
 				}
 			]
 		}
+		,
+		{
+			"name": "Roofs",
+			"item": [
+				{
+					"name": "Create Roof",
+					"request": {
+						"method": "POST",
+						"header": [{ "key": "Content-Type", "value": "application/json" }],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"jobId\": \"\",\n\t\"buildingOverallLength\": 30,\n\t\"buildingOverallWidth\": 15,\n\t\"eaveHeight\": 5.645,\n\t\"roofSlope\": 6,\n\t\"mainRoofFrames\": 4,\n\t\"endRoofFrames\": 2,\n\t\"roofPurlinSpacing\": 1.27,\n\t\"claddingPurlins\": 2,\n\t\"internalColumnsForMainRoofFrames\": 2,\n\t\"internalColumnsForEndRoofFrames\": 2,\n\t\"roofFrameBaseFixing\": \"FOUNDATION_BOLT\"\n}",
+							"options": { "raw": { "language": "json" } }
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/roofs",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "roofs"]
+						}
+					}
+				},
+				{
+					"name": "Get Roof by ID",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{baseUrl}}/api/roofs/:id",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "roofs", ":id"],
+							"variable": [{ "key": "id", "value": "" }]
+						}
+					}
+				},
+				{
+					"name": "Get Roof by Job ID",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{baseUrl}}/api/roofs/by-job/:jobId",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "roofs", "by-job", ":jobId"],
+							"variable": [{ "key": "jobId", "value": "" }]
+						}
+					}
+				},
+				{
+					"name": "Update Roof",
+					"request": {
+						"method": "PUT",
+						"header": [{ "key": "Content-Type", "value": "application/json" }],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"eaveHeight\": 6,\n\t\"roofFrameBaseFixing\": \"ANCHOR_BOLT\",\n\t\"member\": {\n\t\t\"columnSegmentsInMainFrame\": 1,\n\t\t\"raftersInOneHalfOfMainFrame\": 2,\n\t\t\"columnSegmentsInEndFrame\": 1,\n\t\t\"raftersInOneHalfOfEndFrame\": 2,\n\t\t\"endFrameHorizontalTieBeam\": 0\n\t},\n\t\"purlin\": {\n\t\t\"roofPurlinType\": \"Z_C\",\n\t\t\"roofPurlinDepth\": 150,\n\t\t\"roofPurlinUnitWeight\": 4.72,\n\t\t\"claddingPurlinType\": \"Z_C\",\n\t\t\"claddingPurlinDepth\": 150,\n\t\t\"claddingPurlinUnitWeight\": 4.72\n\t},\n\t\"sidewalls\": [\n\t\t{ \"side\": \"FRONT\", \"wallType\": \"BRICK\", \"thickness\": 200, \"height\": 2.4 },\n\t\t{ \"side\": \"BACK\",  \"wallType\": \"BRICK\", \"thickness\": 200, \"height\": 2.4 },\n\t\t{ \"side\": \"RIGHT\", \"wallType\": \"BRICK\", \"thickness\": 200, \"height\": 2.4 },\n\t\t{ \"side\": \"LEFT\",  \"wallType\": \"BRICK\", \"thickness\": 200, \"height\": 2.4 }\n\t],\n\t\"covering\": {\n\t\t\"roofCoveringType\": \"PPGL\",\n\t\t\"roofCoveringThickness\": 30,\n\t\t\"claddingCoveringType\": \"PPGL\",\n\t\t\"claddingCoveringThickness\": 0.4,\n\t\t\"roofAreaDeduction\": 0\n\t},\n\t\"flangeBrace\": {\n\t\t\"roofFlangeBraceAverageLength\": 1.5,\n\t\t\"claddingFlangeBraceAverageLength\": 1,\n\t\t\"endFrameFlangeBraceAverageLength\": 0.5\n\t},\n\t\"polycarbonate\": {\n\t\t\"polycarbonateRoofLength\": 0,\n\t\t\"polycarbonateRoofWidth\": 0,\n\t\t\"polycarbonateRoofCount\": 0\n\t},\n\t\"windBracing\": {\n\t\t\"roofWindBracingSegmentsInOneHalf\": 1,\n\t\t\"columnWindBracingSegments\": 1,\n\t\t\"roofWindBracingProvidedBays\": 2,\n\t\t\"columnWindBracingProvidedBays\": 2,\n\t\t\"windBracingColumnHeight\": 5.6,\n\t\t\"windBracingUnitWeight\": 2.46,\n\t\t\"roofWindBracingBaySpacing\": 6,\n\t\t\"columnWindBracingBaySpacing\": 6,\n\t\t\"roofWindBracingLength\": 9.637,\n\t\t\"columnWindBracingLength\": 8.207,\n\t\t\"windBracingType\": \"ROD\"\n\t},\n\t\"claddingOpening\": {\n\t\t\"frontCladdingOpeningArea\": 45,\n\t\t\"backCladdingOpeningArea\": 0,\n\t\t\"rightCladdingOpeningArea\": 0,\n\t\t\"leftCladdingOpeningArea\": 0\n\t},\n\t\"fasciaBoard\": {\n\t\t\"fasciaBoardArea\": 51.72,\n\t\t\"fasciaMaterialWeightPerSqft\": 1\n\t},\n\t\"sideExtension\": {\n\t\t\"roofExtensionWidthHeight\": 0,\n\t\t\"roofExtensionMidFrameCount\": 0,\n\t\t\"roofExtensionEndFrameCount\": 0,\n\t\t\"claddingExtensionWidthHeight\": 0,\n\t\t\"claddingExtensionMidFrameCount\": 0,\n\t\t\"claddingExtensionEndFrameCount\": 0,\n\t\t\"sideColumnsWidthHeight\": 0,\n\t\t\"sideColumnsMidFrameCount\": 0,\n\t\t\"sideColumnsEndFrameCount\": 0\n\t},\n\t\"roofMaterialStrengthOrGuide\": {\n\t\t\"gradeOfPlateMaterial\": \"FE_345\"\n\t}\n}",
+							"options": { "raw": { "language": "json" } }
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/roofs/:id",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "roofs", ":id"],
+							"variable": [{ "key": "id", "value": "" }]
+						}
+					}
+				},
+				{
+					"name": "Delete Roof",
+					"request": {
+						"method": "DELETE",
+						"url": {
+							"raw": "{{baseUrl}}/api/roofs/:id",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "roofs", ":id"],
+							"variable": [{ "key": "id", "value": "" }]
+						}
+					}
+				}
+			]
+		}
 	],
 	"variable": [
 		{
