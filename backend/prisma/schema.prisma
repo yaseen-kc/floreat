@@ -24,23 +24,221 @@ model User {
 }
 
 model Job {
-  id                        String   @id @default(cuid())
-  projectNo                 String
-  subject                   String
-  refNo                     String
-  date                      String
-  designedByName            String
-  designedByMobile          String
-  clientName                String?
-  estimationEngineerName    String?
-  estimationEngineerMobile  String?
-  headOfSalesName           String?
-  headOfSalesMobile         String?
-  firmName                  String?
-  buildingUsage             String
-  numberOfBuilding          Int
-  frameType                 String
-  configuration             String
-  createdAt                 DateTime @default(now())
-  updatedAt                 DateTime @updatedAt
+  id                       String   @id @default(cuid())
+  projectNo                String
+  subject                  String
+  refNo                    String
+  date                     DateTime
+  designedByName           String
+  designedByMobile         String
+  clientName               String?
+  estimationEngineerName   String?
+  estimationEngineerMobile String?
+  headOfSalesName          String?
+  headOfSalesMobile        String?
+  firmName                 String?
+  buildingUsage            String
+  numberOfBuilding         Int
+  frameType                String
+  configuration            String
+  createdAt                DateTime @default(now())
+  updatedAt                DateTime @updatedAt
+
+  roof Roof?
+}
+
+enum SideWallSide {
+  FRONT
+  BACK
+  RIGHT
+  LEFT
+}
+
+enum PlateMaterialGrade {
+  FE_345 @map("FE 345")
+  FE_250 @map("FE 250")
+  FE_400 @map("FE 400")
+}
+
+enum PurlinMaterialType {
+  Z_C  @map("Z/C")
+  TUBE
+}
+
+enum TypeOfWindBracing {
+  ROD
+  TUBE
+}
+
+enum TypeOfWall {
+  BRICK
+  PANEL
+  LATERITE
+  AAC
+  BLOCK
+}
+
+enum CoveringType {
+  BARE_GALVALUME @map("Bare Galvalume")
+  PPGL           @map("PPGL")
+  PUFF_SHEET     @map("Puff Sheet")
+  OTHER          @map("Other")
+}
+
+enum RoofFrameBaseFixing {
+  FOUNDATION_BOLT            @map("FOUNDATION BOLT")
+  ANCHOR_BOLT                @map("ANCHOR BOLT")
+  JOINT_BOLT_ON_STEEL_COLUMN @map("JOINT BOLT ON STEEL COLUMN")
+}
+
+model Roof {
+  id                               String              @id @default(cuid())
+  jobId                            String              @unique
+  job                              Job                 @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  buildingOverallLength            Decimal             @db.Decimal(10, 3)
+  buildingOverallWidth             Decimal             @db.Decimal(10, 3)
+  eaveHeight                       Decimal             @db.Decimal(10, 3)
+  roofSlope                        Decimal             @db.Decimal(10, 3)
+  mainRoofFrames                   Int
+  endRoofFrames                    Int
+  roofPurlinSpacing                Decimal             @db.Decimal(10, 3)
+  claddingPurlins                  Int
+  internalColumnsForMainRoofFrames Int
+  internalColumnsForEndRoofFrames  Int
+  roofFrameBaseFixing              RoofFrameBaseFixing 
+  createdAt                        DateTime            @default(now())
+  updatedAt                        DateTime            @updatedAt
+
+  member                      RoofMember?
+  purlin                      RoofPurlin?
+  covering                    RoofCovering?
+  flangeBrace                 RoofFlangeBrace?
+  polycarbonate               RoofPolycarbonate?
+  windBracing                 RoofWindBracing?
+  claddingOpening             RoofCladdingOpening?
+  fasciaBoard                 RoofFasciaBoard?
+  sideExtension               RoofSideExtension?
+  roofMaterialStrengthOrGuide RoofMaterialStrengthOrGuide?
+  sidewalls Sidewall[]
+}
+
+model RoofMember {
+  id                          String @id @default(cuid())
+  roofId                      String @unique
+  roof                        Roof   @relation(fields: [roofId], references: [id], onDelete: Cascade)
+  columnSegmentsInMainFrame   Int
+  raftersInOneHalfOfMainFrame Int
+  columnSegmentsInEndFrame    Int
+  raftersInOneHalfOfEndFrame  Int
+  endFrameHorizontalTieBeam   Int
+}
+
+model RoofPurlin {
+  id                       String             @id @default(cuid())
+  roofId                   String             @unique
+  roof                     Roof               @relation(fields: [roofId], references: [id], onDelete: Cascade)
+  roofPurlinType           PurlinMaterialType
+  roofPurlinDepth          Decimal            @db.Decimal(10, 3)
+  roofPurlinUnitWeight     Decimal            @db.Decimal(10, 3)
+  claddingPurlinType       PurlinMaterialType
+  claddingPurlinDepth      Decimal            @db.Decimal(10, 3)
+  claddingPurlinUnitWeight Decimal            @db.Decimal(10, 3)
+}
+
+model Sidewall {
+  id        String       @id @default(cuid())
+  roofId    String
+  roof      Roof         @relation(fields: [roofId], references: [id], onDelete: Cascade)
+  side      SideWallSide
+  wallType  TypeOfWall
+  thickness Decimal      @db.Decimal(10, 3)
+  height    Decimal      @db.Decimal(10, 3)
+
+  @@unique([roofId, side])
+}
+
+model RoofCovering {
+  id                        String       @id @default(cuid())
+  roofId                    String       @unique
+  roof                      Roof         @relation(fields: [roofId], references: [id], onDelete: Cascade)
+  roofCoveringType          CoveringType 
+  roofCoveringThickness     Decimal      @db.Decimal(10, 3)
+  claddingCoveringType      CoveringType 
+  claddingCoveringThickness Decimal      @db.Decimal(10, 3)
+  roofAreaDeduction         Decimal      @db.Decimal(10, 3)
+}
+
+model RoofFlangeBrace {
+  id                               String  @id @default(cuid())
+  roofId                           String  @unique
+  roof                             Roof    @relation(fields: [roofId], references: [id], onDelete: Cascade)
+  roofFlangeBraceAverageLength     Decimal @db.Decimal(10, 3)
+  claddingFlangeBraceAverageLength Decimal @db.Decimal(10, 3)
+  endFrameFlangeBraceAverageLength Decimal @db.Decimal(10, 3)
+}
+
+model RoofPolycarbonate {
+  id                      String  @id @default(cuid())
+  roofId                  String  @unique
+  roof                    Roof    @relation(fields: [roofId], references: [id], onDelete: Cascade)
+  polycarbonateRoofLength Decimal @db.Decimal(10, 3)
+  polycarbonateRoofWidth  Decimal @db.Decimal(10, 3)
+  polycarbonateRoofCount  Int
+}
+
+model RoofWindBracing {
+  id                               String            @id @default(cuid())
+  roofId                           String            @unique
+  roof                             Roof              @relation(fields: [roofId], references: [id], onDelete: Cascade)
+  roofWindBracingSegmentsInOneHalf Int
+  columnWindBracingSegments        Int
+  roofWindBracingProvidedBays      Int
+  columnWindBracingProvidedBays    Int
+  windBracingColumnHeight          Decimal           @db.Decimal(10, 3)
+  windBracingUnitWeight            Decimal           @db.Decimal(10, 3)
+  roofWindBracingBaySpacing        Decimal           @db.Decimal(10, 3)
+  columnWindBracingBaySpacing      Decimal           @db.Decimal(10, 3)
+  roofWindBracingLength            Decimal           @db.Decimal(10, 3)
+  columnWindBracingLength          Decimal           @db.Decimal(10, 3)
+  windBracingType                  TypeOfWindBracing
+}
+
+model RoofCladdingOpening {
+  id                       String  @id @default(cuid())
+  roofId                   String  @unique
+  roof                     Roof    @relation(fields: [roofId], references: [id], onDelete: Cascade)
+  frontCladdingOpeningArea Decimal @db.Decimal(10, 3)
+  backCladdingOpeningArea  Decimal @db.Decimal(10, 3)
+  rightCladdingOpeningArea Decimal @db.Decimal(10, 3)
+  leftCladdingOpeningArea  Decimal @db.Decimal(10, 3)
+}
+
+model RoofFasciaBoard {
+  id                          String  @id @default(cuid())
+  roofId                      String  @unique
+  roof                        Roof    @relation(fields: [roofId], references: [id], onDelete: Cascade)
+  fasciaBoardArea             Decimal @db.Decimal(10, 3)
+  fasciaMaterialWeightPerSqft Decimal @db.Decimal(10, 3)
+}
+
+model RoofSideExtension {
+  id                             String  @id @default(cuid())
+  roofId                         String  @unique
+  roof                           Roof    @relation(fields: [roofId], references: [id], onDelete: Cascade)
+  roofExtensionWidthHeight       Decimal @db.Decimal(10, 3)
+  roofExtensionMidFrameCount     Int
+  roofExtensionEndFrameCount     Int
+  claddingExtensionWidthHeight   Decimal @db.Decimal(10, 3)
+  claddingExtensionMidFrameCount Int
+  claddingExtensionEndFrameCount Int
+  sideColumnsWidthHeight         Decimal @db.Decimal(10, 3)
+  sideColumnsMidFrameCount       Int
+  sideColumnsEndFrameCount       Int
+}
+
+model RoofMaterialStrengthOrGuide {
+  id                   String             @id @default(cuid())
+  roofId               String             @unique
+  roof                 Roof               @relation(fields: [roofId], references: [id])
+  gradeOfPlateMaterial PlateMaterialGrade
 }
