@@ -151,6 +151,130 @@
 					}
 				}
 			]
+		},
+		{
+			"name": "Roof",
+			"item": [
+				{
+					"name": "Upsert Roof",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"buildingOverallLength\": 30,\n\t\"buildingOverallWidth\": 15,\n\t\"eaveHeight\": 5.645,\n\t\"roofSlope\": 6,\n\t\"mainRoofFrames\": 4,\n\t\"endRoofFrames\": 2,\n\t\"roofPurlinSpacing\": 1.27,\n\t\"claddingPurlins\": 2,\n\t\"internalColumnsForMainRoofFrames\": 2,\n\t\"internalColumnsForEndRoofFrames\": 2,\n\t\"roofFrameBaseFixing\": \"FOUNDATION_BOLT\",\n\t\"columnSegmentsInMainFrame\": 3,\n\t\"raftersInOneHalfOfMainFrame\": 2,\n\t\"roofPurlinType\": \"Z_C\",\n\t\"roofPurlinDepth\": 0.15,\n\t\"roofPurlinUnitWeight\": 4.5,\n\t\"roofCoveringType\": \"BARE_GALVALUME\",\n\t\"roofCoveringThickness\": 0.5,\n\t\"windBracingType\": \"ROD\",\n\t\"gradeOfPlateMaterial\": \"FE_345\",\n\t\"sidewalls\": [\n\t\t{\n\t\t\t\"side\": \"FRONT\",\n\t\t\t\"wallType\": \"BRICK\",\n\t\t\t\"thickness\": 0.23,\n\t\t\t\"height\": 3.5\n\t\t},\n\t\t{\n\t\t\t\"side\": \"BACK\",\n\t\t\t\"wallType\": \"PANEL\",\n\t\t\t\"thickness\": 0.1,\n\t\t\t\"height\": 4.0\n\t\t}\n\t]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/jobs/:jobId/roof",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "jobs", ":jobId", "roof"],
+							"variable": [
+								{
+									"key": "jobId",
+									"value": ""
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Roof by Job",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{baseUrl}}/api/jobs/:jobId/roof",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "jobs", ":jobId", "roof"],
+							"variable": [
+								{
+									"key": "jobId",
+									"value": ""
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Get All Roofs",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{baseUrl}}/api/roofs?page=1&pageSize=10",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "roofs"],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "pageSize",
+									"value": "10"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Update Roof",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"roofSlope\": 8,\n\t\"mainRoofFrames\": 6,\n\t\"sidewalls\": [\n\t\t{\n\t\t\t\"side\": \"FRONT\",\n\t\t\t\"wallType\": \"AAC\",\n\t\t\t\"thickness\": 0.2,\n\t\t\t\"height\": 3.0\n\t\t}\n\t]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/jobs/:jobId/roof",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "jobs", ":jobId", "roof"],
+							"variable": [
+								{
+									"key": "jobId",
+									"value": ""
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Delete Roof",
+					"request": {
+						"method": "DELETE",
+						"url": {
+							"raw": "{{baseUrl}}/api/jobs/:jobId/roof",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "jobs", ":jobId", "roof"],
+							"variable": [
+								{
+									"key": "jobId",
+									"value": ""
+								}
+							]
+						}
+					}
+				}
+			]
 		}
 	],
 	"variable": [
