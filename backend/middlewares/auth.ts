@@ -13,6 +13,15 @@ declare module 'fastify' {
 }
 
 export async function authMiddleware(request: FastifyRequest, reply: FastifyReply) {
+  // Dev-only bypass: set BYPASS_AUTH=true and pass x-dev-user-id header in Postman
+  if (process.env.BYPASS_AUTH === 'true') {
+    const devUserId = request.headers['x-dev-user-id'] as string
+    if (devUserId) {
+      request.userId = devUserId
+      return
+    }
+  }
+
   const { userId } = getAuth(request)
   if (!userId) return reply.code(401).send({ error: 'Unauthorized' })
   request.userId = userId
