@@ -1,9 +1,11 @@
 import './App.css'
-import { ClerkProvider, Show, UserButton, useAuth } from '@clerk/react'
+import { ClerkProvider, Show} from '@clerk/react'
 import { Navigate, Outlet, Route, Routes, useNavigate } from 'react-router-dom'
-import { useEffect, useState } from 'react'
 import Login from './pages/authentication/Login'
-import { fetchMe, type Me } from './api/authentication/login'
+import Dashboard from './pages/Dashboard'
+import { Sidebar } from './components/dashboard/sidebar'
+import CreateQuotation from './pages/quotation/CreateQuotation'
+
 
 const PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY
 
@@ -30,8 +32,10 @@ function App() {
 
         {/* Every other route is protected: signed-out users are sent to /login. */}
         <Route element={<ProtectedLayout />}>
-          <Route path="/" element={<Home />} />
+          <Route path="/" element={<Dashboard />} />
           <Route path="*" element={<Navigate to="/" replace />} />
+          <Route path="/quotations/new" element={<CreateQuotation />} />
+
         </Route>
       </Routes>
     </ClerkProvider>
@@ -45,33 +49,14 @@ function App() {
 function ProtectedLayout() {
   return (
     <Show when="signed-in" fallback={<Navigate to="/login" replace />}>
-      <Outlet />
+      <div className="flex h-screen">
+        <Sidebar />
+        <main className="flex-1 overflow-auto">
+          <Outlet />
+        </main>
+      </div>
     </Show>
   )
-}
-
-function Home() {
-  return (
-    <header>
-      <UserButton />
-      <Profile />
-    </header>
-  )
-}
-
-function Profile() {
-  const { getToken } = useAuth()
-  const [user, setUser] = useState<Me | null>(null)
-
-  useEffect(() => {
-    getToken()
-      .then((token) => fetchMe(token))
-      .then(setUser)
-      .catch(console.error)
-  }, [getToken])
-
-  if (!user) return <p>Loading...</p>
-  return <p>Welcome, {user.firstName ?? user.email}!</p>
 }
 
 export default App
