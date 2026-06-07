@@ -1,4 +1,5 @@
-import { ClientSection } from '@/components/quotation/sections/ClientSection'
+import { JobDescription } from "../sections/jobInfo/JobDescription";
+import { JobInformations } from "../sections/jobInfo/JobInformations";
 
 export function Step1ProjectInfo() {
   return (
@@ -7,7 +8,8 @@ export function Step1ProjectInfo() {
         <h2 className="text-xl font-semibold tracking-tight">Project information</h2>
         <p className="text-muted-foreground text-sm mt-1">Who and where. Start typing a client to autocomplete from your records.</p>
       </div>
-      <ClientSection />
+      <JobInformations />
+      <JobDescription/>
     </section>
   )
 }
