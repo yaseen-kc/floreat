@@ -1,19 +1,40 @@
 import { useQuotationStore } from '@/stores/quotation-store'
 import { useToast } from '@/components/quotation/shared/Toast'
+import { useCreateJob } from '@/api/quotation/jobs/postJobs'
+import { useNavigate } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
 import { ArrowLeft, ArrowRight, Check, Save } from 'lucide-react'
 
 const STEP_NAMES = ['', 'Project Info', 'Structural Inputs', 'Calc Engine', 'Pricing', 'Review']
 
 export function WizardActionBar() {
-  const { currentStep, nextStep, prevStep } = useQuotationStore()
+  const { currentStep, nextStep, prevStep, validateStep, projectInfo } = useQuotationStore()
   const toast = useToast((s) => s.show)
+  const navigate = useNavigate()
+  const createJob = useCreateJob()
   const isLast = currentStep === 5
+
+  const submitJob = () => {
+    createJob.mutate(projectInfo, {
+      onSuccess: () => { toast('Job created successfully'); navigate('/') },
+      onError: () => toast('Failed to create job'),
+    })
+  }
 
   const handleNext = () => {
     const ok = nextStep()
-    if (!ok) toast('Please complete the required fields')
-    if (ok && isLast) toast('Quotation finalised & saved')
+    if (!ok) { toast('Please complete the required fields'); return }
+    if (currentStep === 1) { submitJob(); return }
+    if (isLast) toast('Quotation finalised & saved')
+  }
+
+  const handleSaveDraft = () => {
+    if (currentStep === 1) {
+      if (!validateStep(1)) { useQuotationStore.setState({ showValidation: true }); toast('Please complete the required fields'); return }
+      submitJob()
+    } else {
+      toast('Draft saved')
+    }
   }
 
   return (
@@ -25,10 +46,10 @@ export function WizardActionBar() {
         Step {currentStep} of 5 · {STEP_NAMES[currentStep]}
       </span>
       <div className="flex-1" />
-      <Button variant="secondary" onClick={() => toast('Draft saved')}>
+      <Button variant="secondary" onClick={handleSaveDraft} disabled={createJob.isPending}>
         <Save className="w-4 h-4" /> Save draft
       </Button>
-      <Button onClick={handleNext}>
+      <Button onClick={handleNext} disabled={createJob.isPending}>
         {isLast ? (<>Finish & save <Check className="w-4 h-4" /></>) : (<>Continue <ArrowRight className="w-4 h-4" /></>)}
       </Button>
     </div>

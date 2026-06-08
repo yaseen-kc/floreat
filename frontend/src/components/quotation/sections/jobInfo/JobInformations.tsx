@@ -9,7 +9,6 @@ export function JobInformations() {
   const { projectInfo, setProjectInfo, showValidation } = useQuotationStore()
 
   const err = (v: string) => showValidation && !v.trim()
-  const numErr = showValidation && projectInfo.numberOfBuilding < 1
 
   return (
     <SectionCard icon={<Users className="w-3.5 h-3.5" />} title="Job Information">
