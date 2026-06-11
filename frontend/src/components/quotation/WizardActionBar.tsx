@@ -1,6 +1,7 @@
 import { useQuotationStore } from '@/stores/quotation-store'
 import { useToast } from '@/components/quotation/shared/Toast'
 import { useCreateJob } from '@/api/quotation/jobs/postJobs'
+import { useUpdateJob } from '@/api/quotation/jobs/putJobs'
 import { useNavigate } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
 import { ArrowLeft, ArrowRight, Check, Save } from 'lucide-react'
@@ -8,24 +9,38 @@ import { ArrowLeft, ArrowRight, Check, Save } from 'lucide-react'
 const STEP_NAMES = ['', 'Project Info', 'Structural Inputs', 'Calc Engine', 'Pricing', 'Review']
 
 export function WizardActionBar() {
-  const { currentStep, nextStep, prevStep, validateStep, projectInfo } = useQuotationStore()
+  const { currentStep, nextStep, prevStep, validateStep, projectInfo, jobId, setJobId, resetQuotation } = useQuotationStore()
   const toast = useToast((s) => s.show)
   const navigate = useNavigate()
   const createJob = useCreateJob()
+  const updateJob = useUpdateJob()
   const isLast = currentStep === 5
+  const isSubmitting = createJob.isPending || updateJob.isPending
 
+  /**
+   * Persists Step 1 data. Creates the job once (POST) and stores its id;
+   * on subsequent calls the existing job is updated (PUT) to avoid duplicates.
+   */
   const submitJob = () => {
-    createJob.mutate(projectInfo, {
-      onSuccess: () => { toast('Job created successfully'); navigate('/') },
-      onError: () => toast('Failed to create job'),
-    })
+    if (isSubmitting) return
+    if (jobId) {
+      updateJob.mutate({ id: jobId, ...projectInfo }, {
+        onSuccess: () => toast('Job updated successfully'),
+        onError: () => toast('Failed to update job'),
+      })
+    } else {
+      createJob.mutate(projectInfo, {
+        onSuccess: (job) => { setJobId(job.id); toast('Job created successfully'); navigate('/') },
+        onError: () => toast('Failed to create job'),
+      })
+    }
   }
 
   const handleNext = () => {
     const ok = nextStep()
     if (!ok) { toast('Please complete the required fields'); return }
     if (currentStep === 1) { submitJob(); return }
-    if (isLast) toast('Quotation finalised & saved')
+    if (isLast) { toast('Quotation finalised & saved'); resetQuotation(); navigate('/') }
   }
 
   const handleSaveDraft = () => {
@@ -46,10 +61,10 @@ export function WizardActionBar() {
         Step {currentStep} of 5 · {STEP_NAMES[currentStep]}
       </span>
       <div className="flex-1" />
-      <Button variant="secondary" onClick={handleSaveDraft} disabled={createJob.isPending}>
+      <Button variant="secondary" onClick={handleSaveDraft} disabled={isSubmitting}>
         <Save className="w-4 h-4" /> Save draft
       </Button>
-      <Button onClick={handleNext} disabled={createJob.isPending}>
+      <Button onClick={handleNext} disabled={isSubmitting}>
         {isLast ? (<>Finish & save <Check className="w-4 h-4" /></>) : (<>Continue <ArrowRight className="w-4 h-4" /></>)}
       </Button>
     </div>

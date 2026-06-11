@@ -1,6 +1,7 @@
 import { useQuotationStore } from '@/stores/quotation-store'
 import { cn } from '@/lib/utils'
-import { Check } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import { Check, RotateCcw } from 'lucide-react'
 
 const STEPS = [
   { label: 'Project Info', sub: 'CLIENT & SITE' },
@@ -11,11 +12,17 @@ const STEPS = [
 ]
 
 export function WizardStepper() {
-  const { currentStep, goStep, validateStep } = useQuotationStore()
+  const { currentStep, goStep, validateStep, resetQuotation } = useQuotationStore()
 
   const handleClick = (target: number) => {
     if (target <= currentStep) { goStep(target); return }
     if (target === currentStep + 1 && validateStep(currentStep)) goStep(target)
+  }
+
+  const handleNewQuotation = () => {
+    if (window.confirm('Start a new quotation? This will discard the current draft.')) {
+      resetQuotation()
+    }
   }
 
   return (
@@ -52,6 +59,9 @@ export function WizardStepper() {
           </div>
         )
       })}
+      <Button variant="ghost" size="sm" onClick={handleNewQuotation} className="ml-4 shrink-0 text-muted-foreground">
+        <RotateCcw className="w-4 h-4" /> New quotation
+      </Button>
     </div>
   )
 }

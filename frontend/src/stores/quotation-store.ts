@@ -23,30 +23,46 @@ interface QuotationState {
   currentStep: number
   projectInfo: ProjectInfo
   showValidation: boolean
+  jobId: string | null
   setProjectInfo: (v: Partial<ProjectInfo>) => void
+  setJobId: (id: string | null) => void
+  resetQuotation: () => void
   goStep: (n: number) => void
   nextStep: () => boolean
   prevStep: () => void
   validateStep: (n: number) => boolean
 }
 
+/** Factory for a fresh projectInfo so each new quotation gets a current date. */
+const createDefaultProjectInfo = (): ProjectInfo => ({
+  projectNo: '', subject: '', refNo: '',
+  date: new Date().toISOString().slice(0, 10),
+  designedByName: '', designedByMobile: '',
+  clientName: '',
+  estimationEngineerName: '', estimationEngineerMobile: '',
+  headOfSalesName: '', headOfSalesMobile: '',
+  buildingUsage: '', numberOfBuilding: 0,
+  frameType: '', configuration: '',
+})
+
 export const useQuotationStore = create<QuotationState>()(
   persist(
     (set, get) => ({
       currentStep: 1,
       showValidation: false,
-      projectInfo: {
-        projectNo: '', subject: '', refNo: '',
-        date: new Date().toISOString().slice(0, 10),
-        designedByName: '', designedByMobile: '',
-        clientName: '',
-        estimationEngineerName: '', estimationEngineerMobile: '',
-        headOfSalesName: '', headOfSalesMobile: '',
-        buildingUsage: '', numberOfBuilding: 0,
-        frameType: '', configuration: '',
-      },
+      jobId: null,
+      projectInfo: createDefaultProjectInfo(),
 
       setProjectInfo: (v) => set((s) => ({ projectInfo: { ...s.projectInfo, ...v } })),
+
+      setJobId: (id) => set({ jobId: id }),
+
+      resetQuotation: () => set({
+        currentStep: 1,
+        showValidation: false,
+        jobId: null,
+        projectInfo: createDefaultProjectInfo(),
+      }),
 
       validateStep: (n) => {
         const s = get()
