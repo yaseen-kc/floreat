@@ -7,44 +7,40 @@ import { Spline } from 'lucide-react'
 import { isRequired, getFieldErrors } from '@/schemas/roof.schema'
 import { ROOF_SECTION_FIELDS } from '@/stores/quotation-store'
 
-type FlangeBraceField =
-  | 'roofFlangeBraceAverageLength'
-  | 'claddingFlangeBraceAverageLength'
-  | 'endFrameFlangeBraceAverageLength'
+type SagRodField = 'DiaOfRoofSagRod' | 'DiaOfCladdingSagRod'
 
-const FIELDS: { name: FlangeBraceField; label: string }[] = [
-  { name: 'roofFlangeBraceAverageLength', label: 'Roof Flange Brace Average Length' },
-  { name: 'claddingFlangeBraceAverageLength', label: 'Cladding Flange Brace Average Length' },
-  { name: 'endFrameFlangeBraceAverageLength', label: 'End Frame Flange Brace Average Length' },
+const FIELDS: { name: SagRodField; label: string; unit: string }[] = [
+  { name: 'DiaOfRoofSagRod', label: 'Roof SAG Rod Diameter', unit: 'mm' },
+  { name: 'DiaOfCladdingSagRod', label: 'Cladding SAG Rod Diameter', unit: 'mm' },
 ]
 
-export function FlangeBrace() {
+export function SagRod() {
   const { roof, setRoof, enabled, toggleRoofSection, showValidation } = useQuotationStore(
     useShallow((s) => ({
       roof: s.roof,
       setRoof: s.setRoof,
-      enabled: s.roofSectionsEnabled.flangeBrace,
+      enabled: s.roofSectionsEnabled.sagRod,
       toggleRoofSection: s.toggleRoofSection,
       showValidation: s.showValidation,
     })),
   )
   const errors = showValidation ? getFieldErrors(roof) : {}
-  const sectionError = ROOF_SECTION_FIELDS.flangeBrace.some((f) => Boolean(errors[f]))
+  const sectionError = ROOF_SECTION_FIELDS.sagRod.some((f) => Boolean(errors[f]))
 
   return (
     <CollapsibleSection
       icon={<Spline className="w-3.5 h-3.5" />}
-      title="Flange Brace"
+      title="SAG Rod"
       enabled={enabled}
-      onToggle={(e) => toggleRoofSection('flangeBrace', e)}
+      onToggle={(e) => toggleRoofSection('sagRod', e)}
       error={sectionError}
     >
       <div className="grid grid-cols-1 md:grid-cols-2 gap-[18px]">
-        {FIELDS.map(({ name, label }) => (
+        {FIELDS.map(({ name, label, unit }) => (
           <NumberField
             key={name}
             label={label}
-            unit="m"
+            unit={unit}
             required={isRequired(name)}
             value={roof[name]}
             error={Boolean(errors[name])}

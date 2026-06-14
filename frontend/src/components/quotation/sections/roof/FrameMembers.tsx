@@ -5,6 +5,7 @@ import { CollapsibleSection } from '@/components/quotation/shared/CollapsibleSec
 import { NumberField } from '@/components/quotation/shared/NumberField'
 import { Frame } from 'lucide-react'
 import { isRequired, getFieldErrors } from '@/schemas/roof.schema'
+import { ROOF_SECTION_FIELDS } from '@/stores/quotation-store'
 
 /** The integer member-count fields owned by this section, in display order. */
 type MemberField =
@@ -33,6 +34,7 @@ export function FrameMembers() {
     })),
   )
   const errors = showValidation ? getFieldErrors(roof) : {}
+  const sectionError = ROOF_SECTION_FIELDS.members.some((f) => Boolean(errors[f]))
 
   return (
     <CollapsibleSection
@@ -40,6 +42,7 @@ export function FrameMembers() {
       title="Members"
       enabled={enabled}
       onToggle={(e) => toggleRoofSection('members', e)}
+      error={sectionError}
     >
       <div className="grid grid-cols-1 md:grid-cols-2 gap-[18px]">
         {FIELDS.map(({ name, label }) => (

@@ -97,14 +97,14 @@ model Roof {
   job   Job    @relation(fields: [jobId], references: [id], onDelete: Cascade)
 
   // ── Core dimensions ──────────────────────────────────────────
-  buildingOverallLength Decimal             @db.Decimal(10, 3)
-  buildingOverallWidth  Decimal             @db.Decimal(10, 3)
-  eaveHeight            Decimal             @db.Decimal(10, 3)
-  roofSlope             Decimal             @db.Decimal(10, 3)
-  mainRoofFrames        Int
-  endRoofFrames         Int
-  roofPurlinSpacing     Decimal             @db.Decimal(10, 3)
-  claddingPurlins       Int
+  buildingOverallLength            Decimal @db.Decimal(10, 3)
+  buildingOverallWidth             Decimal @db.Decimal(10, 3)
+  eaveHeight                       Decimal @db.Decimal(10, 3)
+  roofSlope                        Decimal @db.Decimal(10, 3)
+  mainRoofFrames                   Int
+  endRoofFrames                    Int
+  roofPurlinSpacing                Decimal @db.Decimal(10, 3)
+  claddingPurlins                  Int
   internalColumnsForMainRoofFrames Int
   internalColumnsForEndRoofFrames  Int
 
@@ -184,8 +184,14 @@ model Roof {
   sidewalls Sidewall[]
 
   // Base Fixing
-  roofFrameBaseFixing   RoofFrameBaseFixing
+  roofFrameBaseFixing RoofFrameBaseFixing
 
+  // Material Consumption
+  materialConsumptionExcludingPurlin Decimal? @db.Decimal(10, 3)
+
+  // SAG Rod
+  DiaOfRoofSagRod     Decimal? @db.Decimal(10, 3)
+  DiaOfCladdingSagRod Decimal? @db.Decimal(10, 3)
 }
 
 model Sidewall {

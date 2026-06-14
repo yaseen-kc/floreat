@@ -10,10 +10,34 @@ export type ProjectInfo = JobInput
  * Step 2 roof draft. Mirrors the roof create contract but lets the required
  * `roofFrameBaseFixing` enum start unselected (`''`) so the Select renders empty
  * and validation flags it, exactly like the Step 1 string fields.
+ *
+ * The structural section fields are now required in `createRoofSchema` (the
+ * Step 2 form forces the user to complete them), but the draft must still be
+ * able to hold them as `undefined` — while the user is filling the form, and
+ * when a section is toggled off (which clears its fields). So the draft keeps
+ * every non-core field optional; required-ness is enforced at validate time by
+ * `createRoofSchema.safeParse`.
  */
-export type RoofDraft = Omit<CreateRoofInput, 'roofFrameBaseFixing'> & {
-  roofFrameBaseFixing: CreateRoofInput['roofFrameBaseFixing'] | ''
-}
+type RoofCoreField =
+  | 'buildingOverallLength'
+  | 'buildingOverallWidth'
+  | 'eaveHeight'
+  | 'roofSlope'
+  | 'mainRoofFrames'
+  | 'endRoofFrames'
+  | 'roofPurlinSpacing'
+  | 'claddingPurlins'
+  | 'internalColumnsForMainRoofFrames'
+  | 'internalColumnsForEndRoofFrames'
+  | 'roofFrameBaseFixing'
+
+/** Section fields the draft keeps optional (cleared when a section is disabled). */
+type RoofSectionField = Exclude<keyof CreateRoofInput, RoofCoreField>
+
+export type RoofDraft = Omit<CreateRoofInput, 'roofFrameBaseFixing' | RoofSectionField> &
+  Partial<Pick<CreateRoofInput, RoofSectionField>> & {
+    roofFrameBaseFixing: CreateRoofInput['roofFrameBaseFixing'] | ''
+  }
 
 /**
  * The optional, toggleable roof sections (Step 2). Each maps to a group of
@@ -30,6 +54,8 @@ export type RoofSectionKey =
   | 'fasciaBoard'
   | 'sideExtension'
   | 'materialGrade'
+  | 'materialConsumption'
+  | 'sagRod'
   | 'sidewalls'
 
 /** Per-section enabled flags. */
@@ -104,6 +130,8 @@ export const ROOF_SECTION_FIELDS: Record<RoofSectionKey, readonly (keyof RoofDra
     'sideColumnsEndFrameCount',
   ],
   materialGrade: ['gradeOfPlateMaterial'],
+  materialConsumption: ['materialConsumptionExcludingPurlin'],
+  sagRod: ['DiaOfRoofSagRod', 'DiaOfCladdingSagRod'],
   sidewalls: ['sidewalls'],
 }
 
@@ -170,6 +198,8 @@ const createDefaultRoofSections = (): RoofSectionsEnabled => ({
   fasciaBoard: false,
   sideExtension: false,
   materialGrade: false,
+  materialConsumption: false,
+  sagRod: false,
   sidewalls: false,
 })
 

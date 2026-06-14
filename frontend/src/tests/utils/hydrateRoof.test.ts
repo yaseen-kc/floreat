@@ -66,6 +66,9 @@ const baseRoof = (): Roof => ({
   sideColumnsMidFrameCount: null,
   sideColumnsEndFrameCount: null,
   gradeOfPlateMaterial: null,
+  materialConsumptionExcludingPurlin: null,
+  DiaOfRoofSagRod: null,
+  DiaOfCladdingSagRod: null,
   createdAt: '2026-01-01T00:00:00.000Z',
   updatedAt: '2026-01-01T00:00:00.000Z',
   sidewalls: [],
@@ -116,5 +119,25 @@ describe('mapRoofResponseToDraft', () => {
     const { roof, roofSectionsEnabled } = mapRoofResponseToDraft(r)
     expect(roof.columnSegmentsInMainFrame).toBe(2)
     expect(roofSectionsEnabled.members).toBe(true)
+  })
+
+  it('maps material consumption and enables its section', () => {
+    const r = baseRoof()
+    r.materialConsumptionExcludingPurlin = '12.5'
+    const { roof, roofSectionsEnabled } = mapRoofResponseToDraft(r)
+    expect(roof.materialConsumptionExcludingPurlin).toBe(12.5)
+    expect(roofSectionsEnabled.materialConsumption).toBe(true)
+    expect(roofSectionsEnabled.sagRod).toBe(false)
+  })
+
+  it('maps SAG rod diameters and enables its section', () => {
+    const r = baseRoof()
+    r.DiaOfRoofSagRod = '12'
+    r.DiaOfCladdingSagRod = '10'
+    const { roof, roofSectionsEnabled } = mapRoofResponseToDraft(r)
+    expect(roof.DiaOfRoofSagRod).toBe(12)
+    expect(roof.DiaOfCladdingSagRod).toBe(10)
+    expect(roofSectionsEnabled.sagRod).toBe(true)
+    expect(roofSectionsEnabled.materialConsumption).toBe(false)
   })
 })

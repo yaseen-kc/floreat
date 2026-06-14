@@ -133,6 +133,13 @@ export interface Roof {
   // ── Optional material grade ──
   gradeOfPlateMaterial: PlateMaterialGrade | null
 
+  // ── Optional material consumption ──
+  materialConsumptionExcludingPurlin: string | null
+
+  // ── Optional SAG rod ──
+  DiaOfRoofSagRod: string | null
+  DiaOfCladdingSagRod: string | null
+
   createdAt: string
   updatedAt: string
 

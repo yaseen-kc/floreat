@@ -21,6 +21,7 @@ import { roofKeys } from '@/api/quotation/roof/queryKeys'
 const mockedApiFetch = vi.mocked(apiFetch)
 
 const payload: CreateRoofPayload = {
+  // core dimensions
   buildingOverallLength: 100,
   buildingOverallWidth: 50,
   eaveHeight: 6,
@@ -32,6 +33,67 @@ const payload: CreateRoofPayload = {
   internalColumnsForMainRoofFrames: 0,
   internalColumnsForEndRoofFrames: 0,
   roofFrameBaseFixing: 'FOUNDATION_BOLT',
+  // members
+  columnSegmentsInMainFrame: 2,
+  raftersInOneHalfOfMainFrame: 2,
+  columnSegmentsInEndFrame: 1,
+  raftersInOneHalfOfEndFrame: 1,
+  endFrameHorizontalTieBeam: 1,
+  // purlins
+  roofPurlinType: 'Z_C',
+  roofPurlinDepth: 150,
+  roofPurlinUnitWeight: 5,
+  claddingPurlinType: 'TUBE',
+  claddingPurlinDepth: 120,
+  claddingPurlinUnitWeight: 4,
+  // coverings
+  roofCoveringType: 'PPGL',
+  roofCoveringThickness: 0.5,
+  claddingCoveringType: 'BARE_GALVALUME',
+  claddingCoveringThickness: 0.4,
+  roofAreaDeduction: 0,
+  // flange brace
+  roofFlangeBraceAverageLength: 1.2,
+  claddingFlangeBraceAverageLength: 1.1,
+  endFrameFlangeBraceAverageLength: 1,
+  // polycarbonate
+  polycarbonateRoofLength: 3,
+  polycarbonateRoofWidth: 1,
+  polycarbonateRoofCount: 2,
+  // wind bracing
+  roofWindBracingSegmentsInOneHalf: 2,
+  columnWindBracingSegments: 2,
+  roofWindBracingProvidedBays: 1,
+  columnWindBracingProvidedBays: 1,
+  windBracingColumnHeight: 6,
+  windBracingUnitWeight: 3,
+  roofWindBracingBaySpacing: 5,
+  columnWindBracingBaySpacing: 5,
+  roofWindBracingLength: 7,
+  columnWindBracingLength: 6,
+  windBracingType: 'ROD',
+  // cladding openings
+  frontCladdingOpeningArea: 0,
+  backCladdingOpeningArea: 0,
+  rightCladdingOpeningArea: 0,
+  leftCladdingOpeningArea: 0,
+  // side extension
+  roofExtensionWidthHeight: 1,
+  roofExtensionMidFrameCount: 1,
+  roofExtensionEndFrameCount: 1,
+  claddingExtensionWidthHeight: 1,
+  claddingExtensionMidFrameCount: 1,
+  claddingExtensionEndFrameCount: 1,
+  sideColumnsWidthHeight: 1,
+  sideColumnsMidFrameCount: 1,
+  sideColumnsEndFrameCount: 1,
+  // material grade
+  gradeOfPlateMaterial: 'FE_345',
+  // material consumption
+  materialConsumptionExcludingPurlin: 12.5,
+  // SAG rod
+  DiaOfRoofSagRod: 12,
+  DiaOfCladdingSagRod: 10,
 }
 
 const roof: Roof = {
@@ -97,6 +159,9 @@ const roof: Roof = {
   sideColumnsMidFrameCount: null,
   sideColumnsEndFrameCount: null,
   gradeOfPlateMaterial: null,
+  materialConsumptionExcludingPurlin: null,
+  DiaOfRoofSagRod: null,
+  DiaOfCladdingSagRod: null,
   createdAt: '2026-01-01T00:00:00.000Z',
   updatedAt: '2026-01-01T00:00:00.000Z',
   sidewalls: [],

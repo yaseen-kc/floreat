@@ -6,6 +6,7 @@ import { NumberField } from '@/components/quotation/shared/NumberField'
 import { SelectField, type SelectFieldOption } from '@/components/quotation/shared/SelectField'
 import { Columns3 } from 'lucide-react'
 import { isRequired, getFieldErrors } from '@/schemas/roof.schema'
+import { ROOF_SECTION_FIELDS } from '@/stores/quotation-store'
 
 /** Human-readable labels for the purlin material-type enum. */
 const PURLIN_TYPE_OPTIONS: SelectFieldOption[] = [
@@ -38,6 +39,7 @@ export function Purlins() {
     })),
   )
   const errors = showValidation ? getFieldErrors(roof) : {}
+  const sectionError = ROOF_SECTION_FIELDS.purlins.some((f) => Boolean(errors[f]))
 
   const setType = (name: PurlinTypeField) => (v: string) => {
     const patch: Partial<RoofDraft> = {}
@@ -51,6 +53,7 @@ export function Purlins() {
       title="Purlins"
       enabled={enabled}
       onToggle={(e) => toggleRoofSection('purlins', e)}
+      error={sectionError}
     >
       <div className="grid grid-cols-1 md:grid-cols-2 gap-[18px]">
         <SelectField

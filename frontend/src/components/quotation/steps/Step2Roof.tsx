@@ -10,6 +10,8 @@ import { CladdingOpenings } from "../sections/roof/CladdingOpenings";
 import { FasciaBoard } from "../sections/roof/FasciaBoard";
 import { SideExtension } from "../sections/roof/SideExtension";
 import { MaterialGrade } from "../sections/roof/MaterialGrade";
+import { MaterialConsumption } from "../sections/roof/MaterialConsumption";
+import { SagRod } from "../sections/roof/SagRod";
 import { Sidewalls } from "../sections/roof/Sidewalls";
 import { useRoofHydration } from "@/hooks/useRoofHydration";
 
@@ -31,9 +33,11 @@ export function Step2Roof() {
             <WindBracing />
             <CladdingOpenings />
             <SideExtension />
-            <MaterialGrade />
             <FasciaBoard />
             <BaseFixing />
+            <MaterialConsumption />
+            <SagRod />
+            <MaterialGrade />
         </section>
     )
 }

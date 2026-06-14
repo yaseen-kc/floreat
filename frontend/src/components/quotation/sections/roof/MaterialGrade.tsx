@@ -5,6 +5,7 @@ import { CollapsibleSection } from '@/components/quotation/shared/CollapsibleSec
 import { SelectField, type SelectFieldOption } from '@/components/quotation/shared/SelectField'
 import { Grid2x2 } from 'lucide-react'
 import { isRequired, getFieldErrors } from '@/schemas/roof.schema'
+import { ROOF_SECTION_FIELDS } from '@/stores/quotation-store'
 
 /** Human-readable labels for the plate material grade enum. */
 const GRADE_OPTIONS: SelectFieldOption[] = [
@@ -24,6 +25,7 @@ export function MaterialGrade() {
     })),
   )
   const errors = showValidation ? getFieldErrors(roof) : {}
+  const sectionError = ROOF_SECTION_FIELDS.materialGrade.some((f) => Boolean(errors[f]))
 
   return (
     <CollapsibleSection
@@ -31,6 +33,7 @@ export function MaterialGrade() {
       title="Material Grade"
       enabled={enabled}
       onToggle={(e) => toggleRoofSection('materialGrade', e)}
+      error={sectionError}
     >
       <div className="grid grid-cols-1 md:grid-cols-2 gap-[18px]">
         <SelectField

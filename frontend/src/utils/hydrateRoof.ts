@@ -104,6 +104,13 @@ export function mapRoofResponseToDraft(r: Roof): HydratedRoof {
     // ── Material grade ──
     gradeOfPlateMaterial: r.gradeOfPlateMaterial ?? undefined,
 
+    // ── Material consumption ──
+    materialConsumptionExcludingPurlin: num(r.materialConsumptionExcludingPurlin),
+
+    // ── SAG rod ──
+    DiaOfRoofSagRod: num(r.DiaOfRoofSagRod),
+    DiaOfCladdingSagRod: num(r.DiaOfCladdingSagRod),
+
     // ── Inline sidewalls ──
     sidewalls: r.sidewalls.map((s) => ({
       side: s.side,

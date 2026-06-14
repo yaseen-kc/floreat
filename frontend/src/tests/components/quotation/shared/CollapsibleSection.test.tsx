@@ -42,4 +42,44 @@ describe('CollapsibleSection shared primitive', () => {
     fireEvent.click(screen.getByRole('switch'))
     expect(onToggle).toHaveBeenCalledWith(true)
   })
+
+  it('shows the error prompt when error is set, even while collapsed', () => {
+    render(
+      <CollapsibleSection icon={<Box />} title="Frame Members" enabled={false} error onToggle={() => {}}>
+        <p>body</p>
+      </CollapsibleSection>,
+    )
+    expect(
+      screen.getByText('This section is required — enable it and complete all fields.'),
+    ).toBeInTheDocument()
+    // Body stays hidden while disabled.
+    expect(screen.queryByText('body')).not.toBeInTheDocument()
+  })
+
+  it('supports a custom error message', () => {
+    render(
+      <CollapsibleSection
+        icon={<Box />}
+        title="Frame Members"
+        enabled={false}
+        error
+        errorMessage="Custom required message"
+        onToggle={() => {}}
+      >
+        <p>body</p>
+      </CollapsibleSection>,
+    )
+    expect(screen.getByText('Custom required message')).toBeInTheDocument()
+  })
+
+  it('does not render an error prompt when error is absent', () => {
+    render(
+      <CollapsibleSection icon={<Box />} title="Frame Members" enabled onToggle={() => {}}>
+        <p>body</p>
+      </CollapsibleSection>,
+    )
+    expect(
+      screen.queryByText('This section is required — enable it and complete all fields.'),
+    ).not.toBeInTheDocument()
+  })
 })

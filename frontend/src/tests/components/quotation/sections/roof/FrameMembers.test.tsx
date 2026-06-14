@@ -11,9 +11,17 @@ describe('FrameMembers section', () => {
 
   it('renders the toggle and hides the fields when disabled', () => {
     render(<FrameMembers />)
-    expect(screen.getByText('Frame Members')).toBeInTheDocument()
+    expect(screen.getByText('Members')).toBeInTheDocument()
     expect(screen.getByRole('switch')).toBeInTheDocument()
     expect(screen.queryByText('Column Segments (Main Frame)')).not.toBeInTheDocument()
+  })
+
+  it('flags the section as required when validation runs and it is left disabled', () => {
+    useQuotationStore.setState({ showValidation: true })
+    render(<FrameMembers />)
+    expect(
+      screen.getByText('This section is required — enable it and complete all fields.'),
+    ).toBeInTheDocument()
   })
 
   it('reveals the 5 member fields when the section is enabled', () => {

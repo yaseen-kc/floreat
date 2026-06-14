@@ -36,6 +36,7 @@ vi.mock('@/api/quotation/roof/postRoof', () => ({
 
 import { WizardActionBar } from '@/components/quotation/WizardActionBar'
 import { useQuotationStore } from '@/stores/quotation-store'
+import { validRoofDraft } from '@/tests/fixtures/roof'
 
 const fillRequired = () =>
   useQuotationStore.getState().setProjectInfo({
@@ -135,20 +136,7 @@ describe('WizardActionBar Step 1 flow', () => {
 })
 
 
-const fillCoreRoof = () =>
-  useQuotationStore.getState().setRoof({
-    buildingOverallLength: 100,
-    buildingOverallWidth: 50,
-    eaveHeight: 6,
-    roofSlope: 10,
-    mainRoofFrames: 5,
-    endRoofFrames: 2,
-    roofPurlinSpacing: 1.5,
-    claddingPurlins: 4,
-    internalColumnsForMainRoofFrames: 0,
-    internalColumnsForEndRoofFrames: 0,
-    roofFrameBaseFixing: 'FOUNDATION_BOLT',
-  })
+const fillCoreRoof = () => useQuotationStore.getState().setRoof(validRoofDraft)
 
 describe('WizardActionBar Step 2 roof persistence', () => {
   beforeEach(() => {

@@ -6,6 +6,7 @@ import { NumberField } from '@/components/quotation/shared/NumberField'
 import { SelectField, type SelectFieldOption } from '@/components/quotation/shared/SelectField'
 import { Layers } from 'lucide-react'
 import { isRequired, getFieldErrors } from '@/schemas/roof.schema'
+import { ROOF_SECTION_FIELDS } from '@/stores/quotation-store'
 
 /** Human-readable labels for the covering-type enum. */
 const COVERING_TYPE_OPTIONS: SelectFieldOption[] = [
@@ -35,6 +36,7 @@ export function Coverings() {
     })),
   )
   const errors = showValidation ? getFieldErrors(roof) : {}
+  const sectionError = ROOF_SECTION_FIELDS.coverings.some((f) => Boolean(errors[f]))
 
   const setType = (name: CoveringTypeField) => (v: string) => {
     const patch: Partial<RoofDraft> = {}
@@ -48,6 +50,7 @@ export function Coverings() {
       title="Coverings"
       enabled={enabled}
       onToggle={(e) => toggleRoofSection('coverings', e)}
+      error={sectionError}
     >
       <div className="grid grid-cols-1 md:grid-cols-2 gap-[18px]">
         <SelectField

@@ -1,5 +1,6 @@
 import { describe, it, expect, beforeEach } from 'vitest'
 import { useQuotationStore } from '@/stores/quotation-store'
+import { validRoofDraft } from '@/tests/fixtures/roof'
 
 const STORAGE_KEY = 'strukt:draft'
 
@@ -112,21 +113,8 @@ describe('quotation-store step 1 validation', () => {
 })
 
 describe('quotation-store step 2 roof slice', () => {
-  /** Fills the 11 required core dimensions so step 2 is valid. */
-  const fillCoreDimensions = () =>
-    useQuotationStore.getState().setRoof({
-      buildingOverallLength: 100,
-      buildingOverallWidth: 50,
-      eaveHeight: 6,
-      roofSlope: 10,
-      mainRoofFrames: 5,
-      endRoofFrames: 2,
-      roofPurlinSpacing: 1.5,
-      claddingPurlins: 4,
-      internalColumnsForMainRoofFrames: 0,
-      internalColumnsForEndRoofFrames: 0,
-      roofFrameBaseFixing: 'FOUNDATION_BOLT',
-    })
+  /** Fills every required roof field (core + sections) so step 2 is valid. */
+  const fillValidRoof = () => useQuotationStore.getState().setRoof(validRoofDraft)
 
   beforeEach(() => {
     localStorage.clear()
@@ -151,13 +139,30 @@ describe('quotation-store step 2 roof slice', () => {
     expect(useQuotationStore.getState().validateStep(2)).toBe(false)
   })
 
-  it('validateStep(2) is valid once every core dimension is filled', () => {
-    fillCoreDimensions()
+  it('validateStep(2) is invalid with only the core filled (sections are required)', () => {
+    useQuotationStore.getState().setRoof({
+      buildingOverallLength: 100,
+      buildingOverallWidth: 50,
+      eaveHeight: 6,
+      roofSlope: 10,
+      mainRoofFrames: 5,
+      endRoofFrames: 2,
+      roofPurlinSpacing: 1.5,
+      claddingPurlins: 4,
+      internalColumnsForMainRoofFrames: 0,
+      internalColumnsForEndRoofFrames: 0,
+      roofFrameBaseFixing: 'FOUNDATION_BOLT',
+    })
+    expect(useQuotationStore.getState().validateStep(2)).toBe(false)
+  })
+
+  it('validateStep(2) is valid once every required field is filled', () => {
+    fillValidRoof()
     expect(useQuotationStore.getState().validateStep(2)).toBe(true)
   })
 
   it('validateStep(2) is invalid when the fixing is unselected', () => {
-    fillCoreDimensions()
+    fillValidRoof()
     useQuotationStore.getState().setRoof({ roofFrameBaseFixing: '' })
     expect(useQuotationStore.getState().validateStep(2)).toBe(false)
   })
@@ -169,7 +174,7 @@ describe('quotation-store step 2 roof slice', () => {
   })
 
   it('resetQuotation restores roof defaults', () => {
-    fillCoreDimensions()
+    fillValidRoof()
     useQuotationStore.getState().resetQuotation()
     const { roof } = useQuotationStore.getState()
     expect(roof.eaveHeight).toBe(0)

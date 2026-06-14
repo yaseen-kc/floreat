@@ -5,6 +5,7 @@ import { CollapsibleSection } from '@/components/quotation/shared/CollapsibleSec
 import { NumberField } from '@/components/quotation/shared/NumberField'
 import { DoorOpen } from 'lucide-react'
 import { isRequired, getFieldErrors } from '@/schemas/roof.schema'
+import { ROOF_SECTION_FIELDS } from '@/stores/quotation-store'
 
 type CladdingOpeningField =
   | 'frontCladdingOpeningArea'
@@ -30,6 +31,7 @@ export function CladdingOpenings() {
     })),
   )
   const errors = showValidation ? getFieldErrors(roof) : {}
+  const sectionError = ROOF_SECTION_FIELDS.claddingOpenings.some((f) => Boolean(errors[f]))
 
   return (
     <CollapsibleSection
@@ -37,6 +39,7 @@ export function CladdingOpenings() {
       title="Cladding Openings"
       enabled={enabled}
       onToggle={(e) => toggleRoofSection('claddingOpenings', e)}
+      error={sectionError}
     >
       <div className="grid grid-cols-1 md:grid-cols-2 gap-[18px]">
         {FIELDS.map(({ name, label }) => (

@@ -5,6 +5,7 @@ import { CollapsibleSection } from '@/components/quotation/shared/CollapsibleSec
 import { NumberField } from '@/components/quotation/shared/NumberField'
 import { PanelTop } from 'lucide-react'
 import { isRequired, getFieldErrors } from '@/schemas/roof.schema'
+import { ROOF_SECTION_FIELDS } from '@/stores/quotation-store'
 
 type PolycarbonateField =
   | 'polycarbonateRoofLength'
@@ -28,6 +29,7 @@ export function Polycarbonate() {
     })),
   )
   const errors = showValidation ? getFieldErrors(roof) : {}
+  const sectionError = ROOF_SECTION_FIELDS.polycarbonate.some((f) => Boolean(errors[f]))
 
   return (
     <CollapsibleSection
@@ -35,6 +37,7 @@ export function Polycarbonate() {
       title="Polycarbonate"
       enabled={enabled}
       onToggle={(e) => toggleRoofSection('polycarbonate', e)}
+      error={sectionError}
     >
       <div className="grid grid-cols-1 md:grid-cols-2 gap-[18px]">
         {FIELDS.map(({ name, label, unit, step }) => (

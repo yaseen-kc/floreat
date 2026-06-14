@@ -2,11 +2,19 @@
  * Single source of truth for the Roof (quotation Step 2) request contract on
  * the frontend.
  *
- * Mirrors the backend `createRoofSchema` (backend/schemas/roof.schema.ts) field
- * for field: required core dimensions, structural sections, and the
- * inline `sidewalls` array. Numeric fields are typed as `number` here (the
- * create/upsert payload), even though the `Roof` response serialises Prisma
- * `Decimal` columns back as `string`.
+ * Mirrors the backend `createRoofSchema` (backend/schemas/roof.schema.ts) for
+ * the required core dimensions, structural sections, and the inline `sidewalls`
+ * array. Numeric fields are typed as `number` here (the create/upsert payload),
+ * even though the `Roof` response serialises Prisma `Decimal` columns back as
+ * `string`.
+ *
+ * NOTE: This frontend schema is intentionally STRICTER than the backend. Every
+ * structural section field (members, purlins, coverings, flange brace,
+ * polycarbonate, wind bracing, cladding openings, side extension, material
+ * grade, material consumption, SAG rod) is required here so the Step 2 form
+ * forces the user to complete them, even though the backend still accepts them
+ * as optional. Only the Fascia Board fields and the inline `sidewalls` array
+ * remain optional on the frontend.
  */
 import { z } from 'zod'
 
@@ -71,75 +79,82 @@ export const createRoofSchema = z.object({
   roofFrameBaseFixing: roofFrameBaseFixingEnum,
 
   // ── members ──
-  columnSegmentsInMainFrame: z.number().int().nonnegative().optional(),
-  raftersInOneHalfOfMainFrame: z.number().int().nonnegative().optional(),
-  columnSegmentsInEndFrame: z.number().int().nonnegative().optional(),
-  raftersInOneHalfOfEndFrame: z.number().int().nonnegative().optional(),
-  endFrameHorizontalTieBeam: z.number().int().nonnegative().optional(),
+  columnSegmentsInMainFrame: z.number().int().nonnegative(),
+  raftersInOneHalfOfMainFrame: z.number().int().nonnegative(),
+  columnSegmentsInEndFrame: z.number().int().nonnegative(),
+  raftersInOneHalfOfEndFrame: z.number().int().nonnegative(),
+  endFrameHorizontalTieBeam: z.number().int().nonnegative(),
 
   // ── purlin ──
-  roofPurlinType: purlinMaterialTypeEnum.optional(),
-  roofPurlinDepth: z.number().positive().optional(),
-  roofPurlinUnitWeight: z.number().positive().optional(),
-  claddingPurlinType: purlinMaterialTypeEnum.optional(),
-  claddingPurlinDepth: z.number().positive().optional(),
-  claddingPurlinUnitWeight: z.number().positive().optional(),
+  roofPurlinType: purlinMaterialTypeEnum,
+  roofPurlinDepth: z.number().positive(),
+  roofPurlinUnitWeight: z.number().positive(),
+  claddingPurlinType: purlinMaterialTypeEnum,
+  claddingPurlinDepth: z.number().positive(),
+  claddingPurlinUnitWeight: z.number().positive(),
 
   // ── covering ──
-  roofCoveringType: coveringTypeEnum.optional(),
-  roofCoveringThickness: z.number().positive().optional(),
-  claddingCoveringType: coveringTypeEnum.optional(),
-  claddingCoveringThickness: z.number().positive().optional(),
-  roofAreaDeduction: z.number().nonnegative().optional(),
+  roofCoveringType: coveringTypeEnum,
+  roofCoveringThickness: z.number().positive(),
+  claddingCoveringType: coveringTypeEnum,
+  claddingCoveringThickness: z.number().positive(),
+  roofAreaDeduction: z.number().nonnegative(),
 
   // ── flange brace ──
-  roofFlangeBraceAverageLength: z.number().positive().optional(),
-  claddingFlangeBraceAverageLength: z.number().positive().optional(),
-  endFrameFlangeBraceAverageLength: z.number().positive().optional(),
+  roofFlangeBraceAverageLength: z.number().positive(),
+  claddingFlangeBraceAverageLength: z.number().positive(),
+  endFrameFlangeBraceAverageLength: z.number().positive(),
 
   // ── polycarbonate ──
-  polycarbonateRoofLength: z.number().positive().optional(),
-  polycarbonateRoofWidth: z.number().positive().optional(),
-  polycarbonateRoofCount: z.number().int().nonnegative().optional(),
+  polycarbonateRoofLength: z.number().positive(),
+  polycarbonateRoofWidth: z.number().positive(),
+  polycarbonateRoofCount: z.number().int().nonnegative(),
 
   // ── wind bracing ──
-  roofWindBracingSegmentsInOneHalf: z.number().int().nonnegative().optional(),
-  columnWindBracingSegments: z.number().int().nonnegative().optional(),
-  roofWindBracingProvidedBays: z.number().int().nonnegative().optional(),
-  columnWindBracingProvidedBays: z.number().int().nonnegative().optional(),
-  windBracingColumnHeight: z.number().positive().optional(),
-  windBracingUnitWeight: z.number().positive().optional(),
-  roofWindBracingBaySpacing: z.number().positive().optional(),
-  columnWindBracingBaySpacing: z.number().positive().optional(),
-  roofWindBracingLength: z.number().positive().optional(),
-  columnWindBracingLength: z.number().positive().optional(),
-  windBracingType: typeOfWindBracingEnum.optional(),
+  roofWindBracingSegmentsInOneHalf: z.number().int().nonnegative(),
+  columnWindBracingSegments: z.number().int().nonnegative(),
+  roofWindBracingProvidedBays: z.number().int().nonnegative(),
+  columnWindBracingProvidedBays: z.number().int().nonnegative(),
+  windBracingColumnHeight: z.number().positive(),
+  windBracingUnitWeight: z.number().positive(),
+  roofWindBracingBaySpacing: z.number().positive(),
+  columnWindBracingBaySpacing: z.number().positive(),
+  roofWindBracingLength: z.number().positive(),
+  columnWindBracingLength: z.number().positive(),
+  windBracingType: typeOfWindBracingEnum,
 
   // ── cladding opening ──
-  frontCladdingOpeningArea: z.number().nonnegative().optional(),
-  backCladdingOpeningArea: z.number().nonnegative().optional(),
-  rightCladdingOpeningArea: z.number().nonnegative().optional(),
-  leftCladdingOpeningArea: z.number().nonnegative().optional(),
+  frontCladdingOpeningArea: z.number().nonnegative(),
+  backCladdingOpeningArea: z.number().nonnegative(),
+  rightCladdingOpeningArea: z.number().nonnegative(),
+  leftCladdingOpeningArea: z.number().nonnegative(),
 
-  // ── fascia board ──
+  // ── fascia board (optional — excluded from the required set) ──
   fasciaBoardArea: z.number().nonnegative().optional(),
   fasciaMaterialWeightPerSqft: z.number().positive().optional(),
 
   // ── side extension ──
-  roofExtensionWidthHeight: z.number().positive().optional(),
-  roofExtensionMidFrameCount: z.number().int().nonnegative().optional(),
-  roofExtensionEndFrameCount: z.number().int().nonnegative().optional(),
-  claddingExtensionWidthHeight: z.number().positive().optional(),
-  claddingExtensionMidFrameCount: z.number().int().nonnegative().optional(),
-  claddingExtensionEndFrameCount: z.number().int().nonnegative().optional(),
-  sideColumnsWidthHeight: z.number().positive().optional(),
-  sideColumnsMidFrameCount: z.number().int().nonnegative().optional(),
-  sideColumnsEndFrameCount: z.number().int().nonnegative().optional(),
+  roofExtensionWidthHeight: z.number().positive(),
+  roofExtensionMidFrameCount: z.number().int().nonnegative(),
+  roofExtensionEndFrameCount: z.number().int().nonnegative(),
+  claddingExtensionWidthHeight: z.number().positive(),
+  claddingExtensionMidFrameCount: z.number().int().nonnegative(),
+  claddingExtensionEndFrameCount: z.number().int().nonnegative(),
+  sideColumnsWidthHeight: z.number().positive(),
+  sideColumnsMidFrameCount: z.number().int().nonnegative(),
+  sideColumnsEndFrameCount: z.number().int().nonnegative(),
 
   // ── material grade ──
-  gradeOfPlateMaterial: plateMaterialGradeEnum.optional(),
+  gradeOfPlateMaterial: plateMaterialGradeEnum,
 
-  // ── Inline sidewalls ──
+  // ── material consumption ──
+  materialConsumptionExcludingPurlin: z.number().nonnegative(),
+
+  // ── SAG rod ──
+  DiaOfRoofSagRod: z.number().positive(),
+  DiaOfCladdingSagRod: z.number().positive(),
+
+  // ── Inline sidewalls (optional — excluded from the required set) ──
   sidewalls: z.array(sidewallSchema).optional(),
 })
 

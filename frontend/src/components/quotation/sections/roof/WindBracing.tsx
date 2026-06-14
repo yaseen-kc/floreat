@@ -6,6 +6,7 @@ import { NumberField } from '@/components/quotation/shared/NumberField'
 import { SelectField, type SelectFieldOption } from '@/components/quotation/shared/SelectField'
 import { Wind } from 'lucide-react'
 import { isRequired, getFieldErrors } from '@/schemas/roof.schema'
+import { ROOF_SECTION_FIELDS } from '@/stores/quotation-store'
 
 /** Human-readable labels for the wind-bracing type enum. */
 const WIND_BRACING_TYPE_OPTIONS: SelectFieldOption[] = [
@@ -49,6 +50,7 @@ export function WindBracing() {
     })),
   )
   const errors = showValidation ? getFieldErrors(roof) : {}
+  const sectionError = ROOF_SECTION_FIELDS.windBracing.some((f) => Boolean(errors[f]))
 
   return (
     <CollapsibleSection
@@ -56,6 +58,7 @@ export function WindBracing() {
       title="Wind Bracing"
       enabled={enabled}
       onToggle={(e) => toggleRoofSection('windBracing', e)}
+      error={sectionError}
     >
       <div className="grid grid-cols-1 md:grid-cols-2 gap-[18px]">
         <SelectField

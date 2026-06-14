@@ -15,7 +15,6 @@ const ALL_LABELS = [
   'Cladding Purlins',
   'Internal Columns (Main Frames)',
   'Internal Columns (End Frames)',
-  'Roof Frame Base Fixing',
 ]
 
 describe('PebRoof core-dimensions section', () => {
@@ -41,7 +40,6 @@ describe('PebRoof core-dimensions section', () => {
   it('does not show errors when showValidation is false', () => {
     render(<PebRoof />)
     expect(screen.queryByText('Eave Height is required')).not.toBeInTheDocument()
-    expect(screen.queryByText('Roof Frame Base Fixing is required')).not.toBeInTheDocument()
   })
 
   it('shows errors for the empty defaults when showValidation is true', () => {
@@ -49,7 +47,6 @@ describe('PebRoof core-dimensions section', () => {
     render(<PebRoof />)
     expect(screen.getByText('Eave Height is required')).toBeInTheDocument()
     expect(screen.getByText('Building Overall Length is required')).toBeInTheDocument()
-    expect(screen.getByText('Roof Frame Base Fixing is required')).toBeInTheDocument()
   })
 
   it('writes edits to a numeric field into the store', () => {

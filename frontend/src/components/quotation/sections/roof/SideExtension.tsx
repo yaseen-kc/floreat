@@ -5,6 +5,7 @@ import { CollapsibleSection } from '@/components/quotation/shared/CollapsibleSec
 import { NumberField } from '@/components/quotation/shared/NumberField'
 import { StretchHorizontal } from 'lucide-react'
 import { isRequired, getFieldErrors } from '@/schemas/roof.schema'
+import { ROOF_SECTION_FIELDS } from '@/stores/quotation-store'
 
 type SideExtensionField =
   | 'roofExtensionWidthHeight'
@@ -40,6 +41,7 @@ export function SideExtension() {
     })),
   )
   const errors = showValidation ? getFieldErrors(roof) : {}
+  const sectionError = ROOF_SECTION_FIELDS.sideExtension.some((f) => Boolean(errors[f]))
 
   return (
     <CollapsibleSection
@@ -47,6 +49,7 @@ export function SideExtension() {
       title="Side Extension"
       enabled={enabled}
       onToggle={(e) => toggleRoofSection('sideExtension', e)}
+      error={sectionError}
     >
       <div className="grid grid-cols-1 md:grid-cols-2 gap-[18px]">
         {FIELDS.map(({ name, label, unit, step }) => (

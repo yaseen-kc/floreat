@@ -10,22 +10,10 @@ vi.mock('@/api/quotation/roof/getRoof', () => ({
 import { Step2Roof } from '@/components/quotation/steps/Step2Roof'
 import { useQuotationStore } from '@/stores/quotation-store'
 import type { Roof } from '@/api/quotation/roof/getRoof'
+import { validRoofDraft } from '@/tests/fixtures/roof'
 
-/** Fills the 11 required core dimensions so step 2 validates. */
-const fillCoreDimensions = () =>
-  useQuotationStore.getState().setRoof({
-    buildingOverallLength: 100,
-    buildingOverallWidth: 50,
-    eaveHeight: 6,
-    roofSlope: 10,
-    mainRoofFrames: 5,
-    endRoofFrames: 2,
-    roofPurlinSpacing: 1.5,
-    claddingPurlins: 4,
-    internalColumnsForMainRoofFrames: 0,
-    internalColumnsForEndRoofFrames: 0,
-    roofFrameBaseFixing: 'FOUNDATION_BOLT',
-  })
+/** Fills every required roof field so step 2 validates. */
+const fillCoreDimensions = () => useQuotationStore.getState().setRoof(validRoofDraft)
 
 describe('Step2Roof', () => {
   beforeEach(() => {
@@ -37,14 +25,14 @@ describe('Step2Roof', () => {
   it('renders the step heading and the core-dimensions section', () => {
     render(<Step2Roof />)
     expect(screen.getByRole('heading', { name: 'Structural inputs' })).toBeInTheDocument()
-    expect(screen.getByText('Core Dimensions')).toBeInTheDocument()
+    expect(screen.getByText('Pre-Engineered Building Roof')).toBeInTheDocument()
     expect(screen.getByText('Eave Height')).toBeInTheDocument()
   })
 
   it('renders every optional section toggle', () => {
     render(<Step2Roof />)
     for (const title of [
-      'Frame Members', 'Purlins', 'Coverings', 'Flange Brace', 'Polycarbonate',
+      'Members', 'Purlins', 'Coverings', 'Flange Brace', 'Polycarbonate',
       'Wind Bracing', 'Cladding Openings', 'Fascia Board', 'Side Extension',
       'Material Grade', 'Sidewalls',
     ]) {
@@ -134,6 +122,9 @@ const serverRoof = (): Roof =>
     sideColumnsMidFrameCount: null,
     sideColumnsEndFrameCount: null,
     gradeOfPlateMaterial: null,
+    materialConsumptionExcludingPurlin: null,
+    DiaOfRoofSagRod: null,
+    DiaOfCladdingSagRod: null,
     createdAt: '2026-01-01T00:00:00.000Z',
     updatedAt: '2026-01-01T00:00:00.000Z',
     sidewalls: [],
@@ -164,7 +155,7 @@ describe('Step2Roof hydration on resume', () => {
     mocks.roofData = serverRoof()
     render(<Step2Roof />)
 
-    await waitFor(() => expect(screen.getByText('Core Dimensions')).toBeInTheDocument())
+    await waitFor(() => expect(screen.getByText('Pre-Engineered Building Roof')).toBeInTheDocument())
     // Stays at the locally-entered value, not the server's 120.
     expect(useQuotationStore.getState().roof.buildingOverallLength).toBe(100)
     expect(useQuotationStore.getState().roof.roofFrameBaseFixing).toBe('FOUNDATION_BOLT')
