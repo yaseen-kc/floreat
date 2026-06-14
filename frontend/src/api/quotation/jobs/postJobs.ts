@@ -22,6 +22,12 @@ export async function createJob(
   })
 }
 
+/**
+ * React Query hook for creating a job. On success it invalidates every
+ * paginated jobs list so the `/jobs` listing reflects the new job. No detail
+ * is invalidated because a create yields a brand-new server id that no detail
+ * query is keyed on yet.
+ */
 export function useCreateJob() {
   const { getToken } = useAuth()
   const queryClient = useQueryClient()

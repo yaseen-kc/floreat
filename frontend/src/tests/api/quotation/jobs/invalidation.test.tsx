@@ -15,6 +15,7 @@ vi.mock('@/lib/api', () => ({
 import { apiFetch } from '@/lib/api'
 import { useCreateJob } from '@/api/quotation/jobs/postJobs'
 import { useUpdateJob } from '@/api/quotation/jobs/putJobs'
+import { useDeleteJob } from '@/api/quotation/jobs/deleteJobs'
 import { jobKeys } from '@/api/quotation/jobs/queryKeys'
 import type { JobInput } from '@/schemas/job.schema'
 
@@ -69,6 +70,18 @@ describe('job mutation cache invalidation', () => {
 
     const { result } = renderHook(() => useUpdateJob(), { wrapper })
     result.current.mutate({ id: 'job-1', ...payload })
+
+    await waitFor(() => expect(result.current.isSuccess).toBe(true))
+    expect(invalidateSpy).toHaveBeenCalledWith({ queryKey: jobKeys.lists() })
+    expect(invalidateSpy).toHaveBeenCalledWith({ queryKey: jobKeys.detail('job-1') })
+  })
+
+  it('useDeleteJob invalidates the list and the job detail on success', async () => {
+    mockedApiFetch.mockResolvedValueOnce(null)
+    const { wrapper, invalidateSpy } = makeWrapper()
+
+    const { result } = renderHook(() => useDeleteJob(), { wrapper })
+    result.current.mutate('job-1')
 
     await waitFor(() => expect(result.current.isSuccess).toBe(true))
     expect(invalidateSpy).toHaveBeenCalledWith({ queryKey: jobKeys.lists() })

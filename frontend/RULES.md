@@ -81,28 +81,94 @@ export function SectionCard({ icon, title, children, className }: SectionCardPro
 
 ## 6. API Layer
 
-- All HTTP calls go through `apiFetch` from `@/lib/api`.
-- One file per endpoint: `src/api/{domain}/{resource}/{verbResource}.ts`.
-- Each file exports:
-  1. Request/response **interfaces**.
-  2. A plain **async function** (for direct use and testing).
-  3. A **React Query hook** (`useCreateJob`, `useGetJobs`, etc.).
-- Pass the Clerk token via `useAuth().getToken()` inside the hook.
+The **roof API** (`src/api/quotation/roof/`) is the canonical reference. All current
+and future resource APIs must follow this standard exactly.
+
+### 6.1 Structure
+
+- All HTTP calls go through `apiFetch` from `@/lib/api`. `apiFetch` already maps
+  `204 No Content` (and empty bodies) to `null` — never parse the body yourself.
+- One file per HTTP verb: `src/api/{domain}/{resource}/{verbResource}.ts`
+  (`get{Resource}s.ts`, `post{Resource}s.ts`, `put{Resource}s.ts`, `delete{Resource}s.ts`).
+- A single centralized **query-key factory** per resource in `queryKeys.ts`.
+- Each verb file exports, in this order:
+  1. Request/response **interfaces** (and a payload type aliasing the Zod-derived schema input).
+  2. A plain **async function** `(token, ...args)` (for direct use and testing).
+  3. A **React Query hook** (`useRoofs`, `useRoof`, `useUpsertRoof`, `useUpdateRoof`, `useDeleteRoof`).
+- The Clerk token is resolved **inside the hook** via `useAuth().getToken()` and passed
+  into the plain async function — never call `getToken()` in the plain function.
+- Every exported function, hook, and interface carries a **JSDoc** comment describing
+  its endpoint, auth requirement, and any non-obvious behavior.
+
+### 6.2 Query keys
+
+Mandatory factory shape (mirror per resource so invalidation is reliable by prefix):
 
 ```ts
-// src/api/quotation/jobs/postJobs.ts
-export interface CreateJobPayload { /* ... */ }
+export const roofKeys = {
+  all: ['roofs'] as const,
+  lists: () => [...roofKeys.all, 'list'] as const,
+  list: (page: number, pageSize: number) => [...roofKeys.lists(), { page, pageSize }] as const,
+  details: () => [...roofKeys.all, 'detail'] as const,
+  detail: (id: string) => [...roofKeys.details(), id] as const,
+}
+```
 
-export async function createJob(token: string | null, payload: CreateJobPayload): Promise<Job> {
-  return await apiFetch('/api/jobs', token, { method: 'POST', body: JSON.stringify(payload) })
+### 6.3 Read hooks
+
+- Provide a **list hook** keyed by `keys.list(page, pageSize)`.
+- Provide a **detail hook** keyed by `keys.detail(id)`. Detail hooks **must** guard with
+  `enabled: !!id` so they never fire with an empty path segment.
+
+### 6.4 Mutation invalidation
+
+- **Create** invalidates `keys.lists()` only (a create yields a new server id that no
+  detail query is keyed on yet).
+- **Update / upsert / delete** invalidate **both** `keys.detail(id)` and `keys.lists()`,
+  so listings and any detail view stay in sync.
+- The delete hook takes the `id` as its mutation variable and resolves to `void`.
+
+### 6.5 Typing the wire format
+
+Prisma `Decimal` columns serialize to JSON **strings** over HTTP
+(`Decimal.prototype.toJSON`). Type numeric-precision response fields as `string` even
+when the create/update payload accepts `number`. Document this with a `NOTE:` comment
+on the response interface.
+
+### 6.6 Canonical example
+
+```ts
+// src/api/quotation/roof/deleteRoof.ts
+import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { useAuth } from '@clerk/react'
+import { apiFetch } from '@/lib/api'
+import { roofKeys } from './queryKeys'
+
+/**
+ * Deletes the roof for a job via DELETE /api/jobs/:jobId/roof.
+ * The backend responds with 204 No Content, so this resolves to `void`.
+ * Requires a Clerk session token for authentication.
+ */
+export async function deleteRoof(token: string | null, jobId: string): Promise<void> {
+  await apiFetch(`/api/jobs/${jobId}/roof`, token, { method: 'DELETE' })
 }
 
-export function useCreateJob() {
+/**
+ * React Query hook for deleting a job's roof. The mutation variable is the
+ * `jobId`. On success it invalidates both the roof detail and every paginated
+ * roofs list so listings and the roof view stay in sync.
+ */
+export function useDeleteRoof() {
   const { getToken } = useAuth()
+  const queryClient = useQueryClient()
   return useMutation({
-    mutationFn: async (payload: CreateJobPayload) => {
+    mutationFn: async (jobId: string) => {
       const token = await getToken()
-      return createJob(token, payload)
+      return deleteRoof(token, jobId)
+    },
+    onSuccess: (_data, jobId) => {
+      queryClient.invalidateQueries({ queryKey: roofKeys.detail(jobId) })
+      queryClient.invalidateQueries({ queryKey: roofKeys.lists() })
     },
   })
 }
