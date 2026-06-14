@@ -1,16 +1,25 @@
 import { useQuotationStore } from '@/stores/quotation-store'
+import type { ProjectInfo } from '@/stores/quotation-store'
+import { useShallow } from 'zustand/react/shallow'
 import { SectionCard } from '@/components/quotation/shared/SectionCard'
+import { Field, ErrMsg } from '@/components/quotation/shared/FormField'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { CircleAlert, Users } from 'lucide-react'
+import { Users } from 'lucide-react'
 import { cn } from '@/lib/utils'
-import { isRequired, getFieldErrors, type JobInput, type JobField } from '@/schemas/job.schema'
+import { isRequired, getFieldErrors, type JobField } from '@/schemas/job.schema'
 
 /** Text fields handled by this section (everything except numberOfBuilding). */
 type TextField = Exclude<JobField, 'numberOfBuilding'>
 
 export function JobInformations() {
-  const { projectInfo, setProjectInfo, showValidation } = useQuotationStore()
+  const { projectInfo, setProjectInfo, showValidation } = useQuotationStore(
+    useShallow((s) => ({
+      projectInfo: s.projectInfo,
+      setProjectInfo: s.setProjectInfo,
+      showValidation: s.showValidation,
+    })),
+  )
   const errors = showValidation ? getFieldErrors(projectInfo) : {}
 
   // Required markers and error states are derived from the schema (SSOT) so the
@@ -20,7 +29,13 @@ export function JobInformations() {
     required: isRequired(name),
     value: projectInfo[name],
     error: Boolean(errors[name]),
-    onChange: (v: string) => setProjectInfo({ [name]: v } as Partial<JobInput>),
+    onChange: (v: string) => {
+      // `name` is restricted to the string-valued fields, so a typed partial
+      // accepts the assignment without a cast.
+      const patch: Partial<ProjectInfo> = {}
+      patch[name] = v
+      setProjectInfo(patch)
+    },
   })
 
   return (
@@ -52,23 +67,5 @@ export function JobInformations() {
         <Field {...fieldProps('firmName', 'Firm Name')} />
       </div>
     </SectionCard>
-  )
-}
-
-function Field({ label, value, error, required, onChange }: { label: string; value: string; error: boolean; required: boolean; onChange: (v: string) => void }) {
-  return (
-    <div>
-      <Label>{label} {required && <span className="text-destructive">*</span>}</Label>
-      <Input value={value} onChange={(e) => onChange(e.target.value)} className={cn(error && 'border-destructive')} />
-      {error && <ErrMsg>{label} is required</ErrMsg>}
-    </div>
-  )
-}
-
-function ErrMsg({ children }: { children: React.ReactNode }) {
-  return (
-    <span className="flex items-center gap-1 text-xs text-destructive mt-1">
-      <CircleAlert className="w-3 h-3" /> {children}
-    </span>
   )
 }

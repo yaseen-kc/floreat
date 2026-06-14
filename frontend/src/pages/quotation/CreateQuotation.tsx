@@ -2,7 +2,6 @@ import { useRef, useEffect } from 'react'
 import { useQuotationStore } from '@/stores/quotation-store'
 import { WizardStepper } from '@/components/quotation/WizardStepper'
 import { WizardActionBar } from '@/components/quotation/WizardActionBar'
-import { Toast } from '@/components/quotation/shared/Toast'
 import { Step1ProjectInfo } from '@/components/quotation/steps/Step1ProjectInfo'
 
 export default function CreateQuotation() {
@@ -22,7 +21,6 @@ export default function CreateQuotation() {
         </div>
       </div>
       <WizardActionBar />
-      <Toast />
     </div>
   )
 }

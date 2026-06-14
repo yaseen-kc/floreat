@@ -26,7 +26,7 @@ describe('jobSchema', () => {
     expect(jobSchema.safeParse(validJob).success).toBe(true)
   })
 
-  it('accepts omitting optional contact fields and firmName', () => {
+  it('rejects omitting the (now required) contact fields and firmName', () => {
     const result = jobSchema.safeParse({
       projectNo: 'P-001',
       subject: 'Test Subject',
@@ -39,14 +39,12 @@ describe('jobSchema', () => {
       frameType: 'Steel',
       configuration: 'Standard',
     })
-    expect(result.success).toBe(true)
-    // Optionals default to empty strings.
-    expect(result.success && result.data.clientName).toBe('')
-    expect(result.success && result.data.firmName).toBe('')
+    expect(result.success).toBe(false)
   })
 
-  it('accepts empty strings for optional fields', () => {
-    expect(jobSchema.safeParse({ ...validJob, clientName: '', firmName: '' }).success).toBe(true)
+  it('rejects empty strings for the contact fields and firmName', () => {
+    expect(jobSchema.safeParse({ ...validJob, clientName: '' }).success).toBe(false)
+    expect(jobSchema.safeParse({ ...validJob, firmName: '' }).success).toBe(false)
   })
 
   it('rejects a missing required field', () => {
@@ -76,13 +74,13 @@ describe('isRequired', () => {
     expect(isRequired('configuration')).toBe(true)
   })
 
-  it('reports optional contact fields and firmName as not required', () => {
-    expect(isRequired('clientName')).toBe(false)
-    expect(isRequired('estimationEngineerName')).toBe(false)
-    expect(isRequired('estimationEngineerMobile')).toBe(false)
-    expect(isRequired('headOfSalesName')).toBe(false)
-    expect(isRequired('headOfSalesMobile')).toBe(false)
-    expect(isRequired('firmName')).toBe(false)
+  it('reports the contact fields and firmName as required', () => {
+    expect(isRequired('clientName')).toBe(true)
+    expect(isRequired('estimationEngineerName')).toBe(true)
+    expect(isRequired('estimationEngineerMobile')).toBe(true)
+    expect(isRequired('headOfSalesName')).toBe(true)
+    expect(isRequired('headOfSalesMobile')).toBe(true)
+    expect(isRequired('firmName')).toBe(true)
   })
 })
 
@@ -91,9 +89,9 @@ describe('getFieldErrors', () => {
     expect(getFieldErrors(validJob)).toEqual({})
   })
 
-  it('flags required fields that are empty, but not optional ones', () => {
+  it('flags every empty required field, including the contact fields', () => {
     const errors = getFieldErrors({ ...validJob, projectNo: '', clientName: '' })
     expect(errors.projectNo).toBeDefined()
-    expect(errors.clientName).toBeUndefined()
+    expect(errors.clientName).toBeDefined()
   })
 })

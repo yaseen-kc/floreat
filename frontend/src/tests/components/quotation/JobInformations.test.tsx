@@ -10,32 +10,29 @@ describe('JobInformations form (schema-driven)', () => {
     useQuotationStore.getState().resetQuotation()
   })
 
-  it('shows errors for empty required fields but not for optional ones', () => {
+  it('shows errors for every empty required field, including the contact fields', () => {
     useQuotationStore.setState({ showValidation: true })
     render(<JobInformations />)
 
-    // Required fields surface a validation error.
     expect(screen.getByText('Project No is required')).toBeInTheDocument()
     expect(screen.getByText('Designed By (Name) is required')).toBeInTheDocument()
 
-    // Optional contact fields and firmName do not.
-    expect(screen.queryByText('Client Name is required')).not.toBeInTheDocument()
-    expect(screen.queryByText('Estimation Engineer (Name) is required')).not.toBeInTheDocument()
-    expect(screen.queryByText('Head of Sales (Name) is required')).not.toBeInTheDocument()
-    expect(screen.queryByText('Firm Name is required')).not.toBeInTheDocument()
+    // Previously-optional fields are now required too.
+    expect(screen.getByText('Client Name is required')).toBeInTheDocument()
+    expect(screen.getByText('Estimation Engineer (Name) is required')).toBeInTheDocument()
+    expect(screen.getByText('Head of Sales (Name) is required')).toBeInTheDocument()
+    expect(screen.getByText('Firm Name is required')).toBeInTheDocument()
   })
 
-  it('does not mark optional fields with a required asterisk', () => {
+  it('marks every field with a required asterisk', () => {
     render(<JobInformations />)
 
-    const clientLabel = screen.getByText('Client Name')
-    expect(clientLabel.querySelector('span')).toBeNull()
-
-    const firmLabel = screen.getByText('Firm Name')
-    expect(firmLabel.querySelector('span')).toBeNull()
+    for (const label of ['Client Name', 'Firm Name', 'Estimation Engineer (Name)', 'Head of Sales (Name)']) {
+      expect(screen.getByText(label).querySelector('span')?.textContent).toBe('*')
+    }
   })
 
-  it('renders an editable, optional Firm Name field wired to the store', async () => {
+  it('renders an editable Firm Name field wired to the store', async () => {
     render(<JobInformations />)
 
     const firmLabel = screen.getByText('Firm Name')

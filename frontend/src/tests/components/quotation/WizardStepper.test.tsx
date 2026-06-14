@@ -1,0 +1,91 @@
+import { describe, it, expect, beforeEach } from 'vitest'
+import { render, screen, within } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
+import { WizardStepper } from '@/components/quotation/WizardStepper'
+import { useQuotationStore } from '@/stores/quotation-store'
+
+const fillRequired = () =>
+  useQuotationStore.getState().setProjectInfo({
+    projectNo: 'P-001',
+    subject: 'Subject',
+    refNo: 'REF-001',
+    date: '2026-01-01',
+    designedByName: 'John',
+    designedByMobile: '1234567890',
+    clientName: 'Acme',
+    estimationEngineerName: 'Jane',
+    estimationEngineerMobile: '0987654321',
+    headOfSalesName: 'Sam',
+    headOfSalesMobile: '5555555555',
+    firmName: 'Acme Co',
+    buildingUsage: 'Commercial',
+    numberOfBuilding: 1,
+    frameType: 'Steel',
+    configuration: 'Standard',
+  })
+
+describe('WizardStepper', () => {
+  beforeEach(() => {
+    localStorage.clear()
+    useQuotationStore.getState().resetQuotation()
+  })
+
+  it('marks the current step with aria-current="step"', () => {
+    render(<WizardStepper />)
+    expect(screen.getByRole('button', { name: /Project Info/i })).toHaveAttribute('aria-current', 'step')
+    expect(screen.getByRole('button', { name: /Structural Inputs/i })).not.toHaveAttribute('aria-current')
+  })
+
+  it('disables unreachable future steps', () => {
+    render(<WizardStepper />)
+    // Step 3+ is never immediately reachable from step 1.
+    expect(screen.getByRole('button', { name: /Calc Engine/i })).toBeDisabled()
+    // Step 2 is disabled while step 1 is invalid.
+    expect(screen.getByRole('button', { name: /Structural Inputs/i })).toBeDisabled()
+  })
+
+  it('clicking a disabled far-future step is a no-op', async () => {
+    render(<WizardStepper />)
+    await userEvent.click(screen.getByRole('button', { name: /Pricing/i }))
+    expect(useQuotationStore.getState().currentStep).toBe(1)
+  })
+
+  it('allows advancing to the next step once step 1 is valid', async () => {
+    fillRequired()
+    render(<WizardStepper />)
+    const next = screen.getByRole('button', { name: /Structural Inputs/i })
+    expect(next).not.toBeDisabled()
+    await userEvent.click(next)
+    expect(useQuotationStore.getState().currentStep).toBe(2)
+  })
+
+  it('confirming the New quotation dialog resets the draft', async () => {
+    fillRequired()
+    useQuotationStore.getState().goStep(2)
+    render(<WizardStepper />)
+
+    await userEvent.click(screen.getByRole('button', { name: /New quotation/i }))
+
+    const dialog = await screen.findByRole('alertdialog')
+    expect(within(dialog).getByText('Start a new quotation?')).toBeInTheDocument()
+
+    await userEvent.click(within(dialog).getByRole('button', { name: /Discard & start new/i }))
+
+    const s = useQuotationStore.getState()
+    expect(s.currentStep).toBe(1)
+    expect(s.projectInfo.projectNo).toBe('')
+  })
+
+  it('cancelling the New quotation dialog keeps the draft', async () => {
+    fillRequired()
+    useQuotationStore.getState().goStep(2)
+    render(<WizardStepper />)
+
+    await userEvent.click(screen.getByRole('button', { name: /New quotation/i }))
+    const dialog = await screen.findByRole('alertdialog')
+    await userEvent.click(within(dialog).getByRole('button', { name: /Cancel/i }))
+
+    expect(useQuotationStore.getState().currentStep).toBe(2)
+    expect(useQuotationStore.getState().projectInfo.projectNo).toBe('P-001')
+  })
+})

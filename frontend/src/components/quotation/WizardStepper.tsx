@@ -1,28 +1,39 @@
+import { useState } from 'react'
 import { useQuotationStore } from '@/stores/quotation-store'
+import { useShallow } from 'zustand/react/shallow'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog'
 import { Check, RotateCcw } from 'lucide-react'
-
-const STEPS = [
-  { label: 'Project Info', sub: 'CLIENT & SITE' },
-  { label: 'Structural Inputs', sub: 'GEOMETRY' },
-  { label: 'Calc Engine', sub: 'FORMULAS' },
-  { label: 'Pricing', sub: 'COST BREAKDOWN' },
-  { label: 'Review', sub: 'GENERATE' },
-]
+import { STEPS } from '@/components/quotation/steps'
 
 export function WizardStepper() {
-  const { currentStep, goStep, validateStep, resetQuotation } = useQuotationStore()
+  const { currentStep, goStep, validateStep, resetQuotation } = useQuotationStore(
+    useShallow((s) => ({
+      currentStep: s.currentStep,
+      goStep: s.goStep,
+      validateStep: s.validateStep,
+      resetQuotation: s.resetQuotation,
+    })),
+  )
+  const [confirmOpen, setConfirmOpen] = useState(false)
+
+  // A step is reachable if it's already visited/current, or it's the immediate
+  // next step and the current step passes validation.
+  const canNavigate = (target: number) =>
+    target <= currentStep || (target === currentStep + 1 && validateStep(currentStep))
 
   const handleClick = (target: number) => {
-    if (target <= currentStep) { goStep(target); return }
-    if (target === currentStep + 1 && validateStep(currentStep)) goStep(target)
-  }
-
-  const handleNewQuotation = () => {
-    if (window.confirm('Start a new quotation? This will discard the current draft.')) {
-      resetQuotation()
-    }
+    if (canNavigate(target)) goStep(target)
   }
 
   return (
@@ -31,6 +42,7 @@ export function WizardStepper() {
         const n = i + 1
         const active = n === currentStep
         const done = n < currentStep
+        const navigable = canNavigate(n)
         return (
           <div key={n} className="contents">
             {i > 0 && (
@@ -39,7 +51,12 @@ export function WizardStepper() {
             <button
               type="button"
               onClick={() => handleClick(n)}
-              className="flex items-center gap-2.5 shrink-0 cursor-pointer"
+              disabled={!navigable}
+              aria-current={active ? 'step' : undefined}
+              className={cn(
+                'flex items-center gap-2.5 shrink-0',
+                navigable ? 'cursor-pointer' : 'cursor-not-allowed',
+              )}
             >
               <span className={cn(
                 'w-[26px] h-[26px] rounded-full grid place-items-center font-mono text-xs font-semibold border-[1.5px] transition-all',
@@ -59,9 +76,27 @@ export function WizardStepper() {
           </div>
         )
       })}
-      <Button variant="ghost" size="sm" onClick={handleNewQuotation} className="ml-4 shrink-0 text-muted-foreground">
+
+      <Button variant="ghost" size="sm" onClick={() => setConfirmOpen(true)} className="ml-4 shrink-0 text-muted-foreground">
         <RotateCcw className="w-4 h-4" /> New quotation
       </Button>
+
+      <AlertDialog open={confirmOpen} onOpenChange={setConfirmOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Start a new quotation?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This will discard the current draft. This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction variant="destructive" onClick={() => resetQuotation()}>
+              Discard & start new
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   )
 }

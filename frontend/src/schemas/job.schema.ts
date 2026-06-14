@@ -1,11 +1,14 @@
 /**
  * Single source of truth for the Job (quotation Step 1) contract on the frontend.
  *
- * Mirrors the backend `createJobSchema` (backend/schemas/job.schema.ts) in terms
- * of which fields are required vs optional. Types are kept client-appropriate:
- * `date` is a string (from `<input type="date">`, the backend coerces it) and
- * optional text fields default to '' so the inferred type stays all-strings,
- * matching the store and form bindings.
+ * Every field is required: the form's required markers, inline errors, and the
+ * step's validation are all derived from this schema, so making a field
+ * required here propagates to the UI automatically. `date` is kept a string
+ * (from `<input type="date">`, the backend coerces it).
+ *
+ * NOTE: the backend `createJobSchema` may still treat the contact fields and
+ * firmName as optional; this frontend schema is intentionally stricter so the
+ * form collects them up front. Loosen here if the backend contract changes.
  */
 import { z } from 'zod'
 
@@ -16,12 +19,12 @@ export const jobSchema = z.object({
   date: z.string().min(1),
   designedByName: z.string().min(1),
   designedByMobile: z.string().min(1),
-  clientName: z.string().default(''),
-  estimationEngineerName: z.string().default(''),
-  estimationEngineerMobile: z.string().default(''),
-  headOfSalesName: z.string().default(''),
-  headOfSalesMobile: z.string().default(''),
-  firmName: z.string().default(''),
+  clientName: z.string().min(1),
+  estimationEngineerName: z.string().min(1),
+  estimationEngineerMobile: z.string().min(1),
+  headOfSalesName: z.string().min(1),
+  headOfSalesMobile: z.string().min(1),
+  firmName: z.string().min(1),
   buildingUsage: z.string().min(1),
   numberOfBuilding: z.number().int().positive(),
   frameType: z.string().min(1),

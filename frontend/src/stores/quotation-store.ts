@@ -71,10 +71,14 @@ export const useQuotationStore = create<QuotationState>()(
     {
       name: 'strukt:draft',
       version: 1,
-      // Persist only the in-progress draft. `jobId` is deliberately excluded so
-      // a stale id can't leak across sessions (or to another user on a shared
-      // machine) and re-attach new edits to someone else's job.
-      partialize: (s) => ({ projectInfo: s.projectInfo, currentStep: s.currentStep }),
+      // The draft is hydrated manually (see useDraftPersistenceScope) once the
+      // Clerk user id is known, so the storage key can be namespaced per user
+      // (`strukt:draft:<userId>`). This keeps each user's draft — including the
+      // server `jobId` — isolated on shared machines, while still letting an
+      // in-progress job resume (and re-use PUT) after a refresh instead of
+      // creating a duplicate.
+      skipHydration: true,
+      partialize: (s) => ({ projectInfo: s.projectInfo, currentStep: s.currentStep, jobId: s.jobId }),
     }
   )
 )

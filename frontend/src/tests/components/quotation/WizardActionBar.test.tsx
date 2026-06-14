@@ -4,25 +4,28 @@ import userEvent from '@testing-library/user-event'
 
 const mocks = vi.hoisted(() => ({
   navigate: vi.fn(),
-  toast: vi.fn(),
+  toastSuccess: vi.fn(),
+  toastError: vi.fn(),
   createMutateAsync: vi.fn(),
   updateMutateAsync: vi.fn(),
+  createPending: false,
+  updatePending: false,
 }))
 
 vi.mock('react-router-dom', () => ({
   useNavigate: () => mocks.navigate,
 }))
 
-vi.mock('@/components/quotation/shared/Toast', () => ({
-  useToast: (selector: (s: { show: typeof mocks.toast }) => unknown) => selector({ show: mocks.toast }),
+vi.mock('sonner', () => ({
+  toast: { success: mocks.toastSuccess, error: mocks.toastError },
 }))
 
 vi.mock('@/api/quotation/jobs/postJobs', () => ({
-  useCreateJob: () => ({ mutateAsync: mocks.createMutateAsync, isPending: false }),
+  useCreateJob: () => ({ mutateAsync: mocks.createMutateAsync, isPending: mocks.createPending }),
 }))
 
 vi.mock('@/api/quotation/jobs/putJobs', () => ({
-  useUpdateJob: () => ({ mutateAsync: mocks.updateMutateAsync, isPending: false }),
+  useUpdateJob: () => ({ mutateAsync: mocks.updateMutateAsync, isPending: mocks.updatePending }),
 }))
 
 import { WizardActionBar } from '@/components/quotation/WizardActionBar'
@@ -36,6 +39,12 @@ const fillRequired = () =>
     date: '2026-01-01',
     designedByName: 'John',
     designedByMobile: '1234567890',
+    clientName: 'Acme',
+    estimationEngineerName: 'Jane',
+    estimationEngineerMobile: '0987654321',
+    headOfSalesName: 'Sam',
+    headOfSalesMobile: '5555555555',
+    firmName: 'Acme Co',
     buildingUsage: 'Commercial',
     numberOfBuilding: 1,
     frameType: 'Steel',
@@ -47,9 +56,12 @@ describe('WizardActionBar Step 1 flow', () => {
     localStorage.clear()
     useQuotationStore.getState().resetQuotation()
     mocks.navigate.mockReset()
-    mocks.toast.mockReset()
+    mocks.toastSuccess.mockReset()
+    mocks.toastError.mockReset()
     mocks.createMutateAsync.mockReset()
     mocks.updateMutateAsync.mockReset()
+    mocks.createPending = false
+    mocks.updatePending = false
   })
 
   it('creates the job and advances to step 2 on success (no navigation away)', async () => {
@@ -63,7 +75,7 @@ describe('WizardActionBar Step 1 flow', () => {
     expect(mocks.createMutateAsync).toHaveBeenCalledTimes(1)
     expect(useQuotationStore.getState().jobId).toBe('job-1')
     expect(mocks.navigate).not.toHaveBeenCalled()
-    expect(mocks.toast).toHaveBeenCalledWith('Job created successfully')
+    expect(mocks.toastSuccess).toHaveBeenCalledWith('Job created successfully')
   })
 
   it('does not submit or advance when required fields are missing', async () => {
@@ -74,7 +86,7 @@ describe('WizardActionBar Step 1 flow', () => {
     expect(mocks.createMutateAsync).not.toHaveBeenCalled()
     expect(useQuotationStore.getState().currentStep).toBe(1)
     expect(useQuotationStore.getState().showValidation).toBe(true)
-    expect(mocks.toast).toHaveBeenCalledWith('Please complete the required fields')
+    expect(mocks.toastError).toHaveBeenCalledWith('Please complete the required fields')
   })
 
   it('stays on step 1 when job creation fails', async () => {
@@ -84,7 +96,7 @@ describe('WizardActionBar Step 1 flow', () => {
 
     await userEvent.click(screen.getByRole('button', { name: /continue/i }))
 
-    await waitFor(() => expect(mocks.toast).toHaveBeenCalledWith('Failed to create job'))
+    await waitFor(() => expect(mocks.toastError).toHaveBeenCalledWith('Failed to create job'))
     expect(useQuotationStore.getState().currentStep).toBe(1)
     expect(useQuotationStore.getState().jobId).toBeNull()
     expect(mocks.navigate).not.toHaveBeenCalled()
@@ -102,5 +114,16 @@ describe('WizardActionBar Step 1 flow', () => {
     expect(mocks.createMutateAsync).not.toHaveBeenCalled()
     expect(mocks.updateMutateAsync).toHaveBeenCalledWith(expect.objectContaining({ id: 'job-1' }))
     expect(useQuotationStore.getState().currentStep).toBe(2)
+  })
+
+  it('shows a spinner and disables the action buttons while submitting', () => {
+    mocks.createPending = true
+    fillRequired()
+    render(<WizardActionBar />)
+
+    // Spinner uses role="status" (aria-label "Loading").
+    expect(screen.getAllByRole('status').length).toBeGreaterThan(0)
+    expect(screen.getByRole('button', { name: /saving/i })).toBeDisabled()
+    expect(screen.getByRole('button', { name: /save draft/i })).toBeDisabled()
   })
 })

@@ -1,20 +1,33 @@
 import { useQuotationStore } from '@/stores/quotation-store'
-import { useToast } from '@/components/quotation/shared/Toast'
+import { useShallow } from 'zustand/react/shallow'
+import { toast } from 'sonner'
 import { useCreateJob } from '@/api/quotation/jobs/postJobs'
 import { useUpdateJob } from '@/api/quotation/jobs/putJobs'
 import { useNavigate } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
+import { Spinner } from '@/components/ui/spinner'
 import { ArrowLeft, ArrowRight, Check, Save } from 'lucide-react'
-
-const STEP_NAMES = ['', 'Project Info', 'Structural Inputs', 'Calc Engine', 'Pricing', 'Review']
+import { STEPS, STEP_COUNT } from '@/components/quotation/steps'
 
 export function WizardActionBar() {
-  const { currentStep, nextStep, prevStep, validateStep, goStep, projectInfo, jobId, setJobId, resetQuotation } = useQuotationStore()
-  const toast = useToast((s) => s.show)
+  const { currentStep, nextStep, prevStep, validateStep, goStep, projectInfo, jobId, setJobId, resetQuotation } =
+    useQuotationStore(
+      useShallow((s) => ({
+        currentStep: s.currentStep,
+        nextStep: s.nextStep,
+        prevStep: s.prevStep,
+        validateStep: s.validateStep,
+        goStep: s.goStep,
+        projectInfo: s.projectInfo,
+        jobId: s.jobId,
+        setJobId: s.setJobId,
+        resetQuotation: s.resetQuotation,
+      })),
+    )
   const navigate = useNavigate()
   const createJob = useCreateJob()
   const updateJob = useUpdateJob()
-  const isLast = currentStep === 5
+  const isLast = currentStep === STEP_COUNT
   const isSubmitting = createJob.isPending || updateJob.isPending
 
   /**
@@ -26,14 +39,14 @@ export function WizardActionBar() {
     try {
       if (jobId) {
         await updateJob.mutateAsync({ id: jobId, ...projectInfo })
-        toast('Job updated successfully')
+        toast.success('Job updated successfully')
       } else {
         const job = await createJob.mutateAsync(projectInfo)
         setJobId(job.id)
-        toast('Job created successfully')
+        toast.success('Job created successfully')
       }
     } catch (err) {
-      toast(jobId ? 'Failed to update job' : 'Failed to create job')
+      toast.error(jobId ? 'Failed to update job' : 'Failed to create job')
       throw err
     }
   }
@@ -42,7 +55,7 @@ export function WizardActionBar() {
   const ensureStep1Valid = () => {
     if (validateStep(1)) return true
     useQuotationStore.setState({ showValidation: true })
-    toast('Please complete the required fields')
+    toast.error('Please complete the required fields')
     return false
   }
 
@@ -63,15 +76,15 @@ export function WizardActionBar() {
 
     // Final step: finalise and return to the dashboard.
     if (isLast) {
-      if (!validateStep(currentStep)) { toast('Please complete the required fields'); return }
-      toast('Quotation finalised & saved')
+      if (!validateStep(currentStep)) { toast.error('Please complete the required fields'); return }
+      toast.success('Quotation finalised & saved')
       resetQuotation()
       navigate('/')
       return
     }
 
     // Intermediate steps: validation-driven advance (persistence is future work).
-    if (!nextStep()) toast('Please complete the required fields')
+    if (!nextStep()) toast.error('Please complete the required fields')
   }
 
   const handleSaveDraft = async () => {
@@ -80,7 +93,7 @@ export function WizardActionBar() {
       if (!ensureStep1Valid()) return
       try { await submitJob() } catch { /* error toast already shown */ }
     } else {
-      toast('Draft saved')
+      toast.success('Draft saved')
     }
   }
 
@@ -90,14 +103,20 @@ export function WizardActionBar() {
         <ArrowLeft className="w-4 h-4" /> Back
       </Button>
       <span className="text-xs text-muted-foreground font-mono">
-        Step {currentStep} of 5 · {STEP_NAMES[currentStep]}
+        Step {currentStep} of {STEP_COUNT} · {STEPS[currentStep - 1]?.label}
       </span>
       <div className="flex-1" />
       <Button variant="secondary" onClick={handleSaveDraft} disabled={isSubmitting}>
-        <Save className="w-4 h-4" /> Save draft
+        {isSubmitting ? <Spinner /> : <Save className="w-4 h-4" />} Save draft
       </Button>
       <Button onClick={handleNext} disabled={isSubmitting}>
-        {isLast ? (<>Finish & save <Check className="w-4 h-4" /></>) : (<>Continue <ArrowRight className="w-4 h-4" /></>)}
+        {isSubmitting ? (
+          <>Saving <Spinner /></>
+        ) : isLast ? (
+          <>Finish & save <Check className="w-4 h-4" /></>
+        ) : (
+          <>Continue <ArrowRight className="w-4 h-4" /></>
+        )}
       </Button>
     </div>
   )

@@ -5,6 +5,8 @@ import Login from './pages/authentication/Login'
 import Dashboard from './pages/Dashboard'
 import { Sidebar } from './components/dashboard/sidebar'
 import CreateQuotation from './pages/quotation/CreateQuotation'
+import { Toaster } from './components/ui/sonner'
+import { useDraftPersistenceScope } from './hooks/useDraftPersistenceScope'
 
 
 const PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY
@@ -49,13 +51,26 @@ function App() {
 function ProtectedLayout() {
   return (
     <Show when="signed-in" fallback={<Navigate to="/login" replace />}>
-      <div className="flex h-screen">
-        <Sidebar />
-        <main className="flex-1 overflow-auto">
-          <Outlet />
-        </main>
-      </div>
+      <SignedInLayout />
     </Show>
+  )
+}
+
+/**
+ * The signed-in shell. Scopes the persisted quotation draft to the current
+ * user and mounts the global toast surface.
+ */
+function SignedInLayout() {
+  useDraftPersistenceScope()
+
+  return (
+    <div className="flex h-screen">
+      <Sidebar />
+      <main className="flex-1 overflow-auto">
+        <Outlet />
+      </main>
+      <Toaster />
+    </div>
   )
 }
 
