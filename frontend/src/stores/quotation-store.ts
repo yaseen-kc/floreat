@@ -15,14 +15,108 @@ export type RoofDraft = Omit<CreateRoofInput, 'roofFrameBaseFixing'> & {
   roofFrameBaseFixing: CreateRoofInput['roofFrameBaseFixing'] | ''
 }
 
+/**
+ * The optional, toggleable roof sections (Step 2). Each maps to a group of
+ * roof fields that are only part of the payload while the section is enabled.
+ */
+export type RoofSectionKey =
+  | 'members'
+  | 'purlins'
+  | 'coverings'
+  | 'flangeBrace'
+  | 'polycarbonate'
+  | 'windBracing'
+  | 'claddingOpenings'
+  | 'fasciaBoard'
+  | 'sideExtension'
+  | 'materialGrade'
+  | 'sidewalls'
+
+/** Per-section enabled flags. */
+export type RoofSectionsEnabled = Record<RoofSectionKey, boolean>
+
+/**
+ * Maps each optional section to the roof fields it owns. Disabling a section
+ * clears these fields so they drop out of the payload (see `toggleRoofSection`).
+ */
+export const ROOF_SECTION_FIELDS: Record<RoofSectionKey, readonly (keyof RoofDraft)[]> = {
+  members: [
+    'columnSegmentsInMainFrame',
+    'raftersInOneHalfOfMainFrame',
+    'columnSegmentsInEndFrame',
+    'raftersInOneHalfOfEndFrame',
+    'endFrameHorizontalTieBeam',
+  ],
+  purlins: [
+    'roofPurlinType',
+    'roofPurlinDepth',
+    'roofPurlinUnitWeight',
+    'claddingPurlinType',
+    'claddingPurlinDepth',
+    'claddingPurlinUnitWeight',
+  ],
+  coverings: [
+    'roofCoveringType',
+    'roofCoveringThickness',
+    'claddingCoveringType',
+    'claddingCoveringThickness',
+    'roofAreaDeduction',
+  ],
+  flangeBrace: [
+    'roofFlangeBraceAverageLength',
+    'claddingFlangeBraceAverageLength',
+    'endFrameFlangeBraceAverageLength',
+  ],
+  polycarbonate: [
+    'polycarbonateRoofLength',
+    'polycarbonateRoofWidth',
+    'polycarbonateRoofCount',
+  ],
+  windBracing: [
+    'roofWindBracingSegmentsInOneHalf',
+    'columnWindBracingSegments',
+    'roofWindBracingProvidedBays',
+    'columnWindBracingProvidedBays',
+    'windBracingColumnHeight',
+    'windBracingUnitWeight',
+    'roofWindBracingBaySpacing',
+    'columnWindBracingBaySpacing',
+    'roofWindBracingLength',
+    'columnWindBracingLength',
+    'windBracingType',
+  ],
+  claddingOpenings: [
+    'frontCladdingOpeningArea',
+    'backCladdingOpeningArea',
+    'rightCladdingOpeningArea',
+    'leftCladdingOpeningArea',
+  ],
+  fasciaBoard: ['fasciaBoardArea', 'fasciaMaterialWeightPerSqft'],
+  sideExtension: [
+    'roofExtensionWidthHeight',
+    'roofExtensionMidFrameCount',
+    'roofExtensionEndFrameCount',
+    'claddingExtensionWidthHeight',
+    'claddingExtensionMidFrameCount',
+    'claddingExtensionEndFrameCount',
+    'sideColumnsWidthHeight',
+    'sideColumnsMidFrameCount',
+    'sideColumnsEndFrameCount',
+  ],
+  materialGrade: ['gradeOfPlateMaterial'],
+  sidewalls: ['sidewalls'],
+}
+
 interface QuotationState {
   currentStep: number
   projectInfo: ProjectInfo
   roof: RoofDraft
+  roofSectionsEnabled: RoofSectionsEnabled
   showValidation: boolean
   jobId: string | null
   setProjectInfo: (v: Partial<ProjectInfo>) => void
   setRoof: (v: Partial<RoofDraft>) => void
+  toggleRoofSection: (key: RoofSectionKey, enabled: boolean) => void
   setJobId: (id: string | null) => void
   resetQuotation: () => void
   goStep: (n: number) => void
@@ -61,6 +155,22 @@ const createDefaultRoof = (): RoofDraft => ({
   internalColumnsForMainRoofFrames: 0,
   internalColumnsForEndRoofFrames: 0,
   roofFrameBaseFixing: '',
+  sidewalls: [],
+})
+
+/** Factory for the per-section enabled flags — every optional section starts off. */
+const createDefaultRoofSections = (): RoofSectionsEnabled => ({
+  members: false,
+  purlins: false,
+  coverings: false,
+  flangeBrace: false,
+  polycarbonate: false,
+  windBracing: false,
+  claddingOpenings: false,
+  fasciaBoard: false,
+  sideExtension: false,
+  materialGrade: false,
+  sidewalls: false,
 })
 
 export const useQuotationStore = create<QuotationState>()(
@@ -71,10 +181,23 @@ export const useQuotationStore = create<QuotationState>()(
       jobId: null,
       projectInfo: createDefaultProjectInfo(),
       roof: createDefaultRoof(),
+      roofSectionsEnabled: createDefaultRoofSections(),
 
       setProjectInfo: (v) => set((s) => ({ projectInfo: { ...s.projectInfo, ...v } })),
 
       setRoof: (v) => set((s) => ({ roof: { ...s.roof, ...v } })),
+
+      toggleRoofSection: (key, enabled) =>
+        set((s) => {
+          const roofSectionsEnabled = { ...s.roofSectionsEnabled, [key]: enabled }
+          if (enabled) return { roofSectionsEnabled }
+          // Disabling a section clears its fields so they drop from the payload.
+          const roof = { ...s.roof } as Record<string, unknown>
+          for (const field of ROOF_SECTION_FIELDS[key]) {
+            roof[field] = field === 'sidewalls' ? [] : undefined
+          }
+          return { roofSectionsEnabled, roof: roof as unknown as RoofDraft }
+        }),
 
       setJobId: (id) => set({ jobId: id }),
 
@@ -84,6 +207,7 @@ export const useQuotationStore = create<QuotationState>()(
         jobId: null,
         projectInfo: createDefaultProjectInfo(),
         roof: createDefaultRoof(),
+        roofSectionsEnabled: createDefaultRoofSections(),
       }),
 
       validateStep: (n) => {
@@ -114,7 +238,32 @@ export const useQuotationStore = create<QuotationState>()(
       // in-progress job resume (and re-use PUT) after a refresh instead of
       // creating a duplicate.
       skipHydration: true,
-      partialize: (s) => ({ projectInfo: s.projectInfo, roof: s.roof, currentStep: s.currentStep, jobId: s.jobId }),
+      partialize: (s) => ({ projectInfo: s.projectInfo, roof: s.roof, roofSectionsEnabled: s.roofSectionsEnabled, currentStep: s.currentStep, jobId: s.jobId }),
     }
   )
 )
+
+
+/**
+ * Builds the roof create/upsert payload from the Step 2 draft.
+ *
+ * Optional fields left blank are `undefined` and are dropped, an empty
+ * `sidewalls` array is omitted entirely, and `roofFrameBaseFixing` is asserted
+ * to be selected. Call this only after `validateStep(2)` succeeds.
+ */
+export function buildRoofPayload(roof: RoofDraft): CreateRoofInput {
+  if (!roof.roofFrameBaseFixing) {
+    throw new Error('Cannot build roof payload: roofFrameBaseFixing is not selected')
+  }
+
+  const entries = Object.entries(roof).filter(([key, value]) => {
+    if (value === undefined) return false
+    if (key === 'sidewalls') return Array.isArray(value) && value.length > 0
+    return true
+  })
+
+  return {
+    ...(Object.fromEntries(entries) as Omit<CreateRoofInput, 'roofFrameBaseFixing'>),
+    roofFrameBaseFixing: roof.roofFrameBaseFixing,
+  }
+}

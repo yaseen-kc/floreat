@@ -8,8 +8,10 @@ const mocks = vi.hoisted(() => ({
   toastError: vi.fn(),
   createMutateAsync: vi.fn(),
   updateMutateAsync: vi.fn(),
+  upsertRoofMutateAsync: vi.fn(),
   createPending: false,
   updatePending: false,
+  upsertRoofPending: false,
 }))
 
 vi.mock('react-router-dom', () => ({
@@ -26,6 +28,10 @@ vi.mock('@/api/quotation/jobs/postJobs', () => ({
 
 vi.mock('@/api/quotation/jobs/putJobs', () => ({
   useUpdateJob: () => ({ mutateAsync: mocks.updateMutateAsync, isPending: mocks.updatePending }),
+}))
+
+vi.mock('@/api/quotation/roof/postRoof', () => ({
+  useUpsertRoof: () => ({ mutateAsync: mocks.upsertRoofMutateAsync, isPending: mocks.upsertRoofPending }),
 }))
 
 import { WizardActionBar } from '@/components/quotation/WizardActionBar'
@@ -125,5 +131,87 @@ describe('WizardActionBar Step 1 flow', () => {
     expect(screen.getAllByRole('status').length).toBeGreaterThan(0)
     expect(screen.getByRole('button', { name: /saving/i })).toBeDisabled()
     expect(screen.getByRole('button', { name: /save draft/i })).toBeDisabled()
+  })
+})
+
+
+const fillCoreRoof = () =>
+  useQuotationStore.getState().setRoof({
+    buildingOverallLength: 100,
+    buildingOverallWidth: 50,
+    eaveHeight: 6,
+    roofSlope: 10,
+    mainRoofFrames: 5,
+    endRoofFrames: 2,
+    roofPurlinSpacing: 1.5,
+    claddingPurlins: 4,
+    internalColumnsForMainRoofFrames: 0,
+    internalColumnsForEndRoofFrames: 0,
+    roofFrameBaseFixing: 'FOUNDATION_BOLT',
+  })
+
+describe('WizardActionBar Step 2 roof persistence', () => {
+  beforeEach(() => {
+    localStorage.clear()
+    useQuotationStore.getState().resetQuotation()
+    mocks.navigate.mockReset()
+    mocks.toastSuccess.mockReset()
+    mocks.toastError.mockReset()
+    mocks.upsertRoofMutateAsync.mockReset()
+    mocks.createPending = false
+    mocks.updatePending = false
+    mocks.upsertRoofPending = false
+    // Arrive at Step 2 with a created job, as the wizard guarantees.
+    useQuotationStore.getState().setJobId('job-1')
+    useQuotationStore.setState({ currentStep: 2 })
+  })
+
+  it('upserts the roof and advances to step 3 on a valid Continue', async () => {
+    mocks.upsertRoofMutateAsync.mockResolvedValueOnce({ id: 'roof-1' })
+    fillCoreRoof()
+    render(<WizardActionBar />)
+
+    await userEvent.click(screen.getByRole('button', { name: /continue/i }))
+
+    await waitFor(() => expect(useQuotationStore.getState().currentStep).toBe(3))
+    expect(mocks.upsertRoofMutateAsync).toHaveBeenCalledTimes(1)
+    expect(mocks.upsertRoofMutateAsync).toHaveBeenCalledWith({
+      jobId: 'job-1',
+      payload: expect.objectContaining({ buildingOverallLength: 100, roofFrameBaseFixing: 'FOUNDATION_BOLT' }),
+    })
+    expect(mocks.toastSuccess).toHaveBeenCalledWith('Roof saved successfully')
+  })
+
+  it('does not upsert or advance when the roof is incomplete', async () => {
+    render(<WizardActionBar />)
+
+    await userEvent.click(screen.getByRole('button', { name: /continue/i }))
+
+    expect(mocks.upsertRoofMutateAsync).not.toHaveBeenCalled()
+    expect(useQuotationStore.getState().currentStep).toBe(2)
+    expect(useQuotationStore.getState().showValidation).toBe(true)
+    expect(mocks.toastError).toHaveBeenCalledWith('Please complete the required fields')
+  })
+
+  it('stays on step 2 when the roof upsert fails', async () => {
+    mocks.upsertRoofMutateAsync.mockRejectedValueOnce(new Error('API error: 500'))
+    fillCoreRoof()
+    render(<WizardActionBar />)
+
+    await userEvent.click(screen.getByRole('button', { name: /continue/i }))
+
+    await waitFor(() => expect(mocks.toastError).toHaveBeenCalledWith('Failed to save roof'))
+    expect(useQuotationStore.getState().currentStep).toBe(2)
+  })
+
+  it('Save draft upserts the roof without advancing', async () => {
+    mocks.upsertRoofMutateAsync.mockResolvedValueOnce({ id: 'roof-1' })
+    fillCoreRoof()
+    render(<WizardActionBar />)
+
+    await userEvent.click(screen.getByRole('button', { name: /save draft/i }))
+
+    await waitFor(() => expect(mocks.upsertRoofMutateAsync).toHaveBeenCalledTimes(1))
+    expect(useQuotationStore.getState().currentStep).toBe(2)
   })
 })

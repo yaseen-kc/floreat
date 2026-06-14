@@ -59,15 +59,17 @@ export function PebRoof() {
     required: isRequired(name),
     value: roof[name],
     error: Boolean(errors[name]),
-    onChange: (v: number) => {
+    onChange: (v: number | undefined) => {
+      // Core dimensions are required: a cleared input collapses to 0, which the
+      // schema's `.positive()` still rejects, so the field stays flagged.
       const patch: Partial<RoofDraft> = {}
-      patch[name] = v
+      patch[name] = v ?? 0
       setRoof(patch)
     },
   })
 
   return (
-    <SectionCard icon={<Warehouse className="w-3.5 h-3.5" />} title="Core Dimensions">
+      <SectionCard icon={<Warehouse className="w-3.5 h-3.5" />} title="Pre-Engineered Building Roof">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-[18px]">
         {NUMERIC_FIELDS.map((field) => (
           <NumberField key={field.name} {...fieldProps(field)} />

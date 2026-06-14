@@ -34,6 +34,26 @@ describe('NumberField shared primitive', () => {
     expect(onChange).toHaveBeenCalledWith(42)
   })
 
+  it('renders the current value in the input', () => {
+    render(<NumberField label="Eave Height" value={6} unit="m" required error={false} onChange={() => {}} />)
+    const input = screen.getByText('Eave Height').parentElement!.querySelector('input')!
+    expect(input).toHaveValue(6)
+  })
+
+  it('renders an empty input when value is undefined', () => {
+    render(<NumberField label="Roof Purlin Depth" value={undefined} unit="mm" required={false} error={false} onChange={() => {}} />)
+    const input = screen.getByText('Roof Purlin Depth').parentElement!.querySelector('input')!
+    expect(input).toHaveValue(null)
+  })
+
+  it('emits undefined when the input is cleared', () => {
+    const onChange = vi.fn()
+    render(<NumberField label="Roof Purlin Depth" value={5} unit="mm" required={false} error={false} onChange={onChange} />)
+    const input = screen.getByText('Roof Purlin Depth').parentElement!.querySelector('input')!
+    fireEvent.change(input, { target: { value: '' } })
+    expect(onChange).toHaveBeenCalledWith(undefined)
+  })
+
   it('renders a number input that accepts a step', () => {
     render(<NumberField label="Main Roof Frames" value={0} unit="count" step={1} required error={false} onChange={() => {}} />)
     const input = screen.getByText('Main Roof Frames').parentElement!.querySelector('input')!

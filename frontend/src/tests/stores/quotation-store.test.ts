@@ -177,6 +177,61 @@ describe('quotation-store step 2 roof slice', () => {
   })
 })
 
+describe('quotation-store optional roof sections', () => {
+  beforeEach(() => {
+    localStorage.clear()
+    useQuotationStore.persist.setOptions({ name: STORAGE_KEY })
+    useQuotationStore.getState().resetQuotation()
+  })
+
+  it('defaults every section to disabled and optional fields to undefined', () => {
+    const s = useQuotationStore.getState()
+    expect(s.roofSectionsEnabled.purlins).toBe(false)
+    expect(s.roofSectionsEnabled.windBracing).toBe(false)
+    expect(s.roof.roofPurlinDepth).toBeUndefined()
+    expect(s.roof.gradeOfPlateMaterial).toBeUndefined()
+    expect(s.roof.sidewalls).toEqual([])
+  })
+
+  it('toggleRoofSection flips the enabled flag', () => {
+    useQuotationStore.getState().toggleRoofSection('purlins', true)
+    expect(useQuotationStore.getState().roofSectionsEnabled.purlins).toBe(true)
+  })
+
+  it('disabling a section clears its fields', () => {
+    useQuotationStore.getState().toggleRoofSection('purlins', true)
+    useQuotationStore.getState().setRoof({ roofPurlinDepth: 120, roofPurlinType: 'Z_C' })
+    expect(useQuotationStore.getState().roof.roofPurlinDepth).toBe(120)
+
+    useQuotationStore.getState().toggleRoofSection('purlins', false)
+    const s = useQuotationStore.getState()
+    expect(s.roofSectionsEnabled.purlins).toBe(false)
+    expect(s.roof.roofPurlinDepth).toBeUndefined()
+    expect(s.roof.roofPurlinType).toBeUndefined()
+  })
+
+  it('disabling the sidewalls section empties the array', () => {
+    useQuotationStore.getState().toggleRoofSection('sidewalls', true)
+    useQuotationStore.getState().setRoof({ sidewalls: [{ side: 'FRONT', wallType: 'BRICK', thickness: 0.2, height: 3 }] })
+    expect(useQuotationStore.getState().roof.sidewalls).toHaveLength(1)
+
+    useQuotationStore.getState().toggleRoofSection('sidewalls', false)
+    expect(useQuotationStore.getState().roof.sidewalls).toEqual([])
+  })
+
+  it('persists section flags to localStorage', () => {
+    useQuotationStore.getState().toggleRoofSection('coverings', true)
+    const persisted = JSON.parse(localStorage.getItem(STORAGE_KEY) ?? '{}')
+    expect(persisted.state.roofSectionsEnabled.coverings).toBe(true)
+  })
+
+  it('resetQuotation restores all section flags to disabled', () => {
+    useQuotationStore.getState().toggleRoofSection('windBracing', true)
+    useQuotationStore.getState().resetQuotation()
+    expect(useQuotationStore.getState().roofSectionsEnabled.windBracing).toBe(false)
+  })
+})
+
 describe('quotation-store per-user persistence scoping', () => {
   beforeEach(() => {
     localStorage.clear()

@@ -5,12 +5,14 @@ import { cn } from '@/lib/utils'
 
 interface NumberFieldProps {
   label: string
-  value: number
+  /** Current value; `undefined` renders an empty input (optional fields). */
+  value: number | undefined
   unit: string
   required: boolean
   error: boolean
   step?: number
-  onChange: (v: number) => void
+  /** Emits the parsed number, or `undefined` when the input is cleared. */
+  onChange: (v: number | undefined) => void
   className?: string
 }
 
@@ -18,7 +20,8 @@ interface NumberFieldProps {
  * A labelled numeric input with a unit suffix, a schema-driven required marker,
  * and an inline error — the numeric counterpart to {@link Field}. Composes the
  * shared {@link InputUnit} so the markup and error styling stay identical to the
- * Step 1 text fields.
+ * Step 1 text fields. Accepts/emits `undefined` so optional roof fields can be
+ * left blank (and omitted from the payload).
  */
 export function NumberField({
   label,
