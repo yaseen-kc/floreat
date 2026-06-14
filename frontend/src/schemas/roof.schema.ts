@@ -3,7 +3,7 @@
  * the frontend.
  *
  * Mirrors the backend `createRoofSchema` (backend/schemas/roof.schema.ts) field
- * for field: required core dimensions, optional structural sections, and the
+ * for field: required core dimensions, structural sections, and the
  * inline `sidewalls` array. Numeric fields are typed as `number` here (the
  * create/upsert payload), even though the `Roof` response serialises Prisma
  * `Decimal` columns back as `string`.
@@ -55,7 +55,7 @@ export const sidewallSchema = z.object({
  * Roof create/upsert payload.
  * ────────────────────────────────────────────────────────────────────────── */
 
-/** Schema for creating/upserting a roof — required core fields + optional sections. */
+/** Schema for creating/upserting a roof — required core fields + sections. */
 export const createRoofSchema = z.object({
   // ── Required core dimensions ──
   buildingOverallLength: z.number().positive(),
@@ -70,14 +70,14 @@ export const createRoofSchema = z.object({
   internalColumnsForEndRoofFrames: z.number().int().nonnegative(),
   roofFrameBaseFixing: roofFrameBaseFixingEnum,
 
-  // ── Optional members ──
+  // ── members ──
   columnSegmentsInMainFrame: z.number().int().nonnegative().optional(),
   raftersInOneHalfOfMainFrame: z.number().int().nonnegative().optional(),
   columnSegmentsInEndFrame: z.number().int().nonnegative().optional(),
   raftersInOneHalfOfEndFrame: z.number().int().nonnegative().optional(),
   endFrameHorizontalTieBeam: z.number().int().nonnegative().optional(),
 
-  // ── Optional purlin ──
+  // ── purlin ──
   roofPurlinType: purlinMaterialTypeEnum.optional(),
   roofPurlinDepth: z.number().positive().optional(),
   roofPurlinUnitWeight: z.number().positive().optional(),
@@ -85,24 +85,24 @@ export const createRoofSchema = z.object({
   claddingPurlinDepth: z.number().positive().optional(),
   claddingPurlinUnitWeight: z.number().positive().optional(),
 
-  // ── Optional covering ──
+  // ── covering ──
   roofCoveringType: coveringTypeEnum.optional(),
   roofCoveringThickness: z.number().positive().optional(),
   claddingCoveringType: coveringTypeEnum.optional(),
   claddingCoveringThickness: z.number().positive().optional(),
   roofAreaDeduction: z.number().nonnegative().optional(),
 
-  // ── Optional flange brace ──
+  // ── flange brace ──
   roofFlangeBraceAverageLength: z.number().positive().optional(),
   claddingFlangeBraceAverageLength: z.number().positive().optional(),
   endFrameFlangeBraceAverageLength: z.number().positive().optional(),
 
-  // ── Optional polycarbonate ──
+  // ── polycarbonate ──
   polycarbonateRoofLength: z.number().positive().optional(),
   polycarbonateRoofWidth: z.number().positive().optional(),
   polycarbonateRoofCount: z.number().int().nonnegative().optional(),
 
-  // ── Optional wind bracing ──
+  // ── wind bracing ──
   roofWindBracingSegmentsInOneHalf: z.number().int().nonnegative().optional(),
   columnWindBracingSegments: z.number().int().nonnegative().optional(),
   roofWindBracingProvidedBays: z.number().int().nonnegative().optional(),
@@ -115,17 +115,17 @@ export const createRoofSchema = z.object({
   columnWindBracingLength: z.number().positive().optional(),
   windBracingType: typeOfWindBracingEnum.optional(),
 
-  // ── Optional cladding opening ──
+  // ── cladding opening ──
   frontCladdingOpeningArea: z.number().nonnegative().optional(),
   backCladdingOpeningArea: z.number().nonnegative().optional(),
   rightCladdingOpeningArea: z.number().nonnegative().optional(),
   leftCladdingOpeningArea: z.number().nonnegative().optional(),
 
-  // ── Optional fascia board ──
+  // ── fascia board ──
   fasciaBoardArea: z.number().nonnegative().optional(),
   fasciaMaterialWeightPerSqft: z.number().positive().optional(),
 
-  // ── Optional side extension ──
+  // ── side extension ──
   roofExtensionWidthHeight: z.number().positive().optional(),
   roofExtensionMidFrameCount: z.number().int().nonnegative().optional(),
   roofExtensionEndFrameCount: z.number().int().nonnegative().optional(),
@@ -136,7 +136,7 @@ export const createRoofSchema = z.object({
   sideColumnsMidFrameCount: z.number().int().nonnegative().optional(),
   sideColumnsEndFrameCount: z.number().int().nonnegative().optional(),
 
-  // ── Optional material grade ──
+  // ── material grade ──
   gradeOfPlateMaterial: plateMaterialGradeEnum.optional(),
 
   // ── Inline sidewalls ──
@@ -145,3 +145,31 @@ export const createRoofSchema = z.object({
 
 /** Validated payload for creating/upserting a roof. */
 export type CreateRoofInput = z.infer<typeof createRoofSchema>
+
+/** A field key of the roof create/upsert contract. */
+export type RoofField = keyof CreateRoofInput
+
+/**
+ * Returns true when a field is required (i.e. an `undefined` value is rejected).
+ * Derived from the schema so the form's required markers can't drift — the core
+ * dimensions report `true`, every `.optional()` section field reports `false`.
+ */
+export function isRequired(field: RoofField): boolean {
+  return !createRoofSchema.shape[field].safeParse(undefined).success
+}
+
+/**
+ * Validates `input` and returns a map of field -> first error message.
+ * Returns an empty object when the input is valid.
+ */
+export function getFieldErrors(input: unknown): Partial<Record<RoofField, string>> {
+  const result = createRoofSchema.safeParse(input)
+  if (result.success) return {}
+
+  const errors: Partial<Record<RoofField, string>> = {}
+  for (const issue of result.error.issues) {
+    const key = issue.path[0] as RoofField | undefined
+    if (key && !errors[key]) errors[key] = issue.message
+  }
+  return errors
+}

@@ -1,16 +1,28 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import { jobSchema, type JobInput } from '@/schemas/job.schema'
+import { createRoofSchema, type CreateRoofInput } from '@/schemas/roof.schema'
 
 /** Step 1 project info — the canonical job contract (see job.schema.ts). */
 export type ProjectInfo = JobInput
 
+/**
+ * Step 2 roof draft. Mirrors the roof create contract but lets the required
+ * `roofFrameBaseFixing` enum start unselected (`''`) so the Select renders empty
+ * and validation flags it, exactly like the Step 1 string fields.
+ */
+export type RoofDraft = Omit<CreateRoofInput, 'roofFrameBaseFixing'> & {
+  roofFrameBaseFixing: CreateRoofInput['roofFrameBaseFixing'] | ''
+}
+
 interface QuotationState {
   currentStep: number
   projectInfo: ProjectInfo
+  roof: RoofDraft
   showValidation: boolean
   jobId: string | null
   setProjectInfo: (v: Partial<ProjectInfo>) => void
+  setRoof: (v: Partial<RoofDraft>) => void
   setJobId: (id: string | null) => void
   resetQuotation: () => void
   goStep: (n: number) => void
@@ -32,6 +44,25 @@ const createDefaultProjectInfo = (): ProjectInfo => ({
   frameType: '', configuration: '',
 })
 
+/**
+ * Factory for a fresh roof draft. The required core dimensions default to `0`
+ * (rejected by the schema's `.positive()`) and `roofFrameBaseFixing` starts
+ * unselected (`''`), so Step 2 is invalid until the user fills it in.
+ */
+const createDefaultRoof = (): RoofDraft => ({
+  buildingOverallLength: 0,
+  buildingOverallWidth: 0,
+  eaveHeight: 0,
+  roofSlope: 0,
+  mainRoofFrames: 0,
+  endRoofFrames: 0,
+  roofPurlinSpacing: 0,
+  claddingPurlins: 0,
+  internalColumnsForMainRoofFrames: 0,
+  internalColumnsForEndRoofFrames: 0,
+  roofFrameBaseFixing: '',
+})
+
 export const useQuotationStore = create<QuotationState>()(
   persist(
     (set, get) => ({
@@ -39,8 +70,11 @@ export const useQuotationStore = create<QuotationState>()(
       showValidation: false,
       jobId: null,
       projectInfo: createDefaultProjectInfo(),
+      roof: createDefaultRoof(),
 
       setProjectInfo: (v) => set((s) => ({ projectInfo: { ...s.projectInfo, ...v } })),
+
+      setRoof: (v) => set((s) => ({ roof: { ...s.roof, ...v } })),
 
       setJobId: (id) => set({ jobId: id }),
 
@@ -49,11 +83,13 @@ export const useQuotationStore = create<QuotationState>()(
         showValidation: false,
         jobId: null,
         projectInfo: createDefaultProjectInfo(),
+        roof: createDefaultRoof(),
       }),
 
       validateStep: (n) => {
         const s = get()
         if (n === 1) return jobSchema.safeParse(s.projectInfo).success
+        if (n === 2) return createRoofSchema.safeParse(s.roof).success
         return true
       },
 
@@ -78,7 +114,7 @@ export const useQuotationStore = create<QuotationState>()(
       // in-progress job resume (and re-use PUT) after a refresh instead of
       // creating a duplicate.
       skipHydration: true,
-      partialize: (s) => ({ projectInfo: s.projectInfo, currentStep: s.currentStep, jobId: s.jobId }),
+      partialize: (s) => ({ projectInfo: s.projectInfo, roof: s.roof, currentStep: s.currentStep, jobId: s.jobId }),
     }
   )
 )

@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest'
-import { createRoofSchema, sidewallSchema } from '@/schemas/roof.schema'
-import type { CreateRoofInput } from '@/schemas/roof.schema'
+import { createRoofSchema, sidewallSchema, isRequired, getFieldErrors } from '@/schemas/roof.schema'
+import type { CreateRoofInput, RoofField } from '@/schemas/roof.schema'
 
 /** The minimal set of required fields the backend `createRoofSchema` enforces. */
 const minimalRoof: CreateRoofInput = {
@@ -90,5 +90,57 @@ describe('sidewallSchema', () => {
       height: 3,
     })
     expect(result.success).toBe(false)
+  })
+})
+
+/** The 11 required core dimensions (roof.schema.ts lines 60–71). */
+const CORE_FIELDS: RoofField[] = [
+  'buildingOverallLength',
+  'buildingOverallWidth',
+  'eaveHeight',
+  'roofSlope',
+  'mainRoofFrames',
+  'endRoofFrames',
+  'roofPurlinSpacing',
+  'claddingPurlins',
+  'internalColumnsForMainRoofFrames',
+  'internalColumnsForEndRoofFrames',
+  'roofFrameBaseFixing',
+]
+
+describe('isRequired', () => {
+  it('reports every core dimension as required', () => {
+    for (const field of CORE_FIELDS) {
+      expect(isRequired(field)).toBe(true)
+    }
+  })
+
+  it('reports optional section fields as not required', () => {
+    expect(isRequired('roofPurlinDepth')).toBe(false)
+    expect(isRequired('windBracingType')).toBe(false)
+    expect(isRequired('sidewalls')).toBe(false)
+  })
+})
+
+describe('getFieldErrors', () => {
+  it('returns no errors for a valid core payload', () => {
+    expect(getFieldErrors(minimalRoof)).toEqual({})
+  })
+
+  it('flags every core field when given an empty object', () => {
+    const errors = getFieldErrors({})
+    for (const field of CORE_FIELDS) {
+      expect(errors[field]).toBeDefined()
+    }
+  })
+
+  it('flags a non-positive core dimension', () => {
+    const errors = getFieldErrors({ ...minimalRoof, eaveHeight: 0 })
+    expect(errors.eaveHeight).toBeDefined()
+  })
+
+  it('does not flag optional fields that are absent', () => {
+    const errors = getFieldErrors(minimalRoof)
+    expect(errors.roofPurlinDepth).toBeUndefined()
   })
 })

@@ -107,7 +107,6 @@ model Roof {
   claddingPurlins       Int
   internalColumnsForMainRoofFrames Int
   internalColumnsForEndRoofFrames  Int
-  roofFrameBaseFixing   RoofFrameBaseFixing
 
   // ── Members ──────────────────────────────────
   columnSegmentsInMainFrame   Int?
@@ -183,6 +182,10 @@ model Roof {
 
   // ── Only real 1-to-many stays separate ──────────────────────
   sidewalls Sidewall[]
+
+  // Base Fixing
+  roofFrameBaseFixing   RoofFrameBaseFixing
+
 }
 
 model Sidewall {

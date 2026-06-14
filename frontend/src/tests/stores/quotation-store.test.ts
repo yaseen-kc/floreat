@@ -111,6 +111,72 @@ describe('quotation-store step 1 validation', () => {
   })
 })
 
+describe('quotation-store step 2 roof slice', () => {
+  /** Fills the 11 required core dimensions so step 2 is valid. */
+  const fillCoreDimensions = () =>
+    useQuotationStore.getState().setRoof({
+      buildingOverallLength: 100,
+      buildingOverallWidth: 50,
+      eaveHeight: 6,
+      roofSlope: 10,
+      mainRoofFrames: 5,
+      endRoofFrames: 2,
+      roofPurlinSpacing: 1.5,
+      claddingPurlins: 4,
+      internalColumnsForMainRoofFrames: 0,
+      internalColumnsForEndRoofFrames: 0,
+      roofFrameBaseFixing: 'FOUNDATION_BOLT',
+    })
+
+  beforeEach(() => {
+    localStorage.clear()
+    useQuotationStore.getState().resetQuotation()
+  })
+
+  it('defaults roof to zeroed dimensions and an unselected fixing', () => {
+    const { roof } = useQuotationStore.getState()
+    expect(roof.eaveHeight).toBe(0)
+    expect(roof.roofFrameBaseFixing).toBe('')
+  })
+
+  it('setRoof merges partial patches', () => {
+    useQuotationStore.getState().setRoof({ eaveHeight: 6 })
+    useQuotationStore.getState().setRoof({ buildingOverallLength: 100 })
+    const { roof } = useQuotationStore.getState()
+    expect(roof.eaveHeight).toBe(6)
+    expect(roof.buildingOverallLength).toBe(100)
+  })
+
+  it('validateStep(2) is invalid by default', () => {
+    expect(useQuotationStore.getState().validateStep(2)).toBe(false)
+  })
+
+  it('validateStep(2) is valid once every core dimension is filled', () => {
+    fillCoreDimensions()
+    expect(useQuotationStore.getState().validateStep(2)).toBe(true)
+  })
+
+  it('validateStep(2) is invalid when the fixing is unselected', () => {
+    fillCoreDimensions()
+    useQuotationStore.getState().setRoof({ roofFrameBaseFixing: '' })
+    expect(useQuotationStore.getState().validateStep(2)).toBe(false)
+  })
+
+  it('persists the roof draft to localStorage', () => {
+    useQuotationStore.getState().setRoof({ eaveHeight: 7 })
+    const persisted = JSON.parse(localStorage.getItem(STORAGE_KEY) ?? '{}')
+    expect(persisted.state.roof.eaveHeight).toBe(7)
+  })
+
+  it('resetQuotation restores roof defaults', () => {
+    fillCoreDimensions()
+    useQuotationStore.getState().resetQuotation()
+    const { roof } = useQuotationStore.getState()
+    expect(roof.eaveHeight).toBe(0)
+    expect(roof.roofFrameBaseFixing).toBe('')
+  })
+})
+
 describe('quotation-store per-user persistence scoping', () => {
   beforeEach(() => {
     localStorage.clear()
