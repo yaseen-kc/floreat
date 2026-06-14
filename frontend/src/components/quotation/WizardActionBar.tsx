@@ -9,7 +9,7 @@ import { ArrowLeft, ArrowRight, Check, Save } from 'lucide-react'
 const STEP_NAMES = ['', 'Project Info', 'Structural Inputs', 'Calc Engine', 'Pricing', 'Review']
 
 export function WizardActionBar() {
-  const { currentStep, nextStep, prevStep, validateStep, projectInfo, jobId, setJobId, resetQuotation } = useQuotationStore()
+  const { currentStep, nextStep, prevStep, validateStep, goStep, projectInfo, jobId, setJobId, resetQuotation } = useQuotationStore()
   const toast = useToast((s) => s.show)
   const navigate = useNavigate()
   const createJob = useCreateJob()
@@ -20,33 +20,65 @@ export function WizardActionBar() {
   /**
    * Persists Step 1 data. Creates the job once (POST) and stores its id;
    * on subsequent calls the existing job is updated (PUT) to avoid duplicates.
+   * Resolves on success and rejects on failure so callers can gate navigation.
    */
-  const submitJob = () => {
-    if (isSubmitting) return
-    if (jobId) {
-      updateJob.mutate({ id: jobId, ...projectInfo }, {
-        onSuccess: () => toast('Job updated successfully'),
-        onError: () => toast('Failed to update job'),
-      })
-    } else {
-      createJob.mutate(projectInfo, {
-        onSuccess: (job) => { setJobId(job.id); toast('Job created successfully'); navigate('/') },
-        onError: () => toast('Failed to create job'),
-      })
+  const submitJob = async () => {
+    try {
+      if (jobId) {
+        await updateJob.mutateAsync({ id: jobId, ...projectInfo })
+        toast('Job updated successfully')
+      } else {
+        const job = await createJob.mutateAsync(projectInfo)
+        setJobId(job.id)
+        toast('Job created successfully')
+      }
+    } catch (err) {
+      toast(jobId ? 'Failed to update job' : 'Failed to create job')
+      throw err
     }
   }
 
-  const handleNext = () => {
-    const ok = nextStep()
-    if (!ok) { toast('Please complete the required fields'); return }
-    if (currentStep === 1) { submitJob(); return }
-    if (isLast) { toast('Quotation finalised & saved'); resetQuotation(); navigate('/') }
+  /** Validates Step 1; flags the form and toasts when incomplete. */
+  const ensureStep1Valid = () => {
+    if (validateStep(1)) return true
+    useQuotationStore.setState({ showValidation: true })
+    toast('Please complete the required fields')
+    return false
   }
 
-  const handleSaveDraft = () => {
+  const handleNext = async () => {
+    if (isSubmitting) return
+
+    // Step 1: validate, persist, then advance only if persistence succeeds.
     if (currentStep === 1) {
-      if (!validateStep(1)) { useQuotationStore.setState({ showValidation: true }); toast('Please complete the required fields'); return }
-      submitJob()
+      if (!ensureStep1Valid()) return
+      try {
+        await submitJob()
+        goStep(2)
+      } catch {
+        // Error toast already shown; stay on Step 1.
+      }
+      return
+    }
+
+    // Final step: finalise and return to the dashboard.
+    if (isLast) {
+      if (!validateStep(currentStep)) { toast('Please complete the required fields'); return }
+      toast('Quotation finalised & saved')
+      resetQuotation()
+      navigate('/')
+      return
+    }
+
+    // Intermediate steps: validation-driven advance (persistence is future work).
+    if (!nextStep()) toast('Please complete the required fields')
+  }
+
+  const handleSaveDraft = async () => {
+    if (isSubmitting) return
+    if (currentStep === 1) {
+      if (!ensureStep1Valid()) return
+      try { await submitJob() } catch { /* error toast already shown */ }
     } else {
       toast('Draft saved')
     }

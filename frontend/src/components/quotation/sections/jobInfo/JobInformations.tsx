@@ -4,46 +4,61 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { CircleAlert, Users } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { isRequired, getFieldErrors, type JobInput, type JobField } from '@/schemas/job.schema'
+
+/** Text fields handled by this section (everything except numberOfBuilding). */
+type TextField = Exclude<JobField, 'numberOfBuilding'>
 
 export function JobInformations() {
   const { projectInfo, setProjectInfo, showValidation } = useQuotationStore()
+  const errors = showValidation ? getFieldErrors(projectInfo) : {}
 
-  const err = (v: string) => showValidation && !v.trim()
+  // Required markers and error states are derived from the schema (SSOT) so the
+  // form can never disagree with what the backend actually requires.
+  const fieldProps = (name: TextField, label: string) => ({
+    label,
+    required: isRequired(name),
+    value: projectInfo[name],
+    error: Boolean(errors[name]),
+    onChange: (v: string) => setProjectInfo({ [name]: v } as Partial<JobInput>),
+  })
 
   return (
     <SectionCard icon={<Users className="w-3.5 h-3.5" />} title="Job Information">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-[18px]">
-        <Field label="Project No" value={projectInfo.projectNo} error={err(projectInfo.projectNo)} onChange={(v) => setProjectInfo({ projectNo: v })} />
-        <Field label="Ref No" value={projectInfo.refNo} error={err(projectInfo.refNo)} onChange={(v) => setProjectInfo({ refNo: v })} />
+        <Field {...fieldProps('projectNo', 'Project No')} />
+        <Field {...fieldProps('refNo', 'Ref No')} />
 
         <div className="md:col-span-2">
-          <Field label="Subject" value={projectInfo.subject} error={err(projectInfo.subject)} onChange={(v) => setProjectInfo({ subject: v })} />
+          <Field {...fieldProps('subject', 'Subject')} />
         </div>
 
-        <Field label="Client Name" value={projectInfo.clientName} error={err(projectInfo.clientName)} onChange={(v) => setProjectInfo({ clientName: v })} />
+        <Field {...fieldProps('clientName', 'Client Name')} />
         <div>
-          <Label>Date <span className="text-destructive">*</span></Label>
-          <Input type="date" value={projectInfo.date} onChange={(e) => setProjectInfo({ date: e.target.value })} className={cn(err(projectInfo.date) && 'border-destructive')} />
-          {err(projectInfo.date) && <ErrMsg>Date is required</ErrMsg>}
+          <Label>Date {isRequired('date') && <span className="text-destructive">*</span>}</Label>
+          <Input type="date" value={projectInfo.date} onChange={(e) => setProjectInfo({ date: e.target.value })} className={cn(errors.date && 'border-destructive')} />
+          {errors.date && <ErrMsg>Date is required</ErrMsg>}
         </div>
 
-        <Field label="Designed By (Name)" value={projectInfo.designedByName} error={err(projectInfo.designedByName)} onChange={(v) => setProjectInfo({ designedByName: v })} />
-        <Field label="Designed By (Mobile)" value={projectInfo.designedByMobile} error={err(projectInfo.designedByMobile)} onChange={(v) => setProjectInfo({ designedByMobile: v })} />
+        <Field {...fieldProps('designedByName', 'Designed By (Name)')} />
+        <Field {...fieldProps('designedByMobile', 'Designed By (Mobile)')} />
 
-        <Field label="Estimation Engineer (Name)" value={projectInfo.estimationEngineerName} error={err(projectInfo.estimationEngineerName)} onChange={(v) => setProjectInfo({ estimationEngineerName: v })} />
-        <Field label="Estimation Engineer (Mobile)" value={projectInfo.estimationEngineerMobile} error={err(projectInfo.estimationEngineerMobile)} onChange={(v) => setProjectInfo({ estimationEngineerMobile: v })} />
+        <Field {...fieldProps('estimationEngineerName', 'Estimation Engineer (Name)')} />
+        <Field {...fieldProps('estimationEngineerMobile', 'Estimation Engineer (Mobile)')} />
 
-        <Field label="Head of Sales (Name)" value={projectInfo.headOfSalesName} error={err(projectInfo.headOfSalesName)} onChange={(v) => setProjectInfo({ headOfSalesName: v })} />
-        <Field label="Head of Sales (Mobile)" value={projectInfo.headOfSalesMobile} error={err(projectInfo.headOfSalesMobile)} onChange={(v) => setProjectInfo({ headOfSalesMobile: v })} />
+        <Field {...fieldProps('headOfSalesName', 'Head of Sales (Name)')} />
+        <Field {...fieldProps('headOfSalesMobile', 'Head of Sales (Mobile)')} />
+
+        <Field {...fieldProps('firmName', 'Firm Name')} />
       </div>
     </SectionCard>
   )
 }
 
-function Field({ label, value, error, onChange }: { label: string; value: string; error: boolean; onChange: (v: string) => void }) {
+function Field({ label, value, error, required, onChange }: { label: string; value: string; error: boolean; required: boolean; onChange: (v: string) => void }) {
   return (
     <div>
-      <Label>{label} <span className="text-destructive">*</span></Label>
+      <Label>{label} {required && <span className="text-destructive">*</span>}</Label>
       <Input value={value} onChange={(e) => onChange(e.target.value)} className={cn(error && 'border-destructive')} />
       {error && <ErrMsg>{label} is required</ErrMsg>}
     </div>

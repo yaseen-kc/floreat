@@ -1,26 +1,12 @@
-import { useMutation } from '@tanstack/react-query'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useAuth } from '@clerk/react'
 import { apiFetch } from '@/lib/api'
+import type { JobInput } from '@/schemas/job.schema'
 import type { Job } from './getJobs'
+import { jobKeys } from './queryKeys'
 
-export interface UpdateJobPayload {
-  projectNo: string
-  subject: string
-  refNo: string
-  date: string
-  designedByName: string
-  designedByMobile: string
-  clientName?: string
-  estimationEngineerName?: string
-  estimationEngineerMobile?: string
-  headOfSalesName?: string
-  headOfSalesMobile?: string
-  firmName?: string
-  buildingUsage: string
-  numberOfBuilding: number
-  frameType: string
-  configuration: string
-}
+/** Payload for updating a job — partial of the canonical job contract. */
+export type UpdateJobPayload = Partial<JobInput>
 
 export async function updateJob(
   token: string | null,
@@ -35,10 +21,15 @@ export async function updateJob(
 
 export function useUpdateJob() {
   const { getToken } = useAuth()
+  const queryClient = useQueryClient()
   return useMutation({
     mutationFn: async ({ id, ...payload }: { id: string } & UpdateJobPayload) => {
       const token = await getToken()
       return updateJob(token, id, payload)
+    },
+    onSuccess: (_data, { id }) => {
+      queryClient.invalidateQueries({ queryKey: jobKeys.lists() })
+      queryClient.invalidateQueries({ queryKey: jobKeys.detail(id) })
     },
   })
 }

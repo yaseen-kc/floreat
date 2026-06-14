@@ -1,4 +1,7 @@
 import { apiFetch } from '@/lib/api'
+import { useQuery } from '@tanstack/react-query'
+import { useAuth } from '@clerk/react'
+import { jobKeys } from './queryKeys'
 
 /** Shape of a single Job returned by the backend. */
 export interface Job {
@@ -41,4 +44,19 @@ export async function getJobs(
   pageSize = 10,
 ): Promise<GetJobsResponse> {
   return await apiFetch(`/api/jobs?page=${page}&pageSize=${pageSize}`, token)
+}
+
+/**
+ * React Query hook for a paginated jobs list. Uses the shared `jobKeys`
+ * factory so mutations can invalidate it reliably.
+ */
+export function useJobs(page = 1, pageSize = 10) {
+  const { getToken } = useAuth()
+  return useQuery({
+    queryKey: jobKeys.list(page, pageSize),
+    queryFn: async () => {
+      const token = await getToken()
+      return getJobs(token, page, pageSize)
+    },
+  })
 }

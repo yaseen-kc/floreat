@@ -1,27 +1,12 @@
-import { useMutation } from '@tanstack/react-query'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useAuth } from '@clerk/react'
 import { apiFetch } from '@/lib/api'
+import type { JobInput } from '@/schemas/job.schema'
 import type { Job } from './getJobs'
+import { jobKeys } from './queryKeys'
 
-/** Payload for creating a new job (matches backend createJobSchema). */
-export interface CreateJobPayload {
-  projectNo: string
-  subject: string
-  refNo: string
-  date: string
-  designedByName: string
-  designedByMobile: string
-  clientName?: string
-  estimationEngineerName?: string
-  estimationEngineerMobile?: string
-  headOfSalesName?: string
-  headOfSalesMobile?: string
-  firmName?: string
-  buildingUsage: string
-  numberOfBuilding: number
-  frameType: string
-  configuration: string
-}
+/** Payload for creating a new job — the canonical job contract. */
+export type CreateJobPayload = JobInput
 
 /**
  * Creates a new job via POST /api/jobs.
@@ -39,10 +24,14 @@ export async function createJob(
 
 export function useCreateJob() {
   const { getToken } = useAuth()
+  const queryClient = useQueryClient()
   return useMutation({
     mutationFn: async (payload: CreateJobPayload) => {
       const token = await getToken()
       return createJob(token, payload)
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: jobKeys.lists() })
     },
   })
 }

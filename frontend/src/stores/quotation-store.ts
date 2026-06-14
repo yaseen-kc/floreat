@@ -1,23 +1,9 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
+import { jobSchema, type JobInput } from '@/schemas/job.schema'
 
-export interface ProjectInfo {
-  projectNo: string
-  subject: string
-  refNo: string
-  date: string
-  designedByName: string
-  designedByMobile: string
-  clientName: string
-  estimationEngineerName: string
-  estimationEngineerMobile: string
-  headOfSalesName: string
-  headOfSalesMobile: string
-  buildingUsage: string
-  numberOfBuilding: number
-  frameType: string
-  configuration: string
-}
+/** Step 1 project info — the canonical job contract (see job.schema.ts). */
+export type ProjectInfo = JobInput
 
 interface QuotationState {
   currentStep: number
@@ -41,6 +27,7 @@ const createDefaultProjectInfo = (): ProjectInfo => ({
   clientName: '',
   estimationEngineerName: '', estimationEngineerMobile: '',
   headOfSalesName: '', headOfSalesMobile: '',
+  firmName: '',
   buildingUsage: '', numberOfBuilding: 0,
   frameType: '', configuration: '',
 })
@@ -66,10 +53,7 @@ export const useQuotationStore = create<QuotationState>()(
 
       validateStep: (n) => {
         const s = get()
-        if (n === 1) {
-          const p = s.projectInfo
-          return [p.projectNo, p.subject, p.refNo, p.date, p.designedByName, p.designedByMobile, p.clientName, p.estimationEngineerName, p.estimationEngineerMobile, p.headOfSalesName, p.headOfSalesMobile, p.buildingUsage, p.frameType, p.configuration].every(f => f.trim() !== '') && p.numberOfBuilding > 0
-        }
+        if (n === 1) return jobSchema.safeParse(s.projectInfo).success
         return true
       },
 
@@ -84,6 +68,13 @@ export const useQuotationStore = create<QuotationState>()(
 
       prevStep: () => { const s = get(); if (s.currentStep > 1) set({ currentStep: s.currentStep - 1, showValidation: false }) },
     }),
-    { name: 'strukt:draft' }
+    {
+      name: 'strukt:draft',
+      version: 1,
+      // Persist only the in-progress draft. `jobId` is deliberately excluded so
+      // a stale id can't leak across sessions (or to another user on a shared
+      // machine) and re-attach new edits to someone else's job.
+      partialize: (s) => ({ projectInfo: s.projectInfo, currentStep: s.currentStep }),
+    }
   )
 )
