@@ -11,5 +11,12 @@ export async function apiFetch(path: string, token: string | null, options?: Req
     headers: { ...headers, ...options?.headers },
   })
   if (!res.ok) throw new Error(`API error: ${res.status}`)
-  return res.json()
+
+  // 204 No Content (e.g. DELETE) and other empty-body responses have no JSON
+  // to parse — return null instead of throwing on an empty body.
+  if (res.status === 204 || res.headers.get('Content-Length') === '0') return null
+
+  const text = await res.text()
+  if (!text) return null
+  return JSON.parse(text)
 }
