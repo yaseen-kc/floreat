@@ -42,7 +42,8 @@ model Job {
   createdAt                DateTime @default(now())
   updatedAt                DateTime @updatedAt
 
-  roof Roof?
+  roof      Roof?
+  mezzanine Mezzanine?
 }
 
 // ── Enums ─────────────────────────────────────────
@@ -204,4 +205,112 @@ model Sidewall {
   height    Decimal      @db.Decimal(10, 3)
 
   @@unique([roofId, side])
+}
+
+// ── Mezzanine Enums ───────────────────────────────
+
+enum MezzanineType {
+  DECK_SHEET   @map("DECK SHEET")
+  FOLDED_PLATE @map("FOLDED PLATE")
+  PANEL
+  BOARD
+  RCC_SLAB     @map("RCC SLAB")
+}
+
+enum MezzanineFloorLevel {
+  FLOOR_1  @map("1st Floor")
+  FLOOR_2  @map("2nd Floor")
+  FLOOR_3  @map("3rd Floor")
+  FLOOR_4  @map("4th Floor")
+  FLOOR_5  @map("5th Floor")
+  FLOOR_6  @map("6th Floor")
+  FLOOR_7  @map("7th Floor")
+  FLOOR_8  @map("8th Floor")
+  FLOOR_9  @map("9th Floor")
+  FLOOR_10 @map("10th Floor")
+}
+
+enum MezzanineHeightFrom {
+  GROUND      @map("Ground")
+  FIRST_FLOOR @map("First Floor")
+  FLOOR_2     @map("2nd Floor")
+  FLOOR_3     @map("3rd Floor")
+  FLOOR_4     @map("4th Floor")
+  FLOOR_5     @map("5th Floor")
+}
+
+// ── Mezzanine Models ──────────────────────────────
+
+model Mezzanine {
+  id    String @id @default(cuid())
+  jobId String @unique
+  job   Job    @relation(fields: [jobId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  floors     MezzanineFloor[]
+  extensions MezzanineFloorExtension[]
+}
+
+model MezzanineFloor {
+  id          String    @id @default(cuid())
+  mezzanineId String
+  mezzanine   Mezzanine @relation(fields: [mezzanineId], references: [id], onDelete: Cascade)
+
+  code       String
+  floor      MezzanineFloorLevel
+  type       MezzanineType
+  heightFrom MezzanineHeightFrom
+
+  // ── Dimensions ──
+  thicknessMm                  Decimal @db.Decimal(10, 3)
+  lengthM                      Decimal @db.Decimal(10, 3)
+  widthM                       Decimal @db.Decimal(10, 3)
+  heightM                      Decimal @db.Decimal(10, 3)
+  materialConsumptionKgPerSqft Decimal @db.Decimal(10, 3)
+
+  // ── Beams ──
+  beamsMidPrimary Int
+  beamsEndPrimary Int
+  beamsSecondary  Int
+
+  // ── Joints in beams ──
+  jointsMidPrimary Int
+  jointsEndPrimary Int
+
+  // ── Internal columns ──
+  internalColumnsMidPrimary Int
+  internalColumnsEndPrimary Int
+
+  @@unique([mezzanineId, code])
+}
+
+model MezzanineFloorExtension {
+  id          String    @id @default(cuid())
+  mezzanineId String
+  mezzanine   Mezzanine @relation(fields: [mezzanineId], references: [id], onDelete: Cascade)
+
+  type       MezzanineType
+  heightFrom MezzanineHeightFrom
+  typicalTo  MezzanineFloorLevel
+
+  // ── Dimensions ──
+  thicknessMm Decimal? @db.Decimal(10, 3)
+  lengthM     Decimal @db.Decimal(10, 3)
+  widthM      Decimal @db.Decimal(10, 3)
+  heightM     Decimal @db.Decimal(10, 3)
+
+  // ── Beams ──
+  beamsMidPrimary Int?
+  beamsEndPrimary Int?
+  beamsSecondary  Int?
+
+  // ── Joints in beams ──
+  jointsMidPrimary Int?
+  jointsEndPrimary Int?
+
+  // ── Extended columns ──
+  extendedColumnsMidPrimary Int?
+  extendedColumnsEndPrimary Int?
 }
