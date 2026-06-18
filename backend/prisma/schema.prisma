@@ -291,6 +291,7 @@ model MezzanineFloorExtension {
   mezzanineId String
   mezzanine   Mezzanine @relation(fields: [mezzanineId], references: [id], onDelete: Cascade)
 
+  floor      MezzanineFloorLevel?
   type       MezzanineType?
   heightFrom MezzanineHeightFrom?
   typicalTo  MezzanineFloorLevel?
