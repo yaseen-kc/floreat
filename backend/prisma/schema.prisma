@@ -258,30 +258,30 @@ model MezzanineFloor {
   mezzanineId String
   mezzanine   Mezzanine @relation(fields: [mezzanineId], references: [id], onDelete: Cascade)
 
-  code       String
-  floor      MezzanineFloorLevel
-  type       MezzanineType
-  heightFrom MezzanineHeightFrom
+  code       String?
+  floor      MezzanineFloorLevel?
+  type       MezzanineType?
+  heightFrom MezzanineHeightFrom?
 
   // ── Dimensions ──
-  thicknessMm                  Decimal @db.Decimal(10, 3)
-  lengthM                      Decimal @db.Decimal(10, 3)
-  widthM                       Decimal @db.Decimal(10, 3)
-  heightM                      Decimal @db.Decimal(10, 3)
-  materialConsumptionKgPerSqft Decimal @db.Decimal(10, 3)
+  thicknessMm                  Decimal? @db.Decimal(10, 3)
+  lengthM                      Decimal? @db.Decimal(10, 3)
+  widthM                       Decimal? @db.Decimal(10, 3)
+  heightM                      Decimal? @db.Decimal(10, 3)
+  materialConsumptionKgPerSqft Decimal? @db.Decimal(10, 3)
 
   // ── Beams ──
-  beamsMidPrimary Int
-  beamsEndPrimary Int
-  beamsSecondary  Int
+  beamsMidPrimary Int?
+  beamsEndPrimary Int?
+  beamsSecondary  Int?
 
   // ── Joints in beams ──
-  jointsMidPrimary Int
-  jointsEndPrimary Int
+  jointsMidPrimary Int?
+  jointsEndPrimary Int?
 
   // ── Internal columns ──
-  internalColumnsMidPrimary Int
-  internalColumnsEndPrimary Int
+  internalColumnsMidPrimary Int?
+  internalColumnsEndPrimary Int?
 
   @@unique([mezzanineId, code])
 }
@@ -291,15 +291,15 @@ model MezzanineFloorExtension {
   mezzanineId String
   mezzanine   Mezzanine @relation(fields: [mezzanineId], references: [id], onDelete: Cascade)
 
-  type       MezzanineType
-  heightFrom MezzanineHeightFrom
-  typicalTo  MezzanineFloorLevel
+  type       MezzanineType?
+  heightFrom MezzanineHeightFrom?
+  typicalTo  MezzanineFloorLevel?
 
   // ── Dimensions ──
   thicknessMm Decimal? @db.Decimal(10, 3)
-  lengthM     Decimal @db.Decimal(10, 3)
-  widthM      Decimal @db.Decimal(10, 3)
-  heightM     Decimal @db.Decimal(10, 3)
+  lengthM     Decimal? @db.Decimal(10, 3)
+  widthM      Decimal? @db.Decimal(10, 3)
+  heightM     Decimal? @db.Decimal(10, 3)
 
   // ── Beams ──
   beamsMidPrimary Int?

@@ -1,25 +1,41 @@
 /**
- * Zod validation schemas for Mezzanine API request payloads.
- * Handles the Mezzanine container plus inline floors and floor-extensions arrays.
+ * Single source of truth for the Mezzanine request contract on the frontend.
+ *
+ * Mirrors the backend `createMezzanineSchema`
+ * (backend/schemas/mezzanine.schema.ts) exactly: the inline `floors` and
+ * `extensions` arrays are both optional, and every floor and extension field is
+ * optional as well.
+ *
+ * Numeric fields are typed as `number` here (the create/upsert payload), even
+ * though the `Mezzanine` response serialises Prisma `Decimal` columns back as
+ * `string` (see `getMezz.ts`).
  */
 import { z } from 'zod'
 
+/* ──────────────────────────────────────────────────────────────────────────
+ * Enums — mirror the backend Prisma enums (string literals over the wire).
+ * ────────────────────────────────────────────────────────────────────────── */
+
 /** Valid mezzanine deck/slab construction types. */
-const mezzanineTypeEnum = z.enum(['DECK_SHEET', 'FOLDED_PLATE', 'PANEL', 'BOARD', 'RCC_SLAB'])
+export const mezzanineTypeEnum = z.enum(['DECK_SHEET', 'FOLDED_PLATE', 'PANEL', 'BOARD', 'RCC_SLAB'])
 
 /** Valid mezzanine floor levels (1st through 10th). */
-const mezzanineFloorLevelEnum = z.enum([
+export const mezzanineFloorLevelEnum = z.enum([
   'FLOOR_1', 'FLOOR_2', 'FLOOR_3', 'FLOOR_4', 'FLOOR_5',
   'FLOOR_6', 'FLOOR_7', 'FLOOR_8', 'FLOOR_9', 'FLOOR_10',
 ])
 
 /** Valid reference levels a mezzanine height is measured from. */
-const mezzanineHeightFromEnum = z.enum(['GROUND', 'FIRST_FLOOR', 'FLOOR_2', 'FLOOR_3', 'FLOOR_4', 'FLOOR_5'])
+export const mezzanineHeightFromEnum = z.enum(['GROUND', 'FIRST_FLOOR', 'FLOOR_2', 'FLOOR_3', 'FLOOR_4', 'FLOOR_5'])
 
 /** Business code identifier for a floor, e.g. "MEZ-1". */
-const mezzanineCode = z.string().regex(/^MEZ-[1-9][0-9]*$/, 'code must match MEZ-<n> (e.g. MEZ-1)')
+export const mezzanineCode = z.string().regex(/^MEZ-[1-9][0-9]*$/, 'code must match MEZ-<n> (e.g. MEZ-1)')
 
-/** Schema for an individual mezzanine floor — all fields optional (section is optional). */
+/* ──────────────────────────────────────────────────────────────────────────
+ * Floor — a single inline mezzanine floor. All fields optional (mirrors backend).
+ * ────────────────────────────────────────────────────────────────────────── */
+
+/** Schema for an individual mezzanine floor — all fields optional. */
 export const mezzanineFloorSchema = z.object({
   code: mezzanineCode.optional(),
   floor: mezzanineFloorLevelEnum.optional(),
@@ -47,6 +63,10 @@ export const mezzanineFloorSchema = z.object({
   internalColumnsEndPrimary: z.number().int().nonnegative().optional(),
 })
 
+/* ──────────────────────────────────────────────────────────────────────────
+ * Floor extension — all fields optional (mirrors the backend Prisma model).
+ * ────────────────────────────────────────────────────────────────────────── */
+
 /** Schema for a mezzanine floor extension — all fields optional. */
 export const mezzanineFloorExtensionSchema = z.object({
   type: mezzanineTypeEnum.optional(),
@@ -73,6 +93,10 @@ export const mezzanineFloorExtensionSchema = z.object({
   extendedColumnsEndPrimary: z.number().int().nonnegative().optional(),
 })
 
+/* ──────────────────────────────────────────────────────────────────────────
+ * Mezzanine create / update payloads.
+ * ────────────────────────────────────────────────────────────────────────── */
+
 /** Schema for creating/upserting a mezzanine — inline floors and extensions. */
 export const createMezzanineSchema = z.object({
   floors: z.array(mezzanineFloorSchema).optional(),
@@ -87,9 +111,3 @@ export type CreateMezzanineInput = z.infer<typeof createMezzanineSchema>
 
 /** Validated payload for updating a mezzanine (all fields optional). */
 export type UpdateMezzanineInput = z.infer<typeof updateMezzanineSchema>
-
-/** Schema for pagination query params with sensible defaults. */
-export const paginationSchema = z.object({
-  page: z.coerce.number().int().positive().default(1),
-  pageSize: z.coerce.number().int().positive().max(100).default(10),
-})

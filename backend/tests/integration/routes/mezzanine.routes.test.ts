@@ -67,9 +67,9 @@ describe('Mezzanine routes integration', () => {
       expect(res.statusCode).toBe(400)
     })
 
-    it('rejects a floor missing a required count', async () => {
+    it('rejects a floor with a negative count', async () => {
       const floor: any = makeMezzanineFloor()
-      delete floor.beamsSecondary
+      floor.beamsSecondary = -1
       const res = await app.inject({
         method: 'POST', url: '/api/jobs/job-1/mezzanine',
         payload: { floors: [floor] },
