@@ -13,7 +13,7 @@ export interface WizardStep {
 export const STEPS: WizardStep[] = [
   { label: 'Project Info', sub: 'CLIENT & SITE' },
   { label: 'Structural Inputs', sub: 'GEOMETRY' },
-  { label: 'Calc Engine', sub: 'FORMULAS' },
+  { label: 'Mezzanine', sub: 'FLOORS' },
   { label: 'Pricing', sub: 'COST BREAKDOWN' },
   { label: 'Review', sub: 'GENERATE' },
 ]

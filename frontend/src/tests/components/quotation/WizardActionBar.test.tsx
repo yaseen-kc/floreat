@@ -9,6 +9,8 @@ const mocks = vi.hoisted(() => ({
   createMutateAsync: vi.fn(),
   updateMutateAsync: vi.fn(),
   upsertRoofMutateAsync: vi.fn(),
+  upsertMezzMutateAsync: vi.fn(),
+  deleteMezzMutateAsync: vi.fn(),
   createPending: false,
   updatePending: false,
   upsertRoofPending: false,
@@ -32,6 +34,14 @@ vi.mock('@/api/quotation/jobs/putJobs', () => ({
 
 vi.mock('@/api/quotation/roof/postRoof', () => ({
   useUpsertRoof: () => ({ mutateAsync: mocks.upsertRoofMutateAsync, isPending: mocks.upsertRoofPending }),
+}))
+
+vi.mock('@/api/quotation/mezz/postMezz', () => ({
+  useUpsertMezzanine: () => ({ mutateAsync: mocks.upsertMezzMutateAsync, isPending: false }),
+}))
+
+vi.mock('@/api/quotation/mezz/deleteMezz', () => ({
+  useDeleteMezzanine: () => ({ mutateAsync: mocks.deleteMezzMutateAsync, isPending: false }),
 }))
 
 import { WizardActionBar } from '@/components/quotation/WizardActionBar'
@@ -201,5 +211,57 @@ describe('WizardActionBar Step 2 roof persistence', () => {
 
     await waitFor(() => expect(mocks.upsertRoofMutateAsync).toHaveBeenCalledTimes(1))
     expect(useQuotationStore.getState().currentStep).toBe(2)
+  })
+})
+
+describe('WizardActionBar Step 3 mezzanine persistence', () => {
+  beforeEach(() => {
+    localStorage.clear()
+    useQuotationStore.getState().resetQuotation()
+    mocks.navigate.mockReset()
+    mocks.toastSuccess.mockReset()
+    mocks.toastError.mockReset()
+    mocks.upsertMezzMutateAsync.mockReset()
+    mocks.deleteMezzMutateAsync.mockReset()
+    useQuotationStore.getState().setJobId('job-1')
+    useQuotationStore.setState({ currentStep: 3 })
+  })
+
+  it('upserts the mezzanine and advances to step 4 when the toggle is on', async () => {
+    mocks.upsertMezzMutateAsync.mockResolvedValueOnce({ id: 'mezz-1' })
+    useQuotationStore.getState().setHasMezzanine(true)
+    useQuotationStore.getState().setMezzanine({ floors: [{ code: 'MEZ-1', lengthM: 12 }] })
+    render(<WizardActionBar />)
+
+    await userEvent.click(screen.getByRole('button', { name: /continue/i }))
+
+    await waitFor(() => expect(useQuotationStore.getState().currentStep).toBe(4))
+    expect(mocks.upsertMezzMutateAsync).toHaveBeenCalledWith({
+      jobId: 'job-1',
+      payload: { floors: [{ code: 'MEZ-1', lengthM: 12 }] },
+    })
+    expect(mocks.deleteMezzMutateAsync).not.toHaveBeenCalled()
+  })
+
+  it('deletes any existing mezzanine and advances when the toggle is off', async () => {
+    mocks.deleteMezzMutateAsync.mockResolvedValueOnce(undefined)
+    render(<WizardActionBar />)
+
+    await userEvent.click(screen.getByRole('button', { name: /continue/i }))
+
+    await waitFor(() => expect(useQuotationStore.getState().currentStep).toBe(4))
+    expect(mocks.deleteMezzMutateAsync).toHaveBeenCalledWith('job-1')
+    expect(mocks.upsertMezzMutateAsync).not.toHaveBeenCalled()
+  })
+
+  it('stays on step 3 when the mezzanine upsert fails', async () => {
+    mocks.upsertMezzMutateAsync.mockRejectedValueOnce(new Error('API error: 500'))
+    useQuotationStore.getState().setHasMezzanine(true)
+    render(<WizardActionBar />)
+
+    await userEvent.click(screen.getByRole('button', { name: /continue/i }))
+
+    await waitFor(() => expect(mocks.toastError).toHaveBeenCalledWith('Failed to save mezzanine'))
+    expect(useQuotationStore.getState().currentStep).toBe(3)
   })
 })

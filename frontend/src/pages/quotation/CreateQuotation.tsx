@@ -4,6 +4,7 @@ import { WizardStepper } from '@/components/quotation/WizardStepper'
 import { WizardActionBar } from '@/components/quotation/WizardActionBar'
 import { Step1ProjectInfo } from '@/components/quotation/steps/Step1ProjectInfo'
 import { Step2Roof } from '@/components/quotation/steps/Step2Roof'
+import { Step3Mezzanine } from '@/components/quotation/steps/Step3Mezzanine'
 
 export default function CreateQuotation() {
   const currentStep = useQuotationStore((s) => s.currentStep)
@@ -20,6 +21,7 @@ export default function CreateQuotation() {
         <div className="animate-in fade-in duration-250" key={currentStep}>
           {currentStep === 1 && <Step1ProjectInfo />}
           {currentStep === 2 && <Step2Roof />}
+          {currentStep === 3 && <Step3Mezzanine />}
         </div>
       </div>
       <WizardActionBar />

@@ -1,7 +1,13 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
+import { z } from 'zod'
 import { jobSchema, type JobInput } from '@/schemas/job.schema'
 import { createRoofSchema, type CreateRoofInput } from '@/schemas/roof.schema'
+import {
+  type CreateMezzanineInput,
+  mezzanineFloorSchema,
+  mezzanineFloorExtensionSchema,
+} from '@/schemas/mezzanine.schema'
 
 /** Step 1 project info — the canonical job contract (see job.schema.ts). */
 export type ProjectInfo = JobInput
@@ -135,16 +141,34 @@ export const ROOF_SECTION_FIELDS: Record<RoofSectionKey, readonly (keyof RoofDra
   sidewalls: ['sidewalls'],
 }
 
+/**
+ * Step 3 mezzanine draft rows. Both the floor and extension element types come
+ * straight from the Zod schema (every field optional), so the draft can hold a
+ * partially-filled row exactly as the create/upsert payload accepts it.
+ */
+export type MezzanineFloorDraft = z.infer<typeof mezzanineFloorSchema>
+export type MezzanineExtensionDraft = z.infer<typeof mezzanineFloorExtensionSchema>
+
+/** The Step 3 mezzanine draft: inline floors and extensions, both optional. */
+export interface MezzanineDraft {
+  floors: MezzanineFloorDraft[]
+  extensions: MezzanineExtensionDraft[]
+}
+
 interface QuotationState {
   currentStep: number
   projectInfo: ProjectInfo
   roof: RoofDraft
   roofSectionsEnabled: RoofSectionsEnabled
+  mezzanine: MezzanineDraft
+  hasMezzanine: boolean
   showValidation: boolean
   jobId: string | null
   setProjectInfo: (v: Partial<ProjectInfo>) => void
   setRoof: (v: Partial<RoofDraft>) => void
   toggleRoofSection: (key: RoofSectionKey, enabled: boolean) => void
+  setMezzanine: (v: Partial<MezzanineDraft>) => void
+  setHasMezzanine: (enabled: boolean) => void
   setJobId: (id: string | null) => void
   resetQuotation: () => void
   goStep: (n: number) => void
@@ -203,6 +227,9 @@ const createDefaultRoofSections = (): RoofSectionsEnabled => ({
   sidewalls: false,
 })
 
+/** Factory for a fresh mezzanine draft — no floors or extensions to start. */
+const createDefaultMezzanine = (): MezzanineDraft => ({ floors: [], extensions: [] })
+
 export const useQuotationStore = create<QuotationState>()(
   persist(
     (set, get) => ({
@@ -212,6 +239,8 @@ export const useQuotationStore = create<QuotationState>()(
       projectInfo: createDefaultProjectInfo(),
       roof: createDefaultRoof(),
       roofSectionsEnabled: createDefaultRoofSections(),
+      mezzanine: createDefaultMezzanine(),
+      hasMezzanine: false,
 
       setProjectInfo: (v) => set((s) => ({ projectInfo: { ...s.projectInfo, ...v } })),
 
@@ -229,6 +258,13 @@ export const useQuotationStore = create<QuotationState>()(
           return { roofSectionsEnabled, roof: roof as unknown as RoofDraft }
         }),
 
+      setMezzanine: (v) => set((s) => ({ mezzanine: { ...s.mezzanine, ...v } })),
+
+      // Turning the toggle off clears any rows so an empty mezzanine drops from
+      // the payload (and the WizardActionBar deletes the server record).
+      setHasMezzanine: (enabled) =>
+        set(() => (enabled ? { hasMezzanine: true } : { hasMezzanine: false, mezzanine: createDefaultMezzanine() })),
+
       setJobId: (id) => set({ jobId: id }),
 
       resetQuotation: () => set({
@@ -238,6 +274,8 @@ export const useQuotationStore = create<QuotationState>()(
         projectInfo: createDefaultProjectInfo(),
         roof: createDefaultRoof(),
         roofSectionsEnabled: createDefaultRoofSections(),
+        mezzanine: createDefaultMezzanine(),
+        hasMezzanine: false,
       }),
 
       validateStep: (n) => {
@@ -268,7 +306,7 @@ export const useQuotationStore = create<QuotationState>()(
       // in-progress job resume (and re-use PUT) after a refresh instead of
       // creating a duplicate.
       skipHydration: true,
-      partialize: (s) => ({ projectInfo: s.projectInfo, roof: s.roof, roofSectionsEnabled: s.roofSectionsEnabled, currentStep: s.currentStep, jobId: s.jobId }),
+      partialize: (s) => ({ projectInfo: s.projectInfo, roof: s.roof, roofSectionsEnabled: s.roofSectionsEnabled, mezzanine: s.mezzanine, hasMezzanine: s.hasMezzanine, currentStep: s.currentStep, jobId: s.jobId }),
     }
   )
 )
@@ -296,4 +334,27 @@ export function buildRoofPayload(roof: RoofDraft): CreateRoofInput {
     ...(Object.fromEntries(entries) as Omit<CreateRoofInput, 'roofFrameBaseFixing'>),
     roofFrameBaseFixing: roof.roofFrameBaseFixing,
   }
+}
+
+/** Drops `undefined`-valued keys from a draft row, yielding a clean partial. */
+function compactRow<T extends Record<string, unknown>>(row: T): Partial<T> {
+  return Object.fromEntries(Object.entries(row).filter(([, v]) => v !== undefined)) as Partial<T>
+}
+
+/**
+ * Builds the mezzanine create/upsert payload from the Step 3 draft.
+ *
+ * Each floor/extension row is compacted (blank `undefined` fields dropped) and
+ * fully-empty rows are removed; an empty `floors`/`extensions` array is omitted
+ * entirely. Call this only for the upsert path (i.e. when the job has a
+ * mezzanine) — an empty mezzanine should be deleted, not upserted.
+ */
+export function buildMezzaninePayload(mezzanine: MezzanineDraft): CreateMezzanineInput {
+  const floors = mezzanine.floors.map(compactRow).filter((r) => Object.keys(r).length > 0)
+  const extensions = mezzanine.extensions.map(compactRow).filter((r) => Object.keys(r).length > 0)
+
+  const payload: CreateMezzanineInput = {}
+  if (floors.length > 0) payload.floors = floors
+  if (extensions.length > 0) payload.extensions = extensions
+  return payload
 }

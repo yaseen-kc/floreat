@@ -39,7 +39,7 @@ describe('WizardStepper', () => {
   it('disables unreachable future steps', () => {
     render(<WizardStepper />)
     // Step 3+ is never immediately reachable from step 1.
-    expect(screen.getByRole('button', { name: /Calc Engine/i })).toBeDisabled()
+    expect(screen.getByRole('button', { name: /Mezzanine/i })).toBeDisabled()
     // Step 2 is disabled while step 1 is invalid.
     expect(screen.getByRole('button', { name: /Structural Inputs/i })).toBeDisabled()
   })
