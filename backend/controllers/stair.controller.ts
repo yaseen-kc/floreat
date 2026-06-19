@@ -49,8 +49,9 @@ export async function remove(request: FastifyRequest, reply: FastifyReply) {
   const { jobId } = request.params as { jobId: string }
   try {
     await stairService.deleteStair(jobId)
-    return reply.status(204).send()
-  } catch {
-    return sendError(reply, 404, 'Stair not found')
+    return reply.status(200).send({ message: 'Stair deleted successfully' })
+  } catch (err: any) {
+    if (err?.code === 'P2025') return sendError(reply, 404, 'Stair not found')
+    throw err
   }
 }
