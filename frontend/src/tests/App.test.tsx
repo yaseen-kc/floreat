@@ -54,7 +54,7 @@ describe('App routing', () => {
   it('redirects authenticated users away from /login to the protected home', () => {
     authState.signedIn = true
     renderAppAt('/login')
-    expect(screen.getByTestId('user-button')).toBeInTheDocument()
+    expect(screen.getByText('Dashboard')).toBeInTheDocument()
     expect(screen.queryByTestId('clerk-signin')).not.toBeInTheDocument()
   })
 

@@ -10,6 +10,9 @@ import {
   MezzanineType,
   MezzanineFloorLevel,
   MezzanineHeightFrom,
+  CanopyHeightFrom,
+  CanopySheetType,
+  YesNo,
 } from '../generated/prisma/client.js'
 
 async function main() {
@@ -306,6 +309,61 @@ async function main() {
     })
   }
   console.log('✓ Mezzanines seeded')
+
+  // ── Canopies (canopy items) ─────────────────────────────────
+  const canopies = [
+    {
+      jobId: 'seed_job_1',
+      // Full: multiple items + all optional sections
+      canopies: [
+        {
+          code: 'CANOPY-1', heightFrom: CanopyHeightFrom.GROUND,
+          length: 6.0, width: 3.0, height: 3.5, materialConsumptionKgPerSqft: 9.5,
+          numberOfBeams: 4, numberOfPurlins: 6, purlinDepth: 150.0, unitWeightOfPurlin: 5.2,
+          canopySheet: CanopySheetType.PPGL, sheetThick: 0.5, canopySideCoveringHeight: 1.2,
+          gutter: YesNo.YES, downTake: YesNo.YES, flashing: YesNo.YES,
+        },
+        {
+          code: 'CANOPY-2', heightFrom: CanopyHeightFrom.FF,
+          length: 4.5, width: 2.5, height: 3.0, materialConsumptionKgPerSqft: 8.0,
+          numberOfBeams: 3, numberOfPurlins: 5, purlinDepth: 120.0, unitWeightOfPurlin: 4.5,
+          canopySheet: CanopySheetType.PUFF, sheetThick: 40.0, canopySideCoveringHeight: 1.0,
+          gutter: YesNo.YES, downTake: YesNo.NO, flashing: YesNo.YES,
+        },
+      ],
+    },
+    {
+      jobId: 'seed_job_3',
+      // Mid: dimensions + members + covering, no accessories
+      canopies: [
+        {
+          code: 'CANOPY-1', heightFrom: CanopyHeightFrom.SF,
+          length: 5.0, width: 2.8, height: 3.2, materialConsumptionKgPerSqft: 8.5,
+          numberOfBeams: 3, numberOfPurlins: 4, purlinDepth: 130.0, unitWeightOfPurlin: 4.8,
+          canopySheet: CanopySheetType.NCGL, sheetThick: 0.47,
+        },
+      ],
+    },
+    {
+      jobId: 'seed_job_5',
+      // Minimal: dimensions only
+      canopies: [
+        {
+          code: 'CANOPY-1', heightFrom: CanopyHeightFrom.GROUND,
+          length: 3.5, width: 2.0, height: 2.8,
+        },
+      ],
+    },
+  ]
+
+  for (const { jobId, canopies: items = [] } of canopies) {
+    await prisma.canopy.upsert({
+      where: { jobId },
+      create: { jobId, canopies: { createMany: { data: items } } },
+      update: { canopies: { deleteMany: {}, createMany: { data: items } } },
+    })
+  }
+  console.log('✓ Canopies seeded')
 }
 
 main()

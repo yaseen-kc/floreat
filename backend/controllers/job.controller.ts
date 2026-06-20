@@ -48,7 +48,7 @@ export async function remove(request: FastifyRequest, reply: FastifyReply) {
   const { id } = request.params as { id: string }
   try {
     await jobService.deleteJob(id)
-    return reply.status(200).send({ message: 'Job deleted successfully' })
+    return reply.status(204).send()
   } catch (err: any) {
     if (err?.code === 'P2025') return sendError(reply, 404, 'Job not found')
     throw err

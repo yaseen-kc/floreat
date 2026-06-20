@@ -116,7 +116,7 @@ describe('job controller', () => {
     })
 
     it('returns 404 when job not found', async () => {
-      prismaMock.job.delete.mockRejectedValue(new Error('Not found'))
+      prismaMock.job.delete.mockRejectedValue(Object.assign(new Error('Not found'), { code: 'P2025' }))
 
       const res = await app.inject({ method: 'DELETE', url: '/api/jobs/nonexistent' })
 

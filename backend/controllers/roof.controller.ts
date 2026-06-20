@@ -49,7 +49,7 @@ export async function remove(request: FastifyRequest, reply: FastifyReply) {
   const { jobId } = request.params as { jobId: string }
   try {
     await roofService.deleteRoof(jobId)
-    return reply.status(200).send({ message: 'Roof deleted successfully' })
+    return reply.status(204).send()
   } catch (err: any) {
     if (err?.code === 'P2025') return sendError(reply, 404, 'Roof not found')
     throw err

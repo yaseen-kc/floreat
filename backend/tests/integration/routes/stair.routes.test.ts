@@ -155,7 +155,7 @@ describe('Stair routes integration', () => {
     })
 
     it('returns 404 when not found', async () => {
-      prismaMock.stair.delete.mockRejectedValue(new Error('Not found'))
+      prismaMock.stair.delete.mockRejectedValue(Object.assign(new Error('Not found'), { code: 'P2025' }))
 
       const res = await app.inject({ method: 'DELETE', url: '/api/jobs/nope/stair' })
 

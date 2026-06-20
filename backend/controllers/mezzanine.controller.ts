@@ -49,7 +49,7 @@ export async function remove(request: FastifyRequest, reply: FastifyReply) {
   const { jobId } = request.params as { jobId: string }
   try {
     await mezzanineService.deleteMezzanine(jobId)
-    return reply.status(200).send({ message: 'Mezzanine deleted successfully' })
+    return reply.status(204).send()
   } catch (err: any) {
     if (err?.code === 'P2025') return sendError(reply, 404, 'Mezzanine not found')
     throw err

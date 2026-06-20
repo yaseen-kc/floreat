@@ -399,6 +399,130 @@
 					}
 				}
 			]
+		},
+		{
+			"name": "Canopy",
+			"item": [
+				{
+					"name": "Upsert Canopy",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"canopies\": [\n\t\t{\n\t\t\t\"code\": \"CANOPY-1\",\n\t\t\t\"heightFrom\": \"GROUND\",\n\t\t\t\"length\": 6,\n\t\t\t\"width\": 3,\n\t\t\t\"height\": 3.5,\n\t\t\t\"materialConsumptionKgPerSqft\": 9.5,\n\t\t\t\"numberOfBeams\": 4,\n\t\t\t\"numberOfPurlins\": 6,\n\t\t\t\"purlinDepth\": 150,\n\t\t\t\"unitWeightOfPurlin\": 5.2,\n\t\t\t\"canopySheet\": \"PPGL\",\n\t\t\t\"sheetThick\": 0.5,\n\t\t\t\"canopySideCoveringHeight\": 1.2,\n\t\t\t\"gutter\": \"YES\",\n\t\t\t\"downTake\": \"NO\",\n\t\t\t\"flashing\": \"YES\"\n\t\t}\n\t]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/jobs/:jobId/canopy",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "jobs", ":jobId", "canopy"],
+							"variable": [
+								{
+									"key": "jobId",
+									"value": ""
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Canopy by Job",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{baseUrl}}/api/jobs/:jobId/canopy",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "jobs", ":jobId", "canopy"],
+							"variable": [
+								{
+									"key": "jobId",
+									"value": ""
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Get All Canopies",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{baseUrl}}/api/canopies?page=1&pageSize=10",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "canopies"],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "pageSize",
+									"value": "10"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Update Canopy",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"canopies\": [\n\t\t{\n\t\t\t\"code\": \"CANOPY-1\",\n\t\t\t\"heightFrom\": \"FF\",\n\t\t\t\"length\": 5,\n\t\t\t\"width\": 2.5,\n\t\t\t\"height\": 3,\n\t\t\t\"canopySheet\": \"PUFF\",\n\t\t\t\"sheetThick\": 40\n\t\t}\n\t]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/jobs/:jobId/canopy",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "jobs", ":jobId", "canopy"],
+							"variable": [
+								{
+									"key": "jobId",
+									"value": ""
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Delete Canopy",
+					"request": {
+						"method": "DELETE",
+						"url": {
+							"raw": "{{baseUrl}}/api/jobs/:jobId/canopy",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "jobs", ":jobId", "canopy"],
+							"variable": [
+								{
+									"key": "jobId",
+									"value": ""
+								}
+							]
+						}
+					}
+				}
+			]
 		}
 	],
 	"variable": [

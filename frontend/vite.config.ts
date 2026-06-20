@@ -18,7 +18,7 @@ export default defineConfig({
     environment: 'jsdom',
     globals: true,
     setupFiles: ['./src/tests/setup.ts'],
-    css: true,
+    css: false,
     env: {
       VITE_CLERK_PUBLISHABLE_KEY: 'pk_test_dummy',
     },

@@ -128,7 +128,7 @@ describe('mezzanine controller', () => {
     })
 
     it('returns 404 when mezzanine not found', async () => {
-      prismaMock.mezzanine.delete.mockRejectedValue(new Error('Not found'))
+      prismaMock.mezzanine.delete.mockRejectedValue(Object.assign(new Error('Not found'), { code: 'P2025' }))
 
       const res = await app.inject({ method: 'DELETE', url: '/api/jobs/nonexistent/mezzanine' })
 
