@@ -15,6 +15,7 @@ export const STEPS: WizardStep[] = [
   { label: 'Structural Inputs', sub: 'GEOMETRY' },
   { label: 'Mezzanine', sub: 'FLOORS' },
   { label: 'Stair', sub: 'STAIRCASES' },
+  { label: 'Canopy', sub: 'COVERINGS' },
   { label: 'Pricing', sub: 'COST BREAKDOWN' },
   { label: 'Review', sub: 'GENERATE' },
 ]
