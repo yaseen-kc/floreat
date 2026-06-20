@@ -275,6 +275,254 @@
 					}
 				}
 			]
+		},
+		{
+			"name": "Mezzanine",
+			"item": [
+				{
+					"name": "Upsert Mezzanine",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"floors\": [\n\t\t{\n\t\t\t\"code\": \"MEZ-1\",\n\t\t\t\"floor\": \"FLOOR_1\",\n\t\t\t\"type\": \"DECK_SHEET\",\n\t\t\t\"heightFrom\": \"GROUND\",\n\t\t\t\"thicknessMm\": 150,\n\t\t\t\"lengthM\": 12,\n\t\t\t\"widthM\": 8,\n\t\t\t\"heightM\": 3.5,\n\t\t\t\"materialConsumptionKgPerSqft\": 4.5,\n\t\t\t\"beamsMidPrimary\": 4,\n\t\t\t\"beamsEndPrimary\": 2,\n\t\t\t\"beamsSecondary\": 6,\n\t\t\t\"jointsMidPrimary\": 2,\n\t\t\t\"jointsEndPrimary\": 1,\n\t\t\t\"internalColumnsMidPrimary\": 2,\n\t\t\t\"internalColumnsEndPrimary\": 1\n\t\t}\n\t],\n\t\"extensions\": [\n\t\t{\n\t\t\t\"type\": \"RCC_SLAB\",\n\t\t\t\"heightFrom\": \"FIRST_FLOOR\",\n\t\t\t\"typicalTo\": \"FLOOR_3\",\n\t\t\t\"thicknessMm\": 120,\n\t\t\t\"lengthM\": 10,\n\t\t\t\"widthM\": 6,\n\t\t\t\"heightM\": 3.0,\n\t\t\t\"beamsMidPrimary\": 3,\n\t\t\t\"beamsEndPrimary\": 1,\n\t\t\t\"beamsSecondary\": 4,\n\t\t\t\"jointsMidPrimary\": 1,\n\t\t\t\"jointsEndPrimary\": 1,\n\t\t\t\"extendedColumnsMidPrimary\": 2,\n\t\t\t\"extendedColumnsEndPrimary\": 1\n\t\t}\n\t]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/jobs/:jobId/mezzanine",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "jobs", ":jobId", "mezzanine"],
+							"variable": [
+								{
+									"key": "jobId",
+									"value": ""
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Mezzanine by Job",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{baseUrl}}/api/jobs/:jobId/mezzanine",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "jobs", ":jobId", "mezzanine"],
+							"variable": [
+								{
+									"key": "jobId",
+									"value": ""
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Get All Mezzanines",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{baseUrl}}/api/mezzanines?page=1&pageSize=10",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "mezzanines"],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "pageSize",
+									"value": "10"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Update Mezzanine",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"floors\": [\n\t\t{\n\t\t\t\"code\": \"MEZ-1\",\n\t\t\t\"floor\": \"FLOOR_1\",\n\t\t\t\"type\": \"RCC_SLAB\",\n\t\t\t\"heightFrom\": \"GROUND\",\n\t\t\t\"thicknessMm\": 180,\n\t\t\t\"lengthM\": 14,\n\t\t\t\"widthM\": 9,\n\t\t\t\"heightM\": 3.8,\n\t\t\t\"materialConsumptionKgPerSqft\": 5.0,\n\t\t\t\"beamsMidPrimary\": 5,\n\t\t\t\"beamsEndPrimary\": 2,\n\t\t\t\"beamsSecondary\": 7,\n\t\t\t\"jointsMidPrimary\": 3,\n\t\t\t\"jointsEndPrimary\": 1,\n\t\t\t\"internalColumnsMidPrimary\": 3,\n\t\t\t\"internalColumnsEndPrimary\": 1\n\t\t}\n\t]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/jobs/:jobId/mezzanine",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "jobs", ":jobId", "mezzanine"],
+							"variable": [
+								{
+									"key": "jobId",
+									"value": ""
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Delete Mezzanine",
+					"request": {
+						"method": "DELETE",
+						"url": {
+							"raw": "{{baseUrl}}/api/jobs/:jobId/mezzanine",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "jobs", ":jobId", "mezzanine"],
+							"variable": [
+								{
+									"key": "jobId",
+									"value": ""
+								}
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Canopy",
+			"item": [
+				{
+					"name": "Upsert Canopy",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"canopies\": [\n\t\t{\n\t\t\t\"code\": \"CANOPY-1\",\n\t\t\t\"heightFrom\": \"GROUND\",\n\t\t\t\"length\": 6,\n\t\t\t\"width\": 3,\n\t\t\t\"height\": 3.5,\n\t\t\t\"materialConsumptionKgPerSqft\": 9.5,\n\t\t\t\"numberOfBeams\": 4,\n\t\t\t\"numberOfPurlins\": 6,\n\t\t\t\"purlinDepth\": 150,\n\t\t\t\"unitWeightOfPurlin\": 5.2,\n\t\t\t\"canopySheet\": \"PPGL\",\n\t\t\t\"sheetThick\": 0.5,\n\t\t\t\"canopySideCoveringHeight\": 1.2,\n\t\t\t\"gutter\": \"YES\",\n\t\t\t\"downTake\": \"NO\",\n\t\t\t\"flashing\": \"YES\"\n\t\t}\n\t]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/jobs/:jobId/canopy",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "jobs", ":jobId", "canopy"],
+							"variable": [
+								{
+									"key": "jobId",
+									"value": ""
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Canopy by Job",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{baseUrl}}/api/jobs/:jobId/canopy",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "jobs", ":jobId", "canopy"],
+							"variable": [
+								{
+									"key": "jobId",
+									"value": ""
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Get All Canopies",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{baseUrl}}/api/canopies?page=1&pageSize=10",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "canopies"],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "pageSize",
+									"value": "10"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Update Canopy",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"canopies\": [\n\t\t{\n\t\t\t\"code\": \"CANOPY-1\",\n\t\t\t\"heightFrom\": \"FF\",\n\t\t\t\"length\": 5,\n\t\t\t\"width\": 2.5,\n\t\t\t\"height\": 3,\n\t\t\t\"canopySheet\": \"PUFF\",\n\t\t\t\"sheetThick\": 40\n\t\t}\n\t]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/jobs/:jobId/canopy",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "jobs", ":jobId", "canopy"],
+							"variable": [
+								{
+									"key": "jobId",
+									"value": ""
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Delete Canopy",
+					"request": {
+						"method": "DELETE",
+						"url": {
+							"raw": "{{baseUrl}}/api/jobs/:jobId/canopy",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "jobs", ":jobId", "canopy"],
+							"variable": [
+								{
+									"key": "jobId",
+									"value": ""
+								}
+							]
+						}
+					}
+				}
+			]
 		}
 	],
 	"variable": [

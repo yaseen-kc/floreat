@@ -16,6 +16,7 @@ fastify.decorateRequest('userId', '')
 await fastify.register(cors, {
   origin: config.corsOrigin,
   credentials: true,
+  methods: ['GET', 'HEAD', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
 })
 
 await fastify.register(clerkPlugin)

@@ -42,7 +42,10 @@ model Job {
   createdAt                DateTime @default(now())
   updatedAt                DateTime @updatedAt
 
-  roof Roof?
+  roof      Roof?
+  mezzanine Mezzanine?
+  stair     Stair?
+  canopy    Canopy?
 }
 
 // ── Enums ─────────────────────────────────────────
@@ -97,17 +100,16 @@ model Roof {
   job   Job    @relation(fields: [jobId], references: [id], onDelete: Cascade)
 
   // ── Core dimensions ──────────────────────────────────────────
-  buildingOverallLength Decimal             @db.Decimal(10, 3)
-  buildingOverallWidth  Decimal             @db.Decimal(10, 3)
-  eaveHeight            Decimal             @db.Decimal(10, 3)
-  roofSlope             Decimal             @db.Decimal(10, 3)
-  mainRoofFrames        Int
-  endRoofFrames         Int
-  roofPurlinSpacing     Decimal             @db.Decimal(10, 3)
-  claddingPurlins       Int
+  buildingOverallLength            Decimal @db.Decimal(10, 3)
+  buildingOverallWidth             Decimal @db.Decimal(10, 3)
+  eaveHeight                       Decimal @db.Decimal(10, 3)
+  roofSlope                        Decimal @db.Decimal(10, 3)
+  mainRoofFrames                   Int
+  endRoofFrames                    Int
+  roofPurlinSpacing                Decimal @db.Decimal(10, 3)
+  claddingPurlins                  Int
   internalColumnsForMainRoofFrames Int
   internalColumnsForEndRoofFrames  Int
-  roofFrameBaseFixing   RoofFrameBaseFixing
 
   // ── Members ──────────────────────────────────
   columnSegmentsInMainFrame   Int?
@@ -183,6 +185,16 @@ model Roof {
 
   // ── Only real 1-to-many stays separate ──────────────────────
   sidewalls Sidewall[]
+
+  // Base Fixing
+  roofFrameBaseFixing RoofFrameBaseFixing
+
+  // Material Consumption
+  materialConsumptionExcludingPurlin Decimal? @db.Decimal(10, 3)
+
+  // SAG Rod
+  DiaOfRoofSagRod     Decimal? @db.Decimal(10, 3)
+  DiaOfCladdingSagRod Decimal? @db.Decimal(10, 3)
 }
 
 model Sidewall {
@@ -195,4 +207,266 @@ model Sidewall {
   height    Decimal      @db.Decimal(10, 3)
 
   @@unique([roofId, side])
+}
+
+// ── Mezzanine Enums ───────────────────────────────
+
+enum MezzanineType {
+  DECK_SHEET   @map("DECK SHEET")
+  FOLDED_PLATE @map("FOLDED PLATE")
+  PANEL
+  BOARD
+  RCC_SLAB     @map("RCC SLAB")
+}
+
+enum MezzanineFloorLevel {
+  FLOOR_1  @map("1st Floor")
+  FLOOR_2  @map("2nd Floor")
+  FLOOR_3  @map("3rd Floor")
+  FLOOR_4  @map("4th Floor")
+  FLOOR_5  @map("5th Floor")
+  FLOOR_6  @map("6th Floor")
+  FLOOR_7  @map("7th Floor")
+  FLOOR_8  @map("8th Floor")
+  FLOOR_9  @map("9th Floor")
+  FLOOR_10 @map("10th Floor")
+}
+
+enum MezzanineHeightFrom {
+  GROUND      @map("Ground")
+  FIRST_FLOOR @map("First Floor")
+  FLOOR_2     @map("2nd Floor")
+  FLOOR_3     @map("3rd Floor")
+  FLOOR_4     @map("4th Floor")
+  FLOOR_5     @map("5th Floor")
+}
+
+// ── Mezzanine Models ──────────────────────────────
+
+model Mezzanine {
+  id    String @id @default(cuid())
+  jobId String @unique
+  job   Job    @relation(fields: [jobId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  floors     MezzanineFloor[]
+  extensions MezzanineFloorExtension[]
+}
+
+model MezzanineFloor {
+  id          String    @id @default(cuid())
+  mezzanineId String
+  mezzanine   Mezzanine @relation(fields: [mezzanineId], references: [id], onDelete: Cascade)
+
+  code       String?
+  floor      MezzanineFloorLevel?
+  type       MezzanineType?
+  heightFrom MezzanineHeightFrom?
+
+  // ── Dimensions ──
+  thicknessMm                  Decimal? @db.Decimal(10, 3)
+  lengthM                      Decimal? @db.Decimal(10, 3)
+  widthM                       Decimal? @db.Decimal(10, 3)
+  heightM                      Decimal? @db.Decimal(10, 3)
+  materialConsumptionKgPerSqft Decimal? @db.Decimal(10, 3)
+
+  // ── Beams ──
+  beamsMidPrimary Int?
+  beamsEndPrimary Int?
+  beamsSecondary  Int?
+
+  // ── Joints in beams ──
+  jointsMidPrimary Int?
+  jointsEndPrimary Int?
+
+  // ── Internal columns ──
+  internalColumnsMidPrimary Int?
+  internalColumnsEndPrimary Int?
+
+  @@unique([mezzanineId, code])
+}
+
+model MezzanineFloorExtension {
+  id          String    @id @default(cuid())
+  mezzanineId String
+  mezzanine   Mezzanine @relation(fields: [mezzanineId], references: [id], onDelete: Cascade)
+
+  floor      MezzanineFloorLevel?
+  type       MezzanineType?
+  heightFrom MezzanineHeightFrom?
+  typicalTo  MezzanineFloorLevel?
+
+  // ── Dimensions ──
+  thicknessMm Decimal? @db.Decimal(10, 3)
+  lengthM     Decimal? @db.Decimal(10, 3)
+  widthM      Decimal? @db.Decimal(10, 3)
+  heightM     Decimal? @db.Decimal(10, 3)
+
+  // ── Beams ──
+  beamsMidPrimary Int?
+  beamsEndPrimary Int?
+  beamsSecondary  Int?
+
+  // ── Joints in beams ──
+  jointsMidPrimary Int?
+  jointsEndPrimary Int?
+
+  // ── Extended columns ──
+  extendedColumnsMidPrimary Int?
+  extendedColumnsEndPrimary Int?
+}
+
+// ── Stair Enums ───────────────────────────────────
+
+enum StairStepType {
+  CHQ_PLATE_6MM @map("6MM CHQ PLATE")
+  CHQ_PLATE_4MM @map("4MM CHQ PLATE")
+  TUBE
+}
+
+enum StairFloorLevel {
+  GROUND       @map("GROUND")
+  FIRST_FLOOR  @map("FIRST FLOOR")
+  SECOND_FLOOR @map("SECOND FLOOR")
+  THIRD_FLOOR  @map("THIRD FLOOR")
+  FOURTH_FLOOR @map("FOURTH FLOOR")
+  FIFTH_FLOOR  @map("FIFTH FLOOR")
+  SIXTH_FLOOR  @map("SIXTH FLOOR")
+}
+
+enum StairStringerType {
+  HR_SECTION  @map("HR SECTION")
+  FAB_SECTION @map("FAB SECTION")
+}
+
+enum AreaDeductionType {
+  LIFT
+  DUCT
+  CUT_OUT @map("CUT-OUT")
+}
+
+enum AreaDeductionFor {
+  STRUCTURE_DEDUCTION @map("STRUCTURE DEDUCTION")
+  COVERING_DEDUCTION  @map("COVERING DEDUCTION")
+  BOTH
+}
+
+// ── Stair Models ──────────────────────────────────
+
+model Stair {
+  id    String @id @default(cuid())
+  jobId String @unique
+  job   Job    @relation(fields: [jobId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  stairs         StairItem[]
+  areaDeductions AreaDeduction[]
+}
+
+model StairItem {
+  id      String @id @default(cuid())
+  stairId String
+  stair   Stair  @relation(fields: [stairId], references: [id], onDelete: Cascade)
+
+  code         String?
+  typeOfStep   StairStepType?
+  location     String?
+  startingFrom StairFloorLevel?
+  endingUpTo   StairFloorLevel?
+
+  // ── Dimensions ──
+  length Decimal? @db.Decimal(10, 3)
+  width  Decimal? @db.Decimal(10, 3)
+  height Decimal? @db.Decimal(10, 3)
+
+  numberOfMidLanding   Int?
+  typeOfStringer       StairStringerType?
+  unitWeightOfStringer Decimal?           @db.Decimal(10, 3)
+
+  @@unique([stairId, code])
+}
+
+model AreaDeduction {
+  id      String @id @default(cuid())
+  stairId String
+  stair   Stair  @relation(fields: [stairId], references: [id], onDelete: Cascade)
+
+  type         AreaDeductionType?
+  location     String?
+  areaM2       Decimal?           @db.Decimal(10, 3)
+  numbers      Int?
+  deductionFor AreaDeductionFor?
+}
+
+// ── Canopy Enums ──────────────────────────────────
+
+enum CanopyHeightFrom {
+  GROUND
+  FF
+  SF
+  FLOOR_3 @map("3rd Floor")
+  FLOOR_4 @map("4th Floor")
+  FLOOR_5 @map("5th Floor")
+}
+
+enum CanopySheetType {
+  NCGL
+  PPGL
+  PUFF  @map("Puff")
+  OTHER @map("Other")
+}
+
+enum YesNo {
+  YES
+  NO
+}
+
+// ── Canopy Models ─────────────────────────────────
+
+model Canopy {
+  id    String @id @default(cuid())
+  jobId String @unique
+  job   Job    @relation(fields: [jobId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  canopies CanopyItem[]
+}
+
+model CanopyItem {
+  id       String @id @default(cuid())
+  canopyId String
+  canopy   Canopy @relation(fields: [canopyId], references: [id], onDelete: Cascade)
+
+  code       String?
+  heightFrom CanopyHeightFrom?
+
+  // ── Dimensions ──
+  length                       Decimal? @db.Decimal(10, 3)
+  width                        Decimal? @db.Decimal(10, 3)
+  height                       Decimal? @db.Decimal(10, 3)
+  materialConsumptionKgPerSqft Decimal? @db.Decimal(10, 3)
+
+  // ── Members ──
+  numberOfBeams   Int?
+  numberOfPurlins Int?
+  purlinDepth     Decimal? @db.Decimal(10, 3)
+  unitWeightOfPurlin Decimal? @db.Decimal(10, 3)
+
+  // ── Covering ──
+  canopySheet              CanopySheetType?
+  sheetThick               Decimal?         @db.Decimal(10, 3)
+  canopySideCoveringHeight Decimal?         @db.Decimal(10, 3)
+
+  // ── Accessories ──
+  gutter   YesNo?
+  downTake YesNo?
+  flashing YesNo?
+
+  @@unique([canopyId, code])
 }

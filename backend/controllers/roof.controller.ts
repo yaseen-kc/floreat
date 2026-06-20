@@ -50,7 +50,8 @@ export async function remove(request: FastifyRequest, reply: FastifyReply) {
   try {
     await roofService.deleteRoof(jobId)
     return reply.status(204).send()
-  } catch {
-    return sendError(reply, 404, 'Roof not found')
+  } catch (err: any) {
+    if (err?.code === 'P2025') return sendError(reply, 404, 'Roof not found')
+    throw err
   }
 }

@@ -117,7 +117,7 @@ describe('roof controller', () => {
     })
 
     it('returns 404 when roof not found', async () => {
-      prismaMock.roof.delete.mockRejectedValue(new Error('Not found'))
+      prismaMock.roof.delete.mockRejectedValue(Object.assign(new Error('Not found'), { code: 'P2025' }))
 
       const res = await app.inject({ method: 'DELETE', url: '/api/jobs/nonexistent/roof' })
 

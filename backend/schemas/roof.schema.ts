@@ -117,6 +117,13 @@ export const createRoofSchema = z.object({
   // ── Optional material grade ──
   gradeOfPlateMaterial: plateMaterialGradeEnum.optional(),
 
+  // ── Optional material consumption ──
+  materialConsumptionExcludingPurlin: z.number().nonnegative().optional(),
+
+  // ── Optional SAG rod ──
+  DiaOfRoofSagRod: z.number().positive().optional(),
+  DiaOfCladdingSagRod: z.number().positive().optional(),
+
   // ── Inline sidewalls ──
   sidewalls: z.array(sidewallSchema).optional(),
 })

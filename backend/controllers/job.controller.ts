@@ -49,7 +49,8 @@ export async function remove(request: FastifyRequest, reply: FastifyReply) {
   try {
     await jobService.deleteJob(id)
     return reply.status(204).send()
-  } catch {
-    return sendError(reply, 404, 'Job not found')
+  } catch (err: any) {
+    if (err?.code === 'P2025') return sendError(reply, 404, 'Job not found')
+    throw err
   }
 }

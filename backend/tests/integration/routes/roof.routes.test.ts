@@ -39,6 +39,43 @@ describe('Roof routes integration', () => {
       expect(res.json().sidewalls).toEqual(sidewalls)
     })
 
+    it('accepts and persists material consumption and SAG rod fields', async () => {
+      const input = makeRoofInput('job-1')
+      const { jobId, ...body } = input
+      const extras = {
+        materialConsumptionExcludingPurlin: 12.5,
+        DiaOfRoofSagRod: 12,
+        DiaOfCladdingSagRod: 10,
+      }
+      const roof = makeRoof({ jobId: 'job-1', ...extras })
+      prismaMock.roof.upsert.mockResolvedValue(roof as any)
+
+      const res = await app.inject({
+        method: 'POST', url: '/api/jobs/job-1/roof',
+        payload: { ...body, ...extras },
+      })
+
+      expect(res.statusCode).toBe(200)
+      expect(prismaMock.roof.upsert).toHaveBeenCalledWith(
+        expect.objectContaining({
+          create: expect.objectContaining(extras),
+        }),
+      )
+      expect(res.json().materialConsumptionExcludingPurlin).toBe(12.5)
+      expect(res.json().DiaOfRoofSagRod).toBe(12)
+      expect(res.json().DiaOfCladdingSagRod).toBe(10)
+    })
+
+    it('rejects a negative SAG rod diameter', async () => {
+      const input = makeRoofInput('job-1')
+      const { jobId, ...body } = input
+      const res = await app.inject({
+        method: 'POST', url: '/api/jobs/job-1/roof',
+        payload: { ...body, DiaOfRoofSagRod: -1 },
+      })
+      expect(res.statusCode).toBe(400)
+    })
+
     it('rejects invalid payload', async () => {
       const res = await app.inject({ method: 'POST', url: '/api/jobs/job-1/roof', payload: { roofSlope: -1 } })
       expect(res.statusCode).toBe(400)
@@ -114,7 +151,7 @@ describe('Roof routes integration', () => {
     })
 
     it('returns 404 when not found', async () => {
-      prismaMock.roof.delete.mockRejectedValue(new Error('Not found'))
+      prismaMock.roof.delete.mockRejectedValue(Object.assign(new Error('Not found'), { code: 'P2025' }))
 
       const res = await app.inject({ method: 'DELETE', url: '/api/jobs/nope/roof' })
 

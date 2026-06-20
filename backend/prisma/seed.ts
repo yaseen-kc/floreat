@@ -7,6 +7,12 @@ import {
   CoveringType,
   RoofFrameBaseFixing,
   PlateMaterialGrade,
+  MezzanineType,
+  MezzanineFloorLevel,
+  MezzanineHeightFrom,
+  CanopyHeightFrom,
+  CanopySheetType,
+  YesNo,
 } from '../generated/prisma/client.js'
 
 async function main() {
@@ -140,6 +146,7 @@ async function main() {
       claddingExtensionWidthHeight: 2.5, claddingExtensionMidFrameCount: 8, claddingExtensionEndFrameCount: 2,
       sideColumnsWidthHeight: 3.0, sideColumnsMidFrameCount: 8, sideColumnsEndFrameCount: 2,
       gradeOfPlateMaterial: PlateMaterialGrade.FE_345,
+      materialConsumptionExcludingPurlin: 18.5, DiaOfRoofSagRod: 12.0, DiaOfCladdingSagRod: 10.0,
       sidewalls: [
         { side: SideWallSide.FRONT, wallType: TypeOfWall.PANEL, thickness: 0.5, height: 3.0 },
         { side: SideWallSide.BACK, wallType: TypeOfWall.BRICK, thickness: 230.0, height: 3.5 },
@@ -171,6 +178,7 @@ async function main() {
       roofCoveringType: CoveringType.PUFF_SHEET, roofCoveringThickness: 40.0,
       claddingCoveringType: CoveringType.PPGL, claddingCoveringThickness: 0.5,
       gradeOfPlateMaterial: PlateMaterialGrade.FE_250,
+      materialConsumptionExcludingPurlin: 15.2, DiaOfRoofSagRod: 10.0, DiaOfCladdingSagRod: 8.0,
       sidewalls: [
         { side: SideWallSide.FRONT, wallType: TypeOfWall.AAC, thickness: 200.0, height: 3.0 },
         { side: SideWallSide.BACK, wallType: TypeOfWall.AAC, thickness: 200.0, height: 3.0 },
@@ -207,6 +215,7 @@ async function main() {
       claddingExtensionWidthHeight: 3.5, claddingExtensionMidFrameCount: 10, claddingExtensionEndFrameCount: 2,
       sideColumnsWidthHeight: 4.0, sideColumnsMidFrameCount: 10, sideColumnsEndFrameCount: 2,
       gradeOfPlateMaterial: PlateMaterialGrade.FE_400,
+      materialConsumptionExcludingPurlin: 21.0, DiaOfRoofSagRod: 12.0, DiaOfCladdingSagRod: 10.0,
       sidewalls: [
         { side: SideWallSide.FRONT, wallType: TypeOfWall.BRICK, thickness: 230.0, height: 4.0 },
         { side: SideWallSide.BACK, wallType: TypeOfWall.BRICK, thickness: 230.0, height: 4.0 },
@@ -224,6 +233,137 @@ async function main() {
     })
   }
   console.log('✓ Roofs & Sidewalls seeded')
+
+  // ── Mezzanines (floors + extensions) ────────────────────────
+  const mezzanines = [
+    {
+      jobId: 'seed_job_1',
+      // Full: multiple floors + extensions
+      floors: [
+        {
+          code: 'MZ-1', floor: MezzanineFloorLevel.FLOOR_1, type: MezzanineType.DECK_SHEET,
+          heightFrom: MezzanineHeightFrom.GROUND,
+          thicknessMm: 150.0, lengthM: 36.0, widthM: 18.0, heightM: 4.5, materialConsumptionKgPerSqft: 12.5,
+          beamsMidPrimary: 6, beamsEndPrimary: 2, beamsSecondary: 14,
+          jointsMidPrimary: 4, jointsEndPrimary: 2,
+          internalColumnsMidPrimary: 3, internalColumnsEndPrimary: 1,
+        },
+        {
+          code: 'MZ-2', floor: MezzanineFloorLevel.FLOOR_2, type: MezzanineType.RCC_SLAB,
+          heightFrom: MezzanineHeightFrom.FIRST_FLOOR,
+          thicknessMm: 175.0, lengthM: 36.0, widthM: 18.0, heightM: 4.0, materialConsumptionKgPerSqft: 14.0,
+          beamsMidPrimary: 6, beamsEndPrimary: 2, beamsSecondary: 16,
+          jointsMidPrimary: 4, jointsEndPrimary: 2,
+          internalColumnsMidPrimary: 3, internalColumnsEndPrimary: 1,
+        },
+      ],
+      extensions: [
+        {
+          type: MezzanineType.FOLDED_PLATE, heightFrom: MezzanineHeightFrom.GROUND,
+          typicalTo: MezzanineFloorLevel.FLOOR_2,
+          thicknessMm: 120.0, lengthM: 12.0, widthM: 6.0, heightM: 4.5,
+          beamsMidPrimary: 2, beamsEndPrimary: 1, beamsSecondary: 5,
+          jointsMidPrimary: 2, jointsEndPrimary: 1,
+          extendedColumnsMidPrimary: 2, extendedColumnsEndPrimary: 1,
+        },
+      ],
+    },
+    {
+      jobId: 'seed_job_3',
+      // Floors only, no extensions
+      floors: [
+        {
+          code: 'MZ-1', floor: MezzanineFloorLevel.FLOOR_1, type: MezzanineType.PANEL,
+          heightFrom: MezzanineHeightFrom.GROUND,
+          thicknessMm: 100.0, lengthM: 30.0, widthM: 15.0, heightM: 4.0, materialConsumptionKgPerSqft: 10.0,
+          beamsMidPrimary: 5, beamsEndPrimary: 2, beamsSecondary: 10,
+          jointsMidPrimary: 3, jointsEndPrimary: 2,
+          internalColumnsMidPrimary: 2, internalColumnsEndPrimary: 1,
+        },
+      ],
+    },
+    {
+      jobId: 'seed_job_5',
+      // Minimal: single floor, required fields only
+      floors: [
+        {
+          code: 'MZ-1', floor: MezzanineFloorLevel.FLOOR_1, type: MezzanineType.BOARD,
+          heightFrom: MezzanineHeightFrom.GROUND,
+          thicknessMm: 80.0, lengthM: 40.0, widthM: 20.0, heightM: 5.0, materialConsumptionKgPerSqft: 8.0,
+          beamsMidPrimary: 4, beamsEndPrimary: 2, beamsSecondary: 8,
+          jointsMidPrimary: 2, jointsEndPrimary: 1,
+          internalColumnsMidPrimary: 1, internalColumnsEndPrimary: 0,
+        },
+      ],
+    },
+  ]
+
+  for (const { jobId, floors = [], extensions = [] } of mezzanines) {
+    await prisma.mezzanine.upsert({
+      where: { jobId },
+      create: { jobId, floors: { createMany: { data: floors } }, extensions: { createMany: { data: extensions } } },
+      update: {
+        floors: { deleteMany: {}, createMany: { data: floors } },
+        extensions: { deleteMany: {}, createMany: { data: extensions } },
+      },
+    })
+  }
+  console.log('✓ Mezzanines seeded')
+
+  // ── Canopies (canopy items) ─────────────────────────────────
+  const canopies = [
+    {
+      jobId: 'seed_job_1',
+      // Full: multiple items + all optional sections
+      canopies: [
+        {
+          code: 'CANOPY-1', heightFrom: CanopyHeightFrom.GROUND,
+          length: 6.0, width: 3.0, height: 3.5, materialConsumptionKgPerSqft: 9.5,
+          numberOfBeams: 4, numberOfPurlins: 6, purlinDepth: 150.0, unitWeightOfPurlin: 5.2,
+          canopySheet: CanopySheetType.PPGL, sheetThick: 0.5, canopySideCoveringHeight: 1.2,
+          gutter: YesNo.YES, downTake: YesNo.YES, flashing: YesNo.YES,
+        },
+        {
+          code: 'CANOPY-2', heightFrom: CanopyHeightFrom.FF,
+          length: 4.5, width: 2.5, height: 3.0, materialConsumptionKgPerSqft: 8.0,
+          numberOfBeams: 3, numberOfPurlins: 5, purlinDepth: 120.0, unitWeightOfPurlin: 4.5,
+          canopySheet: CanopySheetType.PUFF, sheetThick: 40.0, canopySideCoveringHeight: 1.0,
+          gutter: YesNo.YES, downTake: YesNo.NO, flashing: YesNo.YES,
+        },
+      ],
+    },
+    {
+      jobId: 'seed_job_3',
+      // Mid: dimensions + members + covering, no accessories
+      canopies: [
+        {
+          code: 'CANOPY-1', heightFrom: CanopyHeightFrom.SF,
+          length: 5.0, width: 2.8, height: 3.2, materialConsumptionKgPerSqft: 8.5,
+          numberOfBeams: 3, numberOfPurlins: 4, purlinDepth: 130.0, unitWeightOfPurlin: 4.8,
+          canopySheet: CanopySheetType.NCGL, sheetThick: 0.47,
+        },
+      ],
+    },
+    {
+      jobId: 'seed_job_5',
+      // Minimal: dimensions only
+      canopies: [
+        {
+          code: 'CANOPY-1', heightFrom: CanopyHeightFrom.GROUND,
+          length: 3.5, width: 2.0, height: 2.8,
+        },
+      ],
+    },
+  ]
+
+  for (const { jobId, canopies: items = [] } of canopies) {
+    await prisma.canopy.upsert({
+      where: { jobId },
+      create: { jobId, canopies: { createMany: { data: items } } },
+      update: { canopies: { deleteMany: {}, createMany: { data: items } } },
+    })
+  }
+  console.log('✓ Canopies seeded')
 }
 
 main()
