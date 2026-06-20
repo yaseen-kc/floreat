@@ -12,6 +12,7 @@ import { jobRoutes } from './job.routes.js'
 import { roofRoutes } from './roof.routes.js'
 import { mezzanineRoutes } from './mezzanine.routes.js'
 import { stairRoutes } from './stair.routes.js'
+import { canopyRoutes } from './canopy.routes.js'
 
 export async function registerRoutes(app: FastifyInstance) {
   await app.register(userRoutes, { prefix: '/api' })
@@ -19,4 +20,5 @@ export async function registerRoutes(app: FastifyInstance) {
   await app.register(roofRoutes, { prefix: '/api' })
   await app.register(mezzanineRoutes, { prefix: '/api' })
   await app.register(stairRoutes, { prefix: '/api' })
+  await app.register(canopyRoutes, { prefix: '/api' })
 }

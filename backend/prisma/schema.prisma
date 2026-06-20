@@ -45,6 +45,7 @@ model Job {
   roof      Roof?
   mezzanine Mezzanine?
   stair     Stair?
+  canopy    Canopy?
 }
 
 // ── Enums ─────────────────────────────────────────
@@ -399,4 +400,73 @@ model AreaDeduction {
   areaM2       Decimal?           @db.Decimal(10, 3)
   numbers      Int?
   deductionFor AreaDeductionFor?
+}
+
+// ── Canopy Enums ──────────────────────────────────
+
+enum CanopyHeightFrom {
+  GROUND
+  FF
+  SF
+  FLOOR_3 @map("3rd Floor")
+  FLOOR_4 @map("4th Floor")
+  FLOOR_5 @map("5th Floor")
+}
+
+enum CanopySheetType {
+  NCGL
+  PPGL
+  PUFF  @map("Puff")
+  OTHER @map("Other")
+}
+
+enum YesNo {
+  YES
+  NO
+}
+
+// ── Canopy Models ─────────────────────────────────
+
+model Canopy {
+  id    String @id @default(cuid())
+  jobId String @unique
+  job   Job    @relation(fields: [jobId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  canopies CanopyItem[]
+}
+
+model CanopyItem {
+  id       String @id @default(cuid())
+  canopyId String
+  canopy   Canopy @relation(fields: [canopyId], references: [id], onDelete: Cascade)
+
+  code       String?
+  heightFrom CanopyHeightFrom?
+
+  // ── Dimensions ──
+  length                       Decimal? @db.Decimal(10, 3)
+  width                        Decimal? @db.Decimal(10, 3)
+  height                       Decimal? @db.Decimal(10, 3)
+  materialConsumptionKgPerSqft Decimal? @db.Decimal(10, 3)
+
+  // ── Members ──
+  numberOfBeams   Int?
+  numberOfPurlins Int?
+  purlinDepth     Decimal? @db.Decimal(10, 3)
+  unitWeightOfPurlin Decimal? @db.Decimal(10, 3)
+
+  // ── Covering ──
+  canopySheet              CanopySheetType?
+  sheetThick               Decimal?         @db.Decimal(10, 3)
+  canopySideCoveringHeight Decimal?         @db.Decimal(10, 3)
+
+  // ── Accessories ──
+  gutter   YesNo?
+  downTake YesNo?
+  flashing YesNo?
+
+  @@unique([canopyId, code])
 }
