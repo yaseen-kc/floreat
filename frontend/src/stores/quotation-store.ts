@@ -8,6 +8,12 @@ import {
   mezzanineFloorSchema,
   mezzanineFloorExtensionSchema,
 } from '@/schemas/mezzanine.schema'
+import {
+  type CreateStairInput,
+  stairItemSchema,
+  areaDeductionSchema,
+} from '@/schemas/stair.schema'
+import { STEP_COUNT } from '@/components/quotation/steps'
 
 /** Step 1 project info — the canonical job contract (see job.schema.ts). */
 export type ProjectInfo = JobInput
@@ -155,6 +161,20 @@ export interface MezzanineDraft {
   extensions: MezzanineExtensionDraft[]
 }
 
+/**
+ * Step 4 stair draft rows. Both element types come straight from the Zod
+ * schema (every field optional), so the draft can hold a partially-filled row
+ * exactly as the create/upsert payload accepts it.
+ */
+export type StairItemDraft = z.infer<typeof stairItemSchema>
+export type AreaDeductionDraft = z.infer<typeof areaDeductionSchema>
+
+/** The Step 4 stair draft: inline staircases and area deductions, both optional. */
+export interface StairDraft {
+  stairs: StairItemDraft[]
+  areaDeductions: AreaDeductionDraft[]
+}
+
 interface QuotationState {
   currentStep: number
   projectInfo: ProjectInfo
@@ -162,6 +182,8 @@ interface QuotationState {
   roofSectionsEnabled: RoofSectionsEnabled
   mezzanine: MezzanineDraft
   hasMezzanine: boolean
+  stair: StairDraft
+  hasStair: boolean
   showValidation: boolean
   jobId: string | null
   setProjectInfo: (v: Partial<ProjectInfo>) => void
@@ -169,6 +191,8 @@ interface QuotationState {
   toggleRoofSection: (key: RoofSectionKey, enabled: boolean) => void
   setMezzanine: (v: Partial<MezzanineDraft>) => void
   setHasMezzanine: (enabled: boolean) => void
+  setStair: (v: Partial<StairDraft>) => void
+  setHasStair: (enabled: boolean) => void
   setJobId: (id: string | null) => void
   resetQuotation: () => void
   goStep: (n: number) => void
@@ -230,6 +254,9 @@ const createDefaultRoofSections = (): RoofSectionsEnabled => ({
 /** Factory for a fresh mezzanine draft — no floors or extensions to start. */
 const createDefaultMezzanine = (): MezzanineDraft => ({ floors: [], extensions: [] })
 
+/** Factory for a fresh stair draft — no staircases or area deductions to start. */
+const createDefaultStair = (): StairDraft => ({ stairs: [], areaDeductions: [] })
+
 export const useQuotationStore = create<QuotationState>()(
   persist(
     (set, get) => ({
@@ -241,6 +268,8 @@ export const useQuotationStore = create<QuotationState>()(
       roofSectionsEnabled: createDefaultRoofSections(),
       mezzanine: createDefaultMezzanine(),
       hasMezzanine: false,
+      stair: createDefaultStair(),
+      hasStair: false,
 
       setProjectInfo: (v) => set((s) => ({ projectInfo: { ...s.projectInfo, ...v } })),
 
@@ -265,6 +294,13 @@ export const useQuotationStore = create<QuotationState>()(
       setHasMezzanine: (enabled) =>
         set(() => (enabled ? { hasMezzanine: true } : { hasMezzanine: false, mezzanine: createDefaultMezzanine() })),
 
+      setStair: (v) => set((s) => ({ stair: { ...s.stair, ...v } })),
+
+      // Turning the toggle off clears any rows so an empty stair drops from the
+      // payload (and the WizardActionBar deletes the server record).
+      setHasStair: (enabled) =>
+        set(() => (enabled ? { hasStair: true } : { hasStair: false, stair: createDefaultStair() })),
+
       setJobId: (id) => set({ jobId: id }),
 
       resetQuotation: () => set({
@@ -276,6 +312,8 @@ export const useQuotationStore = create<QuotationState>()(
         roofSectionsEnabled: createDefaultRoofSections(),
         mezzanine: createDefaultMezzanine(),
         hasMezzanine: false,
+        stair: createDefaultStair(),
+        hasStair: false,
       }),
 
       validateStep: (n) => {
@@ -285,12 +323,12 @@ export const useQuotationStore = create<QuotationState>()(
         return true
       },
 
-      goStep: (n) => { if (n >= 1 && n <= 5) set({ currentStep: n, showValidation: false }) },
+      goStep: (n) => { if (n >= 1 && n <= STEP_COUNT) set({ currentStep: n, showValidation: false }) },
 
       nextStep: () => {
         const s = get()
         if (!s.validateStep(s.currentStep)) { set({ showValidation: true }); return false }
-        if (s.currentStep < 5) set({ currentStep: s.currentStep + 1, showValidation: false })
+        if (s.currentStep < STEP_COUNT) set({ currentStep: s.currentStep + 1, showValidation: false })
         return true
       },
 
@@ -306,7 +344,7 @@ export const useQuotationStore = create<QuotationState>()(
       // in-progress job resume (and re-use PUT) after a refresh instead of
       // creating a duplicate.
       skipHydration: true,
-      partialize: (s) => ({ projectInfo: s.projectInfo, roof: s.roof, roofSectionsEnabled: s.roofSectionsEnabled, mezzanine: s.mezzanine, hasMezzanine: s.hasMezzanine, currentStep: s.currentStep, jobId: s.jobId }),
+      partialize: (s) => ({ projectInfo: s.projectInfo, roof: s.roof, roofSectionsEnabled: s.roofSectionsEnabled, mezzanine: s.mezzanine, hasMezzanine: s.hasMezzanine, stair: s.stair, hasStair: s.hasStair, currentStep: s.currentStep, jobId: s.jobId }),
     }
   )
 )
@@ -356,5 +394,23 @@ export function buildMezzaninePayload(mezzanine: MezzanineDraft): CreateMezzanin
   const payload: CreateMezzanineInput = {}
   if (floors.length > 0) payload.floors = floors
   if (extensions.length > 0) payload.extensions = extensions
+  return payload
+}
+
+/**
+ * Builds the stair create/upsert payload from the Step 4 draft.
+ *
+ * Each stair/area-deduction row is compacted (blank `undefined` fields dropped)
+ * and fully-empty rows are removed; an empty `stairs`/`areaDeductions` array is
+ * omitted entirely. Call this only for the upsert path (i.e. when the job has a
+ * stair) — an empty stair should be deleted, not upserted.
+ */
+export function buildStairPayload(stair: StairDraft): CreateStairInput {
+  const stairs = stair.stairs.map(compactRow).filter((r) => Object.keys(r).length > 0)
+  const areaDeductions = stair.areaDeductions.map(compactRow).filter((r) => Object.keys(r).length > 0)
+
+  const payload: CreateStairInput = {}
+  if (stairs.length > 0) payload.stairs = stairs
+  if (areaDeductions.length > 0) payload.areaDeductions = areaDeductions
   return payload
 }

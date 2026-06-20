@@ -4,7 +4,7 @@ import { useShallow } from 'zustand/react/shallow'
 import { SectionCard } from '@/components/quotation/shared/SectionCard'
 import { Button } from '@/components/ui/button'
 import { Layers3, Plus } from 'lucide-react'
-import { MezzanineRowCard, type MezzanineRowGroup } from './MezzanineRowCard'
+import { RowCard, type RowGroup } from '@/components/quotation/shared/RowCard'
 import {
   MEZZANINE_TYPE_OPTIONS,
   MEZZANINE_FLOOR_LEVEL_OPTIONS,
@@ -12,7 +12,7 @@ import {
 } from './mezzanineOptions'
 
 /** Grouped field layout for a mezzanine floor row (identity badge handled separately). */
-const FLOOR_GROUPS: MezzanineRowGroup[] = [
+const FLOOR_GROUPS: RowGroup[] = [
   {
     title: 'Classification',
     fields: [
@@ -75,7 +75,7 @@ export function MezzanineFloors() {
         {floors.length === 0 && <p className="text-muted-foreground text-sm">No floors added yet.</p>}
 
         {floors.map((row, index) => (
-          <MezzanineRowCard
+          <RowCard
             key={index}
             title={`Floor ${index + 1}`}
             badge={row.code}

@@ -11,6 +11,8 @@ const mocks = vi.hoisted(() => ({
   upsertRoofMutateAsync: vi.fn(),
   upsertMezzMutateAsync: vi.fn(),
   deleteMezzMutateAsync: vi.fn(),
+  upsertStairMutateAsync: vi.fn(),
+  deleteStairMutateAsync: vi.fn(),
   createPending: false,
   updatePending: false,
   upsertRoofPending: false,
@@ -42,6 +44,14 @@ vi.mock('@/api/quotation/mezz/postMezz', () => ({
 
 vi.mock('@/api/quotation/mezz/deleteMezz', () => ({
   useDeleteMezzanine: () => ({ mutateAsync: mocks.deleteMezzMutateAsync, isPending: false }),
+}))
+
+vi.mock('@/api/quotation/stair/postStairs', () => ({
+  useUpsertStair: () => ({ mutateAsync: mocks.upsertStairMutateAsync, isPending: false }),
+}))
+
+vi.mock('@/api/quotation/stair/deleteStairs', () => ({
+  useDeleteStair: () => ({ mutateAsync: mocks.deleteStairMutateAsync, isPending: false }),
 }))
 
 import { WizardActionBar } from '@/components/quotation/WizardActionBar'
@@ -263,5 +273,58 @@ describe('WizardActionBar Step 3 mezzanine persistence', () => {
 
     await waitFor(() => expect(mocks.toastError).toHaveBeenCalledWith('Failed to save mezzanine'))
     expect(useQuotationStore.getState().currentStep).toBe(3)
+  })
+})
+
+
+describe('WizardActionBar Step 4 stair persistence', () => {
+  beforeEach(() => {
+    localStorage.clear()
+    useQuotationStore.getState().resetQuotation()
+    mocks.navigate.mockReset()
+    mocks.toastSuccess.mockReset()
+    mocks.toastError.mockReset()
+    mocks.upsertStairMutateAsync.mockReset()
+    mocks.deleteStairMutateAsync.mockReset()
+    useQuotationStore.getState().setJobId('job-1')
+    useQuotationStore.setState({ currentStep: 4 })
+  })
+
+  it('upserts the stair and advances to step 5 when the toggle is on', async () => {
+    mocks.upsertStairMutateAsync.mockResolvedValueOnce({ id: 'stair-1' })
+    useQuotationStore.getState().setHasStair(true)
+    useQuotationStore.getState().setStair({ stairs: [{ code: 'STAIR-1', length: 12 }] })
+    render(<WizardActionBar />)
+
+    await userEvent.click(screen.getByRole('button', { name: /continue/i }))
+
+    await waitFor(() => expect(useQuotationStore.getState().currentStep).toBe(5))
+    expect(mocks.upsertStairMutateAsync).toHaveBeenCalledWith({
+      jobId: 'job-1',
+      payload: { stairs: [{ code: 'STAIR-1', length: 12 }] },
+    })
+    expect(mocks.deleteStairMutateAsync).not.toHaveBeenCalled()
+  })
+
+  it('deletes any existing stair and advances when the toggle is off', async () => {
+    mocks.deleteStairMutateAsync.mockResolvedValueOnce(undefined)
+    render(<WizardActionBar />)
+
+    await userEvent.click(screen.getByRole('button', { name: /continue/i }))
+
+    await waitFor(() => expect(useQuotationStore.getState().currentStep).toBe(5))
+    expect(mocks.deleteStairMutateAsync).toHaveBeenCalledWith('job-1')
+    expect(mocks.upsertStairMutateAsync).not.toHaveBeenCalled()
+  })
+
+  it('stays on step 4 when the stair upsert fails', async () => {
+    mocks.upsertStairMutateAsync.mockRejectedValueOnce(new Error('API error: 500'))
+    useQuotationStore.getState().setHasStair(true)
+    render(<WizardActionBar />)
+
+    await userEvent.click(screen.getByRole('button', { name: /continue/i }))
+
+    await waitFor(() => expect(mocks.toastError).toHaveBeenCalledWith('Failed to save stair'))
+    expect(useQuotationStore.getState().currentStep).toBe(4)
   })
 })

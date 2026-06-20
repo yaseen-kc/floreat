@@ -4,22 +4,22 @@ import { SelectField, type SelectFieldOption } from '@/components/quotation/shar
 import { Trash2 } from 'lucide-react'
 
 /** A single editable field within a row group — either a numeric input or an enum select. */
-export type MezzanineRowField =
+export type RowField =
   | { kind: 'number'; name: string; label: string; unit: string; step?: number }
   | { kind: 'select'; name: string; label: string; options: SelectFieldOption[] }
 
 /** A labelled sub-group of fields (e.g. Dimensions, Beams, Joints, Columns). */
-export interface MezzanineRowGroup {
+export interface RowGroup {
   title: string
-  fields: MezzanineRowField[]
+  fields: RowField[]
 }
 
-interface MezzanineRowCardProps {
-  /** Card heading, e.g. "Floor 1" or "Extension 1". */
+interface RowCardProps {
+  /** Card heading, e.g. "Floor 1" or "Staircase 1". */
   title: string
-  /** Optional read-only badge shown next to the title, e.g. the floor `code`. */
+  /** Optional read-only badge shown next to the title, e.g. the row `code`. */
   badge?: string
-  groups: MezzanineRowGroup[]
+  groups: RowGroup[]
   /** Current row values keyed by field `name`. */
   values: Record<string, number | string | undefined>
   /** Emits a partial patch of changed fields. */
@@ -28,12 +28,12 @@ interface MezzanineRowCardProps {
 }
 
 /**
- * A bordered card rendering one mezzanine floor/extension row as labelled
- * sub-groups of optional fields, with a remove button. Config-driven so floors
- * and extensions share the same markup. Every field is optional, so `required`
- * and `error` are always false.
+ * A bordered card rendering one repeating draft row (mezzanine floor/extension,
+ * stair, area deduction, …) as labelled sub-groups of optional fields, with a
+ * remove button. Config-driven so every feature shares the same markup. Every
+ * field is optional, so `required` and `error` are always false.
  */
-export function MezzanineRowCard({ title, badge, groups, values, onChange, onRemove }: MezzanineRowCardProps) {
+export function RowCard({ title, badge, groups, values, onChange, onRemove }: RowCardProps) {
   return (
     <div className="border border-border rounded-[12px] p-[18px]">
       <div className="flex items-center justify-between mb-3">

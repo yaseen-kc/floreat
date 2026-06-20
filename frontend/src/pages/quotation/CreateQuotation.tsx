@@ -5,6 +5,7 @@ import { WizardActionBar } from '@/components/quotation/WizardActionBar'
 import { Step1ProjectInfo } from '@/components/quotation/steps/Step1ProjectInfo'
 import { Step2Roof } from '@/components/quotation/steps/Step2Roof'
 import { Step3Mezzanine } from '@/components/quotation/steps/Step3Mezzanine'
+import { Step4Stair } from '@/components/quotation/steps/Step4Stair'
 
 export default function CreateQuotation() {
   const currentStep = useQuotationStore((s) => s.currentStep)
@@ -22,6 +23,7 @@ export default function CreateQuotation() {
           {currentStep === 1 && <Step1ProjectInfo />}
           {currentStep === 2 && <Step2Roof />}
           {currentStep === 3 && <Step3Mezzanine />}
+          {currentStep === 4 && <Step4Stair />}
         </div>
       </div>
       <WizardActionBar />
