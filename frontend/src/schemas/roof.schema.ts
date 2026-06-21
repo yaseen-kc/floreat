@@ -140,7 +140,7 @@ export const createRoofSchema = z.object({
   claddingExtensionWidthHeight: z.number().positive(),
   claddingExtensionMidFrameCount: z.number().int().nonnegative(),
   claddingExtensionEndFrameCount: z.number().int().nonnegative(),
-  sideColumnsWidthHeight: z.number().positive(),
+  sideColumnsWidthHeight: z.number().nonnegative(),
   sideColumnsMidFrameCount: z.number().int().nonnegative(),
   sideColumnsEndFrameCount: z.number().int().nonnegative(),
 

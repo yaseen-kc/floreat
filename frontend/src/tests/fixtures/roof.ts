@@ -71,7 +71,9 @@ export const validRoofDraft: Partial<RoofDraft> = {
   claddingExtensionWidthHeight: 1,
   claddingExtensionMidFrameCount: 1,
   claddingExtensionEndFrameCount: 1,
-  sideColumnsWidthHeight: 1,
+  // Derived in the store from eave 6 / slope 10° / cladding 1 → 6 − 1·tan(10°) ≈ 5.824.
+  // (setRoof overwrites any value passed here; kept consistent for clarity.)
+  sideColumnsWidthHeight: 5.824,
   sideColumnsMidFrameCount: 1,
   sideColumnsEndFrameCount: 1,
   // material grade

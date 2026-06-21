@@ -52,22 +52,40 @@ export function SideExtension() {
       error={sectionError}
     >
       <div className="grid grid-cols-1 md:grid-cols-2 gap-[18px]">
-        {FIELDS.map(({ name, label, unit, step }) => (
-          <NumberField
-            key={name}
-            label={label}
-            unit={unit}
-            step={step}
-            required={isRequired(name)}
-            value={roof[name]}
-            error={Boolean(errors[name])}
-            onChange={(v) => {
-              const patch: Partial<RoofDraft> = {}
-              patch[name] = v
-              setRoof(patch)
-            }}
-          />
-        ))}
+        {FIELDS.map(({ name, label, unit, step }) => {
+          // `sideColumnsWidthHeight` is derived in the store (see
+          // deriveSideColumnsWidthHeight) — display it read-only, never editable.
+          if (name === 'sideColumnsWidthHeight') {
+            return (
+              <NumberField
+                key={name}
+                label={label}
+                unit={unit}
+                readOnly
+                required={false}
+                value={roof[name]}
+                error={false}
+                onChange={() => {}}
+              />
+            )
+          }
+          return (
+            <NumberField
+              key={name}
+              label={label}
+              unit={unit}
+              step={step}
+              required={isRequired(name)}
+              value={roof[name]}
+              error={Boolean(errors[name])}
+              onChange={(v) => {
+                const patch: Partial<RoofDraft> = {}
+                patch[name] = v
+                setRoof(patch)
+              }}
+            />
+          )
+        })}
       </div>
     </CollapsibleSection>
   )

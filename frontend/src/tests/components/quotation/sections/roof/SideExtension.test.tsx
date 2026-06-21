@@ -31,6 +31,34 @@ describe('SideExtension section', () => {
     expect(useQuotationStore.getState().roof.roofExtensionWidthHeight).toBe(2.5)
   })
 
+  it('renders Side Columns Width / Height as a read-only derived field', () => {
+    useQuotationStore.getState().toggleRoofSection('sideExtension', true)
+    useQuotationStore.getState().setRoof({ eaveHeight: 6, roofSlope: 10, claddingExtensionWidthHeight: 1 })
+    render(<SideExtension />)
+    const input = screen
+      .getByText('Side Columns Width / Height')
+      .parentElement!.querySelector('input')! as HTMLInputElement
+    // 6 − 1 × tan(10°) → 5.824
+    expect(input).toHaveAttribute('readonly')
+    expect(input.value).toBe('5.824')
+    // No required asterisk on a derived field.
+    expect(screen.getByText('Side Columns Width / Height').textContent).not.toContain('*')
+  })
+
+  it('updates the derived Side Columns Width / Height live when cladding extension changes', () => {
+    useQuotationStore.getState().toggleRoofSection('sideExtension', true)
+    useQuotationStore.getState().setRoof({ eaveHeight: 6, roofSlope: 10, claddingExtensionWidthHeight: 1 })
+    render(<SideExtension />)
+    const cladding = screen
+      .getByText('Cladding Extension Width / Height')
+      .parentElement!.querySelector('input')!
+    fireEvent.change(cladding, { target: { value: '0' } })
+    const derived = screen
+      .getByText('Side Columns Width / Height')
+      .parentElement!.querySelector('input')! as HTMLInputElement
+    expect(derived.value).toBe('0')
+  })
+
   it('disabling the section clears its fields', () => {
     useQuotationStore.getState().toggleRoofSection('sideExtension', true)
     useQuotationStore.getState().setRoof({ roofExtensionWidthHeight: 2.5, sideColumnsMidFrameCount: 3 })

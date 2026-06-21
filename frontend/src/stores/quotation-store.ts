@@ -297,7 +297,14 @@ export const useQuotationStore = create<QuotationState>()(
 
       setProjectInfo: (v) => set((s) => ({ projectInfo: { ...s.projectInfo, ...v } })),
 
-      setRoof: (v) => set((s) => ({ roof: { ...s.roof, ...v } })),
+      // `sideColumnsWidthHeight` is derived, never user-entered: recompute it on
+      // every patch so it stays in sync with eaveHeight/roofSlope/claddingExt.
+      setRoof: (v) =>
+        set((s) => {
+          const roof = { ...s.roof, ...v }
+          roof.sideColumnsWidthHeight = deriveSideColumnsWidthHeight(roof)
+          return { roof }
+        }),
 
       toggleRoofSection: (key, enabled) =>
         set((s) => {
@@ -382,6 +389,28 @@ export const useQuotationStore = create<QuotationState>()(
   )
 )
 
+
+/**
+ * Derives the Side Columns Width / Height from the eave height, roof slope
+ * (in degrees) and cladding extension width/height. This field is no longer a
+ * user input — it is computed and persisted.
+ *
+ * Returns `undefined` while `claddingExtensionWidthHeight` is blank (so the
+ * read-only display stays empty), `0` when the cladding extension is `0`, and
+ * otherwise `eaveHeight − claddingExt × tan(roofSlope)` clamped to `0` and
+ * rounded to 3 decimals (matching the `Decimal(10,3)` column).
+ */
+export function deriveSideColumnsWidthHeight(
+  roof: Pick<RoofDraft, 'eaveHeight' | 'roofSlope' | 'claddingExtensionWidthHeight'>,
+): number | undefined {
+  const { eaveHeight, roofSlope, claddingExtensionWidthHeight } = roof
+  if (claddingExtensionWidthHeight === undefined || eaveHeight === undefined || roofSlope === undefined) {
+    return undefined
+  }
+  if (claddingExtensionWidthHeight === 0) return 0
+  const raw = eaveHeight - claddingExtensionWidthHeight * Math.tan((roofSlope * Math.PI) / 180)
+  return Math.max(0, Math.round(raw * 1000) / 1000)
+}
 
 /**
  * Builds the roof create/upsert payload from the Step 2 draft.
