@@ -86,14 +86,43 @@ describe('SideExtension section', () => {
     expect(useQuotationStore.getState().roof.sideColumnsMidFrameCount).toBe(7)
   })
 
+  it('renders Side Columns End Frame Count as a read-only mirror of the cladding count', () => {
+    useQuotationStore.getState().toggleRoofSection('sideExtension', true)
+    useQuotationStore.getState().setRoof({ claddingExtensionEndFrameCount: 2 })
+    render(<SideExtension />)
+    const input = screen
+      .getByText('Side Columns End Frame Count')
+      .parentElement!.querySelector('input')! as HTMLInputElement
+    expect(input).toHaveAttribute('readonly')
+    expect(input.value).toBe('2')
+    // No required asterisk on a derived field.
+    expect(screen.getByText('Side Columns End Frame Count').textContent).not.toContain('*')
+  })
+
+  it('updates the mirrored Side Columns End Frame Count live when the cladding count changes', () => {
+    useQuotationStore.getState().toggleRoofSection('sideExtension', true)
+    render(<SideExtension />)
+    const cladding = screen
+      .getByText('Cladding Extension End Frame Count')
+      .parentElement!.querySelector('input')!
+    fireEvent.change(cladding, { target: { value: '3' } })
+    const mirrored = screen
+      .getByText('Side Columns End Frame Count')
+      .parentElement!.querySelector('input')! as HTMLInputElement
+    expect(mirrored.value).toBe('3')
+    expect(useQuotationStore.getState().roof.sideColumnsEndFrameCount).toBe(3)
+  })
+
   it('disabling the section clears its fields', () => {
     useQuotationStore.getState().toggleRoofSection('sideExtension', true)
-    useQuotationStore.getState().setRoof({ roofExtensionWidthHeight: 2.5, claddingExtensionMidFrameCount: 3 })
-    // The mirror keeps sideColumnsMidFrameCount in lock-step with the cladding count.
+    useQuotationStore.getState().setRoof({ roofExtensionWidthHeight: 2.5, claddingExtensionMidFrameCount: 3, claddingExtensionEndFrameCount: 2 })
+    // The mirror keeps the side-column counts in lock-step with the cladding counts.
     expect(useQuotationStore.getState().roof.sideColumnsMidFrameCount).toBe(3)
+    expect(useQuotationStore.getState().roof.sideColumnsEndFrameCount).toBe(2)
     useQuotationStore.getState().toggleRoofSection('sideExtension', false)
     const { roof } = useQuotationStore.getState()
     expect(roof.roofExtensionWidthHeight).toBeUndefined()
     expect(roof.sideColumnsMidFrameCount).toBeUndefined()
+    expect(roof.sideColumnsEndFrameCount).toBeUndefined()
   })
 })

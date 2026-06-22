@@ -297,15 +297,17 @@ export const useQuotationStore = create<QuotationState>()(
 
       setProjectInfo: (v) => set((s) => ({ projectInfo: { ...s.projectInfo, ...v } })),
 
-      // `sideColumnsWidthHeight` and `sideColumnsMidFrameCount` are derived,
-      // never user-entered: recompute them on every patch. The former stays in
-      // sync with eaveHeight/roofSlope/claddingExt; the latter simply mirrors
-      // `claddingExtensionMidFrameCount`.
+      // `sideColumnsWidthHeight`, `sideColumnsMidFrameCount` and
+      // `sideColumnsEndFrameCount` are derived, never user-entered: recompute
+      // them on every patch. The width/height stays in sync with
+      // eaveHeight/roofSlope/claddingExt; the mid/end counts simply mirror
+      // `claddingExtensionMidFrameCount` / `claddingExtensionEndFrameCount`.
       setRoof: (v) =>
         set((s) => {
           const roof = { ...s.roof, ...v }
           roof.sideColumnsWidthHeight = deriveSideColumnsWidthHeight(roof)
           roof.sideColumnsMidFrameCount = roof.claddingExtensionMidFrameCount
+          roof.sideColumnsEndFrameCount = roof.claddingExtensionEndFrameCount
           return { roof }
         }),
 
