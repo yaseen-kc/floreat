@@ -1,19 +1,34 @@
 /**
  * Roof service — encapsulates database operations for the Roof model.
- * Handles inline sidewall management (replace-all strategy on upsert/update).
+ * Handles inline sidewall management (replace-all strategy on upsert/update)
+ * and recomputes the derived `sideColumnsWidthHeight` server-side so a client
+ * value is never trusted.
  */
 import { prisma } from '../lib/prisma.js'
-import type { CreateRoofInput, UpdateRoofInput } from '../schemas/roof.schema.js'
+import { deriveSideColumnsWidthHeight } from '@floreat/shared'
+import type { CreateRoofInput } from '../schemas/roof.schema.js'
 
-/** Creates or updates a roof for a given job. Sidewalls are replaced entirely on update. */
+/** Coerces a possibly-Decimal/null DB value into a plain number (or undefined). */
+function toNumber(value: unknown): number | undefined {
+  return value === null || value === undefined ? undefined : Number(value)
+}
+
+/**
+ * Creates or updates a roof for a given job. Sidewalls are replaced entirely on
+ * update. The derived `sideColumnsWidthHeight` is always recomputed from the
+ * payload's eave height, roof slope and cladding extension — any client-supplied
+ * value is overwritten.
+ */
 export function upsertRoof(jobId: string, data: CreateRoofInput) {
   const { sidewalls, ...rest } = data
   const sidewallData = sidewalls ?? []
+  // Authoritative recompute: never trust a client-supplied derived value.
+  const fields = { ...rest, sideColumnsWidthHeight: deriveSideColumnsWidthHeight(rest) }
 
   return prisma.roof.upsert({
     where: { jobId },
-    create: { jobId, ...rest, sidewalls: { createMany: { data: sidewallData } } },
-    update: { ...rest, sidewalls: { deleteMany: {}, createMany: { data: sidewallData } } },
+    create: { jobId, ...fields, sidewalls: { createMany: { data: sidewallData } } },
+    update: { ...fields, sidewalls: { deleteMany: {}, createMany: { data: sidewallData } } },
     include: { sidewalls: true },
   })
 }
@@ -32,13 +47,35 @@ export function getRoofByJobId(jobId: string) {
   return prisma.roof.findUnique({ where: { jobId }, include: { sidewalls: true } })
 }
 
-/** Updates a roof by job ID. Replaces sidewalls entirely if provided. */
-export function updateRoof(jobId: string, data: Record<string, any>) {
+/**
+ * Updates a roof by job ID (partial). Replaces sidewalls entirely if provided.
+ *
+ * `sideColumnsWidthHeight` is server-authoritative: whenever any of its inputs
+ * (eaveHeight, roofSlope, claddingExtensionWidthHeight) is part of the update,
+ * it is recomputed by merging the incoming values with the current DB row;
+ * otherwise any client-supplied value is dropped so it can never be set directly.
+ */
+export async function updateRoof(jobId: string, data: Record<string, any>) {
   const { sidewalls, ...rest } = data
-  const updateData: any = { ...rest }
+  const updateData: Record<string, any> = { ...rest }
 
   if (sidewalls !== undefined) {
     updateData.sidewalls = { deleteMany: {}, createMany: { data: sidewalls } }
+  }
+
+  const inputKeys = ['eaveHeight', 'roofSlope', 'claddingExtensionWidthHeight'] as const
+  if (inputKeys.some((k) => k in rest)) {
+    const current = await prisma.roof.findUnique({ where: { jobId } })
+    updateData.sideColumnsWidthHeight = deriveSideColumnsWidthHeight({
+      eaveHeight: toNumber(rest.eaveHeight ?? current?.eaveHeight),
+      roofSlope: toNumber(rest.roofSlope ?? current?.roofSlope),
+      claddingExtensionWidthHeight: toNumber(
+        rest.claddingExtensionWidthHeight ?? current?.claddingExtensionWidthHeight,
+      ),
+    })
+  } else {
+    // Inputs unchanged — never let a client set the derived value directly.
+    delete updateData.sideColumnsWidthHeight
   }
 
   return prisma.roof.update({ where: { jobId }, data: updateData, include: { sidewalls: true } })

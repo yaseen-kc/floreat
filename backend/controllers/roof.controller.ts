@@ -3,6 +3,7 @@
  * Delegates business logic to the roof service layer.
  */
 import { FastifyRequest, FastifyReply } from 'fastify'
+import { z } from 'zod'
 import { createRoofSchema, updateRoofSchema, paginationSchema } from '../schemas/roof.schema.js'
 import * as roofService from '../services/roof.service.js'
 import { sendError } from '../utils/response.js'
@@ -11,7 +12,7 @@ import { sendError } from '../utils/response.js'
 export async function upsert(request: FastifyRequest, reply: FastifyReply) {
   const { jobId } = request.params as { jobId: string }
   const result = createRoofSchema.safeParse(request.body)
-  if (!result.success) return reply.status(400).send({ error: result.error.flatten() })
+  if (!result.success) return reply.status(400).send({ error: z.flattenError(result.error) })
   const roof = await roofService.upsertRoof(jobId, result.data)
   return reply.status(200).send(roof)
 }
@@ -19,7 +20,7 @@ export async function upsert(request: FastifyRequest, reply: FastifyReply) {
 /** GET /api/roofs — returns a paginated list of all roofs. */
 export async function getAll(request: FastifyRequest, reply: FastifyReply) {
   const result = paginationSchema.safeParse(request.query)
-  if (!result.success) return reply.status(400).send({ error: result.error.flatten() })
+  if (!result.success) return reply.status(400).send({ error: z.flattenError(result.error) })
   return reply.send(await roofService.getRoofs(result.data.page, result.data.pageSize))
 }
 
@@ -35,7 +36,7 @@ export async function getByJobId(request: FastifyRequest, reply: FastifyReply) {
 export async function update(request: FastifyRequest, reply: FastifyReply) {
   const { jobId } = request.params as { jobId: string }
   const result = updateRoofSchema.safeParse(request.body)
-  if (!result.success) return reply.status(400).send({ error: result.error.flatten() })
+  if (!result.success) return reply.status(400).send({ error: z.flattenError(result.error) })
   try {
     const roof = await roofService.updateRoof(jobId, result.data)
     return reply.send(roof)

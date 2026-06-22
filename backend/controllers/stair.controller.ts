@@ -3,6 +3,7 @@
  * Delegates business logic to the stair service layer.
  */
 import { FastifyRequest, FastifyReply } from 'fastify'
+import { z } from 'zod'
 import { createStairSchema, updateStairSchema, paginationSchema } from '../schemas/stair.schema.js'
 import * as stairService from '../services/stair.service.js'
 import { sendError } from '../utils/response.js'
@@ -11,7 +12,7 @@ import { sendError } from '../utils/response.js'
 export async function upsert(request: FastifyRequest, reply: FastifyReply) {
   const { jobId } = request.params as { jobId: string }
   const result = createStairSchema.safeParse(request.body)
-  if (!result.success) return reply.status(400).send({ error: result.error.flatten() })
+  if (!result.success) return reply.status(400).send({ error: z.flattenError(result.error) })
   const stair = await stairService.upsertStair(jobId, result.data)
   return reply.status(200).send(stair)
 }
@@ -19,7 +20,7 @@ export async function upsert(request: FastifyRequest, reply: FastifyReply) {
 /** GET /api/stairs — returns a paginated list of all stairs. */
 export async function getAll(request: FastifyRequest, reply: FastifyReply) {
   const result = paginationSchema.safeParse(request.query)
-  if (!result.success) return reply.status(400).send({ error: result.error.flatten() })
+  if (!result.success) return reply.status(400).send({ error: z.flattenError(result.error) })
   return reply.send(await stairService.getStairs(result.data.page, result.data.pageSize))
 }
 
@@ -35,7 +36,7 @@ export async function getByJobId(request: FastifyRequest, reply: FastifyReply) {
 export async function update(request: FastifyRequest, reply: FastifyReply) {
   const { jobId } = request.params as { jobId: string }
   const result = updateStairSchema.safeParse(request.body)
-  if (!result.success) return reply.status(400).send({ error: result.error.flatten() })
+  if (!result.success) return reply.status(400).send({ error: z.flattenError(result.error) })
   try {
     const stair = await stairService.updateStair(jobId, result.data)
     return reply.send(stair)

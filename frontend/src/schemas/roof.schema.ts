@@ -1,164 +1,48 @@
 /**
- * Single source of truth for the Roof (quotation Step 2) request contract on
- * the frontend.
+ * Frontend Roof (quotation Step 2) request contract.
  *
- * Mirrors the backend `createRoofSchema` (backend/schemas/roof.schema.ts) for
- * the required core dimensions, structural sections, and the inline `sidewalls`
- * array. Numeric fields are typed as `number` here (the create/upsert payload),
- * even though the `Roof` response serialises Prisma `Decimal` columns back as
- * `string`.
+ * The canonical contract lives in `@floreat/shared` (the single source of truth
+ * shared with the backend). This module layers the frontend's STRICTER form
+ * rules on top: every structural section field is required here so Step 2 forces
+ * the user to complete it, even though the backend API accepts them as optional.
  *
- * NOTE: This frontend schema is intentionally STRICTER than the backend. Every
- * structural section field (members, purlins, coverings, flange brace,
- * polycarbonate, wind bracing, cladding openings, side extension, material
- * grade, material consumption, SAG rod) is required here so the Step 2 form
- * forces the user to complete them, even though the backend still accepts them
- * as optional. Only the Fascia Board fields and the inline `sidewalls` array
- * remain optional on the frontend.
+ * Strictness is an additive `.required()` + `.partial()` layer over the shared
+ * `createRoofSchema`, not a fork — so the two can never drift on field shape,
+ * names, enums, or constraints.
+ *
+ * Fields that stay optional on the frontend:
+ *  - `fasciaBoardArea`, `fasciaMaterialWeightPerSqft` (Fascia Board section)
+ *  - `sidewalls` (inline array)
+ *  - `sideColumnsWidthHeight` (DERIVED — computed for preview, recomputed
+ *    authoritatively by the backend; never a user input)
  */
 import { z } from 'zod'
+import { createRoofSchema as sharedCreateRoofSchema } from '@floreat/shared'
 
-/* ──────────────────────────────────────────────────────────────────────────
- * Enums — mirror the backend Prisma enums (string literals over the wire).
- * ────────────────────────────────────────────────────────────────────────── */
+// Re-export the shared enums so form components keep importing them from here.
+export {
+  sideWallSideEnum,
+  typeOfWallEnum,
+  purlinMaterialTypeEnum,
+  typeOfWindBracingEnum,
+  coveringTypeEnum,
+  roofFrameBaseFixingEnum,
+  plateMaterialGradeEnum,
+  sidewallSchema,
+} from '@floreat/shared'
 
-/** Which side of the building a sidewall belongs to. */
-export const sideWallSideEnum = z.enum(['FRONT', 'BACK', 'RIGHT', 'LEFT'])
-
-/** Sidewall construction type. */
-export const typeOfWallEnum = z.enum(['BRICK', 'PANEL', 'LATERITE', 'AAC', 'BLOCK'])
-
-/** Purlin material profile. */
-export const purlinMaterialTypeEnum = z.enum(['Z_C', 'TUBE'])
-
-/** Wind bracing member type. */
-export const typeOfWindBracingEnum = z.enum(['ROD', 'TUBE'])
-
-/** Roof/cladding covering material. */
-export const coveringTypeEnum = z.enum(['BARE_GALVALUME', 'PPGL', 'PUFF_SHEET', 'OTHER'])
-
-/** How the roof frame base is fixed to its support. */
-export const roofFrameBaseFixingEnum = z.enum([
-  'FOUNDATION_BOLT',
-  'ANCHOR_BOLT',
-  'JOINT_BOLT_ON_STEEL_COLUMN',
-])
-
-/** Structural plate material grade. */
-export const plateMaterialGradeEnum = z.enum(['FE_345', 'FE_250', 'FE_400'])
-
-/* ──────────────────────────────────────────────────────────────────────────
- * Sidewall — a single inline sidewall entry attached to a roof.
- * ────────────────────────────────────────────────────────────────────────── */
-
-/** Schema for an individual sidewall entry. */
-export const sidewallSchema = z.object({
-  side: sideWallSideEnum,
-  wallType: typeOfWallEnum,
-  thickness: z.number().positive(),
-  height: z.number().positive(),
+/**
+ * Strict Step 2 schema: every field required EXCEPT the fascia board fields,
+ * the inline sidewalls array, and the derived `sideColumnsWidthHeight`.
+ */
+export const createRoofSchema = sharedCreateRoofSchema.required().partial({
+  fasciaBoardArea: true,
+  fasciaMaterialWeightPerSqft: true,
+  sidewalls: true,
+  sideColumnsWidthHeight: true,
 })
 
-/* ──────────────────────────────────────────────────────────────────────────
- * Roof create/upsert payload.
- * ────────────────────────────────────────────────────────────────────────── */
-
-/** Schema for creating/upserting a roof — required core fields + sections. */
-export const createRoofSchema = z.object({
-  // ── Required core dimensions ──
-  buildingOverallLength: z.number().positive(),
-  buildingOverallWidth: z.number().positive(),
-  eaveHeight: z.number().positive(),
-  roofSlope: z.number().positive(),
-  mainRoofFrames: z.number().int().positive(),
-  endRoofFrames: z.number().int().positive(),
-  roofPurlinSpacing: z.number().positive(),
-  claddingPurlins: z.number().int().nonnegative(),
-  internalColumnsForMainRoofFrames: z.number().int().nonnegative(),
-  internalColumnsForEndRoofFrames: z.number().int().nonnegative(),
-  roofFrameBaseFixing: roofFrameBaseFixingEnum,
-
-  // ── members ──
-  columnSegmentsInMainFrame: z.number().int().nonnegative(),
-  raftersInOneHalfOfMainFrame: z.number().int().nonnegative(),
-  columnSegmentsInEndFrame: z.number().int().nonnegative(),
-  raftersInOneHalfOfEndFrame: z.number().int().nonnegative(),
-  endFrameHorizontalTieBeam: z.number().int().nonnegative(),
-
-  // ── purlin ──
-  roofPurlinType: purlinMaterialTypeEnum,
-  roofPurlinDepth: z.number().positive(),
-  roofPurlinUnitWeight: z.number().positive(),
-  claddingPurlinType: purlinMaterialTypeEnum,
-  claddingPurlinDepth: z.number().positive(),
-  claddingPurlinUnitWeight: z.number().positive(),
-
-  // ── covering ──
-  roofCoveringType: coveringTypeEnum,
-  roofCoveringThickness: z.number().positive(),
-  claddingCoveringType: coveringTypeEnum,
-  claddingCoveringThickness: z.number().positive(),
-  roofAreaDeduction: z.number().nonnegative(),
-
-  // ── flange brace ──
-  roofFlangeBraceAverageLength: z.number().positive(),
-  claddingFlangeBraceAverageLength: z.number().positive(),
-  endFrameFlangeBraceAverageLength: z.number().positive(),
-
-  // ── polycarbonate ──
-  polycarbonateRoofLength: z.number().positive(),
-  polycarbonateRoofWidth: z.number().positive(),
-  polycarbonateRoofCount: z.number().int().nonnegative(),
-
-  // ── wind bracing ──
-  roofWindBracingSegmentsInOneHalf: z.number().int().nonnegative(),
-  columnWindBracingSegments: z.number().int().nonnegative(),
-  roofWindBracingProvidedBays: z.number().int().nonnegative(),
-  columnWindBracingProvidedBays: z.number().int().nonnegative(),
-  windBracingColumnHeight: z.number().positive(),
-  windBracingUnitWeight: z.number().positive(),
-  roofWindBracingBaySpacing: z.number().positive(),
-  columnWindBracingBaySpacing: z.number().positive(),
-  roofWindBracingLength: z.number().positive(),
-  columnWindBracingLength: z.number().positive(),
-  windBracingType: typeOfWindBracingEnum,
-
-  // ── cladding opening ──
-  frontCladdingOpeningArea: z.number().nonnegative(),
-  backCladdingOpeningArea: z.number().nonnegative(),
-  rightCladdingOpeningArea: z.number().nonnegative(),
-  leftCladdingOpeningArea: z.number().nonnegative(),
-
-  // ── fascia board (optional — excluded from the required set) ──
-  fasciaBoardArea: z.number().nonnegative().optional(),
-  fasciaMaterialWeightPerSqft: z.number().positive().optional(),
-
-  // ── side extension ──
-  roofExtensionWidthHeight: z.number().positive(),
-  roofExtensionMidFrameCount: z.number().int().nonnegative(),
-  roofExtensionEndFrameCount: z.number().int().nonnegative(),
-  claddingExtensionWidthHeight: z.number().positive(),
-  claddingExtensionMidFrameCount: z.number().int().nonnegative(),
-  claddingExtensionEndFrameCount: z.number().int().nonnegative(),
-  sideColumnsWidthHeight: z.number().nonnegative(),
-  sideColumnsMidFrameCount: z.number().int().nonnegative(),
-  sideColumnsEndFrameCount: z.number().int().nonnegative(),
-
-  // ── material grade ──
-  gradeOfPlateMaterial: plateMaterialGradeEnum,
-
-  // ── material consumption ──
-  materialConsumptionExcludingPurlin: z.number().nonnegative(),
-
-  // ── SAG rod ──
-  DiaOfRoofSagRod: z.number().positive(),
-  DiaOfCladdingSagRod: z.number().positive(),
-
-  // ── Inline sidewalls (optional — excluded from the required set) ──
-  sidewalls: z.array(sidewallSchema).optional(),
-})
-
-/** Validated payload for creating/upserting a roof. */
+/** Validated payload for creating/upserting a roof (frontend-strict). */
 export type CreateRoofInput = z.infer<typeof createRoofSchema>
 
 /** A field key of the roof create/upsert contract. */
@@ -166,8 +50,7 @@ export type RoofField = keyof CreateRoofInput
 
 /**
  * Returns true when a field is required (i.e. an `undefined` value is rejected).
- * Derived from the schema so the form's required markers can't drift — the core
- * dimensions report `true`, every `.optional()` section field reports `false`.
+ * Derived from the strict schema so the form's required markers can't drift.
  */
 export function isRequired(field: RoofField): boolean {
   return !createRoofSchema.shape[field].safeParse(undefined).success

@@ -30,10 +30,12 @@ describe('setRoof derives sideColumnsWidthHeight', () => {
     expect(useQuotationStore.getState().roof.sideColumnsWidthHeight).toBe(0)
   })
 
-  it('flows the derived value into the built payload', () => {
+  it('keeps the derived value out of the built payload (the backend recomputes it)', () => {
     useQuotationStore.getState().setRoof(validRoofDraft)
     const payload = buildRoofPayload(useQuotationStore.getState().roof)
-    // validRoofDraft: eave 6, slope 10, cladding 1 → 5.824
-    expect(payload.sideColumnsWidthHeight).toBe(5.824)
+    // validRoofDraft: eave 6, slope 10, cladding 1 → 5.824 preview, but the
+    // payload omits it so the server stays the source of truth.
+    expect(payload).not.toHaveProperty('sideColumnsWidthHeight')
+    expect(useQuotationStore.getState().roof.sideColumnsWidthHeight).toBe(5.824)
   })
 })

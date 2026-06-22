@@ -3,6 +3,7 @@
  * Delegates business logic to the canopy service layer.
  */
 import { FastifyRequest, FastifyReply } from 'fastify'
+import { z } from 'zod'
 import { createCanopySchema, updateCanopySchema, paginationSchema } from '../schemas/canopy.schema.js'
 import * as canopyService from '../services/canopy.service.js'
 import { sendError } from '../utils/response.js'
@@ -11,7 +12,7 @@ import { sendError } from '../utils/response.js'
 export async function upsert(request: FastifyRequest, reply: FastifyReply) {
   const { jobId } = request.params as { jobId: string }
   const result = createCanopySchema.safeParse(request.body)
-  if (!result.success) return reply.status(400).send({ error: result.error.flatten() })
+  if (!result.success) return reply.status(400).send({ error: z.flattenError(result.error) })
   const canopy = await canopyService.upsertCanopy(jobId, result.data)
   return reply.status(200).send(canopy)
 }
@@ -19,7 +20,7 @@ export async function upsert(request: FastifyRequest, reply: FastifyReply) {
 /** GET /api/canopies — returns a paginated list of all canopies. */
 export async function getAll(request: FastifyRequest, reply: FastifyReply) {
   const result = paginationSchema.safeParse(request.query)
-  if (!result.success) return reply.status(400).send({ error: result.error.flatten() })
+  if (!result.success) return reply.status(400).send({ error: z.flattenError(result.error) })
   return reply.send(await canopyService.getCanopies(result.data.page, result.data.pageSize))
 }
 
@@ -35,7 +36,7 @@ export async function getByJobId(request: FastifyRequest, reply: FastifyReply) {
 export async function update(request: FastifyRequest, reply: FastifyReply) {
   const { jobId } = request.params as { jobId: string }
   const result = updateCanopySchema.safeParse(request.body)
-  if (!result.success) return reply.status(400).send({ error: result.error.flatten() })
+  if (!result.success) return reply.status(400).send({ error: z.flattenError(result.error) })
   try {
     const canopy = await canopyService.updateCanopy(jobId, result.data)
     return reply.send(canopy)

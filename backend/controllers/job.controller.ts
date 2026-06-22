@@ -3,6 +3,7 @@
  * Delegates business logic to the job service layer.
  */
 import { FastifyRequest, FastifyReply } from 'fastify'
+import { z } from 'zod'
 import { createJobSchema, updateJobSchema, paginationSchema } from '../schemas/job.schema.js'
 import * as jobService from '../services/job.service.js'
 import { sendError } from '../utils/response.js'
@@ -10,7 +11,7 @@ import { sendError } from '../utils/response.js'
 /** POST /api/jobs — creates a new job. */
 export async function create(request: FastifyRequest, reply: FastifyReply) {
   const result = createJobSchema.safeParse(request.body)
-  if (!result.success) return reply.status(400).send({ error: result.error.flatten() })
+  if (!result.success) return reply.status(400).send({ error: z.flattenError(result.error) })
   const job = await jobService.createJob(result.data)
   return reply.status(201).send(job)
 }
@@ -18,7 +19,7 @@ export async function create(request: FastifyRequest, reply: FastifyReply) {
 /** GET /api/jobs — returns a paginated list of jobs. */
 export async function getAll(request: FastifyRequest, reply: FastifyReply) {
   const result = paginationSchema.safeParse(request.query)
-  if (!result.success) return reply.status(400).send({ error: result.error.flatten() })
+  if (!result.success) return reply.status(400).send({ error: z.flattenError(result.error) })
   return reply.send(await jobService.getJobs(result.data.page, result.data.pageSize))
 }
 
@@ -34,7 +35,7 @@ export async function getById(request: FastifyRequest, reply: FastifyReply) {
 export async function update(request: FastifyRequest, reply: FastifyReply) {
   const { id } = request.params as { id: string }
   const result = updateJobSchema.safeParse(request.body)
-  if (!result.success) return reply.status(400).send({ error: result.error.flatten() })
+  if (!result.success) return reply.status(400).send({ error: z.flattenError(result.error) })
   try {
     const job = await jobService.updateJob(id, result.data)
     return reply.send(job)

@@ -17,6 +17,7 @@ import {
   type CreateCanopyInput,
   canopyItemSchema,
 } from '@/schemas/canopy.schema'
+import { deriveSideColumnsWidthHeight } from '@floreat/shared'
 import { STEP_COUNT } from '@/components/quotation/steps'
 
 /** Step 1 project info — the canonical job contract (see job.schema.ts). */
@@ -391,26 +392,11 @@ export const useQuotationStore = create<QuotationState>()(
 
 
 /**
- * Derives the Side Columns Width / Height from the eave height, roof slope
- * (in degrees) and cladding extension width/height. This field is no longer a
- * user input — it is computed and persisted.
- *
- * Returns `undefined` while `claddingExtensionWidthHeight` is blank (so the
- * read-only display stays empty), `0` when the cladding extension is `0`, and
- * otherwise `eaveHeight − claddingExt × tan(roofSlope)` clamped to `0` and
- * rounded to 3 decimals (matching the `Decimal(10,3)` column).
+ * Re-exported from @floreat/shared so existing importers keep resolving it from
+ * the store. The frontend uses it for the Step 2 read-only preview; the backend
+ * recomputes the same value authoritatively before persisting.
  */
-export function deriveSideColumnsWidthHeight(
-  roof: Pick<RoofDraft, 'eaveHeight' | 'roofSlope' | 'claddingExtensionWidthHeight'>,
-): number | undefined {
-  const { eaveHeight, roofSlope, claddingExtensionWidthHeight } = roof
-  if (claddingExtensionWidthHeight === undefined || eaveHeight === undefined || roofSlope === undefined) {
-    return undefined
-  }
-  if (claddingExtensionWidthHeight === 0) return 0
-  const raw = eaveHeight - claddingExtensionWidthHeight * Math.tan((roofSlope * Math.PI) / 180)
-  return Math.max(0, Math.round(raw * 1000) / 1000)
-}
+export { deriveSideColumnsWidthHeight }
 
 /**
  * Builds the roof create/upsert payload from the Step 2 draft.
@@ -426,6 +412,9 @@ export function buildRoofPayload(roof: RoofDraft): CreateRoofInput {
 
   const entries = Object.entries(roof).filter(([key, value]) => {
     if (value === undefined) return false
+    // `sideColumnsWidthHeight` is derived and recomputed authoritatively by the
+    // backend — never send the client-side preview value.
+    if (key === 'sideColumnsWidthHeight') return false
     if (key === 'sidewalls') return Array.isArray(value) && value.length > 0
     return true
   })

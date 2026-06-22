@@ -3,6 +3,7 @@
  * Delegates business logic to the mezzanine service layer.
  */
 import { FastifyRequest, FastifyReply } from 'fastify'
+import { z } from 'zod'
 import { createMezzanineSchema, updateMezzanineSchema, paginationSchema } from '../schemas/mezzanine.schema.js'
 import * as mezzanineService from '../services/mezzanine.service.js'
 import { sendError } from '../utils/response.js'
@@ -11,7 +12,7 @@ import { sendError } from '../utils/response.js'
 export async function upsert(request: FastifyRequest, reply: FastifyReply) {
   const { jobId } = request.params as { jobId: string }
   const result = createMezzanineSchema.safeParse(request.body)
-  if (!result.success) return reply.status(400).send({ error: result.error.flatten() })
+  if (!result.success) return reply.status(400).send({ error: z.flattenError(result.error) })
   const mezzanine = await mezzanineService.upsertMezzanine(jobId, result.data)
   return reply.status(200).send(mezzanine)
 }
@@ -19,7 +20,7 @@ export async function upsert(request: FastifyRequest, reply: FastifyReply) {
 /** GET /api/mezzanines — returns a paginated list of all mezzanines. */
 export async function getAll(request: FastifyRequest, reply: FastifyReply) {
   const result = paginationSchema.safeParse(request.query)
-  if (!result.success) return reply.status(400).send({ error: result.error.flatten() })
+  if (!result.success) return reply.status(400).send({ error: z.flattenError(result.error) })
   return reply.send(await mezzanineService.getMezzanines(result.data.page, result.data.pageSize))
 }
 
@@ -35,7 +36,7 @@ export async function getByJobId(request: FastifyRequest, reply: FastifyReply) {
 export async function update(request: FastifyRequest, reply: FastifyReply) {
   const { jobId } = request.params as { jobId: string }
   const result = updateMezzanineSchema.safeParse(request.body)
-  if (!result.success) return reply.status(400).send({ error: result.error.flatten() })
+  if (!result.success) return reply.status(400).send({ error: z.flattenError(result.error) })
   try {
     const mezzanine = await mezzanineService.updateMezzanine(jobId, result.data)
     return reply.send(mezzanine)

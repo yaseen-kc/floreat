@@ -5,6 +5,8 @@ export default defineConfig({
     globals: true,
     environment: 'node',
     setupFiles: ['./tests/setup.ts'],
+    // Only run the TypeScript source tests under tests/ — never a built dist/.
+    include: ['tests/**/*.test.ts'],
     coverage: {
       provider: 'v8',
       include: ['services/**', 'controllers/**', 'middlewares/**', 'routes/**', 'utils/**'],
