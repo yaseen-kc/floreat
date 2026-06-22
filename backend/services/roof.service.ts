@@ -10,6 +10,13 @@ export function upsertRoof(jobId: string, data: CreateRoofInput) {
   const { sidewalls, ...rest } = data
   const sidewallData = sidewalls ?? []
 
+  // `sideColumnsMidFrameCount` is derived server-side: it must always equal
+  // `claddingExtensionMidFrameCount`. Overwrite whenever the cladding value is
+  // present so a buggy/malicious client can't persist a mismatch.
+  if (rest.claddingExtensionMidFrameCount !== undefined) {
+    rest.sideColumnsMidFrameCount = rest.claddingExtensionMidFrameCount
+  }
+
   return prisma.roof.upsert({
     where: { jobId },
     create: { jobId, ...rest, sidewalls: { createMany: { data: sidewallData } } },
@@ -36,6 +43,12 @@ export function getRoofByJobId(jobId: string) {
 export function updateRoof(jobId: string, data: Record<string, any>) {
   const { sidewalls, ...rest } = data
   const updateData: any = { ...rest }
+
+  // Keep the derived `sideColumnsMidFrameCount` in lock-step with
+  // `claddingExtensionMidFrameCount` whenever the latter is part of this update.
+  if (updateData.claddingExtensionMidFrameCount !== undefined) {
+    updateData.sideColumnsMidFrameCount = updateData.claddingExtensionMidFrameCount
+  }
 
   if (sidewalls !== undefined) {
     updateData.sidewalls = { deleteMany: {}, createMany: { data: sidewalls } }

@@ -115,6 +115,9 @@ export const createRoofSchema = z.object({
   // inconsistent value. Upgrade path: recompute it in roof.service from
   // eaveHeight/roofSlope/claddingExtensionWidthHeight before persisting.
   sideColumnsWidthHeight: z.number().nonnegative().optional(),
+  // `sideColumnsMidFrameCount` is derived server-side in roof.service to equal
+  // `claddingExtensionMidFrameCount` (overwritten on upsert/update), so the
+  // value accepted here is advisory only.
   sideColumnsMidFrameCount: z.number().int().nonnegative().optional(),
   sideColumnsEndFrameCount: z.number().int().nonnegative().optional(),
 

@@ -53,9 +53,11 @@ export function SideExtension() {
     >
       <div className="grid grid-cols-1 md:grid-cols-2 gap-[18px]">
         {FIELDS.map(({ name, label, unit, step }) => {
-          // `sideColumnsWidthHeight` is derived in the store (see
-          // deriveSideColumnsWidthHeight) — display it read-only, never editable.
-          if (name === 'sideColumnsWidthHeight') {
+          // `sideColumnsWidthHeight` and `sideColumnsMidFrameCount` are derived
+          // in the store (the former via deriveSideColumnsWidthHeight, the
+          // latter mirroring claddingExtensionMidFrameCount) — display them
+          // read-only, never editable.
+          if (name === 'sideColumnsWidthHeight' || name === 'sideColumnsMidFrameCount') {
             return (
               <NumberField
                 key={name}

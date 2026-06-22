@@ -140,4 +140,13 @@ describe('mapRoofResponseToDraft', () => {
     expect(roofSectionsEnabled.sagRod).toBe(true)
     expect(roofSectionsEnabled.materialConsumption).toBe(false)
   })
+
+  it('mirrors sideColumnsMidFrameCount from claddingExtensionMidFrameCount, ignoring the persisted value', () => {
+    const r = baseRoof()
+    r.claddingExtensionMidFrameCount = 4
+    // A stale/mismatched persisted value must be overridden by the mirror.
+    r.sideColumnsMidFrameCount = 99
+    const { roof } = mapRoofResponseToDraft(r)
+    expect(roof.sideColumnsMidFrameCount).toBe(4)
+  })
 })

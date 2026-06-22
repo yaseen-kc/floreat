@@ -98,7 +98,9 @@ export function mapRoofResponseToDraft(r: Roof): HydratedRoof {
     claddingExtensionMidFrameCount: int(r.claddingExtensionMidFrameCount),
     claddingExtensionEndFrameCount: int(r.claddingExtensionEndFrameCount),
     sideColumnsWidthHeight: num(r.sideColumnsWidthHeight),
-    sideColumnsMidFrameCount: int(r.sideColumnsMidFrameCount),
+    // Mirrors `claddingExtensionMidFrameCount` (derived, never user-entered) so
+    // the hydrated draft is consistent regardless of the persisted value.
+    sideColumnsMidFrameCount: int(r.claddingExtensionMidFrameCount),
     sideColumnsEndFrameCount: int(r.sideColumnsEndFrameCount),
 
     // ── Material grade ──

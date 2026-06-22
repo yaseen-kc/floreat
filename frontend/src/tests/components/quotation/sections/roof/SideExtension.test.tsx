@@ -59,9 +59,38 @@ describe('SideExtension section', () => {
     expect(derived.value).toBe('0')
   })
 
+  it('renders Side Columns Mid Frame Count as a read-only mirror of the cladding count', () => {
+    useQuotationStore.getState().toggleRoofSection('sideExtension', true)
+    useQuotationStore.getState().setRoof({ claddingExtensionMidFrameCount: 4 })
+    render(<SideExtension />)
+    const input = screen
+      .getByText('Side Columns Mid Frame Count')
+      .parentElement!.querySelector('input')! as HTMLInputElement
+    expect(input).toHaveAttribute('readonly')
+    expect(input.value).toBe('4')
+    // No required asterisk on a derived field.
+    expect(screen.getByText('Side Columns Mid Frame Count').textContent).not.toContain('*')
+  })
+
+  it('updates the mirrored Side Columns Mid Frame Count live when the cladding count changes', () => {
+    useQuotationStore.getState().toggleRoofSection('sideExtension', true)
+    render(<SideExtension />)
+    const cladding = screen
+      .getByText('Cladding Extension Mid Frame Count')
+      .parentElement!.querySelector('input')!
+    fireEvent.change(cladding, { target: { value: '7' } })
+    const mirrored = screen
+      .getByText('Side Columns Mid Frame Count')
+      .parentElement!.querySelector('input')! as HTMLInputElement
+    expect(mirrored.value).toBe('7')
+    expect(useQuotationStore.getState().roof.sideColumnsMidFrameCount).toBe(7)
+  })
+
   it('disabling the section clears its fields', () => {
     useQuotationStore.getState().toggleRoofSection('sideExtension', true)
-    useQuotationStore.getState().setRoof({ roofExtensionWidthHeight: 2.5, sideColumnsMidFrameCount: 3 })
+    useQuotationStore.getState().setRoof({ roofExtensionWidthHeight: 2.5, claddingExtensionMidFrameCount: 3 })
+    // The mirror keeps sideColumnsMidFrameCount in lock-step with the cladding count.
+    expect(useQuotationStore.getState().roof.sideColumnsMidFrameCount).toBe(3)
     useQuotationStore.getState().toggleRoofSection('sideExtension', false)
     const { roof } = useQuotationStore.getState()
     expect(roof.roofExtensionWidthHeight).toBeUndefined()

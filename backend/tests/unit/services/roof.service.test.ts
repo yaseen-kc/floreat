@@ -40,6 +40,24 @@ describe('roof.service', () => {
         include: { sidewalls: true },
       })
     })
+
+    it('forces sideColumnsMidFrameCount to equal claddingExtensionMidFrameCount', async () => {
+      const input = makeRoofInput('job-3')
+      const { jobId, ...rest } = input
+      const roof = makeRoof({ jobId: 'job-3' })
+      prismaMock.roof.upsert.mockResolvedValue(roof as any)
+
+      // Client sends a mismatched sideColumnsMidFrameCount — the service overrides it.
+      await upsertRoof('job-3', { ...rest, claddingExtensionMidFrameCount: 6, sideColumnsMidFrameCount: 99 })
+
+      const expected = { ...rest, claddingExtensionMidFrameCount: 6, sideColumnsMidFrameCount: 6 }
+      expect(prismaMock.roof.upsert).toHaveBeenCalledWith({
+        where: { jobId: 'job-3' },
+        create: { jobId: 'job-3', ...expected, sidewalls: { createMany: { data: [] } } },
+        update: { ...expected, sidewalls: { deleteMany: {}, createMany: { data: [] } } },
+        include: { sidewalls: true },
+      })
+    })
   })
 
   describe('getRoofs', () => {
@@ -103,6 +121,19 @@ describe('roof.service', () => {
       expect(prismaMock.roof.update).toHaveBeenCalledWith({
         where: { jobId: 'job-1' },
         data: { roofSlope: 10 },
+        include: { sidewalls: true },
+      })
+    })
+
+    it('forces sideColumnsMidFrameCount to equal claddingExtensionMidFrameCount when the cladding count is updated', async () => {
+      const roof = makeRoof()
+      prismaMock.roof.update.mockResolvedValue(roof as any)
+
+      await updateRoof('job-1', { claddingExtensionMidFrameCount: 5, sideColumnsMidFrameCount: 99 })
+
+      expect(prismaMock.roof.update).toHaveBeenCalledWith({
+        where: { jobId: 'job-1' },
+        data: { claddingExtensionMidFrameCount: 5, sideColumnsMidFrameCount: 5 },
         include: { sidewalls: true },
       })
     })
