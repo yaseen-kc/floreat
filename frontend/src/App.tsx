@@ -1,12 +1,15 @@
-import './App.css'
-import { ClerkProvider, Show} from '@clerk/react'
+import { useRef, useState } from 'react'
+import { ClerkProvider, Show } from '@clerk/react'
 import { Navigate, Outlet, Route, Routes, useNavigate } from 'react-router-dom'
 import Login from './pages/authentication/Login'
 import Dashboard from './pages/Dashboard'
 import { Sidebar } from './components/dashboard/sidebar'
+import { Topbar } from './components/dashboard/Topbar'
 import CreateQuotation from './pages/quotation/CreateQuotation'
 import { Toaster } from './components/ui/sonner'
 import { useDraftPersistenceScope } from './hooks/useDraftPersistenceScope'
+import { useSearchShortcuts } from './hooks/useSearchShortcuts'
+import { clerkAppearance } from './lib/clerk'
 
 
 const PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY
@@ -21,6 +24,7 @@ function App() {
   return (
     <ClerkProvider
       publishableKey={PUBLISHABLE_KEY}
+      appearance={clerkAppearance}
       routerPush={(to) => navigate(to)}
       routerReplace={(to) => navigate(to, { replace: true })}
       signInUrl="/login"
@@ -57,18 +61,37 @@ function ProtectedLayout() {
 }
 
 /**
- * The signed-in shell. Scopes the persisted quotation draft to the current
- * user and mounts the global toast surface.
+ * The signed-in shell (DESIGN.md §8.1): a CSS grid of `var(--sidebar-w) 1fr`
+ * with a sticky sidebar, a sticky blurred topbar, and a scrolling content well.
+ * Scopes the persisted quotation draft to the current user and mounts the
+ * global toast surface.
  */
 function SignedInLayout() {
   useDraftPersistenceScope()
+  const [navOpen, setNavOpen] = useState(false)
+  const searchRef = useRef<HTMLInputElement>(null)
+  useSearchShortcuts(searchRef)
 
   return (
-    <div className="flex h-screen">
-      <Sidebar />
-      <main className="flex-1 overflow-auto">
-        <Outlet />
-      </main>
+    <div className="grid min-h-screen grid-cols-[var(--sidebar-w)_1fr]">
+      <Sidebar navOpen={navOpen} onClose={() => setNavOpen(false)} />
+
+      {/* Scrim behind the mobile drawer. */}
+      {navOpen && (
+        <button
+          type="button"
+          aria-label="Close navigation"
+          onClick={() => setNavOpen(false)}
+          className="fixed inset-0 z-40 hidden bg-foreground/40 backdrop-blur-[1px] max-[768px]:block"
+        />
+      )}
+
+      <div className="flex min-h-screen min-w-0 flex-col">
+        <Topbar onMenu={() => setNavOpen(true)} searchRef={searchRef} />
+        <main className="flex-1 overflow-auto">
+          <Outlet />
+        </main>
+      </div>
       <Toaster />
     </div>
   )

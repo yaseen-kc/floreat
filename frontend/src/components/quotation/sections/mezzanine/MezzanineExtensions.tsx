@@ -5,6 +5,7 @@ import { SectionCard } from '@/components/quotation/shared/SectionCard'
 import { Button } from '@/components/ui/button'
 import { StretchHorizontal, Plus } from 'lucide-react'
 import { RowCard, type RowGroup } from '@/components/quotation/shared/RowCard'
+import { EmptyState } from '@/components/ui/empty-state'
 import {
   MEZZANINE_TYPE_OPTIONS,
   MEZZANINE_FLOOR_LEVEL_OPTIONS,
@@ -67,7 +68,13 @@ export function MezzanineExtensions() {
   return (
     <SectionCard icon={<StretchHorizontal className="w-3.5 h-3.5" />} title="Floor Extensions">
       <div className="flex flex-col gap-[18px]">
-        {extensions.length === 0 && <p className="text-muted-foreground text-sm">No extensions added yet.</p>}
+        {extensions.length === 0 && (
+          <EmptyState
+            icon={<StretchHorizontal />}
+            title="No extensions added yet."
+            description="Add a floor extension to include it in this quotation."
+          />
+        )}
 
         {extensions.map((row, index) => (
           <RowCard

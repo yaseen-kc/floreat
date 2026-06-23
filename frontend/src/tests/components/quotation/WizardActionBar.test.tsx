@@ -13,6 +13,8 @@ const mocks = vi.hoisted(() => ({
   deleteMezzMutateAsync: vi.fn(),
   upsertStairMutateAsync: vi.fn(),
   deleteStairMutateAsync: vi.fn(),
+  upsertCanopyMutateAsync: vi.fn(),
+  deleteCanopyMutateAsync: vi.fn(),
   createPending: false,
   updatePending: false,
   upsertRoofPending: false,
@@ -52,6 +54,14 @@ vi.mock('@/api/quotation/stair/postStairs', () => ({
 
 vi.mock('@/api/quotation/stair/deleteStairs', () => ({
   useDeleteStair: () => ({ mutateAsync: mocks.deleteStairMutateAsync, isPending: false }),
+}))
+
+vi.mock('@/api/quotation/canopy/postCanopy', () => ({
+  useUpsertCanopy: () => ({ mutateAsync: mocks.upsertCanopyMutateAsync, isPending: false }),
+}))
+
+vi.mock('@/api/quotation/canopy/deleteCanopy', () => ({
+  useDeleteCanopy: () => ({ mutateAsync: mocks.deleteCanopyMutateAsync, isPending: false }),
 }))
 
 import { WizardActionBar } from '@/components/quotation/WizardActionBar'

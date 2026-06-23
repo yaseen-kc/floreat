@@ -46,7 +46,7 @@ export function WizardStepper() {
         return (
           <div key={n} className="contents">
             {i > 0 && (
-              <div className={cn('flex-1 min-w-6 h-[1.5px] mx-3', done ? 'bg-emerald-500' : 'bg-border')} />
+              <div className={cn('flex-1 min-w-6 h-[1.5px] mx-3', done ? 'bg-success' : 'bg-border')} />
             )}
             <button
               type="button"
@@ -61,7 +61,7 @@ export function WizardStepper() {
               <span className={cn(
                 'w-[26px] h-[26px] rounded-full grid place-items-center font-mono text-xs font-semibold border-[1.5px] transition-all',
                 active && 'bg-primary text-primary-foreground border-primary',
-                done && 'bg-emerald-500/15 text-emerald-600 border-transparent',
+                done && 'bg-success-soft text-success border-transparent',
                 !active && !done && 'bg-muted text-muted-foreground border-border',
               )}>
                 {done ? <Check className="w-3.5 h-3.5" /> : n}

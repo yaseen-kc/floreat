@@ -1,4 +1,5 @@
 import { useQuotationStore, buildRoofPayload, buildMezzaninePayload, buildStairPayload, buildCanopyPayload } from '@/stores/quotation-store'
+import { useSaveStatusStore } from '@/stores/save-status-store'
 import { useShallow } from 'zustand/react/shallow'
 import { toast } from 'sonner'
 import { useCreateJob } from '@/api/quotation/jobs/postJobs'
@@ -39,6 +40,9 @@ export function WizardActionBar() {
       })),
     )
   const navigate = useNavigate()
+  const setSaving = useSaveStatusStore((s) => s.saving)
+  const setSaved = useSaveStatusStore((s) => s.saved)
+  const resetSaveStatus = useSaveStatusStore((s) => s.reset)
   const createJob = useCreateJob()
   const updateJob = useUpdateJob()
   const upsertRoof = useUpsertRoof()
@@ -66,6 +70,7 @@ export function WizardActionBar() {
    * Resolves on success and rejects on failure so callers can gate navigation.
    */
   const submitJob = async () => {
+    setSaving()
     try {
       if (jobId) {
         await updateJob.mutateAsync({ id: jobId, ...projectInfo })
@@ -75,7 +80,9 @@ export function WizardActionBar() {
         setJobId(job.id)
         toast.success('Job created successfully')
       }
+      setSaved()
     } catch (err) {
+      resetSaveStatus()
       toast.error(jobId ? 'Failed to update job' : 'Failed to create job')
       throw err
     }
@@ -108,9 +115,12 @@ export function WizardActionBar() {
       throw new Error('Cannot save roof before the job is created')
     }
     try {
+      setSaving()
       await upsertRoof.mutateAsync({ jobId, payload: buildRoofPayload(roof) })
+      setSaved()
       toast.success('Roof saved successfully')
     } catch (err) {
+      resetSaveStatus()
       toast.error('Failed to save roof')
       throw err
     }
@@ -128,13 +138,16 @@ export function WizardActionBar() {
       throw new Error('Cannot save mezzanine before the job is created')
     }
     try {
+      setSaving()
       if (hasMezzanine) {
         await upsertMezzanine.mutateAsync({ jobId, payload: buildMezzaninePayload(mezzanine) })
       } else {
         await deleteMezzanine.mutateAsync(jobId)
       }
+      setSaved()
       toast.success('Mezzanine saved successfully')
     } catch (err) {
+      resetSaveStatus()
       toast.error('Failed to save mezzanine')
       throw err
     }
@@ -152,13 +165,16 @@ export function WizardActionBar() {
       throw new Error('Cannot save stair before the job is created')
     }
     try {
+      setSaving()
       if (hasStair) {
         await upsertStair.mutateAsync({ jobId, payload: buildStairPayload(stair) })
       } else {
         await deleteStair.mutateAsync(jobId)
       }
+      setSaved()
       toast.success('Stair saved successfully')
     } catch (err) {
+      resetSaveStatus()
       toast.error('Failed to save stair')
       throw err
     }
@@ -176,13 +192,16 @@ export function WizardActionBar() {
       throw new Error('Cannot save canopy before the job is created')
     }
     try {
+      setSaving()
       if (hasCanopy) {
         await upsertCanopy.mutateAsync({ jobId, payload: buildCanopyPayload(canopy) })
       } else {
         await deleteCanopy.mutateAsync(jobId)
       }
+      setSaved()
       toast.success('Canopy saved successfully')
     } catch (err) {
+      resetSaveStatus()
       toast.error('Failed to save canopy')
       throw err
     }

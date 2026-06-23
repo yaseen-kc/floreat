@@ -3,6 +3,7 @@ import type { CanopyItemDraft } from '@/stores/quotation-store'
 import { useShallow } from 'zustand/react/shallow'
 import { SectionCard } from '@/components/quotation/shared/SectionCard'
 import { RowCard, type RowGroup } from '@/components/quotation/shared/RowCard'
+import { EmptyState } from '@/components/ui/empty-state'
 import { Button } from '@/components/ui/button'
 import { Tent, Plus } from 'lucide-react'
 import {
@@ -71,7 +72,13 @@ export function CanopyItems() {
   return (
     <SectionCard icon={<Tent className="w-3.5 h-3.5" />} title="Canopy Items">
       <div className="flex flex-col gap-[18px]">
-        {canopies.length === 0 && <p className="text-muted-foreground text-sm">No canopy items added yet.</p>}
+        {canopies.length === 0 && (
+          <EmptyState
+            icon={<Tent />}
+            title="No canopy items added yet."
+            description="Add a canopy to include it in this quotation."
+          />
+        )}
 
         {canopies.map((row, index) => (
           <RowCard

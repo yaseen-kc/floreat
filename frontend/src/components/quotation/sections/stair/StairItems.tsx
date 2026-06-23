@@ -3,6 +3,7 @@ import type { StairItemDraft } from '@/stores/quotation-store'
 import { useShallow } from 'zustand/react/shallow'
 import { SectionCard } from '@/components/quotation/shared/SectionCard'
 import { RowCard, type RowGroup } from '@/components/quotation/shared/RowCard'
+import { EmptyState } from '@/components/ui/empty-state'
 import { Button } from '@/components/ui/button'
 import { Footprints, Plus } from 'lucide-react'
 import {
@@ -56,7 +57,13 @@ export function StairItems() {
   return (
     <SectionCard icon={<Footprints className="w-3.5 h-3.5" />} title="Staircases">
       <div className="flex flex-col gap-[18px]">
-        {stairs.length === 0 && <p className="text-muted-foreground text-sm">No staircases added yet.</p>}
+        {stairs.length === 0 && (
+          <EmptyState
+            icon={<Footprints />}
+            title="No staircases added yet."
+            description="Add a staircase to include it in this quotation."
+          />
+        )}
 
         {stairs.map((row, index) => (
           <RowCard

@@ -5,6 +5,7 @@ import { SectionCard } from '@/components/quotation/shared/SectionCard'
 import { Button } from '@/components/ui/button'
 import { Layers3, Plus } from 'lucide-react'
 import { RowCard, type RowGroup } from '@/components/quotation/shared/RowCard'
+import { EmptyState } from '@/components/ui/empty-state'
 import {
   MEZZANINE_TYPE_OPTIONS,
   MEZZANINE_FLOOR_LEVEL_OPTIONS,
@@ -72,7 +73,13 @@ export function MezzanineFloors() {
   return (
     <SectionCard icon={<Layers3 className="w-3.5 h-3.5" />} title="Floors">
       <div className="flex flex-col gap-[18px]">
-        {floors.length === 0 && <p className="text-muted-foreground text-sm">No floors added yet.</p>}
+        {floors.length === 0 && (
+          <EmptyState
+            icon={<Layers3 />}
+            title="No floors added yet."
+            description="Add a mezzanine floor to include it in this quotation."
+          />
+        )}
 
         {floors.map((row, index) => (
           <RowCard
