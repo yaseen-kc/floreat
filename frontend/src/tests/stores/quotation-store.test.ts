@@ -2,7 +2,7 @@ import { describe, it, expect, beforeEach } from 'vitest'
 import { useQuotationStore } from '@/stores/quotation-store'
 import { validRoofDraft } from '@/tests/fixtures/roof'
 
-const STORAGE_KEY = 'strukt:draft'
+const STORAGE_KEY = 'Floreat:draft'
 
 describe('quotation-store lifecycle', () => {
   beforeEach(() => {
@@ -240,7 +240,7 @@ describe('quotation-store optional roof sections', () => {
 describe('quotation-store per-user persistence scoping', () => {
   beforeEach(() => {
     localStorage.clear()
-    useQuotationStore.persist.setOptions({ name: 'strukt:draft' })
+    useQuotationStore.persist.setOptions({ name: 'Floreat:draft' })
     useQuotationStore.getState().resetQuotation()
   })
 
@@ -257,19 +257,19 @@ describe('quotation-store per-user persistence scoping', () => {
   }
 
   it('writes the draft (including jobId) to the active user-scoped key', () => {
-    useQuotationStore.persist.setOptions({ name: 'strukt:draft:userA' })
+    useQuotationStore.persist.setOptions({ name: 'Floreat:draft:userA' })
     useQuotationStore.getState().setProjectInfo({ projectNo: 'P-A' })
     useQuotationStore.getState().setJobId('job-A')
 
-    const stored = JSON.parse(localStorage.getItem('strukt:draft:userA') ?? '{}')
+    const stored = JSON.parse(localStorage.getItem('Floreat:draft:userA') ?? '{}')
     expect(stored.state.projectInfo.projectNo).toBe('P-A')
     expect(stored.state.jobId).toBe('job-A')
   })
 
   it('rehydrates jobId and draft from a user-scoped key', async () => {
-    seed('strukt:draft:userB', 'P-B', 3, 'job-B')
+    seed('Floreat:draft:userB', 'P-B', 3, 'job-B')
 
-    useQuotationStore.persist.setOptions({ name: 'strukt:draft:userB' })
+    useQuotationStore.persist.setOptions({ name: 'Floreat:draft:userB' })
     await useQuotationStore.persist.rehydrate()
 
     const s = useQuotationStore.getState()
@@ -280,11 +280,11 @@ describe('quotation-store per-user persistence scoping', () => {
 
   it('does not load another user\'s draft when switching to a key with no stored draft', async () => {
     // User A has a saved draft; user C is brand new.
-    seed('strukt:draft:userA', 'P-A', 2, 'job-A')
+    seed('Floreat:draft:userA', 'P-A', 2, 'job-A')
 
-    useQuotationStore.persist.setOptions({ name: 'strukt:draft:userC' })
+    useQuotationStore.persist.setOptions({ name: 'Floreat:draft:userC' })
     // Mirrors the hook: no stored draft for this user -> start clean.
-    if (!localStorage.getItem('strukt:draft:userC')) {
+    if (!localStorage.getItem('Floreat:draft:userC')) {
       useQuotationStore.getState().resetQuotation()
     }
 

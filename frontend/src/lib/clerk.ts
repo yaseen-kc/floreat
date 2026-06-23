@@ -1,5 +1,5 @@
 /**
- * Clerk appearance tuned to the Strukt Design System: the engineering-blue
+ * Clerk appearance tuned to the Floreat Design System: the engineering-blue
  * accent, the app's sans font, and the control radius. Applied at the
  * <ClerkProvider> so every Clerk surface (SignIn, UserButton) inherits it.
  *

@@ -380,11 +380,11 @@ export const useQuotationStore = create<QuotationState>()(
       prevStep: () => { const s = get(); if (s.currentStep > 1) set({ currentStep: s.currentStep - 1, showValidation: false }) },
     }),
     {
-      name: 'strukt:draft',
+      name: 'Floreat:draft',
       version: 1,
       // The draft is hydrated manually (see useDraftPersistenceScope) once the
       // Clerk user id is known, so the storage key can be namespaced per user
-      // (`strukt:draft:<userId>`). This keeps each user's draft — including the
+      // (`Floreat:draft:<userId>`). This keeps each user's draft — including the
       // server `jobId` — isolated on shared machines, while still letting an
       // in-progress job resume (and re-use PUT) after a refresh instead of
       // creating a duplicate.

@@ -17,7 +17,7 @@ export default function CreateQuotation() {
   }, [currentStep])
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col h-[calc(100vh-var(--topbar-h))]">
       <WizardStepper />
       <div ref={scrollRef} className="flex-1 overflow-y-auto px-8 py-7 pb-[120px]">
         <div className="animate-in fade-in duration-250" key={currentStep}>

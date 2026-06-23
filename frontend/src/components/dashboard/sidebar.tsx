@@ -68,7 +68,7 @@ export function Sidebar({ navOpen, onClose }: SidebarProps) {
           </svg>
         </div>
         <span className={cn('text-md font-semibold tracking-tight text-sidebar-foreground', railHide)}>
-          Strukt
+          Floreat
         </span>
       </div>
 

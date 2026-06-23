@@ -56,7 +56,7 @@ export function Topbar({ onMenu, searchRef }: TopbarProps) {
       </Button>
 
       <nav aria-label="Breadcrumb" className="flex items-center gap-1.5 text-sm">
-        <span className="font-mono text-xs tracking-wide text-muted-foreground">Strukt</span>
+        <span className="font-mono text-xs tracking-wide text-muted-foreground">Floreat</span>
         <span className="text-muted-foreground/60">/</span>
         <b className="font-medium text-foreground">{crumb}</b>
       </nav>

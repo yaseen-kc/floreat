@@ -1,11 +1,11 @@
-# Strukt Design System
+# Floreat Design System
 
-A portable UI/UX reference distilled from the Strukt — Structural Quotation Studio prototype. It is written to be read two ways:
+A portable UI/UX reference distilled from the Floreat — Structural Quotation Studio prototype. It is written to be read two ways:
 
 - **By a human** — each section opens with a principle and the reasoning behind it.
 - **By an agent** — each section ends with terse, copy-paste **Agent rules** you can paste into a brief.
 
-Every section is **layered**: the portable principle first, then Strukt's concrete values as the worked example. Adopt the *system*; swap the *values* per brand.
+Every section is **layered**: the portable principle first, then Floreat's concrete values as the worked example. Adopt the *system*; swap the *values* per brand.
 
 > **Source of truth.** The canonical implementation lives in [`assets/app.css`](assets/app.css) (tokens + components) and [`assets/app.js`](assets/app.js) (theming, nav, keyboard, save status). This document explains and generalizes that code; when a value here disagrees with `app.css`, `app.css` wins.
 
@@ -39,7 +39,7 @@ Four rules carry the whole system:
 3. **Boring over clever, consistent over novel.** A second-best pattern used everywhere beats a brilliant pattern used once. Reach for an existing component before inventing one.
 4. **Direction: tech-utility, engineering blue.** Dense but legible, calm surfaces, monospace for anything numeric or label-like. The product should read like precision software, not a marketing page.
 
-**Strukt example.** The direction is literally written into `app.css`'s header comment: *"tech-utility, engineering blue. All color lives in token blocks below — no raw hex in component rules."* The accent is a single engineering blue (`--accent: oklch(54% 0.17 256)`), and it appears on screen only as active nav, primary buttons, focus rings, and accent badges.
+**Floreat example.** The direction is literally written into `app.css`'s header comment: *"tech-utility, engineering blue. All color lives in token blocks below — no raw hex in component rules."* The accent is a single engineering blue (`--accent: oklch(54% 0.17 256)`), and it appears on screen only as active nav, primary buttons, focus rings, and accent badges.
 
 > **Agent rules**
 > - Never write a hex value inside a component rule. Use a token or `color-mix(in oklch, var(--token) N%, …)`.
@@ -62,7 +62,7 @@ Four rules carry the whole system:
 5. **Keep everything else** — typography scale, spacing, radius, shadows, components, shell, responsive tiers. They are brand-neutral by design.
 6. **Wire the shell**: include the sidebar + topbar markup and call the `app.js` helpers (theme toggle, mobile nav, save status).
 
-If you only need the *system* and not Strukt's exact palette, treat [§3–§5](#3-color-system) as a template: keep the token *names* and *scale shape*, change the *values*.
+If you only need the *system* and not Floreat's exact palette, treat [§3–§5](#3-color-system) as a template: keep the token *names* and *scale shape*, change the *values*.
 
 > **Agent rules**
 > - To re-skin: edit the 6 core `:root` tokens + the dark `[data-theme="dark"]` overrides. Touch nothing else.
@@ -76,7 +76,7 @@ If you only need the *system* and not Strukt's exact palette, treat [§3–§5](
 
 ### 3.1 The six-token core
 
-| Token | Role | Strukt (light) |
+| Token | Role | Floreat (light) |
 |---|---|---|
 | `--bg` | App background | `oklch(97% 0.004 255)` |
 | `--surface` | Cards, panels, raised surfaces | `oklch(100% 0 0)` |
@@ -89,7 +89,7 @@ If you only need the *system* and not Strukt's exact palette, treat [§3–§5](
 
 These are *computed from* the core — keep them, they rarely need hand-editing:
 
-| Token | Role | Strukt |
+| Token | Role | Floreat |
 |---|---|---|
 | `--surface-2` | Inset rows, table headers | `oklch(98.4% 0.003 260)` |
 | `--surface-3` | Hover, code wells | `oklch(96.2% 0.004 260)` |
@@ -103,7 +103,7 @@ These are *computed from* the core — keep them, they rarely need hand-editing:
 
 Each status ships a solid color **and** a `-soft` tint (built with `color-mix`) for backgrounds:
 
-| Token | Strukt | `-soft` |
+| Token | Floreat | `-soft` |
 |---|---|---|
 | `--success` | `oklch(56% 0.13 155)` | `color-mix(… 14%, transparent)` |
 | `--warn` | `oklch(70% 0.14 70)` | `color-mix(… 18%, transparent)` |
@@ -127,7 +127,7 @@ This is why swapping `--accent` recolors hovers, soft fills, focus rings, and ba
 
 **Principle.** Dark mode is a *token override*, not a parallel stylesheet. Override the same six core tokens plus the derived surfaces under a `[data-theme="dark"]` selector; components are untouched.
 
-Strukt's dark overrides (abbreviated — see `app.css` for the full block):
+Floreat's dark overrides (abbreviated — see `app.css` for the full block):
 
 ```css
 [data-theme="dark"] {
@@ -158,7 +158,7 @@ Note two deliberate moves: the accent gets *lighter* in dark mode (a 54% → 70%
 
 ### 4.1 Families & roles
 
-| Role | Family | Strukt |
+| Role | Family | Floreat |
 |---|---|---|
 | Body, headings, UI | Sans | `'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif` |
 | Numbers, codes, labels, eyebrows, table headers | Mono | `'JetBrains Mono', 'SF Mono', ui-monospace, 'IBM Plex Mono', Menlo, monospace` |
@@ -449,10 +449,10 @@ Inputs additionally get a soft accent halo on focus (`box-shadow: 0 0 0 3px var(
 
 **Principle.** Respect the OS first, remember the user's override forever.
 
-`app.js` reads `localStorage['strukt:theme']`; if absent it falls back to `prefers-color-scheme`. The chosen theme is set as `data-theme` on `<html>` *before paint* to avoid a flash. `toggleTheme()` flips and persists it, and swaps any `[data-theme-icon]` sun/moon glyphs.
+`app.js` reads `localStorage['Floreat:theme']`; if absent it falls back to `prefers-color-scheme`. The chosen theme is set as `data-theme` on `<html>` *before paint* to avoid a flash. `toggleTheme()` flips and persists it, and swaps any `[data-theme-icon]` sun/moon glyphs.
 
 ```js
-const saved = localStorage.getItem('strukt:theme');
+const saved = localStorage.getItem('Floreat:theme');
 const prefersDark = matchMedia('(prefers-color-scheme: dark)').matches;
 document.documentElement.setAttribute('data-theme', saved || (prefersDark ? 'dark' : 'light'));
 ```
@@ -469,7 +469,7 @@ The handler guards against hijacking `/` while the user is in an `INPUT/TEXTAREA
 
 ### 7.5 Save status
 
-**Principle.** Autosaving UIs must always show their state. Strukt centralizes this in a `window.SaveStatus` helper bound to a `[data-save-status]` pill:
+**Principle.** Autosaving UIs must always show their state. Floreat centralizes this in a `window.SaveStatus` helper bound to a `[data-save-status]` pill:
 
 ```js
 SaveStatus.saving();        // → spinner + "Saving…"   (data-state="saving", warn color)

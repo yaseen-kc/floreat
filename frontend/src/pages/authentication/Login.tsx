@@ -22,7 +22,7 @@ function Login() {
               <path d="M3 21h18M5 21V8l7-5 7 5v13M9 21v-6h6v6" />
             </svg>
           </div>
-          <span className="text-xl font-semibold tracking-tight text-foreground">Strukt</span>
+          <span className="text-xl font-semibold tracking-tight text-foreground">Floreat</span>
         </div>
         <SignIn path="/login" forceRedirectUrl="/" />
       </div>

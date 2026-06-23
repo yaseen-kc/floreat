@@ -9,7 +9,7 @@
  */
 export type Theme = 'light' | 'dark'
 
-export const THEME_KEY = 'strukt:theme'
+export const THEME_KEY = 'Floreat:theme'
 
 /**
  * Resolves the theme to use on load: a previously persisted choice if present
