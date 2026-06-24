@@ -37,7 +37,7 @@ export function WizardStepper() {
   }
 
   return (
-    <div className="flex items-center gap-0 px-8 py-4 bg-card border-b border-border overflow-x-auto">
+    <div className="flex items-start gap-0 px-8 py-4 bg-card border-b border-border overflow-x-auto">
       {STEPS.map((step, i) => {
         const n = i + 1
         const active = n === currentStep
@@ -46,7 +46,7 @@ export function WizardStepper() {
         return (
           <div key={n} className="contents">
             {i > 0 && (
-              <div className={cn('flex-1 min-w-6 h-[1.5px] mx-3', done ? 'bg-success' : 'bg-border')} />
+              <div className={cn('flex-1 min-w-6 h-[1.5px] mx-3 mt-[12px]', done ? 'bg-success' : 'bg-border')} />
             )}
             <button
               type="button"
@@ -54,7 +54,7 @@ export function WizardStepper() {
               disabled={!navigable}
               aria-current={active ? 'step' : undefined}
               className={cn(
-                'flex items-center gap-2.5 shrink-0',
+                'flex flex-col items-center text-center gap-1.5 shrink-0 w-16',
                 navigable ? 'cursor-pointer' : 'cursor-not-allowed',
               )}
             >
@@ -66,18 +66,18 @@ export function WizardStepper() {
               )}>
                 {done ? <Check className="w-3.5 h-3.5" /> : n}
               </span>
-              <span className="flex flex-col leading-tight">
-                <b className={cn('text-[13.5px] font-semibold', active ? 'text-foreground' : done ? 'text-foreground/70' : 'text-muted-foreground')}>
-                  {step.label}
-                </b>
-                <small className="text-[11px] text-muted-foreground font-mono">{step.sub}</small>
-              </span>
+              <small className={cn(
+                'text-[11px] font-mono leading-tight',
+                active ? 'text-foreground' : done ? 'text-foreground/70' : 'text-muted-foreground',
+              )}>
+                {step.sub}
+              </small>
             </button>
           </div>
         )
       })}
 
-      <Button variant="ghost" size="sm" onClick={() => setConfirmOpen(true)} className="ml-4 shrink-0 text-muted-foreground">
+      <Button variant="ghost" size="sm" onClick={() => setConfirmOpen(true)} className="ml-4 shrink-0 mt-[3px] text-muted-foreground">
         <RotateCcw className="w-4 h-4" /> New quotation
       </Button>
 
