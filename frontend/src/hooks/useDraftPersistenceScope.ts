@@ -2,14 +2,14 @@ import { useEffect, useRef } from 'react'
 import { useAuth } from '@clerk/react'
 import { useQuotationStore } from '@/stores/quotation-store'
 
-const BASE_KEY = 'strukt:draft'
+const BASE_KEY = 'Floreat:draft'
 const userKey = (userId: string) => `${BASE_KEY}:${userId}`
 
 /**
  * Scopes the persisted quotation draft to the signed-in Clerk user.
  *
  * The store uses `skipHydration`, so nothing is loaded until this hook points
- * the persistence layer at a per-user storage key (`strukt:draft:<userId>`)
+ * the persistence layer at a per-user storage key (`Floreat:draft:<userId>`)
  * and hydrates it. This gives two properties at once:
  *   1. An in-progress job (including its server `jobId`) survives a refresh, so
  *      the next save re-uses PUT instead of creating a duplicate.

@@ -1,4 +1,5 @@
-import { useQuotationStore, buildRoofPayload, buildMezzaninePayload, buildStairPayload } from '@/stores/quotation-store'
+import { useQuotationStore, buildRoofPayload, buildMezzaninePayload, buildStairPayload, buildCanopyPayload } from '@/stores/quotation-store'
+import { useSaveStatusStore } from '@/stores/save-status-store'
 import { useShallow } from 'zustand/react/shallow'
 import { toast } from 'sonner'
 import { useCreateJob } from '@/api/quotation/jobs/postJobs'
@@ -8,6 +9,8 @@ import { useUpsertMezzanine } from '@/api/quotation/mezz/postMezz'
 import { useDeleteMezzanine } from '@/api/quotation/mezz/deleteMezz'
 import { useUpsertStair } from '@/api/quotation/stair/postStairs'
 import { useDeleteStair } from '@/api/quotation/stair/deleteStairs'
+import { useUpsertCanopy } from '@/api/quotation/canopy/postCanopy'
+import { useDeleteCanopy } from '@/api/quotation/canopy/deleteCanopy'
 import { useNavigate } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
 import { Spinner } from '@/components/ui/spinner'
@@ -15,7 +18,7 @@ import { ArrowLeft, ArrowRight, Check, Save } from 'lucide-react'
 import { STEPS, STEP_COUNT } from '@/components/quotation/steps'
 
 export function WizardActionBar() {
-  const { currentStep, nextStep, prevStep, validateStep, goStep, projectInfo, roof, jobId, setJobId, resetQuotation, mezzanine, hasMezzanine, stair, hasStair } =
+  const { currentStep, nextStep, prevStep, validateStep, goStep, projectInfo, roof, jobId, setJobId, resetQuotation, mezzanine, hasMezzanine, stair, hasStair, canopy, hasCanopy } =
     useQuotationStore(
       useShallow((s) => ({
         currentStep: s.currentStep,
@@ -32,9 +35,14 @@ export function WizardActionBar() {
         hasMezzanine: s.hasMezzanine,
         stair: s.stair,
         hasStair: s.hasStair,
+        canopy: s.canopy,
+        hasCanopy: s.hasCanopy,
       })),
     )
   const navigate = useNavigate()
+  const setSaving = useSaveStatusStore((s) => s.saving)
+  const setSaved = useSaveStatusStore((s) => s.saved)
+  const resetSaveStatus = useSaveStatusStore((s) => s.reset)
   const createJob = useCreateJob()
   const updateJob = useUpdateJob()
   const upsertRoof = useUpsertRoof()
@@ -42,6 +50,8 @@ export function WizardActionBar() {
   const deleteMezzanine = useDeleteMezzanine()
   const upsertStair = useUpsertStair()
   const deleteStair = useDeleteStair()
+  const upsertCanopy = useUpsertCanopy()
+  const deleteCanopy = useDeleteCanopy()
   const isLast = currentStep === STEP_COUNT
   const isSubmitting =
     createJob.isPending ||
@@ -50,7 +60,9 @@ export function WizardActionBar() {
     upsertMezzanine.isPending ||
     deleteMezzanine.isPending ||
     upsertStair.isPending ||
-    deleteStair.isPending
+    deleteStair.isPending ||
+    upsertCanopy.isPending ||
+    deleteCanopy.isPending
 
   /**
    * Persists Step 1 data. Creates the job once (POST) and stores its id;
@@ -58,6 +70,7 @@ export function WizardActionBar() {
    * Resolves on success and rejects on failure so callers can gate navigation.
    */
   const submitJob = async () => {
+    setSaving()
     try {
       if (jobId) {
         await updateJob.mutateAsync({ id: jobId, ...projectInfo })
@@ -67,7 +80,9 @@ export function WizardActionBar() {
         setJobId(job.id)
         toast.success('Job created successfully')
       }
+      setSaved()
     } catch (err) {
+      resetSaveStatus()
       toast.error(jobId ? 'Failed to update job' : 'Failed to create job')
       throw err
     }
@@ -100,9 +115,12 @@ export function WizardActionBar() {
       throw new Error('Cannot save roof before the job is created')
     }
     try {
+      setSaving()
       await upsertRoof.mutateAsync({ jobId, payload: buildRoofPayload(roof) })
+      setSaved()
       toast.success('Roof saved successfully')
     } catch (err) {
+      resetSaveStatus()
       toast.error('Failed to save roof')
       throw err
     }
@@ -120,13 +138,16 @@ export function WizardActionBar() {
       throw new Error('Cannot save mezzanine before the job is created')
     }
     try {
+      setSaving()
       if (hasMezzanine) {
         await upsertMezzanine.mutateAsync({ jobId, payload: buildMezzaninePayload(mezzanine) })
       } else {
         await deleteMezzanine.mutateAsync(jobId)
       }
+      setSaved()
       toast.success('Mezzanine saved successfully')
     } catch (err) {
+      resetSaveStatus()
       toast.error('Failed to save mezzanine')
       throw err
     }
@@ -144,14 +165,44 @@ export function WizardActionBar() {
       throw new Error('Cannot save stair before the job is created')
     }
     try {
+      setSaving()
       if (hasStair) {
         await upsertStair.mutateAsync({ jobId, payload: buildStairPayload(stair) })
       } else {
         await deleteStair.mutateAsync(jobId)
       }
+      setSaved()
       toast.success('Stair saved successfully')
     } catch (err) {
+      resetSaveStatus()
       toast.error('Failed to save stair')
+      throw err
+    }
+  }
+
+  /**
+   * Persists Step 5 canopy data. Requires the Step 1 `jobId`. Upserts the
+   * canopy when the job has one, otherwise deletes any existing record (the
+   * toggle is off). Resolves on success and rejects on failure so callers can
+   * gate navigation.
+   */
+  const submitCanopy = async () => {
+    if (!jobId) {
+      toast.error('Save the project details first')
+      throw new Error('Cannot save canopy before the job is created')
+    }
+    try {
+      setSaving()
+      if (hasCanopy) {
+        await upsertCanopy.mutateAsync({ jobId, payload: buildCanopyPayload(canopy) })
+      } else {
+        await deleteCanopy.mutateAsync(jobId)
+      }
+      setSaved()
+      toast.success('Canopy saved successfully')
+    } catch (err) {
+      resetSaveStatus()
+      toast.error('Failed to save canopy')
       throw err
     }
   }
@@ -207,6 +258,18 @@ export function WizardActionBar() {
       return
     }
 
+    // Step 5: persist the canopy (upsert or delete), then advance. No validation
+    // gate — the canopy is fully optional.
+    if (currentStep === 5) {
+      try {
+        await submitCanopy()
+        goStep(6)
+      } catch {
+        // Error toast already shown; stay on Step 5.
+      }
+      return
+    }
+
     // Final step: finalise and return to the dashboard.
     if (isLast) {
       if (!validateStep(currentStep)) { toast.error('Please complete the required fields'); return }
@@ -232,6 +295,8 @@ export function WizardActionBar() {
       try { await submitMezzanine() } catch { /* error toast already shown */ }
     } else if (currentStep === 4) {
       try { await submitStair() } catch { /* error toast already shown */ }
+    } else if (currentStep === 5) {
+      try { await submitCanopy() } catch { /* error toast already shown */ }
     } else {
       toast.success('Draft saved')
     }

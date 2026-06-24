@@ -40,6 +40,36 @@ describe('roof.service', () => {
         include: { sidewalls: true },
       })
     })
+
+    it('forces sideColumnsMidFrameCount/EndFrameCount to equal their claddingExtension counterparts', async () => {
+      const input = makeRoofInput('job-3')
+      const { jobId, ...rest } = input
+      const roof = makeRoof({ jobId: 'job-3' })
+      prismaMock.roof.upsert.mockResolvedValue(roof as any)
+
+      // Client sends mismatched side-column counts — the service overrides both.
+      await upsertRoof('job-3', {
+        ...rest,
+        claddingExtensionMidFrameCount: 6,
+        sideColumnsMidFrameCount: 99,
+        claddingExtensionEndFrameCount: 2,
+        sideColumnsEndFrameCount: 88,
+      })
+
+      const expected = {
+        ...rest,
+        claddingExtensionMidFrameCount: 6,
+        sideColumnsMidFrameCount: 6,
+        claddingExtensionEndFrameCount: 2,
+        sideColumnsEndFrameCount: 2,
+      }
+      expect(prismaMock.roof.upsert).toHaveBeenCalledWith({
+        where: { jobId: 'job-3' },
+        create: { jobId: 'job-3', ...expected, sidewalls: { createMany: { data: [] } } },
+        update: { ...expected, sidewalls: { deleteMany: {}, createMany: { data: [] } } },
+        include: { sidewalls: true },
+      })
+    })
   })
 
   describe('getRoofs', () => {
@@ -103,6 +133,29 @@ describe('roof.service', () => {
       expect(prismaMock.roof.update).toHaveBeenCalledWith({
         where: { jobId: 'job-1' },
         data: { roofSlope: 10 },
+        include: { sidewalls: true },
+      })
+    })
+
+    it('forces sideColumnsMidFrameCount/EndFrameCount to equal their claddingExtension counterparts when updated', async () => {
+      const roof = makeRoof()
+      prismaMock.roof.update.mockResolvedValue(roof as any)
+
+      await updateRoof('job-1', {
+        claddingExtensionMidFrameCount: 5,
+        sideColumnsMidFrameCount: 99,
+        claddingExtensionEndFrameCount: 2,
+        sideColumnsEndFrameCount: 88,
+      })
+
+      expect(prismaMock.roof.update).toHaveBeenCalledWith({
+        where: { jobId: 'job-1' },
+        data: {
+          claddingExtensionMidFrameCount: 5,
+          sideColumnsMidFrameCount: 5,
+          claddingExtensionEndFrameCount: 2,
+          sideColumnsEndFrameCount: 2,
+        },
         include: { sidewalls: true },
       })
     })

@@ -3,6 +3,7 @@ import type { AreaDeductionDraft } from '@/stores/quotation-store'
 import { useShallow } from 'zustand/react/shallow'
 import { SectionCard } from '@/components/quotation/shared/SectionCard'
 import { RowCard, type RowGroup } from '@/components/quotation/shared/RowCard'
+import { EmptyState } from '@/components/ui/empty-state'
 import { Button } from '@/components/ui/button'
 import { Scissors, Plus } from 'lucide-react'
 import {
@@ -47,7 +48,13 @@ export function AreaDeductions() {
   return (
     <SectionCard icon={<Scissors className="w-3.5 h-3.5" />} title="Area Deductions">
       <div className="flex flex-col gap-[18px]">
-        {areaDeductions.length === 0 && <p className="text-muted-foreground text-sm">No area deductions added yet.</p>}
+        {areaDeductions.length === 0 && (
+          <EmptyState
+            icon={<Scissors />}
+            title="No area deductions added yet."
+            description="Add a deduction to subtract it from the stair area."
+          />
+        )}
 
         {areaDeductions.map((row, index) => (
           <RowCard

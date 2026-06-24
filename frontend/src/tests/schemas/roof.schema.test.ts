@@ -148,6 +148,12 @@ describe('createRoofSchema', () => {
     expect(createRoofSchema.safeParse({ ...requiredRoof, materialConsumptionExcludingPurlin: -1 }).success).toBe(false)
   })
 
+  it('allows zero sideColumnsWidthHeight (derived) but rejects negative', () => {
+    // The field is now computed and clamped to 0, so the schema must accept 0.
+    expect(createRoofSchema.safeParse({ ...requiredRoof, sideColumnsWidthHeight: 0 }).success).toBe(true)
+    expect(createRoofSchema.safeParse({ ...requiredRoof, sideColumnsWidthHeight: -1 }).success).toBe(false)
+  })
+
   it('rejects non-positive SAG rod diameters', () => {
     expect(createRoofSchema.safeParse({ ...requiredRoof, DiaOfRoofSagRod: 0 }).success).toBe(false)
     expect(createRoofSchema.safeParse({ ...requiredRoof, DiaOfCladdingSagRod: -1 }).success).toBe(false)

@@ -5,6 +5,7 @@ import { CollapsibleSection } from '@/components/quotation/shared/CollapsibleSec
 import { NumberField } from '@/components/quotation/shared/NumberField'
 import { SelectField, type SelectFieldOption } from '@/components/quotation/shared/SelectField'
 import { Button } from '@/components/ui/button'
+import { EmptyState } from '@/components/ui/empty-state'
 import { Fence, Plus, Trash2 } from 'lucide-react'
 
 /** A single sidewall row in the draft (inline `sidewalls` array element). */
@@ -56,7 +57,11 @@ export function Sidewalls() {
     >
       <div className="flex flex-col gap-[18px]">
         {rows.length === 0 && (
-          <p className="text-muted-foreground text-sm">No sidewalls added yet.</p>
+          <EmptyState
+            icon={<Fence />}
+            title="No sidewalls added yet."
+            description="Add a sidewall to include it in the roof."
+          />
         )}
 
         {rows.map((row, index) => (

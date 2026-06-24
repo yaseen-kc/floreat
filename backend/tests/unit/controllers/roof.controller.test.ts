@@ -31,6 +31,23 @@ describe('roof controller', () => {
       expect(res.statusCode).toBe(400)
       expect(res.json().error).toBeDefined()
     })
+
+    it('accepts a derived sideColumnsWidthHeight of 0 but rejects a negative one', async () => {
+      const { jobId, ...body } = makeRoofInput('job-1')
+      prismaMock.roof.upsert.mockResolvedValue(makeRoof({ jobId: 'job-1' }) as any)
+
+      const ok = await app.inject({
+        method: 'POST', url: '/api/jobs/job-1/roof',
+        payload: { ...body, sideColumnsWidthHeight: 0 },
+      })
+      expect(ok.statusCode).toBe(200)
+
+      const bad = await app.inject({
+        method: 'POST', url: '/api/jobs/job-1/roof',
+        payload: { ...body, sideColumnsWidthHeight: -1 },
+      })
+      expect(bad.statusCode).toBe(400)
+    })
   })
 
   describe('GET /api/roofs', () => {

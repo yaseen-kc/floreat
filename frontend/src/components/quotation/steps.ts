@@ -11,11 +11,12 @@ export interface WizardStep {
 }
 
 export const STEPS: WizardStep[] = [
-  { label: 'Project Info', sub: 'CLIENT & SITE' },
-  { label: 'Structural Inputs', sub: 'GEOMETRY' },
-  { label: 'Mezzanine', sub: 'FLOORS' },
-  { label: 'Stair', sub: 'STAIRCASES' },
-  { label: 'Pricing', sub: 'COST BREAKDOWN' },
+  { label: 'Project Info', sub: 'INFO' },
+  { label: 'Structural Inputs', sub: 'ROOF' },
+  { label: 'Mezzanine', sub: 'MEZZ' },
+  { label: 'Stair', sub: 'STAIR' },
+  { label: 'Canopy', sub: 'CANOPY' },
+  { label: 'Pricing', sub: 'BREAKDOWN' },
   { label: 'Review', sub: 'GENERATE' },
 ]
 

@@ -110,7 +110,15 @@ export const createRoofSchema = z.object({
   claddingExtensionWidthHeight: z.number().positive().optional(),
   claddingExtensionMidFrameCount: z.number().int().nonnegative().optional(),
   claddingExtensionEndFrameCount: z.number().int().nonnegative().optional(),
-  sideColumnsWidthHeight: z.number().positive().optional(),
+  // ponytail: `sideColumnsWidthHeight` is computed on the frontend and trusted
+  // here (nonnegative only). Ceiling: a malicious/buggy client could send an
+  // inconsistent value. Upgrade path: recompute it in roof.service from
+  // eaveHeight/roofSlope/claddingExtensionWidthHeight before persisting.
+  sideColumnsWidthHeight: z.number().nonnegative().optional(),
+  // `sideColumnsMidFrameCount` and `sideColumnsEndFrameCount` are derived
+  // server-side in roof.service to equal `claddingExtensionMidFrameCount` and
+  // `claddingExtensionEndFrameCount` respectively (overwritten on upsert/update),
+  // so the values accepted here are advisory only.
   sideColumnsMidFrameCount: z.number().int().nonnegative().optional(),
   sideColumnsEndFrameCount: z.number().int().nonnegative().optional(),
 

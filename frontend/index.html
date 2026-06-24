@@ -4,7 +4,19 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>frontend</title>
+    <title>Floreat</title>
+    <script>
+      // Apply the persisted/OS theme before paint to avoid a flash (DESIGN.md §7.3).
+      (function () {
+        try {
+          var saved = localStorage.getItem('Floreat:theme');
+          var dark = saved === 'dark' || saved === 'light'
+            ? saved === 'dark'
+            : window.matchMedia('(prefers-color-scheme: dark)').matches;
+          if (dark) document.documentElement.classList.add('dark');
+        } catch (e) {}
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>

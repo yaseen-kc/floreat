@@ -154,6 +154,11 @@
 }
 ```
 
+> **Note:** `sideColumnsWidthHeight` is **derived, not user-entered**. The frontend
+> computes it as `claddingExtensionWidthHeight === 0 ? 0 : eaveHeight − (claddingExtensionWidthHeight × tan(roofSlope))`
+> (roofSlope in degrees), clamps negatives to `0`, and sends the result in the
+> payload. The backend persists the value as supplied.
+
 **Base Fixing**
 
 ```json

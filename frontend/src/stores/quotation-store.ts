@@ -13,6 +13,10 @@ import {
   stairItemSchema,
   areaDeductionSchema,
 } from '@/schemas/stair.schema'
+import {
+  type CreateCanopyInput,
+  canopyItemSchema,
+} from '@/schemas/canopy.schema'
 import { STEP_COUNT } from '@/components/quotation/steps'
 
 /** Step 1 project info — the canonical job contract (see job.schema.ts). */
@@ -175,6 +179,17 @@ export interface StairDraft {
   areaDeductions: AreaDeductionDraft[]
 }
 
+/**
+ * Step 5 canopy draft rows. Each item comes straight from the Zod schema
+ * (every field optional), so the draft can hold a partially-filled row.
+ */
+export type CanopyItemDraft = z.infer<typeof canopyItemSchema>
+
+/** The Step 5 canopy draft: inline canopy items, optional. */
+export interface CanopyDraft {
+  canopies: CanopyItemDraft[]
+}
+
 interface QuotationState {
   currentStep: number
   projectInfo: ProjectInfo
@@ -184,6 +199,8 @@ interface QuotationState {
   hasMezzanine: boolean
   stair: StairDraft
   hasStair: boolean
+  canopy: CanopyDraft
+  hasCanopy: boolean
   showValidation: boolean
   jobId: string | null
   setProjectInfo: (v: Partial<ProjectInfo>) => void
@@ -193,6 +210,8 @@ interface QuotationState {
   setHasMezzanine: (enabled: boolean) => void
   setStair: (v: Partial<StairDraft>) => void
   setHasStair: (enabled: boolean) => void
+  setCanopy: (v: Partial<CanopyDraft>) => void
+  setHasCanopy: (enabled: boolean) => void
   setJobId: (id: string | null) => void
   resetQuotation: () => void
   goStep: (n: number) => void
@@ -257,6 +276,9 @@ const createDefaultMezzanine = (): MezzanineDraft => ({ floors: [], extensions: 
 /** Factory for a fresh stair draft — no staircases or area deductions to start. */
 const createDefaultStair = (): StairDraft => ({ stairs: [], areaDeductions: [] })
 
+/** Factory for a fresh canopy draft — no canopy items to start. */
+const createDefaultCanopy = (): CanopyDraft => ({ canopies: [] })
+
 export const useQuotationStore = create<QuotationState>()(
   persist(
     (set, get) => ({
@@ -270,10 +292,24 @@ export const useQuotationStore = create<QuotationState>()(
       hasMezzanine: false,
       stair: createDefaultStair(),
       hasStair: false,
+      canopy: createDefaultCanopy(),
+      hasCanopy: false,
 
       setProjectInfo: (v) => set((s) => ({ projectInfo: { ...s.projectInfo, ...v } })),
 
-      setRoof: (v) => set((s) => ({ roof: { ...s.roof, ...v } })),
+      // `sideColumnsWidthHeight`, `sideColumnsMidFrameCount` and
+      // `sideColumnsEndFrameCount` are derived, never user-entered: recompute
+      // them on every patch. The width/height stays in sync with
+      // eaveHeight/roofSlope/claddingExt; the mid/end counts simply mirror
+      // `claddingExtensionMidFrameCount` / `claddingExtensionEndFrameCount`.
+      setRoof: (v) =>
+        set((s) => {
+          const roof = { ...s.roof, ...v }
+          roof.sideColumnsWidthHeight = deriveSideColumnsWidthHeight(roof)
+          roof.sideColumnsMidFrameCount = roof.claddingExtensionMidFrameCount
+          roof.sideColumnsEndFrameCount = roof.claddingExtensionEndFrameCount
+          return { roof }
+        }),
 
       toggleRoofSection: (key, enabled) =>
         set((s) => {
@@ -301,6 +337,13 @@ export const useQuotationStore = create<QuotationState>()(
       setHasStair: (enabled) =>
         set(() => (enabled ? { hasStair: true } : { hasStair: false, stair: createDefaultStair() })),
 
+      setCanopy: (v) => set((s) => ({ canopy: { ...s.canopy, ...v } })),
+
+      // Turning the toggle off clears any rows so an empty canopy drops from the
+      // payload (and the WizardActionBar deletes the server record).
+      setHasCanopy: (enabled) =>
+        set(() => (enabled ? { hasCanopy: true } : { hasCanopy: false, canopy: createDefaultCanopy() })),
+
       setJobId: (id) => set({ jobId: id }),
 
       resetQuotation: () => set({
@@ -314,6 +357,8 @@ export const useQuotationStore = create<QuotationState>()(
         hasMezzanine: false,
         stair: createDefaultStair(),
         hasStair: false,
+        canopy: createDefaultCanopy(),
+        hasCanopy: false,
       }),
 
       validateStep: (n) => {
@@ -335,20 +380,42 @@ export const useQuotationStore = create<QuotationState>()(
       prevStep: () => { const s = get(); if (s.currentStep > 1) set({ currentStep: s.currentStep - 1, showValidation: false }) },
     }),
     {
-      name: 'strukt:draft',
+      name: 'Floreat:draft',
       version: 1,
       // The draft is hydrated manually (see useDraftPersistenceScope) once the
       // Clerk user id is known, so the storage key can be namespaced per user
-      // (`strukt:draft:<userId>`). This keeps each user's draft — including the
+      // (`Floreat:draft:<userId>`). This keeps each user's draft — including the
       // server `jobId` — isolated on shared machines, while still letting an
       // in-progress job resume (and re-use PUT) after a refresh instead of
       // creating a duplicate.
       skipHydration: true,
-      partialize: (s) => ({ projectInfo: s.projectInfo, roof: s.roof, roofSectionsEnabled: s.roofSectionsEnabled, mezzanine: s.mezzanine, hasMezzanine: s.hasMezzanine, stair: s.stair, hasStair: s.hasStair, currentStep: s.currentStep, jobId: s.jobId }),
+      partialize: (s) => ({ projectInfo: s.projectInfo, roof: s.roof, roofSectionsEnabled: s.roofSectionsEnabled, mezzanine: s.mezzanine, hasMezzanine: s.hasMezzanine, stair: s.stair, hasStair: s.hasStair, canopy: s.canopy, hasCanopy: s.hasCanopy, currentStep: s.currentStep, jobId: s.jobId }),
     }
   )
 )
 
+
+/**
+ * Derives the Side Columns Width / Height from the eave height, roof slope
+ * (in degrees) and cladding extension width/height. This field is no longer a
+ * user input — it is computed and persisted.
+ *
+ * Returns `undefined` while `claddingExtensionWidthHeight` is blank (so the
+ * read-only display stays empty), `0` when the cladding extension is `0`, and
+ * otherwise `eaveHeight − claddingExt × tan(roofSlope)` clamped to `0` and
+ * rounded to 3 decimals (matching the `Decimal(10,3)` column).
+ */
+export function deriveSideColumnsWidthHeight(
+  roof: Pick<RoofDraft, 'eaveHeight' | 'roofSlope' | 'claddingExtensionWidthHeight'>,
+): number | undefined {
+  const { eaveHeight, roofSlope, claddingExtensionWidthHeight } = roof
+  if (claddingExtensionWidthHeight === undefined || eaveHeight === undefined || roofSlope === undefined) {
+    return undefined
+  }
+  if (claddingExtensionWidthHeight === 0) return 0
+  const raw = eaveHeight - claddingExtensionWidthHeight * Math.tan((roofSlope * Math.PI) / 180)
+  return Math.max(0, Math.round(raw * 1000) / 1000)
+}
 
 /**
  * Builds the roof create/upsert payload from the Step 2 draft.
@@ -412,5 +479,20 @@ export function buildStairPayload(stair: StairDraft): CreateStairInput {
   const payload: CreateStairInput = {}
   if (stairs.length > 0) payload.stairs = stairs
   if (areaDeductions.length > 0) payload.areaDeductions = areaDeductions
+  return payload
+}
+
+/**
+ * Builds the canopy create/upsert payload from the Step 5 draft.
+ *
+ * Each canopy item row is compacted (blank `undefined` fields dropped) and
+ * fully-empty rows are removed; an empty `canopies` array is omitted entirely.
+ * Call this only for the upsert path (i.e. when the job has a canopy) — an
+ * empty canopy should be deleted, not upserted.
+ */
+export function buildCanopyPayload(canopy: CanopyDraft): CreateCanopyInput {
+  const canopies = canopy.canopies.map(compactRow).filter((r) => Object.keys(r).length > 0)
+  const payload: CreateCanopyInput = {}
+  if (canopies.length > 0) payload.canopies = canopies
   return payload
 }

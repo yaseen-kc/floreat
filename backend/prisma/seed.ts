@@ -144,7 +144,8 @@ async function main() {
       fasciaBoardArea: 45.0, fasciaMaterialWeightPerSqft: 2.5,
       roofExtensionWidthHeight: 3.0, roofExtensionMidFrameCount: 8, roofExtensionEndFrameCount: 2,
       claddingExtensionWidthHeight: 2.5, claddingExtensionMidFrameCount: 8, claddingExtensionEndFrameCount: 2,
-      sideColumnsWidthHeight: 3.0, sideColumnsMidFrameCount: 8, sideColumnsEndFrameCount: 2,
+      // sideColumnsWidthHeight is derived: eaveHeight − claddingExt × tan(roofSlope°) = 10.5 − 2.5·tan(5.71°) ≈ 10.25
+      sideColumnsWidthHeight: 10.25, sideColumnsMidFrameCount: 8, sideColumnsEndFrameCount: 2,
       gradeOfPlateMaterial: PlateMaterialGrade.FE_345,
       materialConsumptionExcludingPurlin: 18.5, DiaOfRoofSagRod: 12.0, DiaOfCladdingSagRod: 10.0,
       sidewalls: [
@@ -213,7 +214,8 @@ async function main() {
       fasciaBoardArea: 60.0, fasciaMaterialWeightPerSqft: 3.0,
       roofExtensionWidthHeight: 4.0, roofExtensionMidFrameCount: 10, roofExtensionEndFrameCount: 2,
       claddingExtensionWidthHeight: 3.5, claddingExtensionMidFrameCount: 10, claddingExtensionEndFrameCount: 2,
-      sideColumnsWidthHeight: 4.0, sideColumnsMidFrameCount: 10, sideColumnsEndFrameCount: 2,
+      // sideColumnsWidthHeight is derived: eaveHeight − claddingExt × tan(roofSlope°) = 12.0 − 3.5·tan(5°) ≈ 11.694
+      sideColumnsWidthHeight: 11.694, sideColumnsMidFrameCount: 10, sideColumnsEndFrameCount: 2,
       gradeOfPlateMaterial: PlateMaterialGrade.FE_400,
       materialConsumptionExcludingPurlin: 21.0, DiaOfRoofSagRod: 12.0, DiaOfCladdingSagRod: 10.0,
       sidewalls: [

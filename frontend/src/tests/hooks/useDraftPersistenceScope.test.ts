@@ -21,13 +21,13 @@ const seed = (key: string, projectNo: string, jobId: string | null) => {
 describe('useDraftPersistenceScope', () => {
   beforeEach(() => {
     localStorage.clear()
-    useQuotationStore.persist.setOptions({ name: 'strukt:draft' })
+    useQuotationStore.persist.setOptions({ name: 'Floreat:draft' })
     useQuotationStore.getState().resetQuotation()
     mocks.userId = null
   })
 
   it('rehydrates the signed-in user\'s saved draft (including jobId)', async () => {
-    seed('strukt:draft:userX', 'P-X', 'job-X')
+    seed('Floreat:draft:userX', 'P-X', 'job-X')
     mocks.userId = 'userX'
 
     renderHook(() => useDraftPersistenceScope())
