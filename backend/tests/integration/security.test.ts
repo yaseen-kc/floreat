@@ -48,4 +48,23 @@ describe('Security: headers + rate limiting (F-03)', () => {
       expect(last).toBe(429)
     })
   })
+
+  describe('CORS allowlist (F-04)', () => {
+    const allowed = 'https://app.example.com'
+    const disallowed = 'https://evil.example.com'
+    let app: FastifyInstance
+    beforeAll(async () => { app = await buildApp({ corsOrigins: [allowed] }) })
+    afterAll(async () => { await app.close() })
+
+    it('reflects an allowed origin and allows credentials', async () => {
+      const res = await app.inject({ method: 'GET', url: '/api/jobs', headers: { origin: allowed } })
+      expect(res.headers['access-control-allow-origin']).toBe(allowed)
+      expect(res.headers['access-control-allow-credentials']).toBe('true')
+    })
+
+    it('does not reflect a disallowed origin', async () => {
+      const res = await app.inject({ method: 'GET', url: '/api/jobs', headers: { origin: disallowed } })
+      expect(res.headers['access-control-allow-origin']).toBeUndefined()
+    })
+  })
 })

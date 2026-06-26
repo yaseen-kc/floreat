@@ -18,8 +18,10 @@ fastify.decorateRequest('userId', '')
 // Security response headers (X-Content-Type-Options, X-Frame-Options, HSTS, etc.)
 await fastify.register(helmet)
 
+// Exact-match origin allowlist (config.corsOrigins); credentials require a
+// non-wildcard allowlist, enforced at config load (see resolveCorsOrigin).
 await fastify.register(cors, {
-  origin: config.corsOrigin,
+  origin: config.corsOrigins,
   credentials: true,
   methods: ['GET', 'HEAD', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
 })
