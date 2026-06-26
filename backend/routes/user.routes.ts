@@ -8,6 +8,14 @@ import { syncUser } from '../middlewares/sync-user.js'
 import { getMe } from '../controllers/user.controller.js'
 
 export async function userRoutes(app: FastifyInstance) {
-  // GET /api/me — returns the authenticated user's profile
-  app.get('/me', { preHandler: [authMiddleware, syncUser] }, getMe)
+  // GET /api/me — returns the authenticated user's profile.
+  // Tighter rate limit: auth-adjacent route.
+  app.get(
+    '/me',
+    {
+      preHandler: [authMiddleware, syncUser],
+      config: { rateLimit: { max: 20, timeWindow: '1 minute' } },
+    },
+    getMe,
+  )
 }

@@ -153,6 +153,13 @@ is absent.
 **Remediation.** Register `@fastify/helmet` with sensible defaults and `@fastify/rate-limit` (global +
 tighter limits on auth-adjacent routes). Both are first-party Fastify plugins and low-risk to add.
 
+**Status: ✅ Remediated.** `@fastify/helmet` (defaults) and `@fastify/rate-limit` are registered in
+`backend/server.ts` (order: helmet → cors → rate-limit → clerk). Global limit is env-configurable
+(`RATE_LIMIT_MAX`/`RATE_LIMIT_WINDOW`, default 100/min) via `config/index.ts`; tighter 20/min limits
+apply to `/me` and the job write routes (`POST`/`PUT`/`DELETE /jobs`). Covered by
+`tests/integration/security.test.ts` (asserts `x-content-type-options`, `x-frame-options`,
+`x-ratelimit-limit`, and both global + per-route `429`s).
+
 ---
 
 ### F-04 — CORS allows credentials with a permissive default origin — **MEDIUM**
@@ -216,7 +223,7 @@ users where useful, without exposing stack traces.)
 | Tracked env files contain real secrets | ✅ Pass | `backend/.env.test` = `sk_test_fake` / local DSN; `frontend/.env` = public `pk_test_…` (not tracked) |
 | CORS origin allowlisted for prod | ⚠️ Fail | defaults to `localhost:5173`; `credentials: true` — see **F-04** |
 | Auth bypass disabled in prod | ⚠️ Fail | `BYPASS_AUTH` not environment-gated — see **F-02** |
-| Security headers / rate limiting | ⚠️ Fail | none registered — see **F-03** |
+| Security headers / rate limiting | ✅ Pass | `@fastify/helmet` + `@fastify/rate-limit` (global 100/min + 20/min on `/me` and job writes) registered in `server.ts` — **F-03 remediated** |
 
 ---
 
