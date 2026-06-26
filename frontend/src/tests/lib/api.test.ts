@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
-import { apiFetch } from '@/lib/api'
+import { apiFetch, ApiError } from '@/lib/api'
 
 /**
  * Builds a minimal Response-like stub for the global `fetch` mock. Only the
@@ -76,5 +76,43 @@ describe('apiFetch', () => {
     vi.mocked(fetch).mockResolvedValueOnce(makeResponse({ ok: false, status: 404 }))
 
     await expect(apiFetch('/api/jobs/job-1/roof', 'token-123')).rejects.toThrow('API error: 404')
+  })
+
+  it('surfaces a string server error message and exposes status', async () => {
+    vi.mocked(fetch).mockResolvedValueOnce(
+      makeResponse({ ok: false, status: 400, body: JSON.stringify({ error: 'Thickness must be > 0' }) }),
+    )
+
+    const err = await apiFetch('/api/jobs/job-1/roof', 'token-123').catch((e) => e)
+
+    expect(err).toBeInstanceOf(ApiError)
+    expect(err.message).toBe('Thickness must be > 0')
+    expect(err.status).toBe(400)
+    expect(err.body).toEqual({ error: 'Thickness must be > 0' })
+  })
+
+  it('falls back to the generic message when error is a structured (non-string) body', async () => {
+    const flattened = { error: { fieldErrors: { thickness: ['Required'] }, formErrors: [] } }
+    vi.mocked(fetch).mockResolvedValueOnce(
+      makeResponse({ ok: false, status: 422, body: JSON.stringify(flattened) }),
+    )
+
+    const err = await apiFetch('/api/jobs/job-1/roof', 'token-123').catch((e) => e)
+
+    expect(err).toBeInstanceOf(ApiError)
+    // The structured object is never used as the message, but is kept on `body`.
+    expect(err.message).toBe('API error: 422')
+    expect(err.body).toEqual(flattened)
+  })
+
+  it('falls back to the generic message for a non-JSON / empty error body', async () => {
+    vi.mocked(fetch).mockResolvedValueOnce(makeResponse({ ok: false, status: 500, body: 'Internal Server Error' }))
+
+    const err = await apiFetch('/api/jobs/job-1/roof', 'token-123').catch((e) => e)
+
+    expect(err).toBeInstanceOf(ApiError)
+    expect(err.message).toBe('API error: 500')
+    // Unparseable text is preserved as the raw body.
+    expect(err.body).toBe('Internal Server Error')
   })
 })
