@@ -13,6 +13,12 @@ import {
   CanopyHeightFrom,
   CanopySheetType,
   YesNo,
+  StairStepType,
+  StairFloorLevel,
+  StairStringerType,
+  AreaDeductionType,
+  AreaDeductionFor,
+  ApprovalDrawingsTimeUnit,
 } from '../generated/prisma/client.js'
 
 async function main() {
@@ -366,6 +372,144 @@ async function main() {
     })
   }
   console.log('✓ Canopies seeded')
+
+  // ── Stairs (stair items + area deductions) ──────────────────
+  const stairs = [
+    {
+      jobId: 'seed_job_1',
+      stairs: [
+        {
+          code: 'STR-1', typeOfStep: StairStepType.CHQ_PLATE_6MM, location: 'Bay 3 - Main access',
+          startingFrom: StairFloorLevel.GROUND, endingUpTo: StairFloorLevel.FIRST_FLOOR,
+          length: 4.5, width: 1.2, height: 4.5, numberOfMidLanding: 1,
+          typeOfStringer: StairStringerType.HR_SECTION, unitWeightOfStringer: 28.5,
+        },
+        {
+          code: 'STR-2', typeOfStep: StairStepType.TUBE, location: 'Bay 7 - Emergency exit',
+          startingFrom: StairFloorLevel.FIRST_FLOOR, endingUpTo: StairFloorLevel.SECOND_FLOOR,
+          length: 5.0, width: 1.0, height: 4.0, numberOfMidLanding: 2,
+          typeOfStringer: StairStringerType.FAB_SECTION, unitWeightOfStringer: 32.0,
+        },
+      ],
+      areaDeductions: [
+        { type: AreaDeductionType.LIFT, location: 'Bay 5 center', areaM2: 6.5, numbers: 1, deductionFor: AreaDeductionFor.BOTH },
+        { type: AreaDeductionType.DUCT, location: 'Bay 2 side', areaM2: 2.0, numbers: 2, deductionFor: AreaDeductionFor.STRUCTURE_DEDUCTION },
+      ],
+    },
+    {
+      jobId: 'seed_job_2',
+      stairs: [
+        {
+          code: 'STR-1', typeOfStep: StairStepType.CHQ_PLATE_4MM, location: 'Front entrance',
+          startingFrom: StairFloorLevel.GROUND, endingUpTo: StairFloorLevel.FIRST_FLOOR,
+          length: 3.5, width: 1.0, height: 3.5,
+        },
+      ],
+      areaDeductions: [
+        { type: AreaDeductionType.CUT_OUT, location: 'Stair opening', areaM2: 4.2, numbers: 1, deductionFor: AreaDeductionFor.COVERING_DEDUCTION },
+      ],
+    },
+    {
+      jobId: 'seed_job_3',
+      stairs: [
+        {
+          code: 'STR-1', typeOfStep: StairStepType.CHQ_PLATE_6MM, location: 'Block A - West',
+          startingFrom: StairFloorLevel.GROUND, endingUpTo: StairFloorLevel.FIRST_FLOOR,
+          length: 4.0, width: 1.2, height: 4.0, numberOfMidLanding: 1,
+          typeOfStringer: StairStringerType.HR_SECTION, unitWeightOfStringer: 26.0,
+        },
+        {
+          code: 'STR-2', typeOfStep: StairStepType.TUBE, location: 'Block A - East',
+          startingFrom: StairFloorLevel.GROUND, endingUpTo: StairFloorLevel.SECOND_FLOOR,
+          length: 8.0, width: 1.1, height: 8.0, numberOfMidLanding: 3,
+          typeOfStringer: StairStringerType.FAB_SECTION, unitWeightOfStringer: 35.0,
+        },
+      ],
+    },
+    {
+      jobId: 'seed_job_4',
+      stairs: [
+        {
+          code: 'STR-1', length: 3.0, width: 0.9, height: 3.0,
+        },
+      ],
+    },
+    {
+      jobId: 'seed_job_5',
+      stairs: [
+        {
+          code: 'STR-1', typeOfStep: StairStepType.CHQ_PLATE_6MM, location: 'Mezzanine access - North',
+          startingFrom: StairFloorLevel.GROUND, endingUpTo: StairFloorLevel.FIRST_FLOOR,
+          length: 5.0, width: 1.2, height: 5.0, numberOfMidLanding: 1,
+          typeOfStringer: StairStringerType.HR_SECTION, unitWeightOfStringer: 30.0,
+        },
+        {
+          code: 'STR-2', typeOfStep: StairStepType.CHQ_PLATE_4MM, location: 'Loading dock side',
+          startingFrom: StairFloorLevel.GROUND, endingUpTo: StairFloorLevel.FIRST_FLOOR,
+          length: 3.8, width: 1.0, height: 5.0,
+          typeOfStringer: StairStringerType.HR_SECTION, unitWeightOfStringer: 28.0,
+        },
+      ],
+      areaDeductions: [
+        { type: AreaDeductionType.LIFT, location: 'Goods lift bay', areaM2: 9.0, numbers: 1, deductionFor: AreaDeductionFor.BOTH },
+      ],
+    },
+  ]
+
+  for (const { jobId, stairs: items = [], areaDeductions = [] } of stairs) {
+    await prisma.stair.upsert({
+      where: { jobId },
+      create: { jobId, stairs: { createMany: { data: items } }, areaDeductions: { createMany: { data: areaDeductions } } },
+      update: {
+        stairs: { deleteMany: {}, createMany: { data: items } },
+        areaDeductions: { deleteMany: {}, createMany: { data: areaDeductions } },
+      },
+    })
+  }
+  console.log('✓ Stairs seeded')
+
+  // ── Loads ───────────────────────────────────────────────────
+  const loads = [
+    {
+      jobId: 'seed_job_1',
+      deadLoadOnRoofRafters: 0.15, liveLoadOnRoofRafters: 0.75, collateralLoadOnRoofRafters: 0.10,
+      windLoadOnRoofRaftersUpward: 150.0, windLoadHorizontal: 150.0,
+      deadLoadOnRoofFloor: 0.20, liveLoadOnRoofFloor: 1.50,
+      floorDeadLoad: 3.5, floorFinishLoad: 1.5, floorLiveLoad: 4.0,
+      snowLoad: 0.0, earthquakeLoad: 0.10,
+      approvalDrawingsTime: 3, approvalDrawingsUnit: ApprovalDrawingsTimeUnit.WEEKS,
+      supplyOfMaterialsDays: 45, erectionOfStructureDays: 30,
+    },
+    {
+      jobId: 'seed_job_3',
+      deadLoadOnRoofRafters: 0.18, liveLoadOnRoofRafters: 0.75, collateralLoadOnRoofRafters: 0.12,
+      windLoadOnRoofRaftersUpward: 140.0, windLoadHorizontal: 140.0,
+      deadLoadOnRoofFloor: 0.25, liveLoadOnRoofFloor: 1.50,
+      floorDeadLoad: 4.0, floorFinishLoad: 1.5, floorLiveLoad: 5.0,
+      snowLoad: 0.0, earthquakeLoad: 0.15,
+    },
+    {
+      jobId: 'seed_job_4',
+      deadLoadOnRoofRafters: 0.12, liveLoadOnRoofRafters: 0.75,
+      windLoadOnRoofRaftersUpward: 130.0, windLoadHorizontal: 130.0,
+      approvalDrawingsTime: 10, approvalDrawingsUnit: ApprovalDrawingsTimeUnit.DAYS,
+      supplyOfMaterialsDays: 30, erectionOfStructureDays: 20,
+    },
+    {
+      jobId: 'seed_job_5',
+      deadLoadOnRoofRafters: 0.20, liveLoadOnRoofRafters: 0.75,
+      windLoadOnRoofRaftersUpward: 155.0,
+    },
+  ]
+
+  for (const { jobId, ...data } of loads) {
+    await prisma.load.upsert({
+      where: { jobId },
+      create: { jobId, ...data },
+      update: data,
+    })
+  }
+  console.log('✓ Loads seeded')
 }
 
 main()

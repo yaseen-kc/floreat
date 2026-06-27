@@ -1,4 +1,4 @@
-import { useQuotationStore, buildRoofPayload, buildMezzaninePayload, buildStairPayload, buildCanopyPayload } from '@/stores/quotation-store'
+import { useQuotationStore, buildRoofPayload, buildMezzaninePayload, buildStairPayload, buildCanopyPayload, buildLoadPayload } from '@/stores/quotation-store'
 import { useSaveStatusStore } from '@/stores/save-status-store'
 import { useShallow } from 'zustand/react/shallow'
 import { toast } from 'sonner'
@@ -11,6 +11,7 @@ import { useUpsertStair } from '@/api/quotation/stair/postStairs'
 import { useDeleteStair } from '@/api/quotation/stair/deleteStairs'
 import { useUpsertCanopy } from '@/api/quotation/canopy/postCanopy'
 import { useDeleteCanopy } from '@/api/quotation/canopy/deleteCanopy'
+import { useUpsertLoad } from '@/api/quotation/load/postLoad'
 import { useNavigate } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
 import { Spinner } from '@/components/ui/spinner'
@@ -18,7 +19,7 @@ import { ArrowLeft, ArrowRight, Check, Save } from 'lucide-react'
 import { STEPS, STEP_COUNT } from '@/components/quotation/steps'
 
 export function WizardActionBar() {
-  const { currentStep, nextStep, prevStep, validateStep, goStep, projectInfo, roof, jobId, setJobId, resetQuotation, mezzanine, hasMezzanine, stair, hasStair, canopy, hasCanopy } =
+  const { currentStep, nextStep, prevStep, validateStep, goStep, projectInfo, roof, jobId, setJobId, resetQuotation, mezzanine, hasMezzanine, stair, hasStair, canopy, hasCanopy, load } =
     useQuotationStore(
       useShallow((s) => ({
         currentStep: s.currentStep,
@@ -37,6 +38,7 @@ export function WizardActionBar() {
         hasStair: s.hasStair,
         canopy: s.canopy,
         hasCanopy: s.hasCanopy,
+        load: s.load,
       })),
     )
   const navigate = useNavigate()
@@ -52,6 +54,7 @@ export function WizardActionBar() {
   const deleteStair = useDeleteStair()
   const upsertCanopy = useUpsertCanopy()
   const deleteCanopy = useDeleteCanopy()
+  const upsertLoad = useUpsertLoad()
   const isLast = currentStep === STEP_COUNT
   const isSubmitting =
     createJob.isPending ||
@@ -62,7 +65,8 @@ export function WizardActionBar() {
     upsertStair.isPending ||
     deleteStair.isPending ||
     upsertCanopy.isPending ||
-    deleteCanopy.isPending
+    deleteCanopy.isPending ||
+    upsertLoad.isPending
 
   /**
    * Persists Step 1 data. Creates the job once (POST) and stores its id;
@@ -207,6 +211,29 @@ export function WizardActionBar() {
     }
   }
 
+  /**
+   * Persists Step 7 load data via an idempotent upsert. Requires the Step 1
+   * `jobId`. The Load form is always-on, so this always upserts the non-blank
+   * fields (an entirely blank draft upserts `{}`). Resolves on success and
+   * rejects on failure so callers can gate navigation.
+   */
+  const submitLoad = async () => {
+    if (!jobId) {
+      toast.error('Save the project details first')
+      throw new Error('Cannot save load before the job is created')
+    }
+    try {
+      setSaving()
+      await upsertLoad.mutateAsync({ jobId, payload: buildLoadPayload(load) })
+      setSaved()
+      toast.success('Load saved successfully')
+    } catch (err) {
+      resetSaveStatus()
+      toast.error('Failed to save load')
+      throw err
+    }
+  }
+
   const handleNext = async () => {
     if (isSubmitting) return
 
@@ -270,12 +297,17 @@ export function WizardActionBar() {
       return
     }
 
-    // Final step: finalise and return to the dashboard.
+    // Final step (Load): persist the load, then finalise and return to the
+    // dashboard. Stay on the step if persistence fails.
     if (isLast) {
-      if (!validateStep(currentStep)) { toast.error('Please complete the required fields'); return }
-      toast.success('Quotation finalised & saved')
-      resetQuotation()
-      navigate('/')
+      try {
+        await submitLoad()
+        toast.success('Quotation finalised & saved')
+        resetQuotation()
+        navigate('/')
+      } catch {
+        // Error toast already shown; stay on the final step.
+      }
       return
     }
 
@@ -297,6 +329,8 @@ export function WizardActionBar() {
       try { await submitStair() } catch { /* error toast already shown */ }
     } else if (currentStep === 5) {
       try { await submitCanopy() } catch { /* error toast already shown */ }
+    } else if (currentStep === 7) {
+      try { await submitLoad() } catch { /* error toast already shown */ }
     } else {
       toast.success('Draft saved')
     }

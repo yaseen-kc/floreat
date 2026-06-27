@@ -17,6 +17,7 @@ import {
   type CreateCanopyInput,
   canopyItemSchema,
 } from '@/schemas/canopy.schema'
+import { type CreateLoadInput } from '@/schemas/load.schema'
 import { STEP_COUNT } from '@/components/quotation/steps'
 
 /** Step 1 project info — the canonical job contract (see job.schema.ts). */
@@ -190,6 +191,14 @@ export interface CanopyDraft {
   canopies: CanopyItemDraft[]
 }
 
+/**
+ * Step 7 load draft. Load is a flat, 1:1-per-job resource with NO child arrays,
+ * and the schema is entirely optional — so the draft is just the create input.
+ * Every field can be left blank and is dropped from the payload by
+ * {@link buildLoadPayload}.
+ */
+export type LoadDraft = CreateLoadInput
+
 interface QuotationState {
   currentStep: number
   projectInfo: ProjectInfo
@@ -201,6 +210,7 @@ interface QuotationState {
   hasStair: boolean
   canopy: CanopyDraft
   hasCanopy: boolean
+  load: LoadDraft
   showValidation: boolean
   jobId: string | null
   setProjectInfo: (v: Partial<ProjectInfo>) => void
@@ -212,6 +222,7 @@ interface QuotationState {
   setHasStair: (enabled: boolean) => void
   setCanopy: (v: Partial<CanopyDraft>) => void
   setHasCanopy: (enabled: boolean) => void
+  setLoad: (v: Partial<LoadDraft>) => void
   setJobId: (id: string | null) => void
   resetQuotation: () => void
   goStep: (n: number) => void
@@ -279,6 +290,9 @@ const createDefaultStair = (): StairDraft => ({ stairs: [], areaDeductions: [] }
 /** Factory for a fresh canopy draft — no canopy items to start. */
 const createDefaultCanopy = (): CanopyDraft => ({ canopies: [] })
 
+/** Factory for a fresh load draft — every field blank (the schema is all-optional). */
+const createDefaultLoad = (): LoadDraft => ({})
+
 export const useQuotationStore = create<QuotationState>()(
   persist(
     (set, get) => ({
@@ -294,6 +308,7 @@ export const useQuotationStore = create<QuotationState>()(
       hasStair: false,
       canopy: createDefaultCanopy(),
       hasCanopy: false,
+      load: createDefaultLoad(),
 
       setProjectInfo: (v) => set((s) => ({ projectInfo: { ...s.projectInfo, ...v } })),
 
@@ -344,6 +359,10 @@ export const useQuotationStore = create<QuotationState>()(
       setHasCanopy: (enabled) =>
         set(() => (enabled ? { hasCanopy: true } : { hasCanopy: false, canopy: createDefaultCanopy() })),
 
+      // Load is always-on (no toggle): blank fields are simply dropped from the
+      // payload by buildLoadPayload at save time.
+      setLoad: (v) => set((s) => ({ load: { ...s.load, ...v } })),
+
       setJobId: (id) => set({ jobId: id }),
 
       resetQuotation: () => set({
@@ -359,6 +378,7 @@ export const useQuotationStore = create<QuotationState>()(
         hasStair: false,
         canopy: createDefaultCanopy(),
         hasCanopy: false,
+        load: createDefaultLoad(),
       }),
 
       validateStep: (n) => {
@@ -389,7 +409,7 @@ export const useQuotationStore = create<QuotationState>()(
       // in-progress job resume (and re-use PUT) after a refresh instead of
       // creating a duplicate.
       skipHydration: true,
-      partialize: (s) => ({ projectInfo: s.projectInfo, roof: s.roof, roofSectionsEnabled: s.roofSectionsEnabled, mezzanine: s.mezzanine, hasMezzanine: s.hasMezzanine, stair: s.stair, hasStair: s.hasStair, canopy: s.canopy, hasCanopy: s.hasCanopy, currentStep: s.currentStep, jobId: s.jobId }),
+      partialize: (s) => ({ projectInfo: s.projectInfo, roof: s.roof, roofSectionsEnabled: s.roofSectionsEnabled, mezzanine: s.mezzanine, hasMezzanine: s.hasMezzanine, stair: s.stair, hasStair: s.hasStair, canopy: s.canopy, hasCanopy: s.hasCanopy, load: s.load, currentStep: s.currentStep, jobId: s.jobId }),
     }
   )
 )
@@ -495,4 +515,15 @@ export function buildCanopyPayload(canopy: CanopyDraft): CreateCanopyInput {
   const payload: CreateCanopyInput = {}
   if (canopies.length > 0) payload.canopies = canopies
   return payload
+}
+
+/**
+ * Builds the load create/upsert payload from the Step 7 draft.
+ *
+ * Load is a flat resource with an all-optional schema, so this just drops every
+ * blank (`undefined`) field. An entirely blank draft yields `{}` — which the
+ * backend accepts (the always-on form upserts whatever the user provided).
+ */
+export function buildLoadPayload(load: LoadDraft): CreateLoadInput {
+  return compactRow(load) as CreateLoadInput
 }

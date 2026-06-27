@@ -185,3 +185,76 @@ export function makeStair(overrides = {}) {
     ...overrides,
   }
 }
+
+export function makeLoadInput(jobId = faker.string.uuid()) {
+  return {
+    jobId,
+    deadLoadOnRoofRafters: 0.15,
+    liveLoadOnRoofRafters: 0.6,
+    collateralLoadOnRoofRafters: 0.6,
+    windLoadOnRoofRaftersUpward: 140,
+    windLoadHorizontal: 140,
+    deadLoadOnRoofFloor: 0.6,
+    liveLoadOnRoofFloor: 0.6,
+    floorDeadLoad: 2.25,
+    floorFinishLoad: 0.25,
+    floorLiveLoad: 3,
+    snowLoad: 3,
+    earthquakeLoad: 3,
+    approvalDrawingsTime: 7,
+    approvalDrawingsUnit: 'DAYS' as const,
+    supplyOfMaterialsDays: 60,
+    erectionOfStructureDays: 30,
+  }
+}
+
+export function makeLoad(overrides = {}) {
+  return {
+    id: faker.string.uuid(),
+    ...makeLoadInput(),
+    createdAt: new Date(),
+    updatedAt: new Date(),
+    ...overrides,
+  }
+}
+
+
+export function makeCanopyItem(overrides = {}) {
+  return {
+    code: 'CANOPY-1',
+    heightFrom: 'GROUND' as const,
+    length: 6,
+    width: 3,
+    height: 3.2,
+    materialConsumptionKgPerSqft: 4.2,
+    numberOfBeams: 2,
+    numberOfPurlins: 6,
+    purlinDepth: 0.15,
+    unitWeightOfPurlin: 5.4,
+    canopySheet: 'NCGL' as const,
+    sheetThick: 0.5,
+    canopySideCoveringHeight: 1.2,
+    gutter: 'YES' as const,
+    downTake: 'NO' as const,
+    flashing: 'YES' as const,
+    ...overrides,
+  }
+}
+
+export function makeCanopyInput(jobId = faker.string.uuid()) {
+  return {
+    jobId,
+    canopies: [makeCanopyItem()],
+  }
+}
+
+export function makeCanopy(overrides = {}) {
+  return {
+    id: faker.string.uuid(),
+    jobId: faker.string.uuid(),
+    canopies: [],
+    createdAt: new Date(),
+    updatedAt: new Date(),
+    ...overrides,
+  }
+}
