@@ -17,7 +17,7 @@ export const STEPS: WizardStep[] = [
   { label: 'Stair', sub: 'STAIR' },
   { label: 'Canopy', sub: 'CANOPY' },
   { label: 'Pricing', sub: 'BREAKDOWN' },
-  { label: 'Review', sub: 'GENERATE' },
+  { label: 'Load', sub: 'LOAD' },
 ]
 
 /** Total number of wizard steps. */
