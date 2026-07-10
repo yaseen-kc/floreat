@@ -18,6 +18,19 @@ import {
   AreaDeductionType,
   AreaDeductionFor,
   ApprovalDrawingsTimeUnit,
+  DrainageMaterial,
+  DrainageSize,
+  FlashingType,
+  FlashingThickness,
+  PartitionType,
+  PartitionThickness,
+  InsulationType,
+  TurboVentilatorDiameter,
+  AccessoryOpeningKind,
+  PaintType,
+  PurlinsGirtsFinish,
+  PurlinsGirtsPaint,
+  FoundationBoltFinish,
 } from '../generated/prisma/client.js'
 
 async function main() {
@@ -471,6 +484,128 @@ async function main() {
     })
   }
   console.log('✓ Stairs seeded')
+
+  // ── Accessories (doors, windows, folded plates, openings) ───
+  // NOTE: PartitionThickness has 12 members but only one consuming column, so
+  // with one row per job (jobs 1–5) at most 5 of its values can be seeded. The
+  // remaining 7 (MM_0_45, MM_0_47, MM_8, MM_16, MM_18, MM_40, MM_50) are an
+  // accepted schema-limited gap. Every other enum reaches full member coverage.
+  const accessories = [
+    {
+      jobId: 'seed_job_1',
+      // Full: every section + all four child arrays
+      gutterType: DrainageMaterial.PPGL, gutterSize: DrainageSize.IN_6, gutterQuantity: 12,
+      downTakeType: DrainageMaterial.UPVC, downTakeSize: DrainageSize.IN_4, downTakeQuantity: 8,
+      dripTrimType: FlashingType.PPGL, dripTrimThickness: FlashingThickness.MM_0_30, dripTrimQuantity: 20,
+      gableEndFlashingType: FlashingType.NCGL, gableEndFlashingThickness: FlashingThickness.MM_0_35, gableEndFlashingQuantity: 16,
+      cornerFlashType: FlashingType.GI, cornerFlashThickness: FlashingThickness.MM_0_40, cornerFlashQuantity: 4,
+      ridgeType: FlashingType.PPGL, ridgeThickness: FlashingThickness.MM_0_45, ridgeQuantity: 10,
+      partitionType: PartitionType.AEROCON_PANEL, partitionThickness: PartitionThickness.MM_0_40, partitionQuantity: 6,
+      roofInsulationType: InsulationType.XLPE, wallInsulationType: InsulationType.ROCK_WOOL,
+      turboVentilatorDiameter: TurboVentilatorDiameter.IN_6, turboVentilatorNos: 5,
+      handrailWeightKg: 145.5,
+      deckSheetFlashingEnabled: true, gantryGirderEnabled: true, liftStructureEnabled: true,
+      framesPrimerCoats: 2, framesPrimerType: PaintType.EPOXY_PRIMER,
+      framesPaintCoats: 2, framesPaintType: PaintType.EPOXY_PAINT,
+      purlinsGirtsFinish: PurlinsGirtsFinish.PRE_GALVANISED, purlinsGirtsGsm: 120, purlinsGirtsPaint: PurlinsGirtsPaint.PAINTED,
+      foundationBoltFinish: FoundationBoltFinish.BLACK_UNPAINTED,
+      doors: [
+        { height: 2.4, width: 1.2, nos: 2, quantity: 4 },
+        { height: 3.0, width: 3.0, nos: 1, quantity: 1 },
+      ],
+      windows: [
+        { height: 1.2, width: 1.5, nos: 6, quantity: 6 },
+        { height: 0.9, width: 1.2, nos: 4, quantity: 4 },
+      ],
+      foldedPlates: [
+        { length: 6.0, width: 0.6, nos: 8, quantity: 8 },
+        { length: 4.5, width: 0.5, nos: 4, quantity: 4 },
+      ],
+      openings: [
+        { kind: AccessoryOpeningKind.ROLLING_SHUTTER, length: 4.0, width: 4.0, nos: 2, quantity: 2 },
+        { kind: AccessoryOpeningKind.LOUVER, length: 1.2, width: 0.6, nos: 8, quantity: 8 },
+        { kind: AccessoryOpeningKind.SKY_LIGHT, length: 3.0, width: 1.2, nos: 6, quantity: 6 },
+        { kind: AccessoryOpeningKind.WALL_LIGHT, length: 1.5, width: 0.9, nos: 10, quantity: 10 },
+      ],
+    },
+    {
+      jobId: 'seed_job_2',
+      // Heavy-partial: drainage + flashing + partition + insulation + turbo + purlins paint + doors
+      gutterType: DrainageMaterial.ALUMINIUM, gutterSize: DrainageSize.IN_8, gutterQuantity: 6,
+      downTakeType: DrainageMaterial.GI, downTakeSize: DrainageSize.IN_10, downTakeQuantity: 4,
+      dripTrimType: FlashingType.PPGL, dripTrimThickness: FlashingThickness.MM_0_47, dripTrimQuantity: 12,
+      gableEndFlashingType: FlashingType.GI, gableEndFlashingThickness: FlashingThickness.MM_0_50, gableEndFlashingQuantity: 8,
+      cornerFlashType: FlashingType.NCGL, cornerFlashThickness: FlashingThickness.MM_0_55, cornerFlashQuantity: 4,
+      ridgeType: FlashingType.PPGL, ridgeThickness: FlashingThickness.MM_0_80, ridgeQuantity: 6,
+      partitionType: PartitionType.CEMENT_BOARD, partitionThickness: PartitionThickness.MM_6, partitionQuantity: 3,
+      roofInsulationType: InsulationType.GLASS_WOOL, wallInsulationType: InsulationType.ALUMINIUM_BUBBLE,
+      turboVentilatorDiameter: TurboVentilatorDiameter.FT_1, turboVentilatorNos: 3,
+      purlinsGirtsPaint: PurlinsGirtsPaint.UNPAINTED,
+      doors: [
+        { height: 2.1, width: 0.9, nos: 3, quantity: 3 },
+      ],
+    },
+    {
+      jobId: 'seed_job_3',
+      // Medium: drainage + flashing + partition + insulation + turbo + a couple children
+      gutterType: DrainageMaterial.COPPER, gutterSize: DrainageSize.IN_12, gutterQuantity: 5,
+      downTakeType: DrainageMaterial.TIN, downTakeSize: DrainageSize.IN_18, downTakeQuantity: 3,
+      dripTrimType: FlashingType.GI, dripTrimThickness: FlashingThickness.MM_1_00, dripTrimQuantity: 10,
+      gableEndFlashingType: FlashingType.PPGL, gableEndFlashingThickness: FlashingThickness.MM_1_20, gableEndFlashingQuantity: 6,
+      cornerFlashType: FlashingType.NCGL, cornerFlashThickness: FlashingThickness.MM_1_60, cornerFlashQuantity: 4,
+      ridgeType: FlashingType.GI, ridgeThickness: FlashingThickness.MM_1_80, ridgeQuantity: 5,
+      partitionType: PartitionType.PPGL_SHEET, partitionThickness: PartitionThickness.MM_12, partitionQuantity: 2,
+      roofInsulationType: InsulationType.COOL_BOARD,
+      turboVentilatorDiameter: TurboVentilatorDiameter.IN_18, turboVentilatorNos: 2,
+      windows: [
+        { height: 1.5, width: 1.8, nos: 4, quantity: 4 },
+      ],
+      openings: [
+        { kind: AccessoryOpeningKind.ROLLING_SHUTTER, length: 3.5, width: 3.5, nos: 1, quantity: 1 },
+      ],
+    },
+    {
+      jobId: 'seed_job_4',
+      // Light: a few flashing/drainage/turbo/partition fields, minimal children
+      gutterType: DrainageMaterial.PPGL, gutterSize: DrainageSize.IN_24, gutterQuantity: 2,
+      ridgeType: FlashingType.PPGL, ridgeThickness: FlashingThickness.MM_2_00, ridgeQuantity: 3,
+      partitionType: PartitionType.PUFF_SHEET, partitionThickness: PartitionThickness.MM_30, partitionQuantity: 1,
+      turboVentilatorDiameter: TurboVentilatorDiameter.FT_2, turboVentilatorNos: 1,
+      foldedPlates: [
+        { length: 3.0, width: 0.4, nos: 2, quantity: 2 },
+      ],
+    },
+    {
+      jobId: 'seed_job_5',
+      // Minimal: partition (for enum coverage) + a single door
+      partitionType: PartitionType.PLY_BOARD, partitionThickness: PartitionThickness.MM_75,
+      doors: [
+        { height: 2.1, width: 0.9, nos: 1, quantity: 1 },
+      ],
+    },
+  ]
+
+  for (const { jobId, doors = [], windows = [], foldedPlates = [], openings = [], ...data } of accessories) {
+    await prisma.accessories.upsert({
+      where: { jobId },
+      create: {
+        jobId,
+        ...data,
+        doors: { createMany: { data: doors } },
+        windows: { createMany: { data: windows } },
+        foldedPlates: { createMany: { data: foldedPlates } },
+        openings: { createMany: { data: openings } },
+      },
+      update: {
+        ...data,
+        doors: { deleteMany: {}, createMany: { data: doors } },
+        windows: { deleteMany: {}, createMany: { data: windows } },
+        foldedPlates: { deleteMany: {}, createMany: { data: foldedPlates } },
+        openings: { deleteMany: {}, createMany: { data: openings } },
+      },
+    })
+  }
+  console.log('✓ Accessories seeded')
 
   // ── Loads ───────────────────────────────────────────────────
   const loads = [

@@ -259,3 +259,81 @@ export function makeCanopy(overrides = {}) {
     ...overrides,
   }
 }
+
+
+export function makeAccessoryDoor(overrides = {}) {
+  return {
+    height: 2.1,
+    width: 1.2,
+    nos: 2,
+    quantity: 2,
+    ...overrides,
+  }
+}
+
+export function makeAccessoryWindow(overrides = {}) {
+  return {
+    height: 1.2,
+    width: 1.5,
+    nos: 4,
+    quantity: 4,
+    ...overrides,
+  }
+}
+
+export function makeAccessoryFoldedPlate(overrides = {}) {
+  return {
+    length: 6,
+    width: 1.2,
+    nos: 3,
+    quantity: 3,
+    ...overrides,
+  }
+}
+
+export function makeAccessoryOpening(overrides = {}) {
+  return {
+    kind: 'ROLLING_SHUTTER' as const,
+    length: 3.5,
+    width: 3,
+    nos: 1,
+    quantity: 1,
+    ...overrides,
+  }
+}
+
+export function makeAccessoriesInput(jobId = faker.string.uuid()) {
+  return {
+    jobId,
+    gutterType: 'PPGL' as const,
+    gutterSize: 'IN_6' as const,
+    gutterQuantity: 2,
+    partitionType: 'AEROCON_PANEL' as const,
+    partitionThickness: 'MM_50' as const,
+    roofInsulationType: 'GLASS_WOOL' as const,
+    handrailWeightKg: 45.5,
+    gantryGirderEnabled: true,
+    framesPrimerCoats: 1,
+    framesPrimerType: 'EPOXY_PRIMER' as const,
+    purlinsGirtsFinish: 'PRE_GALVANISED' as const,
+    foundationBoltFinish: 'BLACK_UNPAINTED' as const,
+    doors: [makeAccessoryDoor()],
+    windows: [makeAccessoryWindow()],
+    foldedPlates: [makeAccessoryFoldedPlate()],
+    openings: [makeAccessoryOpening()],
+  }
+}
+
+export function makeAccessories(overrides = {}) {
+  return {
+    id: faker.string.uuid(),
+    jobId: faker.string.uuid(),
+    doors: [],
+    windows: [],
+    foldedPlates: [],
+    openings: [],
+    createdAt: new Date(),
+    updatedAt: new Date(),
+    ...overrides,
+  }
+}

@@ -14,6 +14,7 @@ import { mezzanineRoutes } from './mezzanine.routes.js'
 import { stairRoutes } from './stair.routes.js'
 import { canopyRoutes } from './canopy.routes.js'
 import { loadRoutes } from './load.routes.js'
+import { accessoriesRoutes } from './accessories.routes.js'
 
 export async function registerRoutes(app: FastifyInstance) {
   await app.register(userRoutes, { prefix: '/api' })
@@ -23,4 +24,5 @@ export async function registerRoutes(app: FastifyInstance) {
   await app.register(stairRoutes, { prefix: '/api' })
   await app.register(canopyRoutes, { prefix: '/api' })
   await app.register(loadRoutes, { prefix: '/api' })
+  await app.register(accessoriesRoutes, { prefix: '/api' })
 }

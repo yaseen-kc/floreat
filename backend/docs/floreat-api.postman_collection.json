@@ -415,7 +415,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"canopies\": [\n\t\t{\n\t\t\t\"code\": \"CANOPY-1\",\n\t\t\t\"heightFrom\": \"GROUND\",\n\t\t\t\"length\": 6,\n\t\t\t\"width\": 3,\n\t\t\t\"height\": 3.5,\n\t\t\t\"materialConsumptionKgPerSqft\": 9.5,\n\t\t\t\"numberOfBeams\": 4,\n\t\t\t\"numberOfPurlins\": 6,\n\t\t\t\"purlinDepth\": 150,\n\t\t\t\"unitWeightOfPurlin\": 5.2,\n\t\t\t\"canopySheet\": \"PPGL\",\n\t\t\t\"sheetThick\": 0.5,\n\t\t\t\"canopySideCoveringHeight\": 1.2,\n\t\t\t\"gutter\": \"YES\",\n\t\t\t\"downTake\": \"NO\",\n\t\t\t\"flashing\": \"YES\"\n\t\t}\n\t]\n}",
+							"raw": "{\n\t\"canopies\": [\n\t\t{\n\t\t\t\"code\": \"CANOPY-1\",\n\t\t\t\"heightFrom\": \"GROUND\",\n\t\t\t\"length\": 6,\n\t\t\t\"width\": 3,\n\t\t\t\"height\": 3.5,\n\t\t\t\"materialConsumptionKgPerSqft\": 9.5,\n\t\t\t\"numberOfBeams\": 4,\n\t\t\t\"numberOfPurlins\": 6,\n\t\t\t\"purlinDepth\": 150,\n\t\t\t\"unitWeightOfPurlin\": 5.2,\n\t\t\t\"canopySheet\": \"PPGL\",\n\t\t\t\"sheetThick\": 0.5,\n\t\t\t\"canopySideCoveringHeight\": 1.2,\n\t\t\t\"gutter\": true,\n\t\t\t\"downTake\": false,\n\t\t\t\"flashing\": true\n\t\t}\n\t]\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -637,6 +637,130 @@
 							"raw": "{{baseUrl}}/api/jobs/:jobId/load",
 							"host": ["{{baseUrl}}"],
 							"path": ["api", "jobs", ":jobId", "load"],
+							"variable": [
+								{
+									"key": "jobId",
+									"value": ""
+								}
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Accessories",
+			"item": [
+				{
+					"name": "Upsert Accessories",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"gutterType\": \"PPGL\",\n\t\"gutterSize\": \"IN_6\",\n\t\"gutterQuantity\": 2,\n\t\"downTakeType\": \"UPVC\",\n\t\"downTakeSize\": \"IN_4\",\n\t\"downTakeQuantity\": 3,\n\t\"dripTrimType\": \"NCGL\",\n\t\"dripTrimThickness\": \"MM_0_47\",\n\t\"ridgeType\": \"PPGL\",\n\t\"ridgeThickness\": \"MM_0_50\",\n\t\"partitionType\": \"AEROCON_PANEL\",\n\t\"partitionThickness\": \"MM_50\",\n\t\"partitionQuantity\": 4,\n\t\"roofInsulationType\": \"GLASS_WOOL\",\n\t\"wallInsulationType\": \"ROCK_WOOL\",\n\t\"turboVentilatorDiameter\": \"FT_1\",\n\t\"turboVentilatorNos\": 2,\n\t\"handrailWeightKg\": 45.5,\n\t\"deckSheetFlashingEnabled\": true,\n\t\"gantryGirderEnabled\": false,\n\t\"liftStructureEnabled\": true,\n\t\"framesPrimerCoats\": 1,\n\t\"framesPrimerType\": \"EPOXY_PRIMER\",\n\t\"framesPaintCoats\": 2,\n\t\"framesPaintType\": \"EPOXY_PAINT\",\n\t\"purlinsGirtsFinish\": \"PRE_GALVANISED\",\n\t\"purlinsGirtsGsm\": 120,\n\t\"purlinsGirtsPaint\": \"UNPAINTED\",\n\t\"foundationBoltFinish\": \"BLACK_UNPAINTED\",\n\t\"doors\": [\n\t\t{\n\t\t\t\"height\": 2.1,\n\t\t\t\"width\": 1.2,\n\t\t\t\"nos\": 2,\n\t\t\t\"quantity\": 2\n\t\t}\n\t],\n\t\"windows\": [\n\t\t{\n\t\t\t\"height\": 1.2,\n\t\t\t\"width\": 1.5,\n\t\t\t\"nos\": 4,\n\t\t\t\"quantity\": 4\n\t\t}\n\t],\n\t\"foldedPlates\": [\n\t\t{\n\t\t\t\"length\": 6,\n\t\t\t\"width\": 1.2,\n\t\t\t\"nos\": 3,\n\t\t\t\"quantity\": 3\n\t\t}\n\t],\n\t\"openings\": [\n\t\t{\n\t\t\t\"kind\": \"ROLLING_SHUTTER\",\n\t\t\t\"length\": 3.5,\n\t\t\t\"width\": 3,\n\t\t\t\"nos\": 1,\n\t\t\t\"quantity\": 1\n\t\t}\n\t]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/jobs/:jobId/accessories",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "jobs", ":jobId", "accessories"],
+							"variable": [
+								{
+									"key": "jobId",
+									"value": ""
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Accessories by Job",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{baseUrl}}/api/jobs/:jobId/accessories",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "jobs", ":jobId", "accessories"],
+							"variable": [
+								{
+									"key": "jobId",
+									"value": ""
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Get All Accessories",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{baseUrl}}/api/accessories?page=1&pageSize=10",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "accessories"],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "pageSize",
+									"value": "10"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Update Accessories",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"gutterQuantity\": 4,\n\t\"partitionThickness\": \"MM_75\",\n\t\"framesPaintCoats\": 3,\n\t\"openings\": [\n\t\t{\n\t\t\t\"kind\": \"SKY_LIGHT\",\n\t\t\t\"length\": 2.5,\n\t\t\t\"width\": 2,\n\t\t\t\"nos\": 2,\n\t\t\t\"quantity\": 2\n\t\t}\n\t]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/jobs/:jobId/accessories",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "jobs", ":jobId", "accessories"],
+							"variable": [
+								{
+									"key": "jobId",
+									"value": ""
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Delete Accessories",
+					"request": {
+						"method": "DELETE",
+						"url": {
+							"raw": "{{baseUrl}}/api/jobs/:jobId/accessories",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "jobs", ":jobId", "accessories"],
 							"variable": [
 								{
 									"key": "jobId",
