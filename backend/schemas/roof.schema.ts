@@ -46,7 +46,9 @@ export const createRoofSchema = z.object({
   claddingPurlins: z.number().int().nonnegative(),
   internalColumnsForMainRoofFrames: z.number().int().nonnegative(),
   internalColumnsForEndRoofFrames: z.number().int().nonnegative(),
-  roofFrameBaseFixing: roofFrameBaseFixingEnum,
+  // Optional (nullable column) so partial/draft roofs can be saved before the
+  // base-fixing method is chosen. The frontend keeps it required in its form.
+  roofFrameBaseFixing: roofFrameBaseFixingEnum.optional(),
 
   // ── Optional members ──
   columnSegmentsInMainFrame: z.number().int().nonnegative().optional(),
@@ -129,8 +131,8 @@ export const createRoofSchema = z.object({
   materialConsumptionExcludingPurlin: z.number().nonnegative().optional(),
 
   // ── Optional SAG rod ──
-  DiaOfRoofSagRod: z.number().positive().optional(),
-  DiaOfCladdingSagRod: z.number().positive().optional(),
+  diaOfRoofSagRod: z.number().positive().optional(),
+  diaOfCladdingSagRod: z.number().positive().optional(),
 
   // ── Inline sidewalls ──
   sidewalls: z.array(sidewallSchema).optional(),

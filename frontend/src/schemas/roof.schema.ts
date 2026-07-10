@@ -151,8 +151,8 @@ export const createRoofSchema = z.object({
   materialConsumptionExcludingPurlin: z.number().nonnegative(),
 
   // ── SAG rod ──
-  DiaOfRoofSagRod: z.number().positive(),
-  DiaOfCladdingSagRod: z.number().positive(),
+  diaOfRoofSagRod: z.number().positive(),
+  diaOfCladdingSagRod: z.number().positive(),
 
   // ── Inline sidewalls (optional — excluded from the required set) ──
   sidewalls: z.array(sidewallSchema).optional(),

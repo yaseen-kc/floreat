@@ -25,11 +25,12 @@ export function upsertCanopy(jobId: string, data: CreateCanopyInput) {
   })
 }
 
-/** Returns a paginated list of canopies ordered by most recent first. */
-export async function getCanopies(page: number, pageSize: number) {
+/** Returns a paginated list of the user's canopies ordered by most recent first. */
+export async function getCanopies(userId: string, page: number, pageSize: number) {
+  const where = { job: { userId } }
   const [data, total] = await Promise.all([
-    prisma.canopy.findMany({ skip: (page - 1) * pageSize, take: pageSize, orderBy: { createdAt: 'desc' }, include: { canopies: true } }),
-    prisma.canopy.count(),
+    prisma.canopy.findMany({ where, skip: (page - 1) * pageSize, take: pageSize, orderBy: { createdAt: 'desc' }, include: { canopies: true } }),
+    prisma.canopy.count({ where }),
   ])
   return { data, total, page, pageSize }
 }

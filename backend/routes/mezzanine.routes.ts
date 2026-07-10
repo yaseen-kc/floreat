@@ -6,12 +6,14 @@
  */
 import { FastifyInstance } from 'fastify'
 import { authMiddleware } from '../middlewares/auth.js'
+import { jobOwnership } from '../middlewares/job-ownership.js'
 import * as mezzanineController from '../controllers/mezzanine.controller.js'
 
 export async function mezzanineRoutes(app: FastifyInstance) {
-  app.post('/jobs/:jobId/mezzanine', { preHandler: [authMiddleware] }, mezzanineController.upsert)
-  app.get('/jobs/:jobId/mezzanine', { preHandler: [authMiddleware] }, mezzanineController.getByJobId)
-  app.put('/jobs/:jobId/mezzanine', { preHandler: [authMiddleware] }, mezzanineController.update)
-  app.delete('/jobs/:jobId/mezzanine', { preHandler: [authMiddleware] }, mezzanineController.remove)
+  const owned = { preHandler: [authMiddleware, jobOwnership] }
+  app.post('/jobs/:jobId/mezzanine', owned, mezzanineController.upsert)
+  app.get('/jobs/:jobId/mezzanine', owned, mezzanineController.getByJobId)
+  app.put('/jobs/:jobId/mezzanine', owned, mezzanineController.update)
+  app.delete('/jobs/:jobId/mezzanine', owned, mezzanineController.remove)
   app.get('/mezzanines', { preHandler: [authMiddleware] }, mezzanineController.getAll)
 }

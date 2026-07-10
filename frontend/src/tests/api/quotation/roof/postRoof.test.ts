@@ -92,8 +92,8 @@ const payload: CreateRoofPayload = {
   // material consumption
   materialConsumptionExcludingPurlin: 12.5,
   // SAG rod
-  DiaOfRoofSagRod: 12,
-  DiaOfCladdingSagRod: 10,
+  diaOfRoofSagRod: 12,
+  diaOfCladdingSagRod: 10,
 }
 
 const roof: Roof = {
@@ -160,8 +160,8 @@ const roof: Roof = {
   sideColumnsEndFrameCount: null,
   gradeOfPlateMaterial: null,
   materialConsumptionExcludingPurlin: null,
-  DiaOfRoofSagRod: null,
-  DiaOfCladdingSagRod: null,
+  diaOfRoofSagRod: null,
+  diaOfCladdingSagRod: null,
   createdAt: '2026-01-01T00:00:00.000Z',
   updatedAt: '2026-01-01T00:00:00.000Z',
   sidewalls: [],

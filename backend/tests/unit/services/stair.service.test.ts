@@ -59,12 +59,13 @@ describe('stair.service', () => {
       prismaMock.stair.findMany.mockResolvedValue(stairs as any)
       prismaMock.stair.count.mockResolvedValue(2)
 
-      const result = await getStairs(2, 10)
+      const result = await getStairs('user_1', 2, 10)
 
       expect(result).toEqual({ data: stairs, total: 2, page: 2, pageSize: 10 })
       expect(prismaMock.stair.findMany).toHaveBeenCalledWith({
-        skip: 10, take: 10, orderBy: { createdAt: 'desc' }, include: { stairs: true, areaDeductions: true },
+        where: { job: { userId: 'user_1' } }, skip: 10, take: 10, orderBy: { createdAt: 'desc' }, include: { stairs: true, areaDeductions: true },
       })
+      expect(prismaMock.stair.count).toHaveBeenCalledWith({ where: { job: { userId: 'user_1' } } })
     })
   })
 

@@ -137,8 +137,8 @@ export interface Roof {
   materialConsumptionExcludingPurlin: string | null
 
   // ── Optional SAG rod ──
-  DiaOfRoofSagRod: string | null
-  DiaOfCladdingSagRod: string | null
+  diaOfRoofSagRod: string | null
+  diaOfCladdingSagRod: string | null
 
   createdAt: string
   updatedAt: string

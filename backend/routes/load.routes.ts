@@ -6,12 +6,14 @@
  */
 import { FastifyInstance } from 'fastify'
 import { authMiddleware } from '../middlewares/auth.js'
+import { jobOwnership } from '../middlewares/job-ownership.js'
 import * as loadController from '../controllers/load.controller.js'
 
 export async function loadRoutes(app: FastifyInstance) {
-  app.post('/jobs/:jobId/load', { preHandler: [authMiddleware] }, loadController.upsert)
-  app.get('/jobs/:jobId/load', { preHandler: [authMiddleware] }, loadController.getByJobId)
-  app.put('/jobs/:jobId/load', { preHandler: [authMiddleware] }, loadController.update)
-  app.delete('/jobs/:jobId/load', { preHandler: [authMiddleware] }, loadController.remove)
+  const owned = { preHandler: [authMiddleware, jobOwnership] }
+  app.post('/jobs/:jobId/load', owned, loadController.upsert)
+  app.get('/jobs/:jobId/load', owned, loadController.getByJobId)
+  app.put('/jobs/:jobId/load', owned, loadController.update)
+  app.delete('/jobs/:jobId/load', owned, loadController.remove)
   app.get('/loads', { preHandler: [authMiddleware] }, loadController.getAll)
 }

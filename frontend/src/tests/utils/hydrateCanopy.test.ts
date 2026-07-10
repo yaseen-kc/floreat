@@ -12,14 +12,14 @@ describe('mapCanopyResponseToDraft', () => {
         materialConsumptionKgPerSqft: '2.100',
         numberOfBeams: 4, numberOfPurlins: 6, purlinDepth: '0.150', unitWeightOfPurlin: '3.200',
         canopySheet: 'NCGL', sheetThick: '0.500', canopySideCoveringHeight: '1.200',
-        gutter: 'YES', downTake: 'NO', flashing: null,
+        gutter: true, downTake: false, flashing: null,
       }],
     }
     const { canopy, hasCanopy } = mapCanopyResponseToDraft(response)
     expect(hasCanopy).toBe(true)
     expect(canopy.canopies[0].length).toBe(5.5)
     expect(canopy.canopies[0].flashing).toBeUndefined()
-    expect(canopy.canopies[0].gutter).toBe('YES')
+    expect(canopy.canopies[0].gutter).toBe(true)
   })
 
   it('returns hasCanopy false for empty canopies', () => {

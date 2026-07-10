@@ -148,7 +148,7 @@ export const ROOF_SECTION_FIELDS: Record<RoofSectionKey, readonly (keyof RoofDra
   ],
   materialGrade: ['gradeOfPlateMaterial'],
   materialConsumption: ['materialConsumptionExcludingPurlin'],
-  sagRod: ['DiaOfRoofSagRod', 'DiaOfCladdingSagRod'],
+  sagRod: ['diaOfRoofSagRod', 'diaOfCladdingSagRod'],
   sidewalls: ['sidewalls'],
 }
 

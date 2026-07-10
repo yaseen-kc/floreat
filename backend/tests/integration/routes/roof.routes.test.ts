@@ -1,9 +1,9 @@
-import { describe, it, expect, beforeAll, afterAll } from 'vitest'
+import { describe, it, expect, beforeAll, afterAll, beforeEach } from 'vitest'
 import '../../mocks/clerk.js'
 import '../../mocks/prisma.js'
 import { mockGetAuth } from '../../mocks/clerk.js'
 import { prismaMock } from '../../mocks/prisma.js'
-import { makeRoof, makeRoofInput } from '../../helpers/factories.js'
+import { makeJob, makeRoof, makeRoofInput } from '../../helpers/factories.js'
 import { buildApp } from '../../helpers/app.js'
 import { FastifyInstance } from 'fastify'
 
@@ -11,6 +11,9 @@ let app: FastifyInstance
 
 beforeAll(async () => { app = await buildApp() })
 afterAll(async () => { await app.close() })
+
+// jobOwnership preHandler resolves the owning job for every /jobs/:jobId route.
+beforeEach(() => { prismaMock.job.findFirst.mockResolvedValue(makeJob() as any) })
 
 describe('Roof routes integration', () => {
   describe('authentication', () => {
@@ -44,8 +47,8 @@ describe('Roof routes integration', () => {
       const { jobId, ...body } = input
       const extras = {
         materialConsumptionExcludingPurlin: 12.5,
-        DiaOfRoofSagRod: 12,
-        DiaOfCladdingSagRod: 10,
+        diaOfRoofSagRod: 12,
+        diaOfCladdingSagRod: 10,
       }
       const roof = makeRoof({ jobId: 'job-1', ...extras })
       prismaMock.roof.upsert.mockResolvedValue(roof as any)
@@ -62,8 +65,8 @@ describe('Roof routes integration', () => {
         }),
       )
       expect(res.json().materialConsumptionExcludingPurlin).toBe(12.5)
-      expect(res.json().DiaOfRoofSagRod).toBe(12)
-      expect(res.json().DiaOfCladdingSagRod).toBe(10)
+      expect(res.json().diaOfRoofSagRod).toBe(12)
+      expect(res.json().diaOfCladdingSagRod).toBe(10)
     })
 
     it('rejects a negative SAG rod diameter', async () => {
@@ -71,7 +74,7 @@ describe('Roof routes integration', () => {
       const { jobId, ...body } = input
       const res = await app.inject({
         method: 'POST', url: '/api/jobs/job-1/roof',
-        payload: { ...body, DiaOfRoofSagRod: -1 },
+        payload: { ...body, diaOfRoofSagRod: -1 },
       })
       expect(res.statusCode).toBe(400)
     })

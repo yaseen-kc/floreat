@@ -10,9 +10,6 @@ const canopyHeightFromEnum = z.enum(['GROUND', 'FF', 'SF', 'FLOOR_3', 'FLOOR_4',
 /** Valid canopy sheet covering types. */
 const canopySheetTypeEnum = z.enum(['NCGL', 'PPGL', 'PUFF', 'OTHER'])
 
-/** Yes/No flag used by gutter, downTake and flashing. */
-const yesNoEnum = z.enum(['YES', 'NO'])
-
 /** Business code identifier for a canopy, e.g. "CANOPY-1". */
 const canopyCode = z.string().regex(/^CANOPY-[1-9][0-9]*$/, 'code must match CANOPY-<n> (e.g. CANOPY-1)')
 
@@ -39,9 +36,9 @@ export const canopyItemSchema = z.object({
   canopySideCoveringHeight: z.number().positive().optional(),
 
   // ── Accessories ──
-  gutter: yesNoEnum.optional(),
-  downTake: yesNoEnum.optional(),
-  flashing: yesNoEnum.optional(),
+  gutter: z.boolean().optional(),
+  downTake: z.boolean().optional(),
+  flashing: z.boolean().optional(),
 })
 
 /** Schema for creating/upserting a canopy — inline canopies array. */

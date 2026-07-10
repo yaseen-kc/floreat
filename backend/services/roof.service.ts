@@ -29,11 +29,12 @@ export function upsertRoof(jobId: string, data: CreateRoofInput) {
   })
 }
 
-/** Returns a paginated list of roofs ordered by most recent first. */
-export async function getRoofs(page: number, pageSize: number) {
+/** Returns a paginated list of the user's roofs ordered by most recent first. */
+export async function getRoofs(userId: string, page: number, pageSize: number) {
+  const where = { job: { userId } }
   const [data, total] = await Promise.all([
-    prisma.roof.findMany({ skip: (page - 1) * pageSize, take: pageSize, orderBy: { createdAt: 'desc' }, include: { sidewalls: true } }),
-    prisma.roof.count(),
+    prisma.roof.findMany({ where, skip: (page - 1) * pageSize, take: pageSize, orderBy: { createdAt: 'desc' }, include: { sidewalls: true } }),
+    prisma.roof.count({ where }),
   ])
   return { data, total, page, pageSize }
 }

@@ -28,7 +28,7 @@ const payload: CreateCanopyPayload = {
       length: 10,
       width: 5,
       canopySheet: 'NCGL',
-      gutter: 'YES',
+      gutter: true,
     },
   ],
 }

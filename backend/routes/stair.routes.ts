@@ -6,12 +6,14 @@
  */
 import { FastifyInstance } from 'fastify'
 import { authMiddleware } from '../middlewares/auth.js'
+import { jobOwnership } from '../middlewares/job-ownership.js'
 import * as stairController from '../controllers/stair.controller.js'
 
 export async function stairRoutes(app: FastifyInstance) {
-  app.post('/jobs/:jobId/stair', { preHandler: [authMiddleware] }, stairController.upsert)
-  app.get('/jobs/:jobId/stair', { preHandler: [authMiddleware] }, stairController.getByJobId)
-  app.put('/jobs/:jobId/stair', { preHandler: [authMiddleware] }, stairController.update)
-  app.delete('/jobs/:jobId/stair', { preHandler: [authMiddleware] }, stairController.remove)
+  const owned = { preHandler: [authMiddleware, jobOwnership] }
+  app.post('/jobs/:jobId/stair', owned, stairController.upsert)
+  app.get('/jobs/:jobId/stair', owned, stairController.getByJobId)
+  app.put('/jobs/:jobId/stair', owned, stairController.update)
+  app.delete('/jobs/:jobId/stair', owned, stairController.remove)
   app.get('/stairs', { preHandler: [authMiddleware] }, stairController.getAll)
 }

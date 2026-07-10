@@ -12,7 +12,6 @@ import {
   MezzanineHeightFrom,
   CanopyHeightFrom,
   CanopySheetType,
-  YesNo,
   StairStepType,
   StairFloorLevel,
   StairStringerType,
@@ -38,6 +37,7 @@ async function main() {
   const jobs = [
     {
       id: 'seed_job_1',
+      userId: 'user_3EfmONmZWOmsqVwUa3RgGLeNVbp',
       projectNo: 'PRJ-2024-001',
       subject: 'Industrial Warehouse - Phase 1',
       refNo: 'REF-IW-001',
@@ -57,6 +57,7 @@ async function main() {
     },
     {
       id: 'seed_job_2',
+      userId: 'user_fake_seed_2',
       projectNo: 'PRJ-2024-002',
       subject: 'Commercial Showroom',
       refNo: 'REF-CS-002',
@@ -71,6 +72,7 @@ async function main() {
     },
     {
       id: 'seed_job_3',
+      userId: 'user_3EfmONmZWOmsqVwUa3RgGLeNVbp',
       projectNo: 'PRJ-2024-003',
       subject: 'Manufacturing Unit - Block A',
       refNo: 'REF-MU-003',
@@ -85,6 +87,7 @@ async function main() {
     },
     {
       id: 'seed_job_4',
+      userId: 'user_fake_seed_2',
       projectNo: 'PRJ-2024-004',
       subject: 'Agricultural Cold Storage',
       refNo: 'REF-AG-004',
@@ -101,6 +104,7 @@ async function main() {
     },
     {
       id: 'seed_job_5',
+      userId: 'user_3EfmONmZWOmsqVwUa3RgGLeNVbp',
       projectNo: 'PRJ-2024-005',
       subject: 'Logistics Hub - Warehouse B',
       refNo: 'REF-LH-005',
@@ -153,7 +157,7 @@ async function main() {
       // sideColumnsWidthHeight is derived: eaveHeight − claddingExt × tan(roofSlope°) = 10.5 − 2.5·tan(5.71°) ≈ 10.25
       sideColumnsWidthHeight: 10.25, sideColumnsMidFrameCount: 8, sideColumnsEndFrameCount: 2,
       gradeOfPlateMaterial: PlateMaterialGrade.FE_345,
-      materialConsumptionExcludingPurlin: 18.5, DiaOfRoofSagRod: 12.0, DiaOfCladdingSagRod: 10.0,
+      materialConsumptionExcludingPurlin: 18.5, diaOfRoofSagRod: 12.0, diaOfCladdingSagRod: 10.0,
       sidewalls: [
         { side: SideWallSide.FRONT, wallType: TypeOfWall.PANEL, thickness: 0.5, height: 3.0 },
         { side: SideWallSide.BACK, wallType: TypeOfWall.BRICK, thickness: 230.0, height: 3.5 },
@@ -185,7 +189,7 @@ async function main() {
       roofCoveringType: CoveringType.PUFF_SHEET, roofCoveringThickness: 40.0,
       claddingCoveringType: CoveringType.PPGL, claddingCoveringThickness: 0.5,
       gradeOfPlateMaterial: PlateMaterialGrade.FE_250,
-      materialConsumptionExcludingPurlin: 15.2, DiaOfRoofSagRod: 10.0, DiaOfCladdingSagRod: 8.0,
+      materialConsumptionExcludingPurlin: 15.2, diaOfRoofSagRod: 10.0, diaOfCladdingSagRod: 8.0,
       sidewalls: [
         { side: SideWallSide.FRONT, wallType: TypeOfWall.AAC, thickness: 200.0, height: 3.0 },
         { side: SideWallSide.BACK, wallType: TypeOfWall.AAC, thickness: 200.0, height: 3.0 },
@@ -223,7 +227,7 @@ async function main() {
       // sideColumnsWidthHeight is derived: eaveHeight − claddingExt × tan(roofSlope°) = 12.0 − 3.5·tan(5°) ≈ 11.694
       sideColumnsWidthHeight: 11.694, sideColumnsMidFrameCount: 10, sideColumnsEndFrameCount: 2,
       gradeOfPlateMaterial: PlateMaterialGrade.FE_400,
-      materialConsumptionExcludingPurlin: 21.0, DiaOfRoofSagRod: 12.0, DiaOfCladdingSagRod: 10.0,
+      materialConsumptionExcludingPurlin: 21.0, diaOfRoofSagRod: 12.0, diaOfCladdingSagRod: 10.0,
       sidewalls: [
         { side: SideWallSide.FRONT, wallType: TypeOfWall.BRICK, thickness: 230.0, height: 4.0 },
         { side: SideWallSide.BACK, wallType: TypeOfWall.BRICK, thickness: 230.0, height: 4.0 },
@@ -329,14 +333,14 @@ async function main() {
           length: 6.0, width: 3.0, height: 3.5, materialConsumptionKgPerSqft: 9.5,
           numberOfBeams: 4, numberOfPurlins: 6, purlinDepth: 150.0, unitWeightOfPurlin: 5.2,
           canopySheet: CanopySheetType.PPGL, sheetThick: 0.5, canopySideCoveringHeight: 1.2,
-          gutter: YesNo.YES, downTake: YesNo.YES, flashing: YesNo.YES,
+          gutter: true, downTake: true, flashing: true,
         },
         {
           code: 'CANOPY-2', heightFrom: CanopyHeightFrom.FF,
           length: 4.5, width: 2.5, height: 3.0, materialConsumptionKgPerSqft: 8.0,
           numberOfBeams: 3, numberOfPurlins: 5, purlinDepth: 120.0, unitWeightOfPurlin: 4.5,
           canopySheet: CanopySheetType.PUFF, sheetThick: 40.0, canopySideCoveringHeight: 1.0,
-          gutter: YesNo.YES, downTake: YesNo.NO, flashing: YesNo.YES,
+          gutter: true, downTake: false, flashing: true,
         },
       ],
     },

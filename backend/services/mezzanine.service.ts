@@ -28,11 +28,12 @@ export function upsertMezzanine(jobId: string, data: CreateMezzanineInput) {
   })
 }
 
-/** Returns a paginated list of mezzanines ordered by most recent first. */
-export async function getMezzanines(page: number, pageSize: number) {
+/** Returns a paginated list of the user's mezzanines ordered by most recent first. */
+export async function getMezzanines(userId: string, page: number, pageSize: number) {
+  const where = { job: { userId } }
   const [data, total] = await Promise.all([
-    prisma.mezzanine.findMany({ skip: (page - 1) * pageSize, take: pageSize, orderBy: { createdAt: 'desc' }, include: { floors: true, extensions: true } }),
-    prisma.mezzanine.count(),
+    prisma.mezzanine.findMany({ where, skip: (page - 1) * pageSize, take: pageSize, orderBy: { createdAt: 'desc' }, include: { floors: true, extensions: true } }),
+    prisma.mezzanine.count({ where }),
   ])
   return { data, total, page, pageSize }
 }

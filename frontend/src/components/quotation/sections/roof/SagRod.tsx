@@ -7,11 +7,11 @@ import { Spline } from 'lucide-react'
 import { isRequired, getFieldErrors } from '@/schemas/roof.schema'
 import { ROOF_SECTION_FIELDS } from '@/stores/quotation-store'
 
-type SagRodField = 'DiaOfRoofSagRod' | 'DiaOfCladdingSagRod'
+type SagRodField = 'diaOfRoofSagRod' | 'diaOfCladdingSagRod'
 
 const FIELDS: { name: SagRodField; label: string; unit: string }[] = [
-  { name: 'DiaOfRoofSagRod', label: 'Roof SAG Rod Diameter', unit: 'mm' },
-  { name: 'DiaOfCladdingSagRod', label: 'Cladding SAG Rod Diameter', unit: 'mm' },
+  { name: 'diaOfRoofSagRod', label: 'Roof SAG Rod Diameter', unit: 'mm' },
+  { name: 'diaOfCladdingSagRod', label: 'Cladding SAG Rod Diameter', unit: 'mm' },
 ]
 
 export function SagRod() {

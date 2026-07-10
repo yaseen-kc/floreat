@@ -86,8 +86,8 @@ const requiredRoof: CreateRoofInput = {
   // material consumption
   materialConsumptionExcludingPurlin: 12.5,
   // SAG rod
-  DiaOfRoofSagRod: 12,
-  DiaOfCladdingSagRod: 10,
+  diaOfRoofSagRod: 12,
+  diaOfCladdingSagRod: 10,
 }
 
 describe('createRoofSchema', () => {
@@ -155,8 +155,8 @@ describe('createRoofSchema', () => {
   })
 
   it('rejects non-positive SAG rod diameters', () => {
-    expect(createRoofSchema.safeParse({ ...requiredRoof, DiaOfRoofSagRod: 0 }).success).toBe(false)
-    expect(createRoofSchema.safeParse({ ...requiredRoof, DiaOfCladdingSagRod: -1 }).success).toBe(false)
+    expect(createRoofSchema.safeParse({ ...requiredRoof, diaOfRoofSagRod: 0 }).success).toBe(false)
+    expect(createRoofSchema.safeParse({ ...requiredRoof, diaOfCladdingSagRod: -1 }).success).toBe(false)
   })
 })
 
@@ -219,7 +219,7 @@ const SECTION_FIELDS: RoofField[] = [
   'roofExtensionWidthHeight',
   'gradeOfPlateMaterial',
   'materialConsumptionExcludingPurlin',
-  'DiaOfRoofSagRod',
+  'diaOfRoofSagRod',
 ]
 
 describe('isRequired', () => {

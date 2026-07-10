@@ -20,7 +20,7 @@ export async function upsert(request: FastifyRequest, reply: FastifyReply) {
 export async function getAll(request: FastifyRequest, reply: FastifyReply) {
   const result = paginationSchema.safeParse(request.query)
   if (!result.success) return reply.status(400).send({ error: result.error.flatten() })
-  return reply.send(await loadService.getLoads(result.data.page, result.data.pageSize))
+  return reply.send(await loadService.getLoads(request.userId, result.data.page, result.data.pageSize))
 }
 
 /** GET /api/jobs/:jobId/load — returns the load for a specific job. */

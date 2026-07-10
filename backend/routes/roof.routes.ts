@@ -6,12 +6,14 @@
  */
 import { FastifyInstance } from 'fastify'
 import { authMiddleware } from '../middlewares/auth.js'
+import { jobOwnership } from '../middlewares/job-ownership.js'
 import * as roofController from '../controllers/roof.controller.js'
 
 export async function roofRoutes(app: FastifyInstance) {
-  app.post('/jobs/:jobId/roof', { preHandler: [authMiddleware] }, roofController.upsert)
-  app.get('/jobs/:jobId/roof', { preHandler: [authMiddleware] }, roofController.getByJobId)
-  app.put('/jobs/:jobId/roof', { preHandler: [authMiddleware] }, roofController.update)
-  app.delete('/jobs/:jobId/roof', { preHandler: [authMiddleware] }, roofController.remove)
+  const owned = { preHandler: [authMiddleware, jobOwnership] }
+  app.post('/jobs/:jobId/roof', owned, roofController.upsert)
+  app.get('/jobs/:jobId/roof', owned, roofController.getByJobId)
+  app.put('/jobs/:jobId/roof', owned, roofController.update)
+  app.delete('/jobs/:jobId/roof', owned, roofController.remove)
   app.get('/roofs', { preHandler: [authMiddleware] }, roofController.getAll)
 }

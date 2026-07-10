@@ -19,6 +19,7 @@ export function makeJobInput() {
 export function makeJob(overrides = {}) {
   return {
     id: faker.string.uuid(),
+    userId: `user_${faker.string.alphanumeric(24)}`,
     ...makeJobInput(),
     estimationEngineerName: null,
     estimationEngineerMobile: null,
@@ -234,9 +235,9 @@ export function makeCanopyItem(overrides = {}) {
     canopySheet: 'NCGL' as const,
     sheetThick: 0.5,
     canopySideCoveringHeight: 1.2,
-    gutter: 'YES' as const,
-    downTake: 'NO' as const,
-    flashing: 'YES' as const,
+    gutter: true,
+    downTake: false,
+    flashing: true,
     ...overrides,
   }
 }

@@ -28,11 +28,12 @@ export function upsertStair(jobId: string, data: CreateStairInput) {
   })
 }
 
-/** Returns a paginated list of stairs ordered by most recent first. */
-export async function getStairs(page: number, pageSize: number) {
+/** Returns a paginated list of the user's stairs ordered by most recent first. */
+export async function getStairs(userId: string, page: number, pageSize: number) {
+  const where = { job: { userId } }
   const [data, total] = await Promise.all([
-    prisma.stair.findMany({ skip: (page - 1) * pageSize, take: pageSize, orderBy: { createdAt: 'desc' }, include: { stairs: true, areaDeductions: true } }),
-    prisma.stair.count(),
+    prisma.stair.findMany({ where, skip: (page - 1) * pageSize, take: pageSize, orderBy: { createdAt: 'desc' }, include: { stairs: true, areaDeductions: true } }),
+    prisma.stair.count({ where }),
   ])
   return { data, total, page, pageSize }
 }

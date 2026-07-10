@@ -27,15 +27,15 @@ describe('SagRod section', () => {
     render(<SagRod />)
     const input = screen.getByText('Roof SAG Rod Diameter').parentElement!.querySelector('input')!
     fireEvent.change(input, { target: { value: '12' } })
-    expect(useQuotationStore.getState().roof.DiaOfRoofSagRod).toBe(12)
+    expect(useQuotationStore.getState().roof.diaOfRoofSagRod).toBe(12)
   })
 
   it('disabling the section clears its fields', () => {
     useQuotationStore.getState().toggleRoofSection('sagRod', true)
-    useQuotationStore.getState().setRoof({ DiaOfRoofSagRod: 12, DiaOfCladdingSagRod: 10 })
+    useQuotationStore.getState().setRoof({ diaOfRoofSagRod: 12, diaOfCladdingSagRod: 10 })
     useQuotationStore.getState().toggleRoofSection('sagRod', false)
     const { roof } = useQuotationStore.getState()
-    expect(roof.DiaOfRoofSagRod).toBeUndefined()
-    expect(roof.DiaOfCladdingSagRod).toBeUndefined()
+    expect(roof.diaOfRoofSagRod).toBeUndefined()
+    expect(roof.diaOfCladdingSagRod).toBeUndefined()
   })
 })

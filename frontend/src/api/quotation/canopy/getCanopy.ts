@@ -13,9 +13,6 @@ export type CanopyHeightFrom = 'GROUND' | 'FF' | 'SF' | 'FLOOR_3' | 'FLOOR_4' | 
 /** Canopy sheet covering type. */
 export type CanopySheetType = 'NCGL' | 'PPGL' | 'PUFF' | 'OTHER'
 
-/** Yes/No flag used by gutter, downTake and flashing. */
-export type YesNo = 'YES' | 'NO'
-
 /* ──────────────────────────────────────────────────────────────────────────
  * Response shapes.
  *
@@ -51,9 +48,9 @@ export interface CanopyItem {
   canopySideCoveringHeight: string | null
 
   // ── Accessories ──
-  gutter: YesNo | null
-  downTake: YesNo | null
-  flashing: YesNo | null
+  gutter: boolean | null
+  downTake: boolean | null
+  flashing: boolean | null
 }
 
 /** Shape of a single Canopy returned by the backend (with inline canopies). */

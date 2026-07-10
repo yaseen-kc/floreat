@@ -3,10 +3,17 @@ import { NumberField } from '@/components/quotation/shared/NumberField'
 import { SelectField, type SelectFieldOption } from '@/components/quotation/shared/SelectField'
 import { Trash2 } from 'lucide-react'
 
-/** A single editable field within a row group — either a numeric input or an enum select. */
+/** A single editable field within a row group — a numeric input, an enum select, or a yes/no boolean. */
 export type RowField =
   | { kind: 'number'; name: string; label: string; unit: string; step?: number }
   | { kind: 'select'; name: string; label: string; options: SelectFieldOption[] }
+  | { kind: 'boolean'; name: string; label: string }
+
+/** Yes/No options for boolean fields (mapped to real booleans on change). */
+const BOOL_OPTIONS: SelectFieldOption[] = [
+  { value: 'true', label: 'Yes' },
+  { value: 'false', label: 'No' },
+]
 
 /** A labelled sub-group of fields (e.g. Dimensions, Beams, Joints, Columns). */
 export interface RowGroup {
@@ -21,9 +28,9 @@ interface RowCardProps {
   badge?: string
   groups: RowGroup[]
   /** Current row values keyed by field `name`. */
-  values: Record<string, number | string | undefined>
+  values: Record<string, number | string | boolean | undefined>
   /** Emits a partial patch of changed fields. */
-  onChange: (patch: Record<string, number | string | undefined>) => void
+  onChange: (patch: Record<string, number | string | boolean | undefined>) => void
   onRemove: () => void
 }
 
@@ -62,6 +69,18 @@ export function RowCard({ title, badge, groups, values, onChange, onRemove }: Ro
                     error={false}
                     value={values[field.name] as number | undefined}
                     onChange={(v) => onChange({ [field.name]: v })}
+                  />
+                ) : field.kind === 'boolean' ? (
+                  <SelectField
+                    key={field.name}
+                    label={field.label}
+                    options={BOOL_OPTIONS}
+                    required={false}
+                    error={false}
+                    value={
+                      values[field.name] === true ? 'true' : values[field.name] === false ? 'false' : undefined
+                    }
+                    onChange={(v) => onChange({ [field.name]: v === '' || v === undefined ? undefined : v === 'true' })}
                   />
                 ) : (
                   <SelectField

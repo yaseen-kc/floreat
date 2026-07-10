@@ -73,17 +73,18 @@ describe('roof.service', () => {
   })
 
   describe('getRoofs', () => {
-    it('returns paginated roofs', async () => {
+    it('returns the user\'s paginated roofs', async () => {
       const roofs = [makeRoof(), makeRoof()]
       prismaMock.roof.findMany.mockResolvedValue(roofs as any)
       prismaMock.roof.count.mockResolvedValue(2)
 
-      const result = await getRoofs(2, 10)
+      const result = await getRoofs('user_1', 2, 10)
 
       expect(result).toEqual({ data: roofs, total: 2, page: 2, pageSize: 10 })
       expect(prismaMock.roof.findMany).toHaveBeenCalledWith({
-        skip: 10, take: 10, orderBy: { createdAt: 'desc' }, include: { sidewalls: true },
+        where: { job: { userId: 'user_1' } }, skip: 10, take: 10, orderBy: { createdAt: 'desc' }, include: { sidewalls: true },
       })
+      expect(prismaMock.roof.count).toHaveBeenCalledWith({ where: { job: { userId: 'user_1' } } })
     })
   })
 

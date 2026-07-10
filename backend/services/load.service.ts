@@ -14,11 +14,12 @@ export function upsertLoad(jobId: string, data: CreateLoadInput) {
   })
 }
 
-/** Returns a paginated list of loads ordered by most recent first. */
-export async function getLoads(page: number, pageSize: number) {
+/** Returns a paginated list of the user's loads ordered by most recent first. */
+export async function getLoads(userId: string, page: number, pageSize: number) {
+  const where = { job: { userId } }
   const [data, total] = await Promise.all([
-    prisma.load.findMany({ skip: (page - 1) * pageSize, take: pageSize, orderBy: { createdAt: 'desc' } }),
-    prisma.load.count(),
+    prisma.load.findMany({ where, skip: (page - 1) * pageSize, take: pageSize, orderBy: { createdAt: 'desc' } }),
+    prisma.load.count({ where }),
   ])
   return { data, total, page, pageSize }
 }

@@ -41,9 +41,9 @@ const canopy: Canopy = {
       canopySheet: 'NCGL',
       sheetThick: '0.500',
       canopySideCoveringHeight: '1.200',
-      gutter: 'YES',
-      downTake: 'NO',
-      flashing: 'YES',
+      gutter: true,
+      downTake: false,
+      flashing: true,
     },
   ],
 }

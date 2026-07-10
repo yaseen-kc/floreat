@@ -9,7 +9,6 @@ import { Tent, Plus } from 'lucide-react'
 import {
   CANOPY_HEIGHT_FROM_OPTIONS,
   CANOPY_SHEET_TYPE_OPTIONS,
-  YES_NO_OPTIONS,
 } from './canopyOptions'
 
 const CANOPY_GROUPS: RowGroup[] = [
@@ -48,9 +47,9 @@ const CANOPY_GROUPS: RowGroup[] = [
   {
     title: 'Accessories',
     fields: [
-      { kind: 'select', name: 'gutter', label: 'Gutter', options: YES_NO_OPTIONS },
-      { kind: 'select', name: 'downTake', label: 'Down Take', options: YES_NO_OPTIONS },
-      { kind: 'select', name: 'flashing', label: 'Flashing', options: YES_NO_OPTIONS },
+      { kind: 'boolean', name: 'gutter', label: 'Gutter' },
+      { kind: 'boolean', name: 'downTake', label: 'Down Take' },
+      { kind: 'boolean', name: 'flashing', label: 'Flashing' },
     ],
   },
 ]
@@ -86,7 +85,7 @@ export function CanopyItems() {
             title={`Canopy ${index + 1}`}
             badge={row.code}
             groups={CANOPY_GROUPS}
-            values={row as Record<string, number | string | undefined>}
+            values={row as Record<string, number | string | boolean | undefined>}
             onChange={(patch) => updateRow(index, patch as Partial<CanopyItemDraft>)}
             onRemove={() => removeRow(index)}
           />

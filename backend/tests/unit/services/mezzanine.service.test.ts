@@ -59,12 +59,13 @@ describe('mezzanine.service', () => {
       prismaMock.mezzanine.findMany.mockResolvedValue(mezzanines as any)
       prismaMock.mezzanine.count.mockResolvedValue(2)
 
-      const result = await getMezzanines(2, 10)
+      const result = await getMezzanines('user_1', 2, 10)
 
       expect(result).toEqual({ data: mezzanines, total: 2, page: 2, pageSize: 10 })
       expect(prismaMock.mezzanine.findMany).toHaveBeenCalledWith({
-        skip: 10, take: 10, orderBy: { createdAt: 'desc' }, include: { floors: true, extensions: true },
+        where: { job: { userId: 'user_1' } }, skip: 10, take: 10, orderBy: { createdAt: 'desc' }, include: { floors: true, extensions: true },
       })
+      expect(prismaMock.mezzanine.count).toHaveBeenCalledWith({ where: { job: { userId: 'user_1' } } })
     })
   })
 

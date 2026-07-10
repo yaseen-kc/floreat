@@ -81,6 +81,6 @@ export const validRoofDraft: Partial<RoofDraft> = {
   // material consumption
   materialConsumptionExcludingPurlin: 12.5,
   // SAG rod
-  DiaOfRoofSagRod: 12,
-  DiaOfCladdingSagRod: 10,
+  diaOfRoofSagRod: 12,
+  diaOfCladdingSagRod: 10,
 }

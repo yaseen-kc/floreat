@@ -15,8 +15,3 @@ export const CANOPY_SHEET_TYPE_OPTIONS: SelectFieldOption[] = [
   { value: 'PUFF', label: 'PUFF' },
   { value: 'OTHER', label: 'Other' },
 ]
-
-export const YES_NO_OPTIONS: SelectFieldOption[] = [
-  { value: 'YES', label: 'Yes' },
-  { value: 'NO', label: 'No' },
-]

@@ -27,9 +27,9 @@ describe('createCanopySchema', () => {
           canopySheet: 'NCGL',
           sheetThick: 0.5,
           canopySideCoveringHeight: 1.2,
-          gutter: 'YES',
-          downTake: 'NO',
-          flashing: 'YES',
+          gutter: true,
+          downTake: false,
+          flashing: true,
         },
       ],
     })

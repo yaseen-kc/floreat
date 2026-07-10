@@ -20,7 +20,7 @@ export async function upsert(request: FastifyRequest, reply: FastifyReply) {
 export async function getAll(request: FastifyRequest, reply: FastifyReply) {
   const result = paginationSchema.safeParse(request.query)
   if (!result.success) return reply.status(400).send({ error: result.error.flatten() })
-  return reply.send(await stairService.getStairs(result.data.page, result.data.pageSize))
+  return reply.send(await stairService.getStairs(request.userId, result.data.page, result.data.pageSize))
 }
 
 /** GET /api/jobs/:jobId/stair — returns the stair for a specific job. */

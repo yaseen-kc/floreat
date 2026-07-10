@@ -42,12 +42,13 @@ describe('load.service', () => {
       prismaMock.load.findMany.mockResolvedValue(loads as any)
       prismaMock.load.count.mockResolvedValue(2)
 
-      const result = await getLoads(2, 10)
+      const result = await getLoads('user_1', 2, 10)
 
       expect(result).toEqual({ data: loads, total: 2, page: 2, pageSize: 10 })
       expect(prismaMock.load.findMany).toHaveBeenCalledWith({
-        skip: 10, take: 10, orderBy: { createdAt: 'desc' },
+        where: { job: { userId: 'user_1' } }, skip: 10, take: 10, orderBy: { createdAt: 'desc' },
       })
+      expect(prismaMock.load.count).toHaveBeenCalledWith({ where: { job: { userId: 'user_1' } } })
     })
   })
 

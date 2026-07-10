@@ -67,8 +67,8 @@ const baseRoof = (): Roof => ({
   sideColumnsEndFrameCount: null,
   gradeOfPlateMaterial: null,
   materialConsumptionExcludingPurlin: null,
-  DiaOfRoofSagRod: null,
-  DiaOfCladdingSagRod: null,
+  diaOfRoofSagRod: null,
+  diaOfCladdingSagRod: null,
   createdAt: '2026-01-01T00:00:00.000Z',
   updatedAt: '2026-01-01T00:00:00.000Z',
   sidewalls: [],
@@ -132,11 +132,11 @@ describe('mapRoofResponseToDraft', () => {
 
   it('maps SAG rod diameters and enables its section', () => {
     const r = baseRoof()
-    r.DiaOfRoofSagRod = '12'
-    r.DiaOfCladdingSagRod = '10'
+    r.diaOfRoofSagRod = '12'
+    r.diaOfCladdingSagRod = '10'
     const { roof, roofSectionsEnabled } = mapRoofResponseToDraft(r)
-    expect(roof.DiaOfRoofSagRod).toBe(12)
-    expect(roof.DiaOfCladdingSagRod).toBe(10)
+    expect(roof.diaOfRoofSagRod).toBe(12)
+    expect(roof.diaOfCladdingSagRod).toBe(10)
     expect(roofSectionsEnabled.sagRod).toBe(true)
     expect(roofSectionsEnabled.materialConsumption).toBe(false)
   })

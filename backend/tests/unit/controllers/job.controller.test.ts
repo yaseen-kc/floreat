@@ -2,7 +2,7 @@ import { describe, it, expect, beforeAll, afterAll } from 'vitest'
 import '../../mocks/clerk.js'
 import '../../mocks/prisma.js'
 import { prismaMock } from '../../mocks/prisma.js'
-import { makeJob, makeJobInput } from '../../helpers/factories.js'
+import { makeJob, makeJobInput, makeUser } from '../../helpers/factories.js'
 import { buildApp } from '../../helpers/app.js'
 import { FastifyInstance } from 'fastify'
 
@@ -16,6 +16,8 @@ describe('job controller', () => {
     it('returns 201 with valid body', async () => {
       const input = makeJobInput()
       const job = makeJob(input)
+      // syncUser preHandler finds an existing local user and returns early.
+      prismaMock.user.findUnique.mockResolvedValue(makeUser() as any)
       prismaMock.job.create.mockResolvedValue(job as any)
 
       const res = await app.inject({ method: 'POST', url: '/api/jobs', payload: input })
@@ -25,6 +27,7 @@ describe('job controller', () => {
     })
 
     it('returns 400 with invalid body', async () => {
+      prismaMock.user.findUnique.mockResolvedValue(makeUser() as any)
       const res = await app.inject({ method: 'POST', url: '/api/jobs', payload: {} })
 
       expect(res.statusCode).toBe(400)
@@ -55,7 +58,7 @@ describe('job controller', () => {
   describe('GET /api/jobs/:id', () => {
     it('returns 200 when found', async () => {
       const job = makeJob()
-      prismaMock.job.findUnique.mockResolvedValue(job as any)
+      prismaMock.job.findFirst.mockResolvedValue(job as any)
 
       const res = await app.inject({ method: 'GET', url: `/api/jobs/${job.id}` })
 
@@ -64,7 +67,7 @@ describe('job controller', () => {
     })
 
     it('returns 404 when not found', async () => {
-      prismaMock.job.findUnique.mockResolvedValue(null)
+      prismaMock.job.findFirst.mockResolvedValue(null)
 
       const res = await app.inject({ method: 'GET', url: '/api/jobs/nonexistent' })
 
@@ -75,7 +78,8 @@ describe('job controller', () => {
   describe('PUT /api/jobs/:id', () => {
     it('returns 200 with valid update', async () => {
       const job = makeJob()
-      prismaMock.job.update.mockResolvedValue(job as any)
+      prismaMock.job.updateMany.mockResolvedValue({ count: 1 } as any)
+      prismaMock.job.findUniqueOrThrow.mockResolvedValue(job as any)
 
       const res = await app.inject({
         method: 'PUT', url: `/api/jobs/${job.id}`,
@@ -95,7 +99,7 @@ describe('job controller', () => {
     })
 
     it('returns 404 when job not found', async () => {
-      prismaMock.job.update.mockRejectedValue(new Error('Not found'))
+      prismaMock.job.updateMany.mockResolvedValue({ count: 0 } as any)
 
       const res = await app.inject({
         method: 'PUT', url: '/api/jobs/nonexistent',
@@ -108,7 +112,7 @@ describe('job controller', () => {
 
   describe('DELETE /api/jobs/:id', () => {
     it('returns 204 on success', async () => {
-      prismaMock.job.delete.mockResolvedValue({} as any)
+      prismaMock.job.deleteMany.mockResolvedValue({ count: 1 } as any)
 
       const res = await app.inject({ method: 'DELETE', url: '/api/jobs/job-123' })
 
@@ -116,7 +120,7 @@ describe('job controller', () => {
     })
 
     it('returns 404 when job not found', async () => {
-      prismaMock.job.delete.mockRejectedValue(Object.assign(new Error('Not found'), { code: 'P2025' }))
+      prismaMock.job.deleteMany.mockResolvedValue({ count: 0 } as any)
 
       const res = await app.inject({ method: 'DELETE', url: '/api/jobs/nonexistent' })
 

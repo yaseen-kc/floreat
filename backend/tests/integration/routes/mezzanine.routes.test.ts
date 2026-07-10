@@ -1,9 +1,9 @@
-import { describe, it, expect, beforeAll, afterAll } from 'vitest'
+import { describe, it, expect, beforeAll, afterAll, beforeEach } from 'vitest'
 import '../../mocks/clerk.js'
 import '../../mocks/prisma.js'
 import { mockGetAuth } from '../../mocks/clerk.js'
 import { prismaMock } from '../../mocks/prisma.js'
-import { makeMezzanine, makeMezzanineFloor, makeMezzanineExtension } from '../../helpers/factories.js'
+import { makeJob, makeMezzanine, makeMezzanineFloor, makeMezzanineExtension } from '../../helpers/factories.js'
 import { buildApp } from '../../helpers/app.js'
 import { FastifyInstance } from 'fastify'
 
@@ -11,6 +11,8 @@ let app: FastifyInstance
 
 beforeAll(async () => { app = await buildApp() })
 afterAll(async () => { await app.close() })
+
+beforeEach(() => { prismaMock.job.findFirst.mockResolvedValue(makeJob() as any) })
 
 describe('Mezzanine routes integration', () => {
   describe('authentication', () => {

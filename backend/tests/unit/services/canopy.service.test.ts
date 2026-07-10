@@ -39,17 +39,18 @@ describe('canopy.service', () => {
   })
 
   describe('getCanopies', () => {
-    it('returns paginated canopies', async () => {
+    it('returns the user\'s paginated canopies', async () => {
       const canopies = [makeCanopy(), makeCanopy()]
       prismaMock.canopy.findMany.mockResolvedValue(canopies as any)
       prismaMock.canopy.count.mockResolvedValue(2)
 
-      const result = await getCanopies(2, 10)
+      const result = await getCanopies('user_1', 2, 10)
 
       expect(result).toEqual({ data: canopies, total: 2, page: 2, pageSize: 10 })
       expect(prismaMock.canopy.findMany).toHaveBeenCalledWith({
-        skip: 10, take: 10, orderBy: { createdAt: 'desc' }, include: { canopies: true },
+        where: { job: { userId: 'user_1' } }, skip: 10, take: 10, orderBy: { createdAt: 'desc' }, include: { canopies: true },
       })
+      expect(prismaMock.canopy.count).toHaveBeenCalledWith({ where: { job: { userId: 'user_1' } } })
     })
   })
 
