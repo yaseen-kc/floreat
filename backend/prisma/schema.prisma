@@ -42,11 +42,12 @@ model Job {
   createdAt                DateTime @default(now())
   updatedAt                DateTime @updatedAt
 
-  roof      Roof?
-  mezzanine Mezzanine?
-  stair     Stair?
-  canopy    Canopy?
-  load      Load?
+  roof        Roof?
+  mezzanine   Mezzanine?
+  stair       Stair?
+  canopy      Canopy?
+  load        Load?
+  accessories Accessories?
 }
 
 // ── Enums ─────────────────────────────────────────
@@ -454,9 +455,9 @@ model CanopyItem {
   materialConsumptionKgPerSqft Decimal? @db.Decimal(10, 3)
 
   // ── Members ──
-  numberOfBeams   Int?
-  numberOfPurlins Int?
-  purlinDepth     Decimal? @db.Decimal(10, 3)
+  numberOfBeams      Int?
+  numberOfPurlins    Int?
+  purlinDepth        Decimal? @db.Decimal(10, 3)
   unitWeightOfPurlin Decimal? @db.Decimal(10, 3)
 
   // ── Covering ──
@@ -509,4 +510,248 @@ model Load {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+// ── Accessories Enums ─────────────────────────────
+
+enum DrainageMaterial {
+  PPGL
+  UPVC
+  ALUMINIUM
+  GI
+  COPPER
+  TIN
+}
+
+enum DrainageSize {
+  IN_4  @map("4 inches")
+  IN_6  @map("6 inches")
+  IN_8  @map("8 inches")
+  IN_10 @map("10 inches")
+  IN_12 @map("12 inches")
+  IN_18 @map("18 inches")
+  IN_24 @map("24 inches")
+}
+
+enum FlashingType {
+  PPGL
+  NCGL
+  GI
+}
+
+enum FlashingThickness {
+  MM_0_30 @map("0.30 MM")
+  MM_0_35 @map("0.35 MM")
+  MM_0_40 @map("0.40 MM")
+  MM_0_45 @map("0.45 MM")
+  MM_0_47 @map("0.47 MM")
+  MM_0_50 @map("0.50 MM")
+  MM_0_55 @map("0.55 MM")
+  MM_0_80 @map("0.80 MM")
+  MM_1_00 @map("1.00 MM")
+  MM_1_20 @map("1.20 MM")
+  MM_1_60 @map("1.60 MM")
+  MM_1_80 @map("1.80 MM")
+  MM_2_00 @map("2.00 MM")
+}
+
+enum PartitionType {
+  AEROCON_PANEL @map("AEROCON PANEL")
+  CEMENT_BOARD  @map("CEMENT BOARD")
+  PPGL_SHEET    @map("PPGL SHEET")
+  PUFF_SHEET    @map("PUFF SHEET")
+  PLY_BOARD     @map("PLY BOARD")
+}
+
+enum PartitionThickness {
+  MM_0_40 @map("0.40 MM")
+  MM_0_45 @map("0.45 MM")
+  MM_0_47 @map("0.47 MM")
+  MM_6    @map("6 MM")
+  MM_8    @map("8 MM")
+  MM_12   @map("12 MM")
+  MM_16   @map("16 MM")
+  MM_18   @map("18 MM")
+  MM_30   @map("30 MM")
+  MM_40   @map("40 MM")
+  MM_50   @map("50 MM")
+  MM_75   @map("75 MM")
+}
+
+enum InsulationType {
+  XLPE
+  ROCK_WOOL        @map("ROCK WOOL")
+  GLASS_WOOL       @map("GLASS WOOL")
+  ALUMINIUM_BUBBLE @map("ALUMINIUM BUBBLE")
+  COOL_BOARD       @map("COOL BOARD")
+}
+
+enum TurboVentilatorDiameter {
+  IN_6  @map("6 Inches")
+  FT_1  @map("1 Foot")
+  IN_18 @map("18 Inches")
+  FT_2  @map("2 Feet")
+}
+
+enum AccessoryOpeningKind {
+  ROLLING_SHUTTER
+  LOUVER
+  SKY_LIGHT
+  WALL_LIGHT
+}
+
+enum PaintType {
+  EPOXY_PRIMER @map("EPOXY PRIMER")
+  EPOXY_PAINT  @map("EPOXY PAINT")
+}
+
+enum PurlinsGirtsFinish {
+  PRE_GALVANISED @map("PRE-GALVANISED")
+}
+
+enum PurlinsGirtsPaint {
+  UNPAINTED
+  PAINTED
+}
+
+enum FoundationBoltFinish {
+  BLACK_UNPAINTED @map("BLACK (UNPAINTED)")
+}
+
+// ── Accessories Models ────────────────────────────
+
+model Accessories {
+  id    String @id @default(cuid())
+  jobId String @unique
+  job   Job    @relation(fields: [jobId], references: [id], onDelete: Cascade)
+
+  // ── Gutter ──
+  gutterType     DrainageMaterial?
+  gutterSize     DrainageSize?
+  gutterQuantity Int?
+
+  // ── Down Take ──
+  downTakeType     DrainageMaterial?
+  downTakeSize     DrainageSize?
+  downTakeQuantity Int?
+
+  // ── Drip Trim ──
+  dripTrimType      FlashingType?
+  dripTrimThickness FlashingThickness?
+  dripTrimQuantity  Int?
+
+  // ── Gable End Flashing ──
+  gableEndFlashingType      FlashingType?
+  gableEndFlashingThickness FlashingThickness?
+  gableEndFlashingQuantity  Int?
+
+  // ── Corner Flash ──
+  cornerFlashType      FlashingType?
+  cornerFlashThickness FlashingThickness?
+  cornerFlashQuantity  Int?
+
+  // ── Ridge ──
+  ridgeType      FlashingType?
+  ridgeThickness FlashingThickness?
+  ridgeQuantity  Int?
+
+  // ── Partition ──
+  partitionType      PartitionType?
+  partitionThickness PartitionThickness?
+  partitionQuantity  Int?
+
+  // ── Insulation ──
+  roofInsulationType InsulationType?
+  wallInsulationType InsulationType?
+
+  // ── Turbo Ventilator ──
+  turboVentilatorDiameter TurboVentilatorDiameter?
+  turboVentilatorNos      Int?
+
+  // ── Handrail ──
+  handrailWeightKg Decimal? @db.Decimal(10, 3)
+
+  // ── Feature toggles ──
+  deckSheetFlashingEnabled Boolean?
+  gantryGirderEnabled      Boolean?
+  liftStructureEnabled     Boolean?
+
+  // ── Paint & Primer: Frames ──
+  framesPrimerCoats Int?
+  framesPrimerType  PaintType?
+  framesPaintCoats  Int?
+  framesPaintType   PaintType?
+
+  // ── Paint & Primer: Purlins & Girts ──
+  purlinsGirtsFinish PurlinsGirtsFinish?
+  purlinsGirtsGsm    Int?
+  purlinsGirtsPaint  PurlinsGirtsPaint?
+
+  // ── Paint & Primer: Foundation Bolt ──
+  foundationBoltFinish FoundationBoltFinish?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // ── Openings (rolling shutters, louvers, sky lights, wall lights) ──
+  openings AccessoryOpening[]
+
+  // ── Line items ──
+  doors        AccessoryDoor[]
+  windows      AccessoryWindow[]
+  foldedPlates AccessoryFoldedPlate[]
+}
+
+model AccessoryDoor {
+  id            String      @id @default(cuid())
+  accessoriesId String
+  accessories   Accessories @relation(fields: [accessoriesId], references: [id], onDelete: Cascade)
+
+  // ── Dimensions ──
+  height Decimal? @db.Decimal(10, 3)
+  width  Decimal? @db.Decimal(10, 3)
+
+  nos      Int?
+  quantity Int?
+}
+
+model AccessoryWindow {
+  id            String      @id @default(cuid())
+  accessoriesId String
+  accessories   Accessories @relation(fields: [accessoriesId], references: [id], onDelete: Cascade)
+
+  // ── Dimensions ──
+  height Decimal? @db.Decimal(10, 3)
+  width  Decimal? @db.Decimal(10, 3)
+
+  nos      Int?
+  quantity Int?
+}
+
+model AccessoryFoldedPlate {
+  id            String      @id @default(cuid())
+  accessoriesId String
+  accessories   Accessories @relation(fields: [accessoriesId], references: [id], onDelete: Cascade)
+
+  // ── Dimensions ──
+  length Decimal? @db.Decimal(10, 3)
+  width  Decimal? @db.Decimal(10, 3)
+
+  nos      Int?
+  quantity Int?
+}
+
+model AccessoryOpening {
+  id            String      @id @default(cuid())
+  accessoriesId String
+  accessories   Accessories @relation(fields: [accessoriesId], references: [id], onDelete: Cascade)
+
+  kind AccessoryOpeningKind
+
+  // ── Dimensions ──
+  length Decimal? @db.Decimal(10, 3)
+  width  Decimal? @db.Decimal(10, 3)
+
+  nos      Int?
+  quantity Int?
 }

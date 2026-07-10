@@ -16,7 +16,7 @@ export const STEPS: WizardStep[] = [
   { label: 'Mezzanine', sub: 'MEZZ' },
   { label: 'Stair', sub: 'STAIR' },
   { label: 'Canopy', sub: 'CANOPY' },
-  { label: 'Pricing', sub: 'BREAKDOWN' },
+  { label: 'Accessories', sub: 'ACCESSORIES' },
   { label: 'Load', sub: 'LOAD' },
 ]
 
