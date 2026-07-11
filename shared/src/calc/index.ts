@@ -5,3 +5,4 @@
  * preview only (never trusted by the server).
  */
 export * from './roof.calc.js'
+export * from './accessories.calc.js'

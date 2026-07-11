@@ -221,4 +221,49 @@ describe('roof.service', () => {
       expect(prismaMock.roof.delete).toHaveBeenCalledWith({ where: { jobId: 'job-1' } })
     })
   })
+
+  describe('accessories recompute trigger', () => {
+    it('upsertRoof recomputes accessory quantities when an accessories row exists', async () => {
+      const { jobId, ...rest } = makeRoofInput('job-1')
+      prismaMock.roof.upsert.mockResolvedValue(makeRoof({ jobId: 'job-1' }) as any)
+      prismaMock.accessories.findUnique.mockResolvedValue({ id: 'acc-1' } as any)
+      prismaMock.roof.findUnique.mockResolvedValue(
+        makeRoof({ jobId: 'job-1', sidewalls: [{ side: 'FRONT', height: 3.5 }, { side: 'LEFT', height: 3.5 }] }) as any,
+      )
+      prismaMock.accessories.update.mockResolvedValue({} as any)
+
+      await upsertRoof('job-1', rest)
+
+      expect(prismaMock.accessories.update).toHaveBeenCalledWith({
+        where: { jobId: 'job-1' },
+        data: expect.objectContaining({ gutterQuantity: 60, ridgeQuantity: 30 }),
+      })
+    })
+
+    it('upsertRoof does not touch accessories when the job has none', async () => {
+      const { jobId, ...rest } = makeRoofInput('job-2')
+      prismaMock.roof.upsert.mockResolvedValue(makeRoof({ jobId: 'job-2' }) as any)
+      prismaMock.accessories.findUnique.mockResolvedValue(null)
+
+      await upsertRoof('job-2', rest)
+
+      expect(prismaMock.accessories.update).not.toHaveBeenCalled()
+    })
+
+    it('updateRoof recomputes accessory quantities when an accessories row exists', async () => {
+      prismaMock.roof.update.mockResolvedValue(makeRoof({ jobId: 'job-1' }) as any)
+      prismaMock.accessories.findUnique.mockResolvedValue({ id: 'acc-1' } as any)
+      prismaMock.roof.findUnique.mockResolvedValue(
+        makeRoof({ jobId: 'job-1', sidewalls: [{ side: 'FRONT', height: 3.5 }, { side: 'LEFT', height: 3.5 }] }) as any,
+      )
+      prismaMock.accessories.update.mockResolvedValue({} as any)
+
+      await updateRoof('job-1', { mainRoofFrames: 5 })
+
+      expect(prismaMock.accessories.update).toHaveBeenCalledWith({
+        where: { jobId: 'job-1' },
+        data: expect.objectContaining({ gutterQuantity: 60 }),
+      })
+    })
+  })
 })

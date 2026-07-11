@@ -16,6 +16,7 @@ const mocks = vi.hoisted(() => ({
   upsertCanopyMutateAsync: vi.fn(),
   deleteCanopyMutateAsync: vi.fn(),
   upsertLoadMutateAsync: vi.fn(),
+  upsertAccessoriesMutateAsync: vi.fn(),
   createPending: false,
   updatePending: false,
   upsertRoofPending: false,
@@ -67,6 +68,10 @@ vi.mock('@/api/quotation/canopy/deleteCanopy', () => ({
 
 vi.mock('@/api/quotation/load/postLoad', () => ({
   useUpsertLoad: () => ({ mutateAsync: mocks.upsertLoadMutateAsync, isPending: false }),
+}))
+
+vi.mock('@/api/quotation/accessories/postAccessories', () => ({
+  useUpsertAccessories: () => ({ mutateAsync: mocks.upsertAccessoriesMutateAsync, isPending: false }),
 }))
 
 import { WizardActionBar } from '@/components/quotation/WizardActionBar'
@@ -341,5 +346,54 @@ describe('WizardActionBar Step 4 stair persistence', () => {
 
     await waitFor(() => expect(mocks.toastError).toHaveBeenCalledWith('Failed to save stair'))
     expect(useQuotationStore.getState().currentStep).toBe(4)
+  })
+})
+
+
+describe('WizardActionBar Step 6 accessories persistence', () => {
+  beforeEach(() => {
+    localStorage.clear()
+    useQuotationStore.getState().resetQuotation()
+    mocks.navigate.mockReset()
+    mocks.toastSuccess.mockReset()
+    mocks.toastError.mockReset()
+    mocks.upsertAccessoriesMutateAsync.mockReset()
+    useQuotationStore.getState().setJobId('job-1')
+    useQuotationStore.setState({ currentStep: 6 })
+  })
+
+  it('upserts the accessories and advances to step 7 on Continue', async () => {
+    mocks.upsertAccessoriesMutateAsync.mockResolvedValueOnce({ id: 'acc-1' })
+    useQuotationStore.getState().setAccessories({ gutterType: 'PPGL' })
+    render(<WizardActionBar />)
+
+    await userEvent.click(screen.getByRole('button', { name: /continue/i }))
+
+    await waitFor(() => expect(useQuotationStore.getState().currentStep).toBe(7))
+    expect(mocks.upsertAccessoriesMutateAsync).toHaveBeenCalledWith({
+      jobId: 'job-1',
+      payload: { gutterType: 'PPGL' },
+    })
+    expect(mocks.toastSuccess).toHaveBeenCalledWith('Accessories saved successfully')
+  })
+
+  it('upserts an empty payload for a blank draft and still advances', async () => {
+    mocks.upsertAccessoriesMutateAsync.mockResolvedValueOnce({ id: 'acc-1' })
+    render(<WizardActionBar />)
+
+    await userEvent.click(screen.getByRole('button', { name: /continue/i }))
+
+    await waitFor(() => expect(useQuotationStore.getState().currentStep).toBe(7))
+    expect(mocks.upsertAccessoriesMutateAsync).toHaveBeenCalledWith({ jobId: 'job-1', payload: {} })
+  })
+
+  it('stays on step 6 when the accessories upsert fails', async () => {
+    mocks.upsertAccessoriesMutateAsync.mockRejectedValueOnce(new Error('API error: 500'))
+    render(<WizardActionBar />)
+
+    await userEvent.click(screen.getByRole('button', { name: /continue/i }))
+
+    await waitFor(() => expect(mocks.toastError).toHaveBeenCalledWith('Failed to save accessories'))
+    expect(useQuotationStore.getState().currentStep).toBe(6)
   })
 })

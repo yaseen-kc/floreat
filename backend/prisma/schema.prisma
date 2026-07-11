@@ -658,32 +658,43 @@ model Accessories {
   // ── Gutter ──
   gutterType     DrainageMaterial?
   gutterSize     DrainageSize?
-  gutterQuantity Int?
+  // Server-derived quantities (see @floreat/shared/calc deriveAccessoryQuantities):
+  // computed from the job's Roof. Each column has a companion `*Manual` flag: when
+  // true the client's value is kept and the roof-driven recompute leaves it alone;
+  // when false (default) the value is server-derived and any client value ignored.
+  // Decimal to preserve the fractional results of the flashing equations.
+  gutterQuantity       Decimal? @db.Decimal(10, 3)
+  gutterQuantityManual Boolean  @default(false)
 
   // ── Down Take ──
-  downTakeType     DrainageMaterial?
-  downTakeSize     DrainageSize?
-  downTakeQuantity Int?
+  downTakeType           DrainageMaterial?
+  downTakeSize           DrainageSize?
+  downTakeQuantity       Decimal?          @db.Decimal(10, 3)
+  downTakeQuantityManual Boolean           @default(false)
 
   // ── Drip Trim ──
-  dripTrimType      FlashingType?
-  dripTrimThickness FlashingThickness?
-  dripTrimQuantity  Int?
+  dripTrimType           FlashingType?
+  dripTrimThickness      FlashingThickness?
+  dripTrimQuantity       Decimal?           @db.Decimal(10, 3)
+  dripTrimQuantityManual Boolean            @default(false)
 
   // ── Gable End Flashing ──
-  gableEndFlashingType      FlashingType?
-  gableEndFlashingThickness FlashingThickness?
-  gableEndFlashingQuantity  Int?
+  gableEndFlashingType           FlashingType?
+  gableEndFlashingThickness      FlashingThickness?
+  gableEndFlashingQuantity       Decimal?           @db.Decimal(10, 3)
+  gableEndFlashingQuantityManual Boolean            @default(false)
 
   // ── Corner Flash ──
-  cornerFlashType      FlashingType?
-  cornerFlashThickness FlashingThickness?
-  cornerFlashQuantity  Int?
+  cornerFlashType           FlashingType?
+  cornerFlashThickness      FlashingThickness?
+  cornerFlashQuantity       Decimal?           @db.Decimal(10, 3)
+  cornerFlashQuantityManual Boolean            @default(false)
 
   // ── Ridge ──
-  ridgeType      FlashingType?
-  ridgeThickness FlashingThickness?
-  ridgeQuantity  Int?
+  ridgeType           FlashingType?
+  ridgeThickness      FlashingThickness?
+  ridgeQuantity       Decimal?           @db.Decimal(10, 3)
+  ridgeQuantityManual Boolean            @default(false)
 
   // ── Partition ──
   partitionType      PartitionType?
@@ -744,7 +755,10 @@ model AccessoryDoor {
   width  Decimal? @db.Decimal(10, 3)
 
   nos      Int?
-  quantity Int?
+  // Server-derived per item (dimA × dimB × nos via @floreat/shared/calc
+  // deriveLineItemQuantity); any client value is ignored. Decimal preserves the
+  // fractional area × count result.
+  quantity Decimal? @db.Decimal(10, 3)
 
   @@index([accessoriesId])
 }
@@ -759,7 +773,10 @@ model AccessoryWindow {
   width  Decimal? @db.Decimal(10, 3)
 
   nos      Int?
-  quantity Int?
+  // Server-derived per item (dimA × dimB × nos via @floreat/shared/calc
+  // deriveLineItemQuantity); any client value is ignored. Decimal preserves the
+  // fractional area × count result.
+  quantity Decimal? @db.Decimal(10, 3)
 
   @@index([accessoriesId])
 }
@@ -774,7 +791,10 @@ model AccessoryFoldedPlate {
   width  Decimal? @db.Decimal(10, 3)
 
   nos      Int?
-  quantity Int?
+  // Server-derived per item (dimA × dimB × nos via @floreat/shared/calc
+  // deriveLineItemQuantity); any client value is ignored. Decimal preserves the
+  // fractional area × count result.
+  quantity Decimal? @db.Decimal(10, 3)
 
   @@index([accessoriesId])
 }
@@ -791,7 +811,10 @@ model AccessoryOpening {
   width  Decimal? @db.Decimal(10, 3)
 
   nos      Int?
-  quantity Int?
+  // Server-derived per item (dimA × dimB × nos via @floreat/shared/calc
+  // deriveLineItemQuantity); any client value is ignored. Decimal preserves the
+  // fractional area × count result.
+  quantity Decimal? @db.Decimal(10, 3)
 
   @@index([accessoriesId])
 }

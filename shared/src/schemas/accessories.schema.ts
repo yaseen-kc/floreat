@@ -59,7 +59,11 @@ export const accessoryDoorSchema = z.object({
   height: z.number().positive().optional(),
   width: z.number().positive().optional(),
   nos: z.number().int().nonnegative().optional(),
-  quantity: z.number().int().nonnegative().optional(),
+  // `quantity` on every line item is SERVER-DERIVED (advisory only): the backend
+  // recomputes it per item as two dimensions × nos via `deriveLineItemQuantity`
+  // (@floreat/shared/calc) and ignores the client value. Accepts a `number`, but
+  // the HTTP response serialises the Decimal column as a `string`.
+  quantity: z.number().nonnegative().optional(),
 })
 
 /** A window line item — dimensions and counts, all optional. */
@@ -67,7 +71,7 @@ export const accessoryWindowSchema = z.object({
   height: z.number().positive().optional(),
   width: z.number().positive().optional(),
   nos: z.number().int().nonnegative().optional(),
-  quantity: z.number().int().nonnegative().optional(),
+  quantity: z.number().nonnegative().optional(),
 })
 
 /** A folded-plate line item — dimensions and counts, all optional. */
@@ -75,7 +79,7 @@ export const accessoryFoldedPlateSchema = z.object({
   length: z.number().positive().optional(),
   width: z.number().positive().optional(),
   nos: z.number().int().nonnegative().optional(),
-  quantity: z.number().int().nonnegative().optional(),
+  quantity: z.number().nonnegative().optional(),
 })
 
 /** An opening line item — `kind` is required (matches the non-null DB column). */
@@ -84,7 +88,7 @@ export const accessoryOpeningSchema = z.object({
   length: z.number().positive().optional(),
   width: z.number().positive().optional(),
   nos: z.number().int().nonnegative().optional(),
-  quantity: z.number().int().nonnegative().optional(),
+  quantity: z.number().nonnegative().optional(),
 })
 
 /** Schema for creating/upserting accessories — all scalar/enum fields optional, plus inline arrays. */
@@ -92,32 +96,45 @@ export const createAccessoriesSchema = z.object({
   // ── Gutter ──
   gutterType: drainageMaterialEnum.optional(),
   gutterSize: drainageSizeEnum.optional(),
-  gutterQuantity: z.number().int().nonnegative().optional(),
+  // Each of the six `*Quantity` fields below is SERVER-DERIVED BY DEFAULT: the
+  // backend recomputes it from the job's Roof via `deriveAccessoryQuantities`
+  // (@floreat/shared/calc) and ignores the client value — UNLESS the companion
+  // `*Manual` flag is `true`, in which case the client's value is trusted and
+  // persisted as-is and the roof-driven recompute leaves it untouched. Values
+  // accept a `number` here, but the HTTP response serialises the Decimal column
+  // as a `string` (DecimalString) — see @floreat/shared/types.
+  gutterQuantity: z.number().nonnegative().optional(),
+  gutterQuantityManual: z.boolean().optional(),
 
   // ── Down Take ──
   downTakeType: drainageMaterialEnum.optional(),
   downTakeSize: drainageSizeEnum.optional(),
-  downTakeQuantity: z.number().int().nonnegative().optional(),
+  downTakeQuantity: z.number().nonnegative().optional(),
+  downTakeQuantityManual: z.boolean().optional(),
 
   // ── Drip Trim ──
   dripTrimType: flashingTypeEnum.optional(),
   dripTrimThickness: flashingThicknessEnum.optional(),
-  dripTrimQuantity: z.number().int().nonnegative().optional(),
+  dripTrimQuantity: z.number().nonnegative().optional(),
+  dripTrimQuantityManual: z.boolean().optional(),
 
   // ── Gable End Flashing ──
   gableEndFlashingType: flashingTypeEnum.optional(),
   gableEndFlashingThickness: flashingThicknessEnum.optional(),
-  gableEndFlashingQuantity: z.number().int().nonnegative().optional(),
+  gableEndFlashingQuantity: z.number().nonnegative().optional(),
+  gableEndFlashingQuantityManual: z.boolean().optional(),
 
   // ── Corner Flash ──
   cornerFlashType: flashingTypeEnum.optional(),
   cornerFlashThickness: flashingThicknessEnum.optional(),
-  cornerFlashQuantity: z.number().int().nonnegative().optional(),
+  cornerFlashQuantity: z.number().nonnegative().optional(),
+  cornerFlashQuantityManual: z.boolean().optional(),
 
   // ── Ridge ──
   ridgeType: flashingTypeEnum.optional(),
   ridgeThickness: flashingThicknessEnum.optional(),
-  ridgeQuantity: z.number().int().nonnegative().optional(),
+  ridgeQuantity: z.number().nonnegative().optional(),
+  ridgeQuantityManual: z.boolean().optional(),
 
   // ── Partition ──
   partitionType: partitionTypeEnum.optional(),

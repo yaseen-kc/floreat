@@ -328,6 +328,21 @@ export function makeAccessories(overrides = {}) {
   return {
     id: faker.string.uuid(),
     jobId: faker.string.uuid(),
+    // Server-derived quantity columns (Decimal → serialised as strings over the
+    // wire). Default to null; override per test to assert derived values.
+    gutterQuantity: null,
+    downTakeQuantity: null,
+    dripTrimQuantity: null,
+    gableEndFlashingQuantity: null,
+    cornerFlashQuantity: null,
+    ridgeQuantity: null,
+    // Per-field manual-override flags (default false → server-derived).
+    gutterQuantityManual: false,
+    downTakeQuantityManual: false,
+    dripTrimQuantityManual: false,
+    gableEndFlashingQuantityManual: false,
+    cornerFlashQuantityManual: false,
+    ridgeQuantityManual: false,
     doors: [],
     windows: [],
     foldedPlates: [],
