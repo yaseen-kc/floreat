@@ -142,6 +142,24 @@ describe('Roof routes integration', () => {
 
       expect(res.statusCode).toBe(404)
     })
+
+    it('recomputes the job accessory quantities after the roof changes', async () => {
+      prismaMock.roof.update.mockResolvedValue(makeRoof({ jobId: 'job-1' }) as any)
+      // An accessories row exists, so the recompute should fire.
+      prismaMock.accessories.findUnique.mockResolvedValue({ id: 'acc-1' } as any)
+      prismaMock.roof.findUnique.mockResolvedValue(
+        makeRoof({ jobId: 'job-1', sidewalls: [{ side: 'FRONT', height: 3.5 }, { side: 'LEFT', height: 3.5 }] }) as any,
+      )
+      prismaMock.accessories.update.mockResolvedValue({} as any)
+
+      const res = await app.inject({ method: 'PUT', url: '/api/jobs/job-1/roof', payload: { mainRoofFrames: 5 } })
+
+      expect(res.statusCode).toBe(200)
+      expect(prismaMock.accessories.update).toHaveBeenCalledWith({
+        where: { jobId: 'job-1' },
+        data: expect.objectContaining({ gutterQuantity: 60, ridgeQuantity: 30 }),
+      })
+    })
   })
 
   describe('DELETE /api/jobs/:jobId/roof', () => {

@@ -3,7 +3,7 @@ import '../../mocks/clerk.js'
 import '../../mocks/prisma.js'
 import { mockGetAuth } from '../../mocks/clerk.js'
 import { prismaMock } from '../../mocks/prisma.js'
-import { makeJob, makeAccessories, makeAccessoryDoor, makeAccessoryWindow, makeAccessoryFoldedPlate, makeAccessoryOpening } from '../../helpers/factories.js'
+import { makeJob, makeAccessories, makeRoof, makeAccessoryDoor, makeAccessoryWindow, makeAccessoryFoldedPlate, makeAccessoryOpening } from '../../helpers/factories.js'
 import { buildApp } from '../../helpers/app.js'
 import { FastifyInstance } from 'fastify'
 
@@ -43,10 +43,11 @@ describe('Accessories routes integration', () => {
       expect(res.json().openings).toEqual(openings)
     })
 
-    it('passes line items through to the create payload', async () => {
-      const doors = [makeAccessoryDoor({ nos: 3, quantity: 3 })]
-      const openings = [makeAccessoryOpening({ kind: 'LOUVER' })]
+    it('derives each line-item quantity and passes it through to the create payload', async () => {
+      const doors = [makeAccessoryDoor({ height: 2.1, width: 1.2, nos: 3, quantity: 999 })]
+      const openings = [makeAccessoryOpening({ kind: 'LOUVER', length: 3.5, width: 3, nos: 1, quantity: 999 })]
       const accessories = makeAccessories({ jobId: 'job-1', doors, openings })
+      prismaMock.roof.findUnique.mockResolvedValue(null)
       prismaMock.accessories.upsert.mockResolvedValue(accessories as any)
 
       const res = await app.inject({
@@ -58,11 +59,27 @@ describe('Accessories routes integration', () => {
       expect(prismaMock.accessories.upsert).toHaveBeenCalledWith(
         expect.objectContaining({
           create: expect.objectContaining({
-            doors: { createMany: { data: doors } },
-            openings: { createMany: { data: openings } },
+            // client quantity 999 replaced by derived values (2.1×1.2×3=7.56, 3.5×3×1=10.5)
+            doors: { createMany: { data: [{ height: 2.1, width: 1.2, nos: 3, quantity: 7.56 }] } },
+            openings: { createMany: { data: [{ kind: 'LOUVER', length: 3.5, width: 3, nos: 1, quantity: 10.5 }] } },
           }),
         }),
       )
+    })
+
+    it('returns the derived item quantity as a Decimal string', async () => {
+      // The response mirrors Prisma: the Decimal quantity column serialises as a string.
+      const doors = [makeAccessoryDoor({ height: 2.1, width: 1.2, nos: 2, quantity: '5.04' })]
+      prismaMock.roof.findUnique.mockResolvedValue(null)
+      prismaMock.accessories.upsert.mockResolvedValue(makeAccessories({ jobId: 'job-1', doors }) as any)
+
+      const res = await app.inject({
+        method: 'POST', url: '/api/jobs/job-1/accessories',
+        payload: { doors: [{ height: 2.1, width: 1.2, nos: 2, quantity: 999 }] },
+      })
+
+      expect(res.statusCode).toBe(200)
+      expect(res.json().doors[0].quantity).toBe('5.04')
     })
 
     it('rejects an opening missing its required kind', async () => {
@@ -79,6 +96,96 @@ describe('Accessories routes integration', () => {
         payload: { doors: [makeAccessoryDoor({ nos: -1 })] },
       })
       expect(res.statusCode).toBe(400)
+    })
+  })
+
+  describe('derived quantities from roof', () => {
+    /** A roof with both FRONT and LEFT sidewalls so all six quantities compute. */
+    const roofForJob = () =>
+      makeRoof({
+        jobId: 'job-1',
+        sidewalls: [
+          { side: 'FRONT', wallType: 'BRICK', thickness: 0.23, height: 3.5 },
+          { side: 'LEFT', wallType: 'BRICK', thickness: 0.23, height: 3.5 },
+        ],
+      })
+
+    it('derives the six quantities from the roof and ignores client-sent values', async () => {
+      prismaMock.roof.findUnique.mockResolvedValue(roofForJob() as any)
+      // The response mirrors Prisma: Decimal columns serialise as strings.
+      const accessories = makeAccessories({
+        jobId: 'job-1',
+        gutterQuantity: '60', downTakeQuantity: '33.87', dripTrimQuantity: '90',
+        gableEndFlashingQuantity: '30.725', cornerFlashQuantity: '8.58', ridgeQuantity: '30',
+      })
+      prismaMock.accessories.upsert.mockResolvedValue(accessories as any)
+
+      const res = await app.inject({
+        method: 'POST', url: '/api/jobs/job-1/accessories',
+        payload: { gutterQuantity: 999, cornerFlashQuantity: 111 }, // bogus — must be ignored
+      })
+
+      expect(res.statusCode).toBe(200)
+      expect(prismaMock.accessories.upsert).toHaveBeenCalledWith(
+        expect.objectContaining({
+          create: expect.objectContaining({
+            gutterQuantity: 60,
+            downTakeQuantity: 33.87,
+            dripTrimQuantity: 90,
+            gableEndFlashingQuantity: 30.725,
+            cornerFlashQuantity: 8.58,
+            ridgeQuantity: 30,
+          }),
+        }),
+      )
+      // Decimal columns come back as strings over the wire.
+      expect(res.json().gutterQuantity).toBe('60')
+      expect(res.json().cornerFlashQuantity).toBe('8.58')
+    })
+
+    it('persists null quantities when the job has no roof', async () => {
+      prismaMock.roof.findUnique.mockResolvedValue(null)
+      prismaMock.accessories.upsert.mockResolvedValue(makeAccessories({ jobId: 'job-1' }) as any)
+
+      const res = await app.inject({ method: 'POST', url: '/api/jobs/job-1/accessories', payload: {} })
+
+      expect(res.statusCode).toBe(200)
+      expect(prismaMock.accessories.upsert).toHaveBeenCalledWith(
+        expect.objectContaining({
+          create: expect.objectContaining({
+            gutterQuantity: null,
+            downTakeQuantity: null,
+            dripTrimQuantity: null,
+            gableEndFlashingQuantity: null,
+            cornerFlashQuantity: null,
+            ridgeQuantity: null,
+          }),
+        }),
+      )
+    })
+
+    it('keeps a manually-overridden quantity and derives the rest', async () => {
+      prismaMock.roof.findUnique.mockResolvedValue(roofForJob() as any)
+      prismaMock.accessories.upsert.mockResolvedValue(
+        makeAccessories({ jobId: 'job-1', gutterQuantity: '123', gutterQuantityManual: true }) as any,
+      )
+
+      const res = await app.inject({
+        method: 'POST', url: '/api/jobs/job-1/accessories',
+        payload: { gutterQuantityManual: true, gutterQuantity: 123, cornerFlashQuantity: 999 },
+      })
+
+      expect(res.statusCode).toBe(200)
+      expect(prismaMock.accessories.upsert).toHaveBeenCalledWith(
+        expect.objectContaining({
+          create: expect.objectContaining({
+            gutterQuantityManual: true,
+            gutterQuantity: 123, // client override kept
+            cornerFlashQuantity: 8.58, // derived, client 999 ignored
+            ridgeQuantity: 30,
+          }),
+        }),
+      )
     })
   })
 

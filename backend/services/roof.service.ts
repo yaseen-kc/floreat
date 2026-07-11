@@ -4,10 +4,11 @@
  */
 import { prisma } from '../lib/prisma.js'
 import { deriveSideColumnsWidthHeight } from '@floreat/shared/calc'
+import { recomputeAccessoriesQuantities } from './accessories.service.js'
 import type { CreateRoofInput, UpdateRoofInput } from '../schemas/roof.schema.js'
 
 /** Creates or updates a roof for a given job. Sidewalls are replaced entirely on update. */
-export function upsertRoof(jobId: string, data: CreateRoofInput) {
+export async function upsertRoof(jobId: string, data: CreateRoofInput) {
   const { sidewalls, ...rest } = data
   const sidewallData = sidewalls ?? []
 
@@ -29,12 +30,18 @@ export function upsertRoof(jobId: string, data: CreateRoofInput) {
   if (derivedWidthHeight !== undefined) rest.sideColumnsWidthHeight = derivedWidthHeight
   else delete rest.sideColumnsWidthHeight
 
-  return prisma.roof.upsert({
+  const roof = await prisma.roof.upsert({
     where: { jobId },
     create: { jobId, ...rest, sidewalls: { createMany: { data: sidewallData } } },
     update: { ...rest, sidewalls: { deleteMany: {}, createMany: { data: sidewallData } } },
     include: { sidewalls: true },
   })
+
+  // Accessory quantities are derived from the roof — keep them in sync when the
+  // roof changes (no-op if the job has no Accessories row yet).
+  await recomputeAccessoriesQuantities(jobId)
+
+  return roof
 }
 
 /** Returns a paginated list of the user's roofs ordered by most recent first. */
@@ -95,7 +102,13 @@ export async function updateRoof(jobId: string, data: Record<string, any>) {
     updateData.sidewalls = { deleteMany: {}, createMany: { data: sidewalls } }
   }
 
-  return prisma.roof.update({ where: { jobId }, data: updateData, include: { sidewalls: true } })
+  const roof = await prisma.roof.update({ where: { jobId }, data: updateData, include: { sidewalls: true } })
+
+  // Accessory quantities depend on the roof — recompute after any roof change
+  // (no-op if the job has no Accessories row yet).
+  await recomputeAccessoriesQuantities(jobId)
+
+  return roof
 }
 
 /** Deletes a roof by its associated job ID. Throws if not found. */
