@@ -1,0 +1,20 @@
+{
+  "name": "floreat",
+  "version": "1.0.0",
+  "description": "Floreat — structural quotation studio (npm workspaces monorepo).",
+  "private": true,
+  "type": "module",
+  "workspaces": [
+    "shared",
+    "backend",
+    "frontend"
+  ],
+  "scripts": {
+    "build:shared": "npm run build --workspace @floreat/shared",
+    "build": "npm run build:shared && npm run build --workspace frontend && npm run build --workspace backend",
+    "dev:backend": "npm run build:shared && npm run dev --workspace backend",
+    "dev:frontend": "npm run build:shared && npm run dev --workspace frontend",
+    "test": "npm run test --workspaces --if-present",
+    "typecheck": "npm run typecheck --workspaces --if-present"
+  }
+}

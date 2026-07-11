@@ -2,6 +2,39 @@
 
 > Prescriptive standards for AI agents generating code in this project.
 
+## 0. Workspace & `@floreat/shared`
+
+Floreat is a single **npm workspaces** monorepo (root `package.json` →
+`"workspaces": ["shared", "backend", "frontend"]`). The frontend consumes the
+local **`@floreat/shared`** package **by name** through subpath exports — never
+by relative path:
+
+| Import | Contents |
+|--------|----------|
+| `@floreat/shared/schemas` | Zod 4 request contracts + enums (one module per resource) + shared `paginationSchema`. |
+| `@floreat/shared/calc`    | Pure business-math / equation functions (reused for **preview only** — see below). |
+| `@floreat/shared/types`   | Wire-format primitives (`DecimalString`, `Nullable<T>`). |
+| `@floreat/shared/units`   | Decimal-string / unit coercion helpers (`num`, `int`). |
+
+Rules:
+
+- **Schemas, enums, and shared types have one home: `shared`.** `src/schemas/{resource}.schema.ts`
+  is a thin re-export of the shared contract. **Exceptions:** `roof` and `job` keep a
+  *stricter* **form** schema in `src/schemas/` (all fields required for the Step form,
+  plus `isRequired`/`getFieldErrors` helpers) — these import their enums from
+  `@floreat/shared/schemas` so enums are never redefined. The shared module remains the
+  wire contract the server validates.
+- **Calculations are backend-authoritative.** The frontend may import a
+  `@floreat/shared/calc` function for live preview (e.g. `deriveSideColumnsWidthHeight`
+  in the quotation store's `setRoof`), but the server recomputes and persists the value
+  from validated inputs — never rely on the client-computed value being trusted.
+- **Decimal wire coercion uses `@floreat/shared/units`** (`num`/`int`); the hydrate
+  utilities import these rather than redefining them (see §6.5).
+- **`shared` builds before the app.** Run `npm run build:shared` (root) after editing
+  `shared/src`; the root `dev:frontend`/`build` scripts do this for you. Vite resolves the
+  compiled `dist` via the package's `exports` (add `optimizeDeps.include: ['@floreat/shared']`
+  only if HMR needs it).
+
 ## 1. Tech Stack
 
 - React 19 + TypeScript (ES2023 target)
@@ -28,6 +61,7 @@ src/
 ├── hooks/                 # Custom React hooks (non-store)
 ├── lib/                   # Core utilities (api.ts, utils.ts)
 ├── pages/{feature}/       # Thin route-level orchestrators
+├── schemas/               # Thin re-exports of @floreat/shared contracts (roof/job add a stricter form schema)
 ├── stores/                # Zustand stores ({feature}-store.ts)
 ├── tests/                 # Mirrors src/ structure exactly
 └── utils/                 # Pure utility functions
@@ -133,7 +167,9 @@ export const roofKeys = {
 Prisma `Decimal` columns serialize to JSON **strings** over HTTP
 (`Decimal.prototype.toJSON`). Type numeric-precision response fields as `string` even
 when the create/update payload accepts `number`. Document this with a `NOTE:` comment
-on the response interface.
+on the response interface. The `@floreat/shared/types` primitives (`DecimalString`,
+`Nullable<T>`) model this boundary, and the `@floreat/shared/units` helpers (`num`, `int`)
+coerce it back to numbers in the `hydrate*` utilities.
 
 ### 6.6 Canonical example
 
@@ -245,6 +281,8 @@ if (!API_URL) throw new Error('Missing VITE_API_URL. Set it in your .env file.')
 - Use `cn()` for all conditional class logic.
 - Keep pages thin — delegate to feature components.
 - Type all function parameters and return values.
+- Import request contracts, enums, `calc`, and wire helpers from `@floreat/shared/*` by
+  package name (see §0). Run `npm run build:shared` after editing `shared/src`.
 
 ### Don't
 
@@ -256,3 +294,7 @@ if (!API_URL) throw new Error('Missing VITE_API_URL. Set it in your .env file.')
 - Use relative imports that traverse up more than one level (`../../..`).
 - Install icon libraries other than lucide-react.
 - Create global CSS classes — use Tailwind utilities.
+- Redefine a shared schema or enum locally — re-export from `@floreat/shared` (only
+  `roof`/`job` keep a stricter *form* schema, and they import their enums from shared).
+- Treat a `@floreat/shared/calc` result as authoritative — it is preview only; the
+  backend recomputes and persists the value.

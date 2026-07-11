@@ -46,7 +46,7 @@ describe('WizardStepper', () => {
 
   it('clicking a disabled far-future step is a no-op', async () => {
     render(<WizardStepper />)
-    await userEvent.click(screen.getByRole('button', { name: /Pricing/i }))
+    await userEvent.click(screen.getByRole('button', { name: /Load/i }))
     expect(useQuotationStore.getState().currentStep).toBe(1)
   })
 

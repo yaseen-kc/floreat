@@ -3,6 +3,7 @@
  * Handles inline sidewall management (replace-all strategy on upsert/update).
  */
 import { prisma } from '../lib/prisma.js'
+import { deriveSideColumnsWidthHeight } from '@floreat/shared/calc'
 import type { CreateRoofInput, UpdateRoofInput } from '../schemas/roof.schema.js'
 
 /** Creates or updates a roof for a given job. Sidewalls are replaced entirely on update. */
@@ -20,6 +21,13 @@ export function upsertRoof(jobId: string, data: CreateRoofInput) {
   if (rest.claddingExtensionEndFrameCount !== undefined) {
     rest.sideColumnsEndFrameCount = rest.claddingExtensionEndFrameCount
   }
+
+  // `sideColumnsWidthHeight` is a derived quantity — never trust the client's
+  // value. Recompute it from eaveHeight/roofSlope/claddingExtensionWidthHeight
+  // (see @floreat/shared/calc) and overwrite, or drop it when inputs are blank.
+  const derivedWidthHeight = deriveSideColumnsWidthHeight(rest)
+  if (derivedWidthHeight !== undefined) rest.sideColumnsWidthHeight = derivedWidthHeight
+  else delete rest.sideColumnsWidthHeight
 
   return prisma.roof.upsert({
     where: { jobId },
@@ -45,7 +53,7 @@ export function getRoofByJobId(jobId: string) {
 }
 
 /** Updates a roof by job ID. Replaces sidewalls entirely if provided. */
-export function updateRoof(jobId: string, data: Record<string, any>) {
+export async function updateRoof(jobId: string, data: Record<string, any>) {
   const { sidewalls, ...rest } = data
   const updateData: any = { ...rest }
 
@@ -57,6 +65,30 @@ export function updateRoof(jobId: string, data: Record<string, any>) {
   }
   if (updateData.claddingExtensionEndFrameCount !== undefined) {
     updateData.sideColumnsEndFrameCount = updateData.claddingExtensionEndFrameCount
+  }
+
+  // `sideColumnsWidthHeight` is derived — never persist a client-supplied value.
+  // When this patch touches any derivation input (or sends a value), recompute
+  // it from the patch merged with the stored roof (see @floreat/shared/calc).
+  if (
+    'eaveHeight' in updateData ||
+    'roofSlope' in updateData ||
+    'claddingExtensionWidthHeight' in updateData ||
+    'sideColumnsWidthHeight' in updateData
+  ) {
+    const current = await prisma.roof.findUnique({
+      where: { jobId },
+      select: { eaveHeight: true, roofSlope: true, claddingExtensionWidthHeight: true },
+    })
+    const toNum = (v: unknown): number | undefined => (v == null ? undefined : Number(v))
+    const derivedWidthHeight = deriveSideColumnsWidthHeight({
+      eaveHeight: updateData.eaveHeight ?? toNum(current?.eaveHeight),
+      roofSlope: updateData.roofSlope ?? toNum(current?.roofSlope),
+      claddingExtensionWidthHeight:
+        updateData.claddingExtensionWidthHeight ?? toNum(current?.claddingExtensionWidthHeight),
+    })
+    if (derivedWidthHeight !== undefined) updateData.sideColumnsWidthHeight = derivedWidthHeight
+    else delete updateData.sideColumnsWidthHeight
   }
 
   if (sidewalls !== undefined) {

@@ -2,12 +2,62 @@
 
 > Prescriptive standards for AI agents generating code in this project.
 
+## 0. Workspace & `@floreat/shared`
+
+Floreat is a single **npm workspaces** monorepo. The repo root `package.json`
+declares `"workspaces": ["shared", "backend", "frontend"]`; one `npm install` at
+the root links everything and symlinks the local `@floreat/shared` package into
+both apps.
+
+```
+floreat/
+├── package.json        # workspace root (private) — scripts: build:shared, build, test
+├── shared/             # @floreat/shared — the single source of truth (see below)
+├── backend/            # this package
+└── frontend/
+```
+
+**`@floreat/shared`** owns everything both apps must agree on. It is written in
+TypeScript, compiled to `shared/dist` (JS + `.d.ts`), and consumed **by package
+name** through subpath exports — never by relative path:
+
+| Import | Contents |
+|--------|----------|
+| `@floreat/shared/schemas` | Zod 4 request contracts + enums (one module per resource) and the shared `paginationSchema`. |
+| `@floreat/shared/calc`    | Pure business-math / equation functions. |
+| `@floreat/shared/types`   | Wire-format primitives (`DecimalString`, `Nullable<T>`). |
+| `@floreat/shared/units`   | Decimal-string / unit coercion helpers (`num`, `int`). |
+
+```
+shared/src/
+├── schemas/   # {resource}.schema.ts + pagination.schema.ts + index.ts (barrel)
+├── calc/      # {resource}.calc.ts + index.ts
+├── types/     # index.ts (DecimalString, Nullable)
+└── units/     # index.ts (num, int)
+```
+
+Rules:
+
+- **`shared` builds before the apps.** `tsc`/`tsx`/`vitest` resolve the compiled
+  `dist` via the package's `exports`, so run `npm run build:shared` (root) after
+  editing `shared/src`, and before `npm run build`/`dev` in an app. The root
+  `build`/`dev:*` scripts do this for you.
+- **Schemas, enums, and shared types have exactly one home: `shared`.** Never
+  redefine a request contract or enum in `backend/` — import it (see §8).
+- **Calculations are backend-authoritative.** Any value the client *could*
+  compute but the server must be able to trust is derived on the server from
+  validated inputs using a `@floreat/shared/calc` function; the client value is
+  ignored. The frontend may reuse the same function for live preview only.
+  Example: `roof.service` recomputes `sideColumnsWidthHeight` from
+  `eaveHeight`/`roofSlope`/`claddingExtensionWidthHeight` via
+  `deriveSideColumnsWidthHeight` and overwrites whatever the client sent.
+
 ## 1. Tech Stack
 
 - Node.js + TypeScript (ESM, ES2023 target)
 - Fastify 5 (HTTP server)
 - Prisma 7 + `@prisma/adapter-pg` + `pg` (PostgreSQL data layer)
-- Zod 3 (request validation)
+- Zod 4 (request validation) — schemas live in `@floreat/shared` (see §0)
 - Clerk (`@clerk/fastify`) for authentication
 - Vitest 4 + `vitest-mock-extended` + `@faker-js/faker` (testing)
 - `tsx` (dev runtime), `tsc` (build / typecheck)
@@ -26,7 +76,7 @@ backend/
 ├── services/
 │   └── {resource}.service.ts      # ALL Prisma access + business logic
 ├── schemas/
-│   └── {resource}.schema.ts       # Zod validation schemas + inferred input types
+│   └── {resource}.schema.ts       # Thin re-export of the contract from @floreat/shared/schemas
 ├── middlewares/
 │   ├── auth.ts            # Clerk auth — verifies token, attaches request.userId
 │   └── sync-user.ts       # Lazily provisions a local DB user from Clerk profile
@@ -202,7 +252,10 @@ export async function remove(request: FastifyRequest, reply: FastifyReply) {
 
 ## 8. Validation Schemas
 
-- One schema file per resource. Export, per resource:
+- One module per resource **in `@floreat/shared/schemas`** (the `backend/schemas/{resource}.schema.ts`
+  file is a thin `export * from '@floreat/shared/schemas'` shim so controllers/services keep
+  importing from `../schemas/{resource}.schema.js`). Author new contracts in `shared`, not here.
+  Export, per resource:
   1. `create{Resource}Schema` — a `z.object({...})`.
   2. `update{Resource}Schema = create{Resource}Schema.partial()`.
   3. Inferred payload types: `export type Create{Resource}Input = z.infer<typeof create{Resource}Schema>`
@@ -211,8 +264,8 @@ export async function remove(request: FastifyRequest, reply: FastifyReply) {
 - Constrain numbers precisely: `z.number().positive()`, `.int().nonnegative()`, etc.
 - Use `z.coerce` for values arriving as strings (query params, dates):
   `z.coerce.number()`, `z.coerce.date()`.
-- **Pagination uses a single shared schema** (see §17 — currently duplicated per file,
-  target is one shared module):
+- **Pagination uses the single shared schema** exported from `@floreat/shared/schemas`
+  (re-exported by every backend `*.schema.ts` shim):
 
   ```ts
   export const paginationSchema = z.object({
@@ -222,11 +275,11 @@ export async function remove(request: FastifyRequest, reply: FastifyReply) {
   ```
 
 ```ts
-// src/schemas/canopy.schema.ts
+// shared/src/schemas/canopy.schema.ts — the single source of truth
 import { z } from 'zod'
 
-const canopyHeightFromEnum = z.enum(['GROUND', 'FF', 'SF', 'FLOOR_3', 'FLOOR_4', 'FLOOR_5'])
-const canopySheetTypeEnum = z.enum(['NCGL', 'PPGL', 'PUFF', 'OTHER'])
+export const canopyHeightFromEnum = z.enum(['GROUND', 'FF', 'SF', 'FLOOR_3', 'FLOOR_4', 'FLOOR_5'])
+export const canopySheetTypeEnum = z.enum(['NCGL', 'PPGL', 'PUFF', 'OTHER'])
 
 export const canopyItemSchema = z.object({
   code: z.string().regex(/^CANOPY-[1-9][0-9]*$/).optional(),
@@ -243,6 +296,11 @@ export const updateCanopySchema = createCanopySchema.partial()
 
 export type CreateCanopyInput = z.infer<typeof createCanopySchema>
 export type UpdateCanopyInput = z.infer<typeof updateCanopySchema>
+```
+
+```ts
+// backend/schemas/canopy.schema.ts — thin re-export shim
+export * from '@floreat/shared/schemas'
 ```
 
 ## 9. Data Layer / Prisma
@@ -269,7 +327,9 @@ export type UpdateCanopyInput = z.infer<typeof updateCanopySchema>
 - **Wire format:** Prisma `Decimal` columns serialize to JSON **strings** over HTTP
   (`Decimal.prototype.toJSON`). The create/update payloads accept `number`, but response
   consumers see `string`. Keep this in mind for any response typing (mirrors the frontend
-  rule in `frontend-standards.md §6.5`).
+  rule in `frontend-standards.md §6.5`). The shared `DecimalString`/`Nullable` primitives
+  (`@floreat/shared/types`) and the `num`/`int` coercion helpers (`@floreat/shared/units`)
+  model this boundary.
 - Migration / DB workflow (npm scripts): `db:generate`, `db:migrate`,
   `db:migrate:deploy`, `db:push`, `db:studio`, `db:seed`.
 
@@ -370,7 +430,7 @@ The **roof / canopy** resources are the canonical reference. A new nested resour
 vertical slice across four files plus tests, all following the rules above.
 
 ```ts
-// src/schemas/roof.schema.ts (excerpt)
+// shared/src/schemas/roof.schema.ts (excerpt) — backend re-exports it via a shim
 import { z } from 'zod'
 
 const sideWallSideEnum = z.enum(['FRONT', 'BACK', 'RIGHT', 'LEFT'])
@@ -504,6 +564,8 @@ it('deletes a roof', async () => {
 - Write both a unit service test (assert Prisma args) and an integration route test
   (assert status + JSON, including the 401 path). Keep coverage ≥ 80%.
 - Document new env keys in `.env.example`.
+- Author request contracts, enums, and business calculations in `@floreat/shared`;
+  run `npm run build:shared` after editing it so the apps resolve the compiled `dist`.
 
 ### Don't
 
@@ -514,7 +576,10 @@ it('deletes a roof', async () => {
 - Use extension-less or `.ts` relative import specifiers.
 - Hand-roll error response bodies — use `sendError`.
 - Enable `BYPASS_AUTH` outside local development.
-- Duplicate the pagination schema in new files — import the shared one (see §17).
+- Redefine a request contract, enum, or the pagination schema in `backend/` — import
+  them from `@floreat/shared/schemas` (see §0/§8).
+- Trust a client-sent *computed* value — recompute it server-side from validated inputs
+  via a `@floreat/shared/calc` function (see §0).
 - Hand-build test fixtures — use the factories in `tests/helpers/factories.ts`.
 
 ## 17. Known Deviations to Fix
@@ -527,6 +592,6 @@ follow the standard; existing code should be migrated when touched.
   with an empty body (matches the frontend `apiFetch` contract and the roof integration
   test, which asserts `204`). *Fix:* change `remove` handlers to `reply.status(204).send()`
   and update any assertion expecting the message body.
-- **Duplicated `paginationSchema`.** The identical `paginationSchema` is copy-pasted into
-  every `*.schema.ts` file. *Fix:* extract it to a single shared module (e.g.
-  `schemas/pagination.schema.ts` or `schemas/common.ts`) and import it everywhere.
+- **Duplicated `paginationSchema`.** *Resolved.* The single `paginationSchema` now lives
+  in `@floreat/shared/schemas` (`shared/src/schemas/pagination.schema.ts`); every backend
+  `*.schema.ts` re-exports it. Do not reintroduce a per-file copy.

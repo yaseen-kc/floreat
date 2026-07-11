@@ -52,6 +52,7 @@ export function WizardStepper() {
               type="button"
               onClick={() => handleClick(n)}
               disabled={!navigable}
+              aria-label={step.label}
               aria-current={active ? 'step' : undefined}
               className={cn(
                 'flex flex-col items-center text-center gap-1.5 shrink-0 w-16',

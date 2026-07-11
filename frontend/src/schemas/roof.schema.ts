@@ -1,67 +1,45 @@
 /**
- * Single source of truth for the Roof (quotation Step 2) request contract on
+ * Single source of truth for the Roof (quotation Step 2) **form** contract on
  * the frontend.
  *
- * Mirrors the backend `createRoofSchema` (backend/schemas/roof.schema.ts) for
- * the required core dimensions, structural sections, and the inline `sidewalls`
- * array. Numeric fields are typed as `number` here (the create/upsert payload),
- * even though the `Roof` response serialises Prisma `Decimal` columns back as
- * `string`.
+ * This schema is intentionally STRICTER than the shared/backend wire contract
+ * (`@floreat/shared/schemas` → `createRoofSchema`). Every structural section
+ * field (members, purlins, coverings, flange brace, polycarbonate, wind
+ * bracing, cladding openings, side extension, material grade, material
+ * consumption, SAG rod) is required here so the Step 2 form forces the user to
+ * complete them, even though the backend accepts them as optional. Only the
+ * Fascia Board fields and the inline `sidewalls` array remain optional.
  *
- * NOTE: This frontend schema is intentionally STRICTER than the backend. Every
- * structural section field (members, purlins, coverings, flange brace,
- * polycarbonate, wind bracing, cladding openings, side extension, material
- * grade, material consumption, SAG rod) is required here so the Step 2 form
- * forces the user to complete them, even though the backend still accepts them
- * as optional. Only the Fascia Board fields and the inline `sidewalls` array
- * remain optional on the frontend.
+ * The enums and the identical `sidewallSchema` are imported (and re-exported)
+ * from `@floreat/shared/schemas` so there is exactly one definition of each.
+ *
+ * Numeric fields are typed as `number` (the create/upsert payload), even though
+ * the `Roof` response serialises Prisma `Decimal` columns back as `string`.
  */
 import { z } from 'zod'
+import {
+  sideWallSideEnum,
+  typeOfWallEnum,
+  purlinMaterialTypeEnum,
+  typeOfWindBracingEnum,
+  coveringTypeEnum,
+  roofFrameBaseFixingEnum,
+  plateMaterialGradeEnum,
+  sidewallSchema,
+} from '@floreat/shared/schemas'
 
-/* ──────────────────────────────────────────────────────────────────────────
- * Enums — mirror the backend Prisma enums (string literals over the wire).
- * ────────────────────────────────────────────────────────────────────────── */
-
-/** Which side of the building a sidewall belongs to. */
-export const sideWallSideEnum = z.enum(['FRONT', 'BACK', 'RIGHT', 'LEFT'])
-
-/** Sidewall construction type. */
-export const typeOfWallEnum = z.enum(['BRICK', 'PANEL', 'LATERITE', 'AAC', 'BLOCK'])
-
-/** Purlin material profile. */
-export const purlinMaterialTypeEnum = z.enum(['Z_C', 'TUBE'])
-
-/** Wind bracing member type. */
-export const typeOfWindBracingEnum = z.enum(['ROD', 'TUBE'])
-
-/** Roof/cladding covering material. */
-export const coveringTypeEnum = z.enum(['BARE_GALVALUME', 'PPGL', 'PUFF_SHEET', 'OTHER'])
-
-/** How the roof frame base is fixed to its support. */
-export const roofFrameBaseFixingEnum = z.enum([
-  'FOUNDATION_BOLT',
-  'ANCHOR_BOLT',
-  'JOINT_BOLT_ON_STEEL_COLUMN',
-])
-
-/** Structural plate material grade. */
-export const plateMaterialGradeEnum = z.enum(['FE_345', 'FE_250', 'FE_400'])
-
-/* ──────────────────────────────────────────────────────────────────────────
- * Sidewall — a single inline sidewall entry attached to a roof.
- * ────────────────────────────────────────────────────────────────────────── */
-
-/** Schema for an individual sidewall entry. */
-export const sidewallSchema = z.object({
-  side: sideWallSideEnum,
-  wallType: typeOfWallEnum,
-  thickness: z.number().positive(),
-  height: z.number().positive(),
-})
-
-/* ──────────────────────────────────────────────────────────────────────────
- * Roof create/upsert payload.
- * ────────────────────────────────────────────────────────────────────────── */
+// Re-export the shared enums + sidewall schema so existing
+// `@/schemas/roof.schema` consumers keep importing them from here.
+export {
+  sideWallSideEnum,
+  typeOfWallEnum,
+  purlinMaterialTypeEnum,
+  typeOfWindBracingEnum,
+  coveringTypeEnum,
+  roofFrameBaseFixingEnum,
+  plateMaterialGradeEnum,
+  sidewallSchema,
+}
 
 /** Schema for creating/upserting a roof — required core fields + sections. */
 export const createRoofSchema = z.object({

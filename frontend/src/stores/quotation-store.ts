@@ -18,6 +18,7 @@ import {
   canopyItemSchema,
 } from '@/schemas/canopy.schema'
 import { type CreateLoadInput } from '@/schemas/load.schema'
+import { deriveSideColumnsWidthHeight } from '@floreat/shared/calc'
 import { STEP_COUNT } from '@/components/quotation/steps'
 
 /** Step 1 project info — the canonical job contract (see job.schema.ts). */
@@ -416,26 +417,12 @@ export const useQuotationStore = create<QuotationState>()(
 
 
 /**
- * Derives the Side Columns Width / Height from the eave height, roof slope
- * (in degrees) and cladding extension width/height. This field is no longer a
- * user input — it is computed and persisted.
- *
- * Returns `undefined` while `claddingExtensionWidthHeight` is blank (so the
- * read-only display stays empty), `0` when the cladding extension is `0`, and
- * otherwise `eaveHeight − claddingExt × tan(roofSlope)` clamped to `0` and
- * rounded to 3 decimals (matching the `Decimal(10,3)` column).
+ * The authoritative Side Columns Width / Height derivation now lives in
+ * `@floreat/shared/calc` (the backend recomputes it on write). It is imported
+ * above for `setRoof`'s live preview and re-exported here so existing store
+ * consumers keep importing it from `@/stores/quotation-store`.
  */
-export function deriveSideColumnsWidthHeight(
-  roof: Pick<RoofDraft, 'eaveHeight' | 'roofSlope' | 'claddingExtensionWidthHeight'>,
-): number | undefined {
-  const { eaveHeight, roofSlope, claddingExtensionWidthHeight } = roof
-  if (claddingExtensionWidthHeight === undefined || eaveHeight === undefined || roofSlope === undefined) {
-    return undefined
-  }
-  if (claddingExtensionWidthHeight === 0) return 0
-  const raw = eaveHeight - claddingExtensionWidthHeight * Math.tan((roofSlope * Math.PI) / 180)
-  return Math.max(0, Math.round(raw * 1000) / 1000)
-}
+export { deriveSideColumnsWidthHeight }
 
 /**
  * Builds the roof create/upsert payload from the Step 2 draft.

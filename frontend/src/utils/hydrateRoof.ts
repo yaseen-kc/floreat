@@ -2,11 +2,7 @@ import type { Roof } from '@/api/quotation/roof/getRoof'
 import type { RoofDraft, RoofSectionsEnabled, RoofSectionKey } from '@/stores/quotation-store'
 import { ROOF_SECTION_FIELDS } from '@/stores/quotation-store'
 
-/** Prisma `Decimal` columns serialise as strings (or null) — coerce to number. */
-const num = (v: string | null): number | undefined => (v == null ? undefined : Number(v))
-
-/** `null` optional integers become `undefined` so they stay out of the payload. */
-const int = (v: number | null): number | undefined => (v == null ? undefined : v)
+import { num, int } from '@floreat/shared/units'
 
 /** The mapped roof draft plus the section toggles derived from it. */
 export interface HydratedRoof {

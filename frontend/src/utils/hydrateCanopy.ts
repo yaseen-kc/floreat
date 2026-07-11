@@ -1,11 +1,7 @@
 import type { Canopy } from '@/api/quotation/canopy/getCanopy'
 import type { CanopyDraft, CanopyItemDraft } from '@/stores/quotation-store'
 
-/** Prisma `Decimal` columns serialise as strings (or null) — coerce to number. */
-const num = (v: string | null): number | undefined => (v == null ? undefined : Number(v))
-
-/** `null` optional integers become `undefined` so they stay out of the payload. */
-const int = (v: number | null): number | undefined => (v == null ? undefined : v)
+import { num, int } from '@floreat/shared/units'
 
 /** The mapped canopy draft plus the derived top-level toggle. */
 export interface HydratedCanopy {

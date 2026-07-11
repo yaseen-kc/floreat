@@ -70,6 +70,37 @@ describe('roof.service', () => {
         include: { sidewalls: true },
       })
     })
+
+    it('recomputes sideColumnsWidthHeight authoritatively, ignoring the client value', async () => {
+      const input = makeRoofInput('job-4')
+      const { jobId, ...rest } = input
+      const roof = makeRoof({ jobId: 'job-4' })
+      prismaMock.roof.upsert.mockResolvedValue(roof as any)
+
+      // Client sends a tampered/stale sideColumnsWidthHeight — the service must
+      // overwrite it with the value derived from eaveHeight/roofSlope/claddingExt.
+      await upsertRoof('job-4', {
+        ...rest,
+        eaveHeight: 6,
+        roofSlope: 10,
+        claddingExtensionWidthHeight: 1,
+        sideColumnsWidthHeight: 999,
+      })
+
+      const expected = {
+        ...rest,
+        eaveHeight: 6,
+        roofSlope: 10,
+        claddingExtensionWidthHeight: 1,
+        sideColumnsWidthHeight: 5.824, // 6 − 1 × tan(10°), computed server-side
+      }
+      expect(prismaMock.roof.upsert).toHaveBeenCalledWith({
+        where: { jobId: 'job-4' },
+        create: { jobId: 'job-4', ...expected, sidewalls: { createMany: { data: [] } } },
+        update: { ...expected, sidewalls: { deleteMany: {}, createMany: { data: [] } } },
+        include: { sidewalls: true },
+      })
+    })
   })
 
   describe('getRoofs', () => {
@@ -157,6 +188,25 @@ describe('roof.service', () => {
           claddingExtensionEndFrameCount: 2,
           sideColumnsEndFrameCount: 2,
         },
+        include: { sidewalls: true },
+      })
+    })
+
+    it('recomputes sideColumnsWidthHeight from stored inputs, ignoring the client value', async () => {
+      const roof = makeRoof()
+      prismaMock.roof.update.mockResolvedValue(roof as any)
+      // eaveHeight/roofSlope come from the stored roof; only claddingExt changes.
+      prismaMock.roof.findUnique.mockResolvedValue({
+        eaveHeight: 6,
+        roofSlope: 10,
+        claddingExtensionWidthHeight: null,
+      } as any)
+
+      await updateRoof('job-1', { claddingExtensionWidthHeight: 1, sideColumnsWidthHeight: 999 })
+
+      expect(prismaMock.roof.update).toHaveBeenCalledWith({
+        where: { jobId: 'job-1' },
+        data: { claddingExtensionWidthHeight: 1, sideColumnsWidthHeight: 5.824 },
         include: { sidewalls: true },
       })
     })
