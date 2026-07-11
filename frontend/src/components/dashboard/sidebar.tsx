@@ -46,7 +46,7 @@ export function Sidebar({ navOpen, onClose }: SidebarProps) {
   return (
     <aside
       className={cn(
-        'sticky top-0 z-40 flex h-screen w-full flex-col border-r border-sidebar-border bg-sidebar',
+        'sticky top-0 z-50 flex h-screen w-full flex-col border-r border-sidebar-border bg-sidebar',
         // Mobile: off-canvas drawer that slides in on navOpen.
         'max-[768px]:fixed max-[768px]:top-0 max-[768px]:left-0 max-[768px]:w-[248px] max-[768px]:shadow-lg max-[768px]:transition-transform max-[768px]:duration-200 max-[768px]:ease-[var(--ease)]',
         navOpen ? 'max-[768px]:translate-x-0' : 'max-[768px]:-translate-x-full',

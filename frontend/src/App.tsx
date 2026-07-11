@@ -86,7 +86,10 @@ function SignedInLayout() {
         />
       )}
 
-      <div className="flex min-h-screen min-w-0 flex-col">
+      {/* Force the content well into the second grid column. On mobile the
+          sidebar is position:fixed (off-canvas) and leaves the grid flow, so
+          without this the content auto-places into the 0px sidebar column. */}
+      <div className="col-start-2 flex min-h-screen min-w-0 flex-col">
         <Topbar onMenu={() => setNavOpen(true)} searchRef={searchRef} />
         <main className="flex-1 overflow-auto">
           <Outlet />
