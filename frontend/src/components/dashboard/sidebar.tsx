@@ -48,14 +48,14 @@ export function Sidebar({ navOpen, onClose }: SidebarProps) {
       className={cn(
         'sticky top-0 z-50 flex h-screen w-full flex-col border-r border-sidebar-border bg-sidebar',
         // Mobile: off-canvas drawer that slides in on navOpen.
-        'max-[768px]:fixed max-[768px]:top-0 max-[768px]:left-0 max-[768px]:w-[248px] max-[768px]:shadow-lg max-[768px]:transition-transform max-[768px]:duration-200 max-[768px]:ease-[var(--ease)]',
+        'max-[768px]:fixed max-[768px]:top-0 max-[768px]:left-0 max-[768px]:w-[248px] max-[768px]:shadow-lg max-[768px]:transition-transform max-[768px]:duration-200 max-[768px]:ease-(--ease)',
         navOpen ? 'max-[768px]:translate-x-0' : 'max-[768px]:-translate-x-full',
       )}
     >
       {/* Brand */}
       <div
         className={cn(
-          'flex h-[var(--topbar-h)] shrink-0 items-center gap-3 border-b border-sidebar-border px-4',
+          'flex h-(--topbar-h) shrink-0 items-center gap-3 border-b border-sidebar-border px-4',
           'min-[769px]:max-[1180px]:justify-center min-[769px]:max-[1180px]:px-0',
         )}
       >

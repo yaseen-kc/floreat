@@ -12,7 +12,7 @@ import { Navigate } from 'react-router-dom'
 function Login() {
   return (
     <Show when="signed-out" fallback={<Navigate to="/" replace />}>
-      <div className="flex min-h-screen flex-col items-center justify-center gap-8 bg-background px-6 py-12">
+      <div className="flex min-h-screen flex-col items-center justify-center gap-8 bg-background px-6 py-12 max-[420px]:px-4">
         <div className="flex items-center gap-3">
           <div
             className="grid size-9 place-items-center rounded-md bg-primary text-primary-foreground"

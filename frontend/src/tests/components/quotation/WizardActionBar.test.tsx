@@ -173,6 +173,15 @@ describe('WizardActionBar Step 1 flow', () => {
     expect(screen.getByRole('button', { name: /saving/i })).toBeDisabled()
     expect(screen.getByRole('button', { name: /save draft/i })).toBeDisabled()
   })
+
+  it('Back navigates to the previous step (two-tier bar controls stay wired)', async () => {
+    fillRequired()
+    useQuotationStore.setState({ currentStep: 2 })
+    render(<WizardActionBar />)
+
+    await userEvent.click(screen.getByRole('button', { name: /back/i }))
+    expect(useQuotationStore.getState().currentStep).toBe(1)
+  })
 })
 
 

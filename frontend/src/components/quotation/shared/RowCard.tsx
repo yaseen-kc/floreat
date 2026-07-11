@@ -42,7 +42,7 @@ interface RowCardProps {
  */
 export function RowCard({ title, badge, groups, values, onChange, onRemove }: RowCardProps) {
   return (
-    <div className="border border-border rounded-[12px] p-[18px]">
+    <div className="border border-border rounded-[12px] p-[18px] max-[640px]:p-3">
       <div className="flex items-center justify-between mb-3">
         <span className="text-xs font-semibold text-muted-foreground">
           {title}

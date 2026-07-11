@@ -16,6 +16,7 @@ import { useUpsertAccessories } from '@/api/quotation/accessories/postAccessorie
 import { useNavigate } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
 import { Spinner } from '@/components/ui/spinner'
+import { cn } from '@/lib/utils'
 import { ArrowLeft, ArrowRight, Check, Save } from 'lucide-react'
 import { STEPS, STEP_COUNT } from '@/components/quotation/steps'
 
@@ -378,18 +379,36 @@ export function WizardActionBar() {
   }
 
   return (
-    <div className="sticky bottom-0 left-0 right-0 bg-card/92 backdrop-blur-[10px] border-t border-border px-8 py-3.5 flex items-center gap-3 z-15">
-      <Button variant="ghost" onClick={prevStep} className={currentStep === 1 ? 'invisible' : ''}>
+    <div className="sticky bottom-0 left-0 right-0 z-15 flex flex-wrap items-center gap-3 border-t border-border bg-card/92 px-8 py-3.5 backdrop-blur-[10px] max-[640px]:gap-2 max-[640px]:px-4 max-[640px]:py-3">
+      <Button
+        variant="ghost"
+        onClick={prevStep}
+        className={cn('max-[640px]:order-2 max-[640px]:flex-1', currentStep === 1 && 'invisible max-[640px]:hidden')}
+      >
         <ArrowLeft className="w-4 h-4" /> Back
       </Button>
-      <span className="text-xs text-muted-foreground font-mono">
-        Step {currentStep} of {STEP_COUNT} · {STEPS[currentStep - 1]?.label}
+
+      {/* Full step label on desktop; a compact "Step N of 7" line on top on
+          mobile (the step label already shows in the compact stepper). */}
+      <span className="font-mono text-xs text-muted-foreground max-[640px]:order-1 max-[640px]:w-full">
+        Step {currentStep} of {STEP_COUNT}
+        <span className="max-[640px]:hidden"> · {STEPS[currentStep - 1]?.label}</span>
       </span>
-      <div className="flex-1" />
-      <Button variant="secondary" onClick={handleSaveDraft} disabled={isSubmitting}>
-        {isSubmitting ? <Spinner /> : <Save className="w-4 h-4" />} Save draft
+
+      <div className="flex-1 max-[640px]:hidden" />
+
+      <Button
+        variant="secondary"
+        onClick={handleSaveDraft}
+        disabled={isSubmitting}
+        aria-label="Save draft"
+        className="max-[640px]:order-4"
+      >
+        {isSubmitting ? <Spinner /> : <Save className="w-4 h-4" />}
+        <span className="max-[640px]:hidden">Save draft</span>
       </Button>
-      <Button onClick={handleNext} disabled={isSubmitting}>
+
+      <Button onClick={handleNext} disabled={isSubmitting} className="max-[640px]:order-3 max-[640px]:flex-1">
         {isSubmitting ? (
           <>Saving <Spinner /></>
         ) : isLast ? (

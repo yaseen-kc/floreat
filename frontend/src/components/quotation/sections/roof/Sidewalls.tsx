@@ -65,7 +65,7 @@ export function Sidewalls() {
         )}
 
         {rows.map((row, index) => (
-          <div key={index} className="border border-border rounded-[12px] p-[18px]">
+          <div key={index} className="border border-border rounded-[12px] p-[18px] max-[640px]:p-3">
             <div className="flex items-center justify-between mb-3">
               <span className="text-xs font-semibold text-muted-foreground">Sidewall {index + 1}</span>
               <Button
