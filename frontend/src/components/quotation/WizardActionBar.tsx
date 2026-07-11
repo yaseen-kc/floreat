@@ -1,4 +1,4 @@
-import { useQuotationStore, buildRoofPayload, buildMezzaninePayload, buildStairPayload, buildCanopyPayload, buildLoadPayload } from '@/stores/quotation-store'
+import { useQuotationStore, buildRoofPayload, buildMezzaninePayload, buildStairPayload, buildCanopyPayload, buildLoadPayload, buildAccessoriesPayload } from '@/stores/quotation-store'
 import { useSaveStatusStore } from '@/stores/save-status-store'
 import { useShallow } from 'zustand/react/shallow'
 import { toast } from 'sonner'
@@ -12,6 +12,7 @@ import { useDeleteStair } from '@/api/quotation/stair/deleteStairs'
 import { useUpsertCanopy } from '@/api/quotation/canopy/postCanopy'
 import { useDeleteCanopy } from '@/api/quotation/canopy/deleteCanopy'
 import { useUpsertLoad } from '@/api/quotation/load/postLoad'
+import { useUpsertAccessories } from '@/api/quotation/accessories/postAccessories'
 import { useNavigate } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
 import { Spinner } from '@/components/ui/spinner'
@@ -19,7 +20,7 @@ import { ArrowLeft, ArrowRight, Check, Save } from 'lucide-react'
 import { STEPS, STEP_COUNT } from '@/components/quotation/steps'
 
 export function WizardActionBar() {
-  const { currentStep, nextStep, prevStep, validateStep, goStep, projectInfo, roof, jobId, setJobId, resetQuotation, mezzanine, hasMezzanine, stair, hasStair, canopy, hasCanopy, load } =
+  const { currentStep, nextStep, prevStep, validateStep, goStep, projectInfo, roof, jobId, setJobId, resetQuotation, mezzanine, hasMezzanine, stair, hasStair, canopy, hasCanopy, load, accessories } =
     useQuotationStore(
       useShallow((s) => ({
         currentStep: s.currentStep,
@@ -39,6 +40,7 @@ export function WizardActionBar() {
         canopy: s.canopy,
         hasCanopy: s.hasCanopy,
         load: s.load,
+        accessories: s.accessories,
       })),
     )
   const navigate = useNavigate()
@@ -55,6 +57,7 @@ export function WizardActionBar() {
   const upsertCanopy = useUpsertCanopy()
   const deleteCanopy = useDeleteCanopy()
   const upsertLoad = useUpsertLoad()
+  const upsertAccessories = useUpsertAccessories()
   const isLast = currentStep === STEP_COUNT
   const isSubmitting =
     createJob.isPending ||
@@ -66,7 +69,8 @@ export function WizardActionBar() {
     deleteStair.isPending ||
     upsertCanopy.isPending ||
     deleteCanopy.isPending ||
-    upsertLoad.isPending
+    upsertLoad.isPending ||
+    upsertAccessories.isPending
 
   /**
    * Persists Step 1 data. Creates the job once (POST) and stores its id;
@@ -212,6 +216,29 @@ export function WizardActionBar() {
   }
 
   /**
+   * Persists Step 6 accessories data via an idempotent upsert. Requires the
+   * Step 1 `jobId`. The Accessories form is always-on, so this always upserts
+   * the non-blank fields (an entirely blank draft upserts `{}`). Resolves on
+   * success and rejects on failure so callers can gate navigation.
+   */
+  const submitAccessories = async () => {
+    if (!jobId) {
+      toast.error('Save the project details first')
+      throw new Error('Cannot save accessories before the job is created')
+    }
+    try {
+      setSaving()
+      await upsertAccessories.mutateAsync({ jobId, payload: buildAccessoriesPayload(accessories) })
+      setSaved()
+      toast.success('Accessories saved successfully')
+    } catch (err) {
+      resetSaveStatus()
+      toast.error('Failed to save accessories')
+      throw err
+    }
+  }
+
+  /**
    * Persists Step 7 load data via an idempotent upsert. Requires the Step 1
    * `jobId`. The Load form is always-on, so this always upserts the non-blank
    * fields (an entirely blank draft upserts `{}`). Resolves on success and
@@ -297,6 +324,18 @@ export function WizardActionBar() {
       return
     }
 
+    // Step 6: persist the accessories (always-on upsert), then advance. No
+    // validation gate — every accessories field is optional.
+    if (currentStep === 6) {
+      try {
+        await submitAccessories()
+        goStep(7)
+      } catch {
+        // Error toast already shown; stay on Step 6.
+      }
+      return
+    }
+
     // Final step (Load): persist the load, then finalise and return to the
     // dashboard. Stay on the step if persistence fails.
     if (isLast) {
@@ -329,6 +368,8 @@ export function WizardActionBar() {
       try { await submitStair() } catch { /* error toast already shown */ }
     } else if (currentStep === 5) {
       try { await submitCanopy() } catch { /* error toast already shown */ }
+    } else if (currentStep === 6) {
+      try { await submitAccessories() } catch { /* error toast already shown */ }
     } else if (currentStep === 7) {
       try { await submitLoad() } catch { /* error toast already shown */ }
     } else {

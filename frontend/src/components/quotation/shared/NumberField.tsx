@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react'
 import { Label } from '@/components/ui/label'
 import { InputUnit } from '@/components/quotation/shared/InputUnit'
 import { ErrMsg } from '@/components/quotation/shared/FormField'
@@ -18,6 +19,8 @@ interface NumberFieldProps {
    * required marker, error message and `onChange` are suppressed.
    */
   readOnly?: boolean
+  /** Optional muted helper line rendered under the input (hidden while an error shows). */
+  hint?: ReactNode
   className?: string
 }
 
@@ -38,6 +41,7 @@ export function NumberField({
   step,
   onChange,
   readOnly = false,
+  hint,
   className,
 }: NumberFieldProps) {
   return (
@@ -52,6 +56,7 @@ export function NumberField({
         className={cn(error && !readOnly && '[&_input]:border-destructive')}
       />
       {error && !readOnly && <ErrMsg>{label} is required</ErrMsg>}
+      {hint && !(error && !readOnly) && <p className="text-xs text-muted-foreground mt-1">{hint}</p>}
     </div>
   )
 }

@@ -8,6 +8,7 @@ import { Step3Mezzanine } from '@/components/quotation/steps/Step3Mezzanine'
 import { Step4Stair } from '@/components/quotation/steps/Step4Stair'
 import { Step5Canopy } from '@/components/quotation/steps/Step5Canopy'
 
+import { Step6Accessories } from '@/components/quotation/steps/Step6Accessories'
 import { Step7Load } from '@/components/quotation/steps/Step7Load'
 
 
@@ -29,6 +30,7 @@ export default function CreateQuotation() {
           {currentStep === 3 && <Step3Mezzanine />}
           {currentStep === 4 && <Step4Stair />}
           {currentStep === 5 && <Step5Canopy />}
+          {currentStep === 6 && <Step6Accessories />}
           {currentStep === 7 && <Step7Load />}
         </div>
       </div>

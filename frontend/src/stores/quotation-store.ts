@@ -18,6 +18,13 @@ import {
   canopyItemSchema,
 } from '@/schemas/canopy.schema'
 import { type CreateLoadInput } from '@/schemas/load.schema'
+import {
+  type CreateAccessoriesInput,
+  accessoryDoorSchema,
+  accessoryWindowSchema,
+  accessoryFoldedPlateSchema,
+  accessoryOpeningSchema,
+} from '@/schemas/accessories.schema'
 import { deriveSideColumnsWidthHeight } from '@floreat/shared/calc'
 import { STEP_COUNT } from '@/components/quotation/steps'
 
@@ -200,6 +207,36 @@ export interface CanopyDraft {
  */
 export type LoadDraft = CreateLoadInput
 
+/**
+ * Step 6 accessory line-item draft rows. Each comes straight from the Zod item
+ * schema minus the server-derived `quantity` (recomputed on write), so the
+ * draft holds only user-entered fields. Opening `kind` is optional in the draft
+ * (a freshly-added row has no kind yet) even though the wire schema requires it.
+ */
+export type AccessoryDoorDraft = Omit<z.infer<typeof accessoryDoorSchema>, 'quantity'>
+export type AccessoryWindowDraft = Omit<z.infer<typeof accessoryWindowSchema>, 'quantity'>
+export type AccessoryFoldedPlateDraft = Omit<z.infer<typeof accessoryFoldedPlateSchema>, 'quantity'>
+export type AccessoryOpeningDraft = Omit<z.infer<typeof accessoryOpeningSchema>, 'quantity' | 'kind'> & {
+  kind?: z.infer<typeof accessoryOpeningSchema>['kind']
+}
+
+/**
+ * The Step 6 accessories draft. Accessories is a flat, always-on 1:1-per-job
+ * resource: every scalar/enum field is optional (mirrors the create contract),
+ * plus four always-present inline line-item arrays. The six `*Quantity` fields
+ * are roof-derived previews by default — only sent when their `*Manual` flag is
+ * set (see {@link buildAccessoriesPayload}).
+ */
+export type AccessoriesDraft = Omit<
+  CreateAccessoriesInput,
+  'doors' | 'windows' | 'foldedPlates' | 'openings'
+> & {
+  doors: AccessoryDoorDraft[]
+  windows: AccessoryWindowDraft[]
+  foldedPlates: AccessoryFoldedPlateDraft[]
+  openings: AccessoryOpeningDraft[]
+}
+
 interface QuotationState {
   currentStep: number
   projectInfo: ProjectInfo
@@ -212,6 +249,7 @@ interface QuotationState {
   canopy: CanopyDraft
   hasCanopy: boolean
   load: LoadDraft
+  accessories: AccessoriesDraft
   showValidation: boolean
   jobId: string | null
   setProjectInfo: (v: Partial<ProjectInfo>) => void
@@ -224,6 +262,7 @@ interface QuotationState {
   setCanopy: (v: Partial<CanopyDraft>) => void
   setHasCanopy: (enabled: boolean) => void
   setLoad: (v: Partial<LoadDraft>) => void
+  setAccessories: (v: Partial<AccessoriesDraft>) => void
   setJobId: (id: string | null) => void
   resetQuotation: () => void
   goStep: (n: number) => void
@@ -294,6 +333,14 @@ const createDefaultCanopy = (): CanopyDraft => ({ canopies: [] })
 /** Factory for a fresh load draft — every field blank (the schema is all-optional). */
 const createDefaultLoad = (): LoadDraft => ({})
 
+/** Factory for a fresh accessories draft — every scalar blank, all four arrays empty. */
+const createDefaultAccessories = (): AccessoriesDraft => ({
+  doors: [],
+  windows: [],
+  foldedPlates: [],
+  openings: [],
+})
+
 export const useQuotationStore = create<QuotationState>()(
   persist(
     (set, get) => ({
@@ -310,6 +357,7 @@ export const useQuotationStore = create<QuotationState>()(
       canopy: createDefaultCanopy(),
       hasCanopy: false,
       load: createDefaultLoad(),
+      accessories: createDefaultAccessories(),
 
       setProjectInfo: (v) => set((s) => ({ projectInfo: { ...s.projectInfo, ...v } })),
 
@@ -364,6 +412,10 @@ export const useQuotationStore = create<QuotationState>()(
       // payload by buildLoadPayload at save time.
       setLoad: (v) => set((s) => ({ load: { ...s.load, ...v } })),
 
+      // Accessories is always-on (no toggle), like Load: blank fields are
+      // dropped from the payload by buildAccessoriesPayload at save time.
+      setAccessories: (v) => set((s) => ({ accessories: { ...s.accessories, ...v } })),
+
       setJobId: (id) => set({ jobId: id }),
 
       resetQuotation: () => set({
@@ -380,6 +432,7 @@ export const useQuotationStore = create<QuotationState>()(
         canopy: createDefaultCanopy(),
         hasCanopy: false,
         load: createDefaultLoad(),
+        accessories: createDefaultAccessories(),
       }),
 
       validateStep: (n) => {
@@ -410,7 +463,7 @@ export const useQuotationStore = create<QuotationState>()(
       // in-progress job resume (and re-use PUT) after a refresh instead of
       // creating a duplicate.
       skipHydration: true,
-      partialize: (s) => ({ projectInfo: s.projectInfo, roof: s.roof, roofSectionsEnabled: s.roofSectionsEnabled, mezzanine: s.mezzanine, hasMezzanine: s.hasMezzanine, stair: s.stair, hasStair: s.hasStair, canopy: s.canopy, hasCanopy: s.hasCanopy, load: s.load, currentStep: s.currentStep, jobId: s.jobId }),
+      partialize: (s) => ({ projectInfo: s.projectInfo, roof: s.roof, roofSectionsEnabled: s.roofSectionsEnabled, mezzanine: s.mezzanine, hasMezzanine: s.hasMezzanine, stair: s.stair, hasStair: s.hasStair, canopy: s.canopy, hasCanopy: s.hasCanopy, load: s.load, accessories: s.accessories, currentStep: s.currentStep, jobId: s.jobId }),
     }
   )
 )
@@ -513,4 +566,49 @@ export function buildCanopyPayload(canopy: CanopyDraft): CreateCanopyInput {
  */
 export function buildLoadPayload(load: LoadDraft): CreateLoadInput {
   return compactRow(load) as CreateLoadInput
+}
+
+/** The six roof-derived quantity fields; each is only sent when its `*Manual` flag is set. */
+const ACCESSORY_QUANTITY_FIELDS = [
+  'gutterQuantity',
+  'downTakeQuantity',
+  'dripTrimQuantity',
+  'gableEndFlashingQuantity',
+  'cornerFlashQuantity',
+  'ridgeQuantity',
+] as const
+
+/**
+ * Builds the accessories create/upsert payload from the Step 6 draft.
+ *
+ * Blank (`undefined`) scalar fields are dropped. Each of the six `*Quantity`
+ * fields is roof-derived server-side, so its value is dropped UNLESS its
+ * companion `*Manual` flag is `true` (a user override) — in which case the
+ * value and the flag are both kept. Each line-item row is compacted and
+ * fully-empty rows are removed (openings additionally require a `kind`); an
+ * empty array is omitted entirely. Line-item `quantity` is server-derived and
+ * never part of the draft. An entirely blank draft yields `{}`.
+ */
+export function buildAccessoriesPayload(accessories: AccessoriesDraft): CreateAccessoriesInput {
+  const { doors, windows, foldedPlates, openings, ...scalars } = accessories
+
+  const scalarsClean = { ...scalars } as Record<string, unknown>
+  for (const field of ACCESSORY_QUANTITY_FIELDS) {
+    if (scalarsClean[`${field}Manual`] !== true) delete scalarsClean[field]
+  }
+
+  const payload = compactRow(scalarsClean) as CreateAccessoriesInput
+
+  const cleanDoors = doors.map(compactRow).filter((r) => Object.keys(r).length > 0)
+  const cleanWindows = windows.map(compactRow).filter((r) => Object.keys(r).length > 0)
+  const cleanFoldedPlates = foldedPlates.map(compactRow).filter((r) => Object.keys(r).length > 0)
+  // An opening is meaningless without its (schema-required) `kind`.
+  const cleanOpenings = openings.map(compactRow).filter((r) => r.kind !== undefined)
+
+  if (cleanDoors.length > 0) payload.doors = cleanDoors
+  if (cleanWindows.length > 0) payload.windows = cleanWindows
+  if (cleanFoldedPlates.length > 0) payload.foldedPlates = cleanFoldedPlates
+  if (cleanOpenings.length > 0) payload.openings = cleanOpenings as CreateAccessoriesInput['openings']
+
+  return payload
 }
