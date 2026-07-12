@@ -2,8 +2,15 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-  provider = "prisma-client"
-  output   = "../generated/prisma"
+  provider            = "prisma-client"
+  output              = "../generated/prisma"
+  // Emit `.js` extensions in the generated client's internal imports so the
+  // tsc-compiled output (dist/) resolves under Node's native ESM loader
+  // (`node dist/server.js`). Without this, imports are bare (e.g.
+  // "./internal/class") which only tsx/bundlers tolerate — plain node throws
+  // ERR_MODULE_NOT_FOUND. See README §14.2.
+  moduleFormat        = "esm"
+  importFileExtension = "js"
 }
 
 datasource db {
