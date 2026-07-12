@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest'
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 
@@ -74,7 +74,7 @@ vi.mock('@/api/quotation/accessories/postAccessories', () => ({
   useUpsertAccessories: () => ({ mutateAsync: mocks.upsertAccessoriesMutateAsync, isPending: false }),
 }))
 
-import { WizardActionBar } from '@/components/quotation/WizardActionBar'
+import { WizardActionBar, successToast } from '@/components/quotation/WizardActionBar'
 import { useQuotationStore } from '@/stores/quotation-store'
 import { validRoofDraft } from '@/tests/fixtures/roof'
 
@@ -404,5 +404,27 @@ describe('WizardActionBar Step 6 accessories persistence', () => {
 
     await waitFor(() => expect(mocks.toastError).toHaveBeenCalledWith('Failed to save accessories'))
     expect(useQuotationStore.getState().currentStep).toBe(6)
+  })
+})
+
+
+describe('successToast small-device guard', () => {
+  beforeEach(() => {
+    mocks.toastSuccess.mockReset()
+  })
+  afterEach(() => {
+    vi.unstubAllGlobals()
+  })
+
+  it('fires toast.success on non-small (>640px) devices', () => {
+    vi.stubGlobal('matchMedia', vi.fn().mockReturnValue({ matches: false }))
+    successToast('Saved')
+    expect(mocks.toastSuccess).toHaveBeenCalledWith('Saved')
+  })
+
+  it('stays silent on small (≤640px) devices', () => {
+    vi.stubGlobal('matchMedia', vi.fn().mockReturnValue({ matches: true }))
+    successToast('Saved')
+    expect(mocks.toastSuccess).not.toHaveBeenCalled()
   })
 })

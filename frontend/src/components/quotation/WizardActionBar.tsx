@@ -20,6 +20,13 @@ import { cn } from '@/lib/utils'
 import { ArrowLeft, ArrowRight, Check, Save } from 'lucide-react'
 import { STEPS, STEP_COUNT } from '@/components/quotation/steps'
 
+/** Fires a success toast, but stays silent on small (≤640px) devices, where the
+ *  sticky action bar already surfaces state via the save-status pill and spinner. */
+export const successToast = (message: string) => {
+  if (window.matchMedia('(max-width: 640px)').matches) return // ponytail: viewport read at call time
+  toast.success(message)
+}
+
 export function WizardActionBar() {
   const { currentStep, nextStep, prevStep, validateStep, goStep, projectInfo, roof, jobId, setJobId, resetQuotation, mezzanine, hasMezzanine, stair, hasStair, canopy, hasCanopy, load, accessories } =
     useQuotationStore(
@@ -83,11 +90,11 @@ export function WizardActionBar() {
     try {
       if (jobId) {
         await updateJob.mutateAsync({ id: jobId, ...projectInfo })
-        toast.success('Job updated successfully')
+        successToast('Job updated successfully')
       } else {
         const job = await createJob.mutateAsync(projectInfo)
         setJobId(job.id)
-        toast.success('Job created successfully')
+        successToast('Job created successfully')
       }
       setSaved()
     } catch (err) {
@@ -127,7 +134,7 @@ export function WizardActionBar() {
       setSaving()
       await upsertRoof.mutateAsync({ jobId, payload: buildRoofPayload(roof) })
       setSaved()
-      toast.success('Roof saved successfully')
+      successToast('Roof saved successfully')
     } catch (err) {
       resetSaveStatus()
       toast.error('Failed to save roof')
@@ -154,7 +161,7 @@ export function WizardActionBar() {
         await deleteMezzanine.mutateAsync(jobId)
       }
       setSaved()
-      toast.success('Mezzanine saved successfully')
+      successToast('Mezzanine saved successfully')
     } catch (err) {
       resetSaveStatus()
       toast.error('Failed to save mezzanine')
@@ -181,7 +188,7 @@ export function WizardActionBar() {
         await deleteStair.mutateAsync(jobId)
       }
       setSaved()
-      toast.success('Stair saved successfully')
+      successToast('Stair saved successfully')
     } catch (err) {
       resetSaveStatus()
       toast.error('Failed to save stair')
@@ -208,7 +215,7 @@ export function WizardActionBar() {
         await deleteCanopy.mutateAsync(jobId)
       }
       setSaved()
-      toast.success('Canopy saved successfully')
+      successToast('Canopy saved successfully')
     } catch (err) {
       resetSaveStatus()
       toast.error('Failed to save canopy')
@@ -231,7 +238,7 @@ export function WizardActionBar() {
       setSaving()
       await upsertAccessories.mutateAsync({ jobId, payload: buildAccessoriesPayload(accessories) })
       setSaved()
-      toast.success('Accessories saved successfully')
+      successToast('Accessories saved successfully')
     } catch (err) {
       resetSaveStatus()
       toast.error('Failed to save accessories')
@@ -254,7 +261,7 @@ export function WizardActionBar() {
       setSaving()
       await upsertLoad.mutateAsync({ jobId, payload: buildLoadPayload(load) })
       setSaved()
-      toast.success('Load saved successfully')
+      successToast('Load saved successfully')
     } catch (err) {
       resetSaveStatus()
       toast.error('Failed to save load')
@@ -342,7 +349,7 @@ export function WizardActionBar() {
     if (isLast) {
       try {
         await submitLoad()
-        toast.success('Quotation finalised & saved')
+        successToast('Quotation finalised & saved')
         resetQuotation()
         navigate('/')
       } catch {
@@ -374,7 +381,7 @@ export function WizardActionBar() {
     } else if (currentStep === 7) {
       try { await submitLoad() } catch { /* error toast already shown */ }
     } else {
-      toast.success('Draft saved')
+      successToast('Draft saved')
     }
   }
 
