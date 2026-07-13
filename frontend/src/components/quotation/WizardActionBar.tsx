@@ -1,4 +1,4 @@
-import { useQuotationStore, buildRoofPayload, buildMezzaninePayload, buildStairPayload, buildCanopyPayload, buildLoadPayload, buildAccessoriesPayload } from '@/stores/quotation-store'
+import { useQuotationStore, buildRoofPayload, buildMezzaninePayload, buildStairPayload, buildCanopyPayload, buildLoadPayload, buildAccessoriesPayload, buildJointPayload } from '@/stores/quotation-store'
 import { useSaveStatusStore } from '@/stores/save-status-store'
 import { useShallow } from 'zustand/react/shallow'
 import { toast } from 'sonner'
@@ -13,6 +13,7 @@ import { useUpsertCanopy } from '@/api/quotation/canopy/postCanopy'
 import { useDeleteCanopy } from '@/api/quotation/canopy/deleteCanopy'
 import { useUpsertLoad } from '@/api/quotation/load/postLoad'
 import { useUpsertAccessories } from '@/api/quotation/accessories/postAccessories'
+import { useUpsertJoint } from '@/api/quotation/joint/postJoint'
 import { useNavigate } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
 import { Spinner } from '@/components/ui/spinner'
@@ -28,7 +29,7 @@ export const successToast = (message: string) => {
 }
 
 export function WizardActionBar() {
-  const { currentStep, nextStep, prevStep, validateStep, goStep, projectInfo, roof, jobId, setJobId, resetQuotation, mezzanine, hasMezzanine, stair, hasStair, canopy, hasCanopy, load, accessories } =
+  const { currentStep, nextStep, prevStep, validateStep, goStep, projectInfo, roof, jobId, setJobId, resetQuotation, mezzanine, hasMezzanine, stair, hasStair, canopy, hasCanopy, load, accessories, joint } =
     useQuotationStore(
       useShallow((s) => ({
         currentStep: s.currentStep,
@@ -49,6 +50,7 @@ export function WizardActionBar() {
         hasCanopy: s.hasCanopy,
         load: s.load,
         accessories: s.accessories,
+        joint: s.joint,
       })),
     )
   const navigate = useNavigate()
@@ -66,6 +68,7 @@ export function WizardActionBar() {
   const deleteCanopy = useDeleteCanopy()
   const upsertLoad = useUpsertLoad()
   const upsertAccessories = useUpsertAccessories()
+  const upsertJoint = useUpsertJoint()
   const isLast = currentStep === STEP_COUNT
   const isSubmitting =
     createJob.isPending ||
@@ -78,7 +81,8 @@ export function WizardActionBar() {
     upsertCanopy.isPending ||
     deleteCanopy.isPending ||
     upsertLoad.isPending ||
-    upsertAccessories.isPending
+    upsertAccessories.isPending ||
+    upsertJoint.isPending
 
   /**
    * Persists Step 1 data. Creates the job once (POST) and stores its id;
@@ -269,6 +273,29 @@ export function WizardActionBar() {
     }
   }
 
+  /**
+   * Persists Step 8 joint data via an idempotent upsert. Requires the Step 1
+   * `jobId`. The Joint form is always-on, so this always upserts the non-blank
+   * fields (an entirely blank draft upserts `{}`). Resolves on success and
+   * rejects on failure so callers can gate navigation.
+   */
+  const submitJoint = async () => {
+    if (!jobId) {
+      toast.error('Save the project details first')
+      throw new Error('Cannot save joint before the job is created')
+    }
+    try {
+      setSaving()
+      await upsertJoint.mutateAsync({ jobId, payload: buildJointPayload(joint) })
+      setSaved()
+      successToast('Joint saved successfully')
+    } catch (err) {
+      resetSaveStatus()
+      toast.error('Failed to save joint')
+      throw err
+    }
+  }
+
   const handleNext = async () => {
     if (isSubmitting) return
 
@@ -344,11 +371,23 @@ export function WizardActionBar() {
       return
     }
 
-    // Final step (Load): persist the load, then finalise and return to the
+    // Step 7 (Load): persist the load, then advance. No validation gate — every
+    // load field is optional.
+    if (currentStep === 7) {
+      try {
+        await submitLoad()
+        goStep(8)
+      } catch {
+        // Error toast already shown; stay on Step 7.
+      }
+      return
+    }
+
+    // Final step (Joint): persist the joint, then finalise and return to the
     // dashboard. Stay on the step if persistence fails.
     if (isLast) {
       try {
-        await submitLoad()
+        await submitJoint()
         successToast('Quotation finalised & saved')
         resetQuotation()
         navigate('/')
@@ -380,6 +419,8 @@ export function WizardActionBar() {
       try { await submitAccessories() } catch { /* error toast already shown */ }
     } else if (currentStep === 7) {
       try { await submitLoad() } catch { /* error toast already shown */ }
+    } else if (currentStep === 8) {
+      try { await submitJoint() } catch { /* error toast already shown */ }
     } else {
       successToast('Draft saved')
     }

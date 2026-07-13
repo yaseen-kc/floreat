@@ -8,7 +8,6 @@ describe('createJointSchema', () => {
 
   it('parses a full payload shaped like the source spec', () => {
     const payload = {
-      mezzanineBoltDiameter: 16,
       secondaryBeamsBoltType: 'HSFG',
       secondaryBeamsBoltDiameter: 16,
       secondaryBeamsNumberOfBolts: 6,
@@ -27,8 +26,8 @@ describe('createJointSchema', () => {
         { roofJointId: 'A_1', boltDiameter: 16, numberOfBolts: 8 },
       ],
       jointBoltMezzanine: [
-        { mezzanineJointId: 'M', numberOfBolts: 8 },
-        { mezzanineJointId: 'SEC', numberOfBolts: 8 },
+        { mezzanineJointId: 'M', boltDiameter: 16, numberOfBolts: 8 },
+        { mezzanineJointId: 'SEC', boltDiameter: 16, numberOfBolts: 8 },
       ],
       foundationBoltRoof: [
         { foundationJointId: 'FB4', boltDiameter: 20, numberOfBolts: 8 },
@@ -48,5 +47,17 @@ describe('createJointSchema', () => {
   it('rejects an invalid boltType', () => {
     const result = createJointSchema.safeParse({ canopyBoltType: 'WRONG' })
     expect(result.success).toBe(false)
+  })
+
+  it('keeps a per-row mezzanine boltDiameter and strips the removed shared field', () => {
+    const result = createJointSchema.safeParse({
+      mezzanineBoltDiameter: 16, // removed from the contract — should be stripped
+      jointBoltMezzanine: [{ mezzanineJointId: 'M', boltDiameter: 16, numberOfBolts: 8 }],
+    })
+    expect(result.success).toBe(true)
+    if (result.success) {
+      expect(result.data).not.toHaveProperty('mezzanineBoltDiameter')
+      expect(result.data.jointBoltMezzanine?.[0].boltDiameter).toBe(16)
+    }
   })
 })

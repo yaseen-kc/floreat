@@ -659,7 +659,6 @@ async function main() {
     {
       jobId: 'seed_job_1',
       // Full: all four singleton groups + all three child arrays
-      mezzanineBoltDiameter: 16.0,
       secondaryBeamsBoltType: BoltType.HSFG, secondaryBeamsBoltDiameter: 16.0, secondaryBeamsNumberOfBolts: 6,
       purlinFlangeBraceBoltType: BoltType.ORD, purlinFlangeBraceBoltDiameter: 12.0, purlinFlangeBraceNumberOfBolts: 14,
       claddingPurlinsBoltType: BoltType.ORD, claddingPurlinsBoltDiameter: 12.0, claddingPurlinsNumberOfBolts: 10,
@@ -689,14 +688,14 @@ async function main() {
         { roofJointId: RoofJointId.L_1, boltDiameter: 16.0, numberOfBolts: 8 },
       ],
       jointBoltMezzanine: [
-        { mezzanineJointId: MezzanineJointId.M, numberOfBolts: 8 },
-        { mezzanineJointId: MezzanineJointId.N, numberOfBolts: 8 },
-        { mezzanineJointId: MezzanineJointId.O, numberOfBolts: 8 },
-        { mezzanineJointId: MezzanineJointId.P, numberOfBolts: 8 },
-        { mezzanineJointId: MezzanineJointId.Q, numberOfBolts: 8 },
-        { mezzanineJointId: MezzanineJointId.R, numberOfBolts: 8 },
-        { mezzanineJointId: MezzanineJointId.S, numberOfBolts: 8 },
-        { mezzanineJointId: MezzanineJointId.SEC, numberOfBolts: 8 },
+        { mezzanineJointId: MezzanineJointId.M, boltDiameter: 16.0, numberOfBolts: 8 },
+        { mezzanineJointId: MezzanineJointId.N, boltDiameter: 16.0, numberOfBolts: 8 },
+        { mezzanineJointId: MezzanineJointId.O, boltDiameter: 16.0, numberOfBolts: 8 },
+        { mezzanineJointId: MezzanineJointId.P, boltDiameter: 16.0, numberOfBolts: 8 },
+        { mezzanineJointId: MezzanineJointId.Q, boltDiameter: 16.0, numberOfBolts: 8 },
+        { mezzanineJointId: MezzanineJointId.R, boltDiameter: 16.0, numberOfBolts: 8 },
+        { mezzanineJointId: MezzanineJointId.S, boltDiameter: 16.0, numberOfBolts: 8 },
+        { mezzanineJointId: MezzanineJointId.SEC, boltDiameter: 16.0, numberOfBolts: 8 },
       ],
       foundationBoltRoof: [
         { foundationJointId: FoundationBoltJointId.FB4, boltDiameter: 20.0, numberOfBolts: 8 },

@@ -25,6 +25,15 @@ import {
   accessoryFoldedPlateSchema,
   accessoryOpeningSchema,
 } from '@/schemas/accessories.schema'
+import {
+  type CreateJointInput,
+  jointBoltRoofItemSchema,
+  jointBoltMezzanineItemSchema,
+  foundationBoltRoofItemSchema,
+  roofJointIdEnum,
+  mezzanineJointIdEnum,
+  foundationBoltJointIdEnum,
+} from '@/schemas/joint.schema'
 import { deriveSideColumnsWidthHeight } from '@floreat/shared/calc'
 import { STEP_COUNT } from '@/components/quotation/steps'
 
@@ -237,6 +246,33 @@ export type AccessoriesDraft = Omit<
   openings: AccessoryOpeningDraft[]
 }
 
+/**
+ * Step 8 joint bolt-spec draft rows. Each item type comes straight from the
+ * shared Zod schema (every non-id field optional), so a row can hold a partial
+ * bolt spec exactly as the create/upsert payload accepts it. The three arrays
+ * are pre-seeded with one blank row per enum member (see {@link createDefaultJoint})
+ * so every joint code has a stable, addressable input row for the interactive
+ * diagrams; blank rows are dropped by {@link buildJointPayload}.
+ */
+export type JointBoltRoofDraft = z.infer<typeof jointBoltRoofItemSchema>
+export type JointBoltMezzanineDraft = z.infer<typeof jointBoltMezzanineItemSchema>
+export type FoundationBoltRoofDraft = z.infer<typeof foundationBoltRoofItemSchema>
+
+/**
+ * The Step 8 joint draft. Joint is a flat, always-on 1:1-per-job resource: the
+ * shared diameter and four scalar bolt groups are optional (mirrors the create
+ * contract), plus three always-present inline arrays keyed by closed joint-id
+ * enums (roof joints, mezzanine joints, foundation bolts).
+ */
+export type JointDraft = Omit<
+  CreateJointInput,
+  'jointBoltRoof' | 'jointBoltMezzanine' | 'foundationBoltRoof'
+> & {
+  jointBoltRoof: JointBoltRoofDraft[]
+  jointBoltMezzanine: JointBoltMezzanineDraft[]
+  foundationBoltRoof: FoundationBoltRoofDraft[]
+}
+
 interface QuotationState {
   currentStep: number
   projectInfo: ProjectInfo
@@ -250,6 +286,7 @@ interface QuotationState {
   hasCanopy: boolean
   load: LoadDraft
   accessories: AccessoriesDraft
+  joint: JointDraft
   showValidation: boolean
   jobId: string | null
   setProjectInfo: (v: Partial<ProjectInfo>) => void
@@ -263,6 +300,7 @@ interface QuotationState {
   setHasCanopy: (enabled: boolean) => void
   setLoad: (v: Partial<LoadDraft>) => void
   setAccessories: (v: Partial<AccessoriesDraft>) => void
+  setJoint: (v: Partial<JointDraft>) => void
   setJobId: (id: string | null) => void
   resetQuotation: () => void
   goStep: (n: number) => void
@@ -341,6 +379,19 @@ const createDefaultAccessories = (): AccessoriesDraft => ({
   openings: [],
 })
 
+/**
+ * Factory for a fresh joint draft. Every scalar bolt field starts blank, and
+ * each of the three inline arrays is seeded with one blank row per enum member
+ * (carrying only its id) so every joint code has a stable, addressable input
+ * row for the interactive frame diagrams. Blank rows are dropped from the
+ * payload by {@link buildJointPayload}.
+ */
+const createDefaultJoint = (): JointDraft => ({
+  jointBoltRoof: roofJointIdEnum.options.map((roofJointId) => ({ roofJointId })),
+  jointBoltMezzanine: mezzanineJointIdEnum.options.map((mezzanineJointId) => ({ mezzanineJointId })),
+  foundationBoltRoof: foundationBoltJointIdEnum.options.map((foundationJointId) => ({ foundationJointId })),
+})
+
 export const useQuotationStore = create<QuotationState>()(
   persist(
     (set, get) => ({
@@ -358,6 +409,7 @@ export const useQuotationStore = create<QuotationState>()(
       hasCanopy: false,
       load: createDefaultLoad(),
       accessories: createDefaultAccessories(),
+      joint: createDefaultJoint(),
 
       setProjectInfo: (v) => set((s) => ({ projectInfo: { ...s.projectInfo, ...v } })),
 
@@ -416,6 +468,10 @@ export const useQuotationStore = create<QuotationState>()(
       // dropped from the payload by buildAccessoriesPayload at save time.
       setAccessories: (v) => set((s) => ({ accessories: { ...s.accessories, ...v } })),
 
+      // Joint is always-on (no toggle), like Load/Accessories: blank scalars and
+      // blank (id-only) array rows are dropped by buildJointPayload at save time.
+      setJoint: (v) => set((s) => ({ joint: { ...s.joint, ...v } })),
+
       setJobId: (id) => set({ jobId: id }),
 
       resetQuotation: () => set({
@@ -433,6 +489,7 @@ export const useQuotationStore = create<QuotationState>()(
         hasCanopy: false,
         load: createDefaultLoad(),
         accessories: createDefaultAccessories(),
+        joint: createDefaultJoint(),
       }),
 
       validateStep: (n) => {
@@ -463,7 +520,7 @@ export const useQuotationStore = create<QuotationState>()(
       // in-progress job resume (and re-use PUT) after a refresh instead of
       // creating a duplicate.
       skipHydration: true,
-      partialize: (s) => ({ projectInfo: s.projectInfo, roof: s.roof, roofSectionsEnabled: s.roofSectionsEnabled, mezzanine: s.mezzanine, hasMezzanine: s.hasMezzanine, stair: s.stair, hasStair: s.hasStair, canopy: s.canopy, hasCanopy: s.hasCanopy, load: s.load, accessories: s.accessories, currentStep: s.currentStep, jobId: s.jobId }),
+      partialize: (s) => ({ projectInfo: s.projectInfo, roof: s.roof, roofSectionsEnabled: s.roofSectionsEnabled, mezzanine: s.mezzanine, hasMezzanine: s.hasMezzanine, stair: s.stair, hasStair: s.hasStair, canopy: s.canopy, hasCanopy: s.hasCanopy, load: s.load, accessories: s.accessories, joint: s.joint, currentStep: s.currentStep, jobId: s.jobId }),
     }
   )
 )
@@ -609,6 +666,33 @@ export function buildAccessoriesPayload(accessories: AccessoriesDraft): CreateAc
   if (cleanWindows.length > 0) payload.windows = cleanWindows
   if (cleanFoldedPlates.length > 0) payload.foldedPlates = cleanFoldedPlates
   if (cleanOpenings.length > 0) payload.openings = cleanOpenings as CreateAccessoriesInput['openings']
+
+  return payload
+}
+
+/**
+ * Builds the joint create/upsert payload from the Step 8 draft.
+ *
+ * Joint is a flat, always-on resource with an all-optional scalar schema, so
+ * blank (`undefined`) scalar fields are dropped. Each of the three inline
+ * arrays is compacted per row; a row that keeps only its id field (no
+ * diameter/count) is a blank placeholder and is removed, and an all-blank array
+ * is omitted entirely. An entirely blank draft yields `{}` — which the backend
+ * accepts (the always-on form upserts whatever the user provided).
+ */
+export function buildJointPayload(joint: JointDraft): CreateJointInput {
+  const { jointBoltRoof, jointBoltMezzanine, foundationBoltRoof, ...scalars } = joint
+
+  const payload = compactRow(scalars) as CreateJointInput
+
+  // A row is meaningful only when it carries a value beyond its id enum field.
+  const roof = jointBoltRoof.map(compactRow).filter((r) => 'boltDiameter' in r || 'numberOfBolts' in r)
+  const mezz = jointBoltMezzanine.map(compactRow).filter((r) => 'boltDiameter' in r || 'numberOfBolts' in r)
+  const foundation = foundationBoltRoof.map(compactRow).filter((r) => 'boltDiameter' in r || 'numberOfBolts' in r)
+
+  if (roof.length > 0) payload.jointBoltRoof = roof as CreateJointInput['jointBoltRoof']
+  if (mezz.length > 0) payload.jointBoltMezzanine = mezz as CreateJointInput['jointBoltMezzanine']
+  if (foundation.length > 0) payload.foundationBoltRoof = foundation as CreateJointInput['foundationBoltRoof']
 
   return payload
 }

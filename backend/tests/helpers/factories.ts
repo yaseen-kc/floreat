@@ -366,6 +366,7 @@ export function makeJointBoltRoofItem(overrides = {}) {
 export function makeJointBoltMezzanineItem(overrides = {}) {
   return {
     mezzanineJointId: 'M' as const,
+    boltDiameter: 16,
     numberOfBolts: 8,
     ...overrides,
   }
@@ -383,7 +384,6 @@ export function makeFoundationBoltRoofItem(overrides = {}) {
 export function makeJointInput(jobId = faker.string.uuid()) {
   return {
     jobId,
-    mezzanineBoltDiameter: 16,
     secondaryBeamsBoltType: 'HSFG' as const,
     secondaryBeamsBoltDiameter: 16,
     secondaryBeamsNumberOfBolts: 6,
@@ -406,7 +406,6 @@ export function makeJoint(overrides = {}) {
   return {
     id: faker.string.uuid(),
     jobId: faker.string.uuid(),
-    mezzanineBoltDiameter: null,
     secondaryBeamsBoltType: null,
     secondaryBeamsBoltDiameter: null,
     secondaryBeamsNumberOfBolts: null,

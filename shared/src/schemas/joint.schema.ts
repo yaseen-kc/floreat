@@ -3,8 +3,8 @@
  * A Joint is the per-job bolt-specification container: fixed-diameter/-count
  * scalar groups for secondary beams, purlins & flange brace, cladding purlins,
  * and canopy, plus three inline arrays keyed by closed joint-id enums (roof
- * joints, mezzanine joints, foundation bolts) — all replaced entirely on
- * upsert/update.
+ * joints, mezzanine joints, foundation bolts) — each row carrying its own
+ * diameter/count — all replaced entirely on upsert/update.
  */
 import { z } from 'zod'
 
@@ -32,9 +32,10 @@ export const jointBoltRoofItemSchema = z.object({
   numberOfBolts: z.number().int().nonnegative().optional(),
 })
 
-/** A mezzanine joint bolt row — HSFG implicit, shared diameter lives on the parent. */
+/** A mezzanine joint bolt row — HSFG implicit, diameter and count vary per joint. */
 export const jointBoltMezzanineItemSchema = z.object({
   mezzanineJointId: mezzanineJointIdEnum,
+  boltDiameter: z.number().positive().optional(),
   numberOfBolts: z.number().int().nonnegative().optional(),
 })
 
@@ -47,9 +48,6 @@ export const foundationBoltRoofItemSchema = z.object({
 
 /** Schema for creating/upserting a joint — singleton scalar groups plus inline arrays. */
 export const createJointSchema = z.object({
-  // ── Mezzanine joint bolts: shared diameter (per-row counts live in jointBoltMezzanine) ──
-  mezzanineBoltDiameter: z.number().positive().optional(),
-
   // ── Secondary beams ──
   secondaryBeamsBoltType: boltTypeEnum.optional(),
   secondaryBeamsBoltDiameter: z.number().positive().optional(),
