@@ -47,7 +47,7 @@ export function AreaDeductions() {
 
   return (
     <SectionCard icon={<Scissors className="w-3.5 h-3.5" />} title="Area Deductions">
-      <div className="flex flex-col gap-[18px]">
+      <div className="flex flex-col gap-[18px] desktop:gap-6">
         {areaDeductions.length === 0 && (
           <EmptyState
             icon={<Scissors />}

@@ -37,7 +37,7 @@ export function BaseFixing() {
   return (
     <SectionCard icon={<Anchor className="w-3.5 h-3.5" />} title="Base Fixing">
       <div>
-        <Label>Roof Frame Base Fixing {isRequired('roofFrameBaseFixing') && <span className="text-destructive">*</span>}</Label>
+        <Label className="desktop:mb-2">Roof Frame Base Fixing {isRequired('roofFrameBaseFixing') && <span className="text-destructive">*</span>}</Label>
         <Select
           value={roof.roofFrameBaseFixing || undefined}
           onValueChange={(v) => setRoof({ roofFrameBaseFixing: v as RoofDraft['roofFrameBaseFixing'] })}

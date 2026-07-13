@@ -23,7 +23,7 @@ export function Flashing() {
 
   return (
     <SectionCard icon={<Layers className="w-3.5 h-3.5" />} title="Flashing">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 desktop:gap-6">
         {FLASHING_GROUPS.map((g) => (
           <div key={g.typeField} className="contents">
             <SelectField

@@ -32,7 +32,7 @@ export function FasciaBoard() {
       enabled={enabled}
       onToggle={(e) => toggleRoofSection('fasciaBoard', e)}
     >
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-[18px]">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-[18px] desktop:gap-6">
         {FIELDS.map(({ name, label, unit }) => (
           <NumberField
             key={name}

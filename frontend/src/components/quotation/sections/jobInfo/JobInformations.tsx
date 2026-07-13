@@ -40,7 +40,7 @@ export function JobInformations() {
 
   return (
     <SectionCard icon={<Users className="w-3.5 h-3.5" />} title="Job Information">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-[18px]">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-[18px] desktop:gap-6">
         <Field {...fieldProps('projectNo', 'Project No')} />
         <Field {...fieldProps('refNo', 'Ref No')} />
 
@@ -50,7 +50,7 @@ export function JobInformations() {
 
         <Field {...fieldProps('clientName', 'Client Name')} />
         <div>
-          <Label>Date {isRequired('date') && <span className="text-destructive">*</span>}</Label>
+          <Label className="desktop:mb-2">Date {isRequired('date') && <span className="text-destructive">*</span>}</Label>
           <Input type="date" value={projectInfo.date} onChange={(e) => setProjectInfo({ date: e.target.value })} className={cn(errors.date && 'border-destructive')} />
           {errors.date && <ErrMsg>Date is required</ErrMsg>}
         </div>

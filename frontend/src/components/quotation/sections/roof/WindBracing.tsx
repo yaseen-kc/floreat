@@ -60,7 +60,7 @@ export function WindBracing() {
       onToggle={(e) => toggleRoofSection('windBracing', e)}
       error={sectionError}
     >
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-[18px]">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-[18px] desktop:gap-6">
         <SelectField
           label="Wind Bracing Type"
           options={WIND_BRACING_TYPE_OPTIONS}

@@ -70,7 +70,7 @@ export function CanopyItems() {
 
   return (
     <SectionCard icon={<Tent className="w-3.5 h-3.5" />} title="Canopy Items">
-      <div className="flex flex-col gap-[18px]">
+      <div className="flex flex-col gap-[18px] desktop:gap-6">
         {canopies.length === 0 && (
           <EmptyState
             icon={<Tent />}

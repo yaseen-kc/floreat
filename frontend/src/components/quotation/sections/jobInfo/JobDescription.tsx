@@ -21,7 +21,7 @@ export function JobDescription() {
 
   return (
     <SectionCard icon={<Building2 className="w-3.5 h-3.5" />} title="Building Description">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-[18px]">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-[18px] desktop:gap-6">
         <Field
           label="Building Usage"
           required={isRequired('buildingUsage')}
@@ -30,7 +30,7 @@ export function JobDescription() {
           onChange={(v) => setProjectInfo({ buildingUsage: v })}
         />
         <div>
-          <Label>Number of Buildings {isRequired('numberOfBuilding') && <span className="text-destructive">*</span>}</Label>
+          <Label className="desktop:mb-2">Number of Buildings {isRequired('numberOfBuilding') && <span className="text-destructive">*</span>}</Label>
           <Input
             type="number"
             min={1}

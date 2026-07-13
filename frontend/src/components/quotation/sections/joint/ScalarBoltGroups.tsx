@@ -62,7 +62,7 @@ export function ScalarBoltGroups() {
     <>
       {SCALAR_GROUPS.map((g) => (
         <SectionCard key={g.title} icon={g.icon} title={g.title}>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-[18px]">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-[18px] desktop:gap-6">
             <SelectField
               label="Bolt Type"
               options={BOLT_TYPE_OPTIONS}

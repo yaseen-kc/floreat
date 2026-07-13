@@ -55,7 +55,7 @@ export function JointBoltTable({ group, title, icon, columns, hint }: JointBoltT
   return (
     <SectionCard icon={icon} title={title}>
       {hint && <p className="text-xs text-muted-foreground -mt-2 mb-4">{hint}</p>}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3 desktop:gap-6">
         {rows.map((row, index) => {
           const id = String((row as Record<string, unknown>)[idKey])
           const diaRule = boltDiameterRule(group, id)

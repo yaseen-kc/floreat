@@ -52,7 +52,7 @@ export function Coverings() {
       onToggle={(e) => toggleRoofSection('coverings', e)}
       error={sectionError}
     >
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-[18px]">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-[18px] desktop:gap-6">
         <SelectField
           label="Roof Covering Type"
           options={COVERING_TYPE_OPTIONS}

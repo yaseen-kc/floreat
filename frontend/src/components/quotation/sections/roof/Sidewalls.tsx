@@ -55,7 +55,7 @@ export function Sidewalls() {
       enabled={enabled}
       onToggle={(e) => toggleRoofSection('sidewalls', e)}
     >
-      <div className="flex flex-col gap-[18px]">
+      <div className="flex flex-col gap-[18px] desktop:gap-6">
         {rows.length === 0 && (
           <EmptyState
             icon={<Fence />}
@@ -78,7 +78,7 @@ export function Sidewalls() {
                 <Trash2 />
               </Button>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-[18px]">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-[18px] desktop:gap-6">
               <SelectField
                 label="Side"
                 options={SIDE_OPTIONS}

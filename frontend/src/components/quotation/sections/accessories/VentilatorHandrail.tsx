@@ -15,7 +15,7 @@ export function VentilatorHandrail() {
 
   return (
     <SectionCard icon={<Fan className="w-3.5 h-3.5" />} title="Ventilator & Handrail">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 desktop:gap-6">
         <SelectField
           label="Turbo Ventilator Diameter"
           value={accessories.turboVentilatorDiameter}

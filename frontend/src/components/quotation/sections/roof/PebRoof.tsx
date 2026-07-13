@@ -70,7 +70,7 @@ export function PebRoof() {
 
   return (
       <SectionCard icon={<Warehouse className="w-3.5 h-3.5" />} title="Pre-Engineered Building Roof">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-[18px]">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-[18px] desktop:gap-6">
         {NUMERIC_FIELDS.map((field) => (
           <NumberField key={field.name} {...fieldProps(field)} />
         ))}
