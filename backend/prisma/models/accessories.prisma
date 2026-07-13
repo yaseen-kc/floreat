@@ -112,15 +112,15 @@ model Accessories {
   job   Job    @relation(fields: [jobId], references: [id], onDelete: Cascade)
 
   // ── Gutter ──
-  gutterType     DrainageMaterial?
-  gutterSize     DrainageSize?
+  gutterType           DrainageMaterial?
+  gutterSize           DrainageSize?
   // Server-derived quantities (see @floreat/shared/calc deriveAccessoryQuantities):
   // computed from the job's Roof. Each column has a companion `*Manual` flag: when
   // true the client's value is kept and the roof-driven recompute leaves it alone;
   // when false (default) the value is server-derived and any client value ignored.
   // Decimal to preserve the fractional results of the flashing equations.
-  gutterQuantity       Decimal? @db.Decimal(10, 3)
-  gutterQuantityManual Boolean  @default(false)
+  gutterQuantity       Decimal?          @db.Decimal(10, 3)
+  gutterQuantityManual Boolean           @default(false)
 
   // ── Down Take ──
   downTakeType           DrainageMaterial?

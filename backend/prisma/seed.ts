@@ -31,6 +31,10 @@ import {
   PurlinsGirtsFinish,
   PurlinsGirtsPaint,
   FoundationBoltFinish,
+  BoltType,
+  RoofJointId,
+  MezzanineJointId,
+  FoundationBoltJointId,
 } from '../generated/prisma/client.js'
 
 async function main() {
@@ -649,6 +653,96 @@ async function main() {
     })
   }
   console.log('✓ Loads seeded')
+
+  // ── Joints (roof/mezzanine/foundation bolts + singleton bolt specs) ──
+  const joints = [
+    {
+      jobId: 'seed_job_1',
+      // Full: all four singleton groups + all three child arrays
+      mezzanineBoltDiameter: 16.0,
+      secondaryBeamsBoltType: BoltType.HSFG, secondaryBeamsBoltDiameter: 16.0, secondaryBeamsNumberOfBolts: 6,
+      purlinFlangeBraceBoltType: BoltType.ORD, purlinFlangeBraceBoltDiameter: 12.0, purlinFlangeBraceNumberOfBolts: 14,
+      claddingPurlinsBoltType: BoltType.ORD, claddingPurlinsBoltDiameter: 12.0, claddingPurlinsNumberOfBolts: 10,
+      canopyBoltType: BoltType.ORD, canopyBoltDiameter: 16.0, canopyNumberOfBolts: 8,
+      jointBoltRoof: [
+        { roofJointId: RoofJointId.A, boltDiameter: 16.0, numberOfBolts: 8 },
+        { roofJointId: RoofJointId.B, boltDiameter: 16.0, numberOfBolts: 8 },
+        { roofJointId: RoofJointId.C, boltDiameter: 16.0, numberOfBolts: 8 },
+        { roofJointId: RoofJointId.D, boltDiameter: 16.0, numberOfBolts: 8 },
+        { roofJointId: RoofJointId.E, boltDiameter: 16.0, numberOfBolts: 8 },
+        { roofJointId: RoofJointId.F, boltDiameter: 16.0, numberOfBolts: 4 },
+        { roofJointId: RoofJointId.G, boltDiameter: 16.0, numberOfBolts: 8 },
+        { roofJointId: RoofJointId.H, boltDiameter: 16.0, numberOfBolts: 8 },
+        { roofJointId: RoofJointId.I, boltDiameter: 16.0, numberOfBolts: 8 },
+        { roofJointId: RoofJointId.J, boltDiameter: 16.0, numberOfBolts: 8 },
+        { roofJointId: RoofJointId.K, boltDiameter: 16.0, numberOfBolts: 8 },
+        { roofJointId: RoofJointId.L, boltDiameter: 16.0, numberOfBolts: 8 },
+        { roofJointId: RoofJointId.A_1, boltDiameter: 16.0, numberOfBolts: 8 },
+        { roofJointId: RoofJointId.B_1, boltDiameter: 16.0, numberOfBolts: 8 },
+        { roofJointId: RoofJointId.B_2, boltDiameter: 16.0, numberOfBolts: 8 },
+        { roofJointId: RoofJointId.C_1, boltDiameter: 16.0, numberOfBolts: 8 },
+        { roofJointId: RoofJointId.D_1, boltDiameter: 16.0, numberOfBolts: 8 },
+        { roofJointId: RoofJointId.G_1, boltDiameter: 16.0, numberOfBolts: 8 },
+        { roofJointId: RoofJointId.H_1, boltDiameter: 16.0, numberOfBolts: 8 },
+        { roofJointId: RoofJointId.I_1, boltDiameter: 16.0, numberOfBolts: 8 },
+        { roofJointId: RoofJointId.K_1, boltDiameter: 16.0, numberOfBolts: 8 },
+        { roofJointId: RoofJointId.L_1, boltDiameter: 16.0, numberOfBolts: 8 },
+      ],
+      jointBoltMezzanine: [
+        { mezzanineJointId: MezzanineJointId.M, numberOfBolts: 8 },
+        { mezzanineJointId: MezzanineJointId.N, numberOfBolts: 8 },
+        { mezzanineJointId: MezzanineJointId.O, numberOfBolts: 8 },
+        { mezzanineJointId: MezzanineJointId.P, numberOfBolts: 8 },
+        { mezzanineJointId: MezzanineJointId.Q, numberOfBolts: 8 },
+        { mezzanineJointId: MezzanineJointId.R, numberOfBolts: 8 },
+        { mezzanineJointId: MezzanineJointId.S, numberOfBolts: 8 },
+        { mezzanineJointId: MezzanineJointId.SEC, numberOfBolts: 8 },
+      ],
+      foundationBoltRoof: [
+        { foundationJointId: FoundationBoltJointId.FB4, boltDiameter: 20.0, numberOfBolts: 8 },
+        { foundationJointId: FoundationBoltJointId.FB5, boltDiameter: 20.0, numberOfBolts: 8 },
+        { foundationJointId: FoundationBoltJointId.FB6, boltDiameter: 20.0, numberOfBolts: 8 },
+      ],
+    },
+    {
+      jobId: 'seed_job_3',
+      // Mid: singleton groups + roof joint bolts only, no mezzanine/foundation rows
+      secondaryBeamsBoltType: BoltType.HSFG, secondaryBeamsBoltDiameter: 16.0, secondaryBeamsNumberOfBolts: 6,
+      purlinFlangeBraceBoltType: BoltType.ORD, purlinFlangeBraceBoltDiameter: 12.0, purlinFlangeBraceNumberOfBolts: 14,
+      jointBoltRoof: [
+        { roofJointId: RoofJointId.A, boltDiameter: 16.0, numberOfBolts: 8 },
+        { roofJointId: RoofJointId.B, boltDiameter: 16.0, numberOfBolts: 8 },
+        { roofJointId: RoofJointId.F, boltDiameter: 16.0, numberOfBolts: 4 },
+      ],
+    },
+    {
+      jobId: 'seed_job_5',
+      // Minimal: foundation bolts only
+      foundationBoltRoof: [
+        { foundationJointId: FoundationBoltJointId.FB4, boltDiameter: 20.0, numberOfBolts: 8 },
+      ],
+    },
+  ]
+
+  for (const { jobId, jointBoltRoof = [], jointBoltMezzanine = [], foundationBoltRoof = [], ...data } of joints) {
+    await prisma.joint.upsert({
+      where: { jobId },
+      create: {
+        jobId,
+        ...data,
+        jointBoltRoof: { createMany: { data: jointBoltRoof } },
+        jointBoltMezzanine: { createMany: { data: jointBoltMezzanine } },
+        foundationBoltRoof: { createMany: { data: foundationBoltRoof } },
+      },
+      update: {
+        ...data,
+        jointBoltRoof: { deleteMany: {}, createMany: { data: jointBoltRoof } },
+        jointBoltMezzanine: { deleteMany: {}, createMany: { data: jointBoltMezzanine } },
+        foundationBoltRoof: { deleteMany: {}, createMany: { data: foundationBoltRoof } },
+      },
+    })
+  }
+  console.log('✓ Joints seeded')
 }
 
 main()

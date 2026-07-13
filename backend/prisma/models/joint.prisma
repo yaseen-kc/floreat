@@ -1,0 +1,123 @@
+// ── Joint Enums ───────────────────────────────────
+
+enum BoltType {
+  HSFG
+  ORD
+}
+
+enum RoofJointId {
+  A
+  B
+  C
+  D
+  E
+  F
+  G
+  H
+  I
+  J
+  K
+  L
+  A_1 @map("A-1")
+  B_1 @map("B-1")
+  B_2 @map("B-2")
+  C_1 @map("C-1")
+  D_1 @map("D-1")
+  G_1 @map("G-1")
+  H_1 @map("H-1")
+  I_1 @map("I-1")
+  K_1 @map("K-1")
+  L_1 @map("L-1")
+}
+
+enum MezzanineJointId {
+  M
+  N
+  O
+  P
+  Q
+  R
+  S
+  SEC
+}
+
+enum FoundationBoltJointId {
+  FB4
+  FB5
+  FB6
+}
+
+// ── Joint Models ──────────────────────────────────
+
+model Joint {
+  id    String @id @default(cuid())
+  jobId String @unique
+  job   Job    @relation(fields: [jobId], references: [id], onDelete: Cascade)
+
+  // ── Mezzanine joint bolts: shared diameter (per-row counts in jointBoltMezzanine) ──
+  mezzanineBoltDiameter Decimal? @db.Decimal(10, 3)
+
+  // ── Secondary beams ──
+  secondaryBeamsBoltType      BoltType?
+  secondaryBeamsBoltDiameter  Decimal?  @db.Decimal(10, 3)
+  secondaryBeamsNumberOfBolts Int?
+
+  // ── Purlins & flange brace ──
+  purlinFlangeBraceBoltType      BoltType?
+  purlinFlangeBraceBoltDiameter  Decimal?  @db.Decimal(10, 3)
+  purlinFlangeBraceNumberOfBolts Int?
+
+  // ── Cladding purlins ──
+  claddingPurlinsBoltType      BoltType?
+  claddingPurlinsBoltDiameter  Decimal?  @db.Decimal(10, 3)
+  claddingPurlinsNumberOfBolts Int?
+
+  // ── Canopy ──
+  canopyBoltType      BoltType?
+  canopyBoltDiameter  Decimal?  @db.Decimal(10, 3)
+  canopyNumberOfBolts Int?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  jointBoltRoof      JointBoltRoof[]
+  jointBoltMezzanine JointBoltMezzanine[]
+  foundationBoltRoof FoundationBoltRoof[]
+
+  @@index([createdAt])
+}
+
+model JointBoltRoof {
+  id      String @id @default(cuid())
+  jointId String
+  joint   Joint  @relation(fields: [jointId], references: [id], onDelete: Cascade)
+
+  roofJointId   RoofJointId
+  boltDiameter  Decimal?    @db.Decimal(10, 3)
+  numberOfBolts Int?
+
+  @@unique([jointId, roofJointId])
+}
+
+model JointBoltMezzanine {
+  id      String @id @default(cuid())
+  jointId String
+  joint   Joint  @relation(fields: [jointId], references: [id], onDelete: Cascade)
+
+  mezzanineJointId MezzanineJointId
+  numberOfBolts    Int?
+
+  @@unique([jointId, mezzanineJointId])
+}
+
+model FoundationBoltRoof {
+  id      String @id @default(cuid())
+  jointId String
+  joint   Joint  @relation(fields: [jointId], references: [id], onDelete: Cascade)
+
+  foundationJointId FoundationBoltJointId
+  boltDiameter      Decimal?              @db.Decimal(10, 3)
+  numberOfBolts     Int?
+
+  @@unique([jointId, foundationJointId])
+}

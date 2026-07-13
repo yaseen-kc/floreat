@@ -49,6 +49,7 @@ model Job {
   canopy      Canopy?
   load        Load?
   accessories Accessories?
+  joint       Joint?
 
   @@index([userId])
   @@index([userId, createdAt])
