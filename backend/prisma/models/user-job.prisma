@@ -1,0 +1,55 @@
+model User {
+  id        String   @id @default(cuid())
+  clerkId   String   @unique
+  email     String   @unique
+  firstName String?
+  lastName  String?
+  imageUrl  String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Jobs owned by this user. `Job.userId` references `clerkId` (the app-wide
+  // "userId" is the Clerk id, matching request.userId), not the cuid `id`.
+  jobs Job[]
+}
+
+model Job {
+  id String @id @default(cuid())
+
+  // Owner — stores the Clerk user id (request.userId). References User.clerkId,
+  // so services filter jobs directly by request.userId with no extra lookup.
+  // A local User row must exist first (provisioned by syncUser on job create).
+  userId String
+  user   User   @relation(fields: [userId], references: [clerkId], onDelete: Cascade)
+
+  projectNo                String   @db.VarChar(50)
+  subject                  String
+  refNo                    String   @db.VarChar(50)
+  date                     DateTime @db.Date
+  designedByName           String
+  designedByMobile         String   @db.VarChar(20)
+  clientName               String?
+  estimationEngineerName   String?
+  estimationEngineerMobile String?  @db.VarChar(20)
+  headOfSalesName          String?
+  headOfSalesMobile        String?  @db.VarChar(20)
+  firmName                 String?
+  // Free-text (open-ended) fields, rendered as text inputs in the UI — not a
+  // fixed set, so intentionally kept as String rather than enums.
+  buildingUsage            String
+  numberOfBuilding         Int
+  frameType                String
+  configuration            String
+  createdAt                DateTime @default(now())
+  updatedAt                DateTime @updatedAt
+
+  roof        Roof?
+  mezzanine   Mezzanine?
+  stair       Stair?
+  canopy      Canopy?
+  load        Load?
+  accessories Accessories?
+
+  @@index([userId])
+  @@index([userId, createdAt])
+}

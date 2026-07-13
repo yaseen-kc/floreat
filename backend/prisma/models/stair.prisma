@@ -1,0 +1,87 @@
+// ── Stair Enums ───────────────────────────────────
+
+enum StairStepType {
+  CHQ_PLATE_6MM @map("6MM CHQ PLATE")
+  CHQ_PLATE_4MM @map("4MM CHQ PLATE")
+  TUBE
+}
+
+enum StairFloorLevel {
+  GROUND       @map("GROUND")
+  FIRST_FLOOR  @map("FIRST FLOOR")
+  SECOND_FLOOR @map("SECOND FLOOR")
+  THIRD_FLOOR  @map("THIRD FLOOR")
+  FOURTH_FLOOR @map("FOURTH FLOOR")
+  FIFTH_FLOOR  @map("FIFTH FLOOR")
+  SIXTH_FLOOR  @map("SIXTH FLOOR")
+}
+
+enum StairStringerType {
+  HR_SECTION  @map("HR SECTION")
+  FAB_SECTION @map("FAB SECTION")
+}
+
+enum AreaDeductionType {
+  LIFT
+  DUCT
+  CUT_OUT @map("CUT-OUT")
+}
+
+enum AreaDeductionFor {
+  STRUCTURE_DEDUCTION @map("STRUCTURE DEDUCTION")
+  COVERING_DEDUCTION  @map("COVERING DEDUCTION")
+  BOTH
+}
+
+// ── Stair Models ──────────────────────────────────
+
+model Stair {
+  id    String @id @default(cuid())
+  jobId String @unique
+  job   Job    @relation(fields: [jobId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  stairs         StairItem[]
+  areaDeductions AreaDeduction[]
+
+  @@index([createdAt])
+}
+
+model StairItem {
+  id      String @id @default(cuid())
+  stairId String
+  stair   Stair  @relation(fields: [stairId], references: [id], onDelete: Cascade)
+
+  code         String?
+  typeOfStep   StairStepType?
+  location     String?
+  startingFrom StairFloorLevel?
+  endingUpTo   StairFloorLevel?
+
+  // ── Dimensions ──
+  length Decimal? @db.Decimal(10, 3)
+  width  Decimal? @db.Decimal(10, 3)
+  height Decimal? @db.Decimal(10, 3)
+
+  numberOfMidLanding   Int?
+  typeOfStringer       StairStringerType?
+  unitWeightOfStringer Decimal?           @db.Decimal(10, 3)
+
+  @@unique([stairId, code])
+}
+
+model AreaDeduction {
+  id      String @id @default(cuid())
+  stairId String
+  stair   Stair  @relation(fields: [stairId], references: [id], onDelete: Cascade)
+
+  type         AreaDeductionType?
+  location     String?
+  areaM2       Decimal?           @db.Decimal(10, 3)
+  numbers      Int?
+  deductionFor AreaDeductionFor?
+
+  @@index([stairId])
+}

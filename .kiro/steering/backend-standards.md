@@ -84,7 +84,8 @@ backend/
 ├── utils/response.ts      # sendError() — standardized error responses
 ├── types/fastify.d.ts     # Fastify request augmentations (userId)
 ├── prisma/
-│   ├── schema.prisma      # Models, enums, relations
+│   ├── schema.prisma      # generator + datasource ONLY (multi-file schema)
+│   ├── models/            # {resource}.prisma — models + enums, one file per resource
 │   ├── migrations/        # Generated migration history
 │   └── seed.ts            # Seed script
 ├── generated/prisma/      # Generated Prisma client — DO NOT edit manually

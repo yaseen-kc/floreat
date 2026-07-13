@@ -780,8 +780,9 @@ npm install
 2. **Apply migrations** — run the SQL that creates all the tables in your empty `floreat`
    database.
 
-All Prisma commands run from the **`backend`** folder because that's where
-`prisma/schema.prisma` and the migrations live. They read `DATABASE_URL` from
+All Prisma commands run from the **`backend`** folder because that's where the Prisma
+schema (`prisma/schema.prisma` for the generator/datasource config, plus `prisma/models/`
+for the models and enums) and the migrations live. They read `DATABASE_URL` from
 `backend/.env`.
 
 ### 13.1 Generate the Prisma client
