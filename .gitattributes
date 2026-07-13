@@ -1,0 +1,4 @@
+# Shell scripts must keep LF line endings — CRLF breaks them on Linux
+# (e.g. "/usr/bin/env bash^M: bad interpreter"). This keeps scripts/deploy.sh
+# runnable on the EC2 self-hosted runner regardless of the OS you commit from.
+*.sh text eol=lf
