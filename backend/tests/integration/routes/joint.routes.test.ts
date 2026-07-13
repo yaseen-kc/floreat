@@ -39,8 +39,12 @@ describe('Joint routes integration', () => {
       expect(res.json().jointBoltRoof).toEqual(jointBoltRoof)
     })
 
-    it('persists joint bolt items through to the create payload', async () => {
-      const jointBoltRoof = [makeJointBoltRoofItem({ roofJointId: 'F', numberOfBolts: 4 })]
+    it('applies the derivation rules to the persisted create payload', async () => {
+      // Joint A drives every diameter; D drives E's count; F/J are fixed.
+      const jointBoltRoof = [
+        makeJointBoltRoofItem({ roofJointId: 'A', boltDiameter: 16, numberOfBolts: 10 }),
+        makeJointBoltRoofItem({ roofJointId: 'D', boltDiameter: 99, numberOfBolts: 8 }),
+      ]
       const joint = makeJoint({ jobId: 'job-1', jointBoltRoof })
       prismaMock.joint.upsert.mockResolvedValue(joint as any)
 
@@ -50,13 +54,13 @@ describe('Joint routes integration', () => {
       })
 
       expect(res.statusCode).toBe(200)
-      expect(prismaMock.joint.upsert).toHaveBeenCalledWith(
-        expect.objectContaining({
-          create: expect.objectContaining({
-            jointBoltRoof: { createMany: { data: jointBoltRoof } },
-          }),
-        }),
-      )
+      const arg = prismaMock.joint.upsert.mock.calls[0][0] as any
+      const roof = arg.create.jointBoltRoof.createMany.data as any[]
+      // All diameters synced to Joint A (16), E mirrors D (8), F=4, J=8.
+      expect(roof.every((r) => r.boltDiameter === 16)).toBe(true)
+      expect(roof.find((r) => r.roofJointId === 'E')?.numberOfBolts).toBe(8)
+      expect(roof.find((r) => r.roofJointId === 'F')?.numberOfBolts).toBe(4)
+      expect(roof.find((r) => r.roofJointId === 'J')?.numberOfBolts).toBe(8)
     })
 
     it('rejects an invalid roofJointId', async () => {

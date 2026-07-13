@@ -34,7 +34,7 @@ import {
   mezzanineJointIdEnum,
   foundationBoltJointIdEnum,
 } from '@/schemas/joint.schema'
-import { deriveSideColumnsWidthHeight } from '@floreat/shared/calc'
+import { deriveSideColumnsWidthHeight, deriveJointBolts } from '@floreat/shared/calc'
 import { STEP_COUNT } from '@/components/quotation/steps'
 
 /** Step 1 project info — the canonical job contract (see job.schema.ts). */
@@ -470,7 +470,22 @@ export const useQuotationStore = create<QuotationState>()(
 
       // Joint is always-on (no toggle), like Load/Accessories: blank scalars and
       // blank (id-only) array rows are dropped by buildJointPayload at save time.
-      setJoint: (v) => set((s) => ({ joint: { ...s.joint, ...v } })),
+      // The roof & mezzanine bolt arrays are interdependent (diameter follows
+      // Joint A; roof E mirrors D; F/J fixed at 4/8; mezz N/R mirror M/Q), so
+      // re-derive both on every patch — a live-preview mirror of the
+      // backend-authoritative rule (see @floreat/shared/calc `deriveJointBolts`).
+      setJoint: (v) =>
+        set((s) => {
+          const joint = { ...s.joint, ...v }
+          const derived = deriveJointBolts(joint.jointBoltRoof, joint.jointBoltMezzanine)
+          return {
+            joint: {
+              ...joint,
+              jointBoltRoof: derived.jointBoltRoof as JointBoltRoofDraft[],
+              jointBoltMezzanine: derived.jointBoltMezzanine as JointBoltMezzanineDraft[],
+            },
+          }
+        }),
 
       setJobId: (id) => set({ jobId: id }),
 

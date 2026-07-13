@@ -10,9 +10,10 @@ import type {
 import { SectionCard } from '@/components/quotation/shared/SectionCard'
 import { NumberField } from '@/components/quotation/shared/NumberField'
 import { jointIdLabel } from './jointOptions'
+import { boltDiameterRule, boltCountRule, type BoltFieldGroup } from './boltFieldRules'
 
 /** Which store array (and thus id field) a table edits. */
-export type JointGroup = 'roof' | 'mezzanine' | 'foundation'
+export type JointGroup = BoltFieldGroup
 
 interface JointBoltTableProps {
   group: JointGroup
@@ -57,6 +58,9 @@ export function JointBoltTable({ group, title, icon, columns, hint }: JointBoltT
       <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
         {rows.map((row, index) => {
           const id = String((row as Record<string, unknown>)[idKey])
+          const diaRule = boltDiameterRule(group, id)
+          const countRule = boltCountRule(group, id)
+          const numberOfBolts = (row as JointBoltRoofDraft).numberOfBolts ?? countRule.fixedValue
           return (
             <div
               key={id}
@@ -71,6 +75,8 @@ export function JointBoltTable({ group, title, icon, columns, hint }: JointBoltT
                     unit="mm"
                     required={false}
                     error={false}
+                    readOnly={diaRule.readOnly}
+                    hint={diaRule.hint}
                     value={(row as JointBoltRoofDraft).boltDiameter}
                     onChange={(v) => updateRow(index, { boltDiameter: v } as Partial<AnyRow>)}
                   />
@@ -81,7 +87,9 @@ export function JointBoltTable({ group, title, icon, columns, hint }: JointBoltT
                   step={1}
                   required={false}
                   error={false}
-                  value={(row as JointBoltRoofDraft).numberOfBolts}
+                  readOnly={countRule.readOnly}
+                  hint={countRule.hint}
+                  value={numberOfBolts}
                   onChange={(v) => updateRow(index, { numberOfBolts: v } as Partial<AnyRow>)}
                 />
               </div>

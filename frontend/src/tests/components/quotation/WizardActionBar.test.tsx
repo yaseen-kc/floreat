@@ -469,9 +469,16 @@ describe('WizardActionBar Step 8 joint finalise', () => {
     await userEvent.click(screen.getByRole('button', { name: /finish & save/i }))
 
     await waitFor(() => expect(mocks.navigate).toHaveBeenCalledWith('/'))
+    // Any joint edit injects the fixed F=4 / J=8 roof rows via the derivation.
     expect(mocks.upsertJointMutateAsync).toHaveBeenCalledWith({
       jobId: 'job-1',
-      payload: { canopyBoltDiameter: 16 },
+      payload: {
+        canopyBoltDiameter: 16,
+        jointBoltRoof: [
+          { roofJointId: 'F', numberOfBolts: 4 },
+          { roofJointId: 'J', numberOfBolts: 8 },
+        ],
+      },
     })
     // resetQuotation returns the wizard to step 1.
     expect(useQuotationStore.getState().currentStep).toBe(1)
