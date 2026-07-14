@@ -44,7 +44,7 @@ export function SelectField({
   return (
     <div className={className}>
       <Label className="desktop:mb-2">{label} {required && <span className="text-destructive">*</span>}</Label>
-      <Select value={value || undefined} onValueChange={onChange}>
+      <Select value={value ?? ''} onValueChange={onChange}>
         <SelectTrigger className="w-full" aria-invalid={error}>
           <SelectValue placeholder={placeholder} />
         </SelectTrigger>

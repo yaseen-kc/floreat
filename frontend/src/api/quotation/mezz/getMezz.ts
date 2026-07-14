@@ -1,4 +1,4 @@
-import { apiFetch } from '@/lib/api'
+import { apiFetch, ApiError } from '@/lib/api'
 import { useQuery } from '@tanstack/react-query'
 import { useAuth } from '@clerk/react'
 import { mezzanineKeys } from './queryKeys'
@@ -150,21 +150,30 @@ export function useMezzanines(page = 1, pageSize = 10) {
 
 /**
  * Fetches the mezzanine belonging to a specific job.
+ * Returns `null` when no mezzanine exists yet (404) — this is the expected
+ * empty state for a new job, not an error.
  * Requires a Clerk session token for authentication.
  */
-export async function getMezzanineByJobId(token: string | null, jobId: string): Promise<Mezzanine> {
-  return await apiFetch(`/api/jobs/${jobId}/mezzanine`, token)
+export async function getMezzanineByJobId(token: string | null, jobId: string): Promise<Mezzanine | null> {
+  try {
+    return await apiFetch(`/api/jobs/${jobId}/mezzanine`, token)
+  } catch (err) {
+    if (err instanceof ApiError && err.status === 404) return null
+    throw err
+  }
 }
 
 /**
  * React Query hook for a single job's mezzanine. Disabled until a `jobId` is
- * available so it never fires with an empty path segment.
+ * available so it never fires with an empty path segment. Returns `null` when
+ * no mezzanine exists yet; `retry: false` prevents retry storms on 404.
  */
 export function useMezzanine(jobId: string) {
   const { getToken } = useAuth()
   return useQuery({
     queryKey: mezzanineKeys.detail(jobId),
     enabled: !!jobId,
+    retry: false,
     queryFn: async () => {
       const token = await getToken()
       return getMezzanineByJobId(token, jobId)

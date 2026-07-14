@@ -2,6 +2,7 @@ import { describe, it, expect, beforeEach } from 'vitest'
 import { render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { WizardStepper } from '@/components/quotation/WizardStepper'
+import { STEP_COUNT } from '@/components/quotation/steps'
 import { useQuotationStore } from '@/stores/quotation-store'
 
 const fillRequired = () =>
@@ -97,12 +98,12 @@ describe('WizardStepper', () => {
       await userEvent.click(screen.getByRole('button', { name: /Select step/i }))
 
       const items = await screen.findAllByRole('menuitem')
-      expect(items).toHaveLength(8)
+      expect(items).toHaveLength(STEP_COUNT)
 
       // From an invalid step 1: step 1 itself is reachable, step 2+ are not.
       expect(items[0]).not.toHaveAttribute('aria-disabled', 'true')
       expect(items[1]).toHaveAttribute('aria-disabled', 'true')
-      expect(items[7]).toHaveAttribute('aria-disabled', 'true')
+      expect(items[STEP_COUNT - 1]).toHaveAttribute('aria-disabled', 'true')
     })
 
     it('jumps to an allowed step via goStep', async () => {

@@ -34,7 +34,7 @@ const serverMezzanine = (): Mezzanine => ({
 
 describe('mapMezzanineResponseToDraft', () => {
   it('coerces Decimal strings to numbers and nulls to undefined', () => {
-    const { mezzanine } = mapMezzanineResponseToDraft(serverMezzanine())
+    const mezzanine = mapMezzanineResponseToDraft(serverMezzanine())
     const floor = mezzanine.floors[0]
     expect(floor.thicknessMm).toBe(120)
     expect(floor.lengthM).toBe(12.5)
@@ -45,9 +45,16 @@ describe('mapMezzanineResponseToDraft', () => {
     expect(floor.type).toBe('DECK_SHEET')
   })
 
-  it('derives hasMezzanine from the presence of floors/extensions', () => {
-    expect(mapMezzanineResponseToDraft(serverMezzanine()).hasMezzanine).toBe(true)
+  it('returns populated floors/extensions when the server record has data', () => {
+    const mezzanine = mapMezzanineResponseToDraft(serverMezzanine())
+    expect(mezzanine.floors).toHaveLength(1)
+    expect(mezzanine.extensions).toHaveLength(0)
+  })
+
+  it('returns empty floors/extensions for an empty server record', () => {
     const empty: Mezzanine = { ...serverMezzanine(), floors: [], extensions: [] }
-    expect(mapMezzanineResponseToDraft(empty).hasMezzanine).toBe(false)
+    const mezzanine = mapMezzanineResponseToDraft(empty)
+    expect(mezzanine.floors).toHaveLength(0)
+    expect(mezzanine.extensions).toHaveLength(0)
   })
 })

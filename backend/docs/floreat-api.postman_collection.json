@@ -1,930 +1,2511 @@
 {
-	"info": {
-		"name": "Floreat API",
-		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
-	},
-	"auth": {
-		"type": "noauth"
-	},
-	"event": [
-		{
-			"listen": "prerequest",
-			"script": {
-				"type": "text/javascript",
-				"exec": [
-					"pm.request.headers.add({ key: 'x-dev-user-id', value: pm.variables.get('devUserId') });"
-				]
-			}
-		}
-	],
-	"item": [
-		{
-			"name": "Health",
-			"item": [
-				{
-					"name": "Get Health",
-					"request": {
-						"auth": {
-							"type": "noauth"
-						},
-						"method": "GET",
-						"url": {
-							"raw": "{{baseUrl}}/api/health",
-							"host": ["{{baseUrl}}"],
-							"path": ["api", "health"]
-						},
-						"description": "Public liveness + readiness probe. No authentication. Returns 200 {\"status\":\"ok\",\"db\":\"up\"} when the DB is reachable, or 503 {\"status\":\"error\",\"db\":\"down\"} when it is not."
-					}
-				}
-			]
-		},
-		{
-			"name": "User",
-			"item": [
-				{
-					"name": "Get Me",
-					"request": {
-						"method": "GET",
-						"url": {
-							"raw": "{{baseUrl}}/api/me",
-							"host": ["{{baseUrl}}"],
-							"path": ["api", "me"]
-						}
-					}
-				}
-			]
-		},
-		{
-			"name": "Jobs",
-			"item": [
-				{
-					"name": "Create Job",
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n\t\"projectNo\": \"PRJ-001\",\n\t\"subject\": \"New Warehouse Design\",\n\t\"refNo\": \"REF-2026-001\",\n\t\"date\": \"2026-06-05\",\n\t\"designedByName\": \"John Doe\",\n\t\"designedByMobile\": \"+919876543210\",\n\t\"clientName\": \"ABC Corp\",\n\t\"estimationEngineerName\": \"Jane Smith\",\n\t\"estimationEngineerMobile\": \"+919876543211\",\n\t\"headOfSalesName\": \"Bob Wilson\",\n\t\"headOfSalesMobile\": \"+919876543212\",\n\t\"firmName\": \"Floreat Engineering\",\n\t\"buildingUsage\": \"Warehouse\",\n\t\"numberOfBuilding\": 2,\n\t\"frameType\": \"Steel\",\n\t\"configuration\": \"Standard\"\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{baseUrl}}/api/jobs",
-							"host": ["{{baseUrl}}"],
-							"path": ["api", "jobs"]
-						}
-					}
-				},
-				{
-					"name": "Get All Jobs",
-					"request": {
-						"method": "GET",
-						"url": {
-							"raw": "{{baseUrl}}/api/jobs?page=1&pageSize=10",
-							"host": ["{{baseUrl}}"],
-							"path": ["api", "jobs"],
-							"query": [
-								{
-									"key": "page",
-									"value": "1"
-								},
-								{
-									"key": "pageSize",
-									"value": "10"
-								}
-							]
-						}
-					}
-				},
-				{
-					"name": "Get Job by ID",
-					"request": {
-						"method": "GET",
-						"url": {
-							"raw": "{{baseUrl}}/api/jobs/:id",
-							"host": ["{{baseUrl}}"],
-							"path": ["api", "jobs", ":id"],
-							"variable": [
-								{
-									"key": "id",
-									"value": ""
-								}
-							]
-						}
-					}
-				},
-				{
-					"name": "Update Job",
-					"request": {
-						"method": "PUT",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n\t\"subject\": \"Updated Subject\",\n\t\"buildingUsage\": \"Factory\",\n\t\"numberOfBuilding\": 3\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{baseUrl}}/api/jobs/:id",
-							"host": ["{{baseUrl}}"],
-							"path": ["api", "jobs", ":id"],
-							"variable": [
-								{
-									"key": "id",
-									"value": ""
-								}
-							]
-						}
-					}
-				},
-				{
-					"name": "Delete Job",
-					"request": {
-						"method": "DELETE",
-						"url": {
-							"raw": "{{baseUrl}}/api/jobs/:id",
-							"host": ["{{baseUrl}}"],
-							"path": ["api", "jobs", ":id"],
-							"variable": [
-								{
-									"key": "id",
-									"value": ""
-								}
-							]
-						}
-					}
-				}
-			]
-		},
-		{
-			"name": "Roof",
-			"item": [
-				{
-					"name": "Upsert Roof",
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n\t\"buildingOverallLength\": 30,\n\t\"buildingOverallWidth\": 15,\n\t\"eaveHeight\": 5.645,\n\t\"roofSlope\": 6,\n\t\"mainRoofFrames\": 4,\n\t\"endRoofFrames\": 2,\n\t\"roofPurlinSpacing\": 1.27,\n\t\"claddingPurlins\": 2,\n\t\"internalColumnsForMainRoofFrames\": 2,\n\t\"internalColumnsForEndRoofFrames\": 2,\n\t\"roofFrameBaseFixing\": \"FOUNDATION_BOLT\",\n\t\"columnSegmentsInMainFrame\": 3,\n\t\"raftersInOneHalfOfMainFrame\": 2,\n\t\"roofPurlinType\": \"Z_C\",\n\t\"roofPurlinDepth\": 0.15,\n\t\"roofPurlinUnitWeight\": 4.5,\n\t\"roofCoveringType\": \"BARE_GALVALUME\",\n\t\"roofCoveringThickness\": 0.5,\n\t\"windBracingType\": \"ROD\",\n\t\"gradeOfPlateMaterial\": \"FE_345\",\n\t\"sidewalls\": [\n\t\t{\n\t\t\t\"side\": \"FRONT\",\n\t\t\t\"wallType\": \"BRICK\",\n\t\t\t\"thickness\": 0.23,\n\t\t\t\"height\": 3.5\n\t\t},\n\t\t{\n\t\t\t\"side\": \"BACK\",\n\t\t\t\"wallType\": \"PANEL\",\n\t\t\t\"thickness\": 0.1,\n\t\t\t\"height\": 4.0\n\t\t}\n\t]\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{baseUrl}}/api/jobs/:jobId/roof",
-							"host": ["{{baseUrl}}"],
-							"path": ["api", "jobs", ":jobId", "roof"],
-							"variable": [
-								{
-									"key": "jobId",
-									"value": ""
-								}
-							]
-						}
-					}
-				},
-				{
-					"name": "Get Roof by Job",
-					"request": {
-						"method": "GET",
-						"url": {
-							"raw": "{{baseUrl}}/api/jobs/:jobId/roof",
-							"host": ["{{baseUrl}}"],
-							"path": ["api", "jobs", ":jobId", "roof"],
-							"variable": [
-								{
-									"key": "jobId",
-									"value": ""
-								}
-							]
-						}
-					}
-				},
-				{
-					"name": "Get All Roofs",
-					"request": {
-						"method": "GET",
-						"url": {
-							"raw": "{{baseUrl}}/api/roofs?page=1&pageSize=10",
-							"host": ["{{baseUrl}}"],
-							"path": ["api", "roofs"],
-							"query": [
-								{
-									"key": "page",
-									"value": "1"
-								},
-								{
-									"key": "pageSize",
-									"value": "10"
-								}
-							]
-						}
-					}
-				},
-				{
-					"name": "Update Roof",
-					"request": {
-						"method": "PUT",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n\t\"roofSlope\": 8,\n\t\"mainRoofFrames\": 6,\n\t\"sidewalls\": [\n\t\t{\n\t\t\t\"side\": \"FRONT\",\n\t\t\t\"wallType\": \"AAC\",\n\t\t\t\"thickness\": 0.2,\n\t\t\t\"height\": 3.0\n\t\t}\n\t]\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{baseUrl}}/api/jobs/:jobId/roof",
-							"host": ["{{baseUrl}}"],
-							"path": ["api", "jobs", ":jobId", "roof"],
-							"variable": [
-								{
-									"key": "jobId",
-									"value": ""
-								}
-							]
-						}
-					}
-				},
-				{
-					"name": "Delete Roof",
-					"request": {
-						"method": "DELETE",
-						"url": {
-							"raw": "{{baseUrl}}/api/jobs/:jobId/roof",
-							"host": ["{{baseUrl}}"],
-							"path": ["api", "jobs", ":jobId", "roof"],
-							"variable": [
-								{
-									"key": "jobId",
-									"value": ""
-								}
-							]
-						}
-					}
-				}
-			]
-		},
-		{
-			"name": "Mezzanine",
-			"item": [
-				{
-					"name": "Upsert Mezzanine",
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n\t\"floors\": [\n\t\t{\n\t\t\t\"code\": \"MEZ-1\",\n\t\t\t\"floor\": \"FLOOR_1\",\n\t\t\t\"type\": \"DECK_SHEET\",\n\t\t\t\"heightFrom\": \"GROUND\",\n\t\t\t\"thicknessMm\": 150,\n\t\t\t\"lengthM\": 12,\n\t\t\t\"widthM\": 8,\n\t\t\t\"heightM\": 3.5,\n\t\t\t\"materialConsumptionKgPerSqft\": 4.5,\n\t\t\t\"beamsMidPrimary\": 4,\n\t\t\t\"beamsEndPrimary\": 2,\n\t\t\t\"beamsSecondary\": 6,\n\t\t\t\"jointsMidPrimary\": 2,\n\t\t\t\"jointsEndPrimary\": 1,\n\t\t\t\"internalColumnsMidPrimary\": 2,\n\t\t\t\"internalColumnsEndPrimary\": 1\n\t\t}\n\t],\n\t\"extensions\": [\n\t\t{\n\t\t\t\"type\": \"RCC_SLAB\",\n\t\t\t\"heightFrom\": \"FIRST_FLOOR\",\n\t\t\t\"typicalTo\": \"FLOOR_3\",\n\t\t\t\"thicknessMm\": 120,\n\t\t\t\"lengthM\": 10,\n\t\t\t\"widthM\": 6,\n\t\t\t\"heightM\": 3.0,\n\t\t\t\"beamsMidPrimary\": 3,\n\t\t\t\"beamsEndPrimary\": 1,\n\t\t\t\"beamsSecondary\": 4,\n\t\t\t\"jointsMidPrimary\": 1,\n\t\t\t\"jointsEndPrimary\": 1,\n\t\t\t\"extendedColumnsMidPrimary\": 2,\n\t\t\t\"extendedColumnsEndPrimary\": 1\n\t\t}\n\t]\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{baseUrl}}/api/jobs/:jobId/mezzanine",
-							"host": ["{{baseUrl}}"],
-							"path": ["api", "jobs", ":jobId", "mezzanine"],
-							"variable": [
-								{
-									"key": "jobId",
-									"value": ""
-								}
-							]
-						}
-					}
-				},
-				{
-					"name": "Get Mezzanine by Job",
-					"request": {
-						"method": "GET",
-						"url": {
-							"raw": "{{baseUrl}}/api/jobs/:jobId/mezzanine",
-							"host": ["{{baseUrl}}"],
-							"path": ["api", "jobs", ":jobId", "mezzanine"],
-							"variable": [
-								{
-									"key": "jobId",
-									"value": ""
-								}
-							]
-						}
-					}
-				},
-				{
-					"name": "Get All Mezzanines",
-					"request": {
-						"method": "GET",
-						"url": {
-							"raw": "{{baseUrl}}/api/mezzanines?page=1&pageSize=10",
-							"host": ["{{baseUrl}}"],
-							"path": ["api", "mezzanines"],
-							"query": [
-								{
-									"key": "page",
-									"value": "1"
-								},
-								{
-									"key": "pageSize",
-									"value": "10"
-								}
-							]
-						}
-					}
-				},
-				{
-					"name": "Update Mezzanine",
-					"request": {
-						"method": "PUT",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n\t\"floors\": [\n\t\t{\n\t\t\t\"code\": \"MEZ-1\",\n\t\t\t\"floor\": \"FLOOR_1\",\n\t\t\t\"type\": \"RCC_SLAB\",\n\t\t\t\"heightFrom\": \"GROUND\",\n\t\t\t\"thicknessMm\": 180,\n\t\t\t\"lengthM\": 14,\n\t\t\t\"widthM\": 9,\n\t\t\t\"heightM\": 3.8,\n\t\t\t\"materialConsumptionKgPerSqft\": 5.0,\n\t\t\t\"beamsMidPrimary\": 5,\n\t\t\t\"beamsEndPrimary\": 2,\n\t\t\t\"beamsSecondary\": 7,\n\t\t\t\"jointsMidPrimary\": 3,\n\t\t\t\"jointsEndPrimary\": 1,\n\t\t\t\"internalColumnsMidPrimary\": 3,\n\t\t\t\"internalColumnsEndPrimary\": 1\n\t\t}\n\t]\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{baseUrl}}/api/jobs/:jobId/mezzanine",
-							"host": ["{{baseUrl}}"],
-							"path": ["api", "jobs", ":jobId", "mezzanine"],
-							"variable": [
-								{
-									"key": "jobId",
-									"value": ""
-								}
-							]
-						}
-					}
-				},
-				{
-					"name": "Delete Mezzanine",
-					"request": {
-						"method": "DELETE",
-						"url": {
-							"raw": "{{baseUrl}}/api/jobs/:jobId/mezzanine",
-							"host": ["{{baseUrl}}"],
-							"path": ["api", "jobs", ":jobId", "mezzanine"],
-							"variable": [
-								{
-									"key": "jobId",
-									"value": ""
-								}
-							]
-						}
-					}
-				}
-			]
-		},
-		{
-			"name": "Canopy",
-			"item": [
-				{
-					"name": "Upsert Canopy",
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n\t\"canopies\": [\n\t\t{\n\t\t\t\"code\": \"CANOPY-1\",\n\t\t\t\"heightFrom\": \"GROUND\",\n\t\t\t\"length\": 6,\n\t\t\t\"width\": 3,\n\t\t\t\"height\": 3.5,\n\t\t\t\"materialConsumptionKgPerSqft\": 9.5,\n\t\t\t\"numberOfBeams\": 4,\n\t\t\t\"numberOfPurlins\": 6,\n\t\t\t\"purlinDepth\": 150,\n\t\t\t\"unitWeightOfPurlin\": 5.2,\n\t\t\t\"canopySheet\": \"PPGL\",\n\t\t\t\"sheetThick\": 0.5,\n\t\t\t\"canopySideCoveringHeight\": 1.2,\n\t\t\t\"gutter\": true,\n\t\t\t\"downTake\": false,\n\t\t\t\"flashing\": true\n\t\t}\n\t]\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{baseUrl}}/api/jobs/:jobId/canopy",
-							"host": ["{{baseUrl}}"],
-							"path": ["api", "jobs", ":jobId", "canopy"],
-							"variable": [
-								{
-									"key": "jobId",
-									"value": ""
-								}
-							]
-						}
-					}
-				},
-				{
-					"name": "Get Canopy by Job",
-					"request": {
-						"method": "GET",
-						"url": {
-							"raw": "{{baseUrl}}/api/jobs/:jobId/canopy",
-							"host": ["{{baseUrl}}"],
-							"path": ["api", "jobs", ":jobId", "canopy"],
-							"variable": [
-								{
-									"key": "jobId",
-									"value": ""
-								}
-							]
-						}
-					}
-				},
-				{
-					"name": "Get All Canopies",
-					"request": {
-						"method": "GET",
-						"url": {
-							"raw": "{{baseUrl}}/api/canopies?page=1&pageSize=10",
-							"host": ["{{baseUrl}}"],
-							"path": ["api", "canopies"],
-							"query": [
-								{
-									"key": "page",
-									"value": "1"
-								},
-								{
-									"key": "pageSize",
-									"value": "10"
-								}
-							]
-						}
-					}
-				},
-				{
-					"name": "Update Canopy",
-					"request": {
-						"method": "PUT",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n\t\"canopies\": [\n\t\t{\n\t\t\t\"code\": \"CANOPY-1\",\n\t\t\t\"heightFrom\": \"FF\",\n\t\t\t\"length\": 5,\n\t\t\t\"width\": 2.5,\n\t\t\t\"height\": 3,\n\t\t\t\"canopySheet\": \"PUFF\",\n\t\t\t\"sheetThick\": 40\n\t\t}\n\t]\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{baseUrl}}/api/jobs/:jobId/canopy",
-							"host": ["{{baseUrl}}"],
-							"path": ["api", "jobs", ":jobId", "canopy"],
-							"variable": [
-								{
-									"key": "jobId",
-									"value": ""
-								}
-							]
-						}
-					}
-				},
-				{
-					"name": "Delete Canopy",
-					"request": {
-						"method": "DELETE",
-						"url": {
-							"raw": "{{baseUrl}}/api/jobs/:jobId/canopy",
-							"host": ["{{baseUrl}}"],
-							"path": ["api", "jobs", ":jobId", "canopy"],
-							"variable": [
-								{
-									"key": "jobId",
-									"value": ""
-								}
-							]
-						}
-					}
-				}
-			]
-		},
-		{
-			"name": "Joint",
-			"item": [
-				{
-					"name": "Upsert Joint",
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n\t\"secondaryBeamsBoltType\": \"HSFG\",\n\t\"secondaryBeamsBoltDiameter\": 12,\n\t\"secondaryBeamsNumberOfBolts\": 4,\n\t\"purlinFlangeBraceBoltType\": \"ORD\",\n\t\"purlinFlangeBraceBoltDiameter\": 10,\n\t\"purlinFlangeBraceNumberOfBolts\": 2,\n\t\"claddingPurlinsBoltType\": \"ORD\",\n\t\"claddingPurlinsBoltDiameter\": 10,\n\t\"claddingPurlinsNumberOfBolts\": 2,\n\t\"canopyBoltType\": \"HSFG\",\n\t\"canopyBoltDiameter\": 12,\n\t\"canopyNumberOfBolts\": 3,\n\t\"jointBoltRoof\": [\n\t\t{\n\t\t\t\"roofJointId\": \"A\",\n\t\t\t\"boltDiameter\": 20,\n\t\t\t\"numberOfBolts\": 6\n\t\t},\n\t\t{\n\t\t\t\"roofJointId\": \"A_1\",\n\t\t\t\"boltDiameter\": 16,\n\t\t\t\"numberOfBolts\": 4\n\t\t}\n\t],\n\t\"jointBoltMezzanine\": [\n\t\t{\n\t\t\t\"mezzanineJointId\": \"M\",\n\t\t\t\"boltDiameter\": 16,\n\t\t\t\"numberOfBolts\": 4\n\t\t},\n\t\t{\n\t\t\t\"mezzanineJointId\": \"SEC\",\n\t\t\t\"boltDiameter\": 16,\n\t\t\t\"numberOfBolts\": 2\n\t\t}\n\t],\n\t\"foundationBoltRoof\": [\n\t\t{\n\t\t\t\"foundationJointId\": \"FB4\",\n\t\t\t\"boltDiameter\": 24,\n\t\t\t\"numberOfBolts\": 4\n\t\t}\n\t]\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{baseUrl}}/api/jobs/:jobId/joint",
-							"host": ["{{baseUrl}}"],
-							"path": ["api", "jobs", ":jobId", "joint"],
-							"variable": [
-								{
-									"key": "jobId",
-									"value": ""
-								}
-							]
-						}
-					}
-				},
-				{
-					"name": "Get Joint by Job",
-					"request": {
-						"method": "GET",
-						"url": {
-							"raw": "{{baseUrl}}/api/jobs/:jobId/joint",
-							"host": ["{{baseUrl}}"],
-							"path": ["api", "jobs", ":jobId", "joint"],
-							"variable": [
-								{
-									"key": "jobId",
-									"value": ""
-								}
-							]
-						}
-					}
-				},
-				{
-					"name": "Get All Joints",
-					"request": {
-						"method": "GET",
-						"url": {
-							"raw": "{{baseUrl}}/api/joints?page=1&pageSize=10",
-							"host": ["{{baseUrl}}"],
-							"path": ["api", "joints"],
-							"query": [
-								{
-									"key": "page",
-									"value": "1"
-								},
-								{
-									"key": "pageSize",
-									"value": "10"
-								}
-							]
-						}
-					}
-				},
-				{
-					"name": "Update Joint",
-					"request": {
-						"method": "PUT",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n\t\"secondaryBeamsNumberOfBolts\": 6,\n\t\"canopyBoltType\": \"ORD\",\n\t\"jointBoltRoof\": [\n\t\t{\n\t\t\t\"roofJointId\": \"B\",\n\t\t\t\"boltDiameter\": 20,\n\t\t\t\"numberOfBolts\": 8\n\t\t}\n\t]\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{baseUrl}}/api/jobs/:jobId/joint",
-							"host": ["{{baseUrl}}"],
-							"path": ["api", "jobs", ":jobId", "joint"],
-							"variable": [
-								{
-									"key": "jobId",
-									"value": ""
-								}
-							]
-						}
-					}
-				},
-				{
-					"name": "Delete Joint",
-					"request": {
-						"method": "DELETE",
-						"url": {
-							"raw": "{{baseUrl}}/api/jobs/:jobId/joint",
-							"host": ["{{baseUrl}}"],
-							"path": ["api", "jobs", ":jobId", "joint"],
-							"variable": [
-								{
-									"key": "jobId",
-									"value": ""
-								}
-							]
-						}
-					}
-				}
-			]
-		},
-		{
-			"name": "Load",
-			"item": [
-				{
-					"name": "Upsert Load",
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n\t\"deadLoadOnRoofRafters\": 0.15,\n\t\"liveLoadOnRoofRafters\": 0.75,\n\t\"collateralLoadOnRoofRafters\": 0.1,\n\t\"windLoadOnRoofRaftersUpward\": 1.2,\n\t\"windLoadHorizontal\": 0.9,\n\t\"deadLoadOnRoofFloor\": 0.2,\n\t\"liveLoadOnRoofFloor\": 0.8,\n\t\"floorDeadLoad\": 2.5,\n\t\"floorFinishLoad\": 1.0,\n\t\"floorLiveLoad\": 5.0,\n\t\"snowLoad\": 0.5,\n\t\"earthquakeLoad\": 0.3,\n\t\"approvalDrawingsTime\": 2,\n\t\"approvalDrawingsUnit\": \"WEEKS\",\n\t\"supplyOfMaterialsDays\": 30,\n\t\"erectionOfStructureDays\": 45\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{baseUrl}}/api/jobs/:jobId/load",
-							"host": ["{{baseUrl}}"],
-							"path": ["api", "jobs", ":jobId", "load"],
-							"variable": [
-								{
-									"key": "jobId",
-									"value": ""
-								}
-							]
-						}
-					}
-				},
-				{
-					"name": "Get Load by Job",
-					"request": {
-						"method": "GET",
-						"url": {
-							"raw": "{{baseUrl}}/api/jobs/:jobId/load",
-							"host": ["{{baseUrl}}"],
-							"path": ["api", "jobs", ":jobId", "load"],
-							"variable": [
-								{
-									"key": "jobId",
-									"value": ""
-								}
-							]
-						}
-					}
-				},
-				{
-					"name": "Get All Loads",
-					"request": {
-						"method": "GET",
-						"url": {
-							"raw": "{{baseUrl}}/api/loads?page=1&pageSize=10",
-							"host": ["{{baseUrl}}"],
-							"path": ["api", "loads"],
-							"query": [
-								{
-									"key": "page",
-									"value": "1"
-								},
-								{
-									"key": "pageSize",
-									"value": "10"
-								}
-							]
-						}
-					}
-				},
-				{
-					"name": "Update Load",
-					"request": {
-						"method": "PUT",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n\t\"liveLoadOnRoofRafters\": 0.9,\n\t\"floorLiveLoad\": 6.0,\n\t\"approvalDrawingsTime\": 3,\n\t\"approvalDrawingsUnit\": \"DAYS\"\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{baseUrl}}/api/jobs/:jobId/load",
-							"host": ["{{baseUrl}}"],
-							"path": ["api", "jobs", ":jobId", "load"],
-							"variable": [
-								{
-									"key": "jobId",
-									"value": ""
-								}
-							]
-						}
-					}
-				},
-				{
-					"name": "Delete Load",
-					"request": {
-						"method": "DELETE",
-						"url": {
-							"raw": "{{baseUrl}}/api/jobs/:jobId/load",
-							"host": ["{{baseUrl}}"],
-							"path": ["api", "jobs", ":jobId", "load"],
-							"variable": [
-								{
-									"key": "jobId",
-									"value": ""
-								}
-							]
-						}
-					}
-				}
-			]
-		},
-		{
-			"name": "Accessories",
-			"item": [
-				{
-					"name": "Upsert Accessories",
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n\t\"gutterType\": \"PPGL\",\n\t\"gutterSize\": \"IN_6\",\n\t\"gutterQuantity\": 2,\n\t\"downTakeType\": \"UPVC\",\n\t\"downTakeSize\": \"IN_4\",\n\t\"downTakeQuantity\": 3,\n\t\"dripTrimType\": \"NCGL\",\n\t\"dripTrimThickness\": \"MM_0_47\",\n\t\"ridgeType\": \"PPGL\",\n\t\"ridgeThickness\": \"MM_0_50\",\n\t\"partitionType\": \"AEROCON_PANEL\",\n\t\"partitionThickness\": \"MM_50\",\n\t\"partitionQuantity\": 4,\n\t\"roofInsulationType\": \"GLASS_WOOL\",\n\t\"wallInsulationType\": \"ROCK_WOOL\",\n\t\"turboVentilatorDiameter\": \"FT_1\",\n\t\"turboVentilatorNos\": 2,\n\t\"handrailWeightKg\": 45.5,\n\t\"deckSheetFlashingEnabled\": true,\n\t\"gantryGirderEnabled\": false,\n\t\"liftStructureEnabled\": true,\n\t\"framesPrimerCoats\": 1,\n\t\"framesPrimerType\": \"EPOXY_PRIMER\",\n\t\"framesPaintCoats\": 2,\n\t\"framesPaintType\": \"EPOXY_PAINT\",\n\t\"purlinsGirtsFinish\": \"PRE_GALVANISED\",\n\t\"purlinsGirtsGsm\": 120,\n\t\"purlinsGirtsPaint\": \"UNPAINTED\",\n\t\"foundationBoltFinish\": \"BLACK_UNPAINTED\",\n\t\"doors\": [\n\t\t{\n\t\t\t\"height\": 2.1,\n\t\t\t\"width\": 1.2,\n\t\t\t\"nos\": 2,\n\t\t\t\"quantity\": 2\n\t\t}\n\t],\n\t\"windows\": [\n\t\t{\n\t\t\t\"height\": 1.2,\n\t\t\t\"width\": 1.5,\n\t\t\t\"nos\": 4,\n\t\t\t\"quantity\": 4\n\t\t}\n\t],\n\t\"foldedPlates\": [\n\t\t{\n\t\t\t\"length\": 6,\n\t\t\t\"width\": 1.2,\n\t\t\t\"nos\": 3,\n\t\t\t\"quantity\": 3\n\t\t}\n\t],\n\t\"openings\": [\n\t\t{\n\t\t\t\"kind\": \"ROLLING_SHUTTER\",\n\t\t\t\"length\": 3.5,\n\t\t\t\"width\": 3,\n\t\t\t\"nos\": 1,\n\t\t\t\"quantity\": 1\n\t\t}\n\t]\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{baseUrl}}/api/jobs/:jobId/accessories",
-							"host": ["{{baseUrl}}"],
-							"path": ["api", "jobs", ":jobId", "accessories"],
-							"variable": [
-								{
-									"key": "jobId",
-									"value": ""
-								}
-							]
-						}
-					}
-				},
-				{
-					"name": "Get Accessories by Job",
-					"request": {
-						"method": "GET",
-						"url": {
-							"raw": "{{baseUrl}}/api/jobs/:jobId/accessories",
-							"host": ["{{baseUrl}}"],
-							"path": ["api", "jobs", ":jobId", "accessories"],
-							"variable": [
-								{
-									"key": "jobId",
-									"value": ""
-								}
-							]
-						}
-					}
-				},
-				{
-					"name": "Get All Accessories",
-					"request": {
-						"method": "GET",
-						"url": {
-							"raw": "{{baseUrl}}/api/accessories?page=1&pageSize=10",
-							"host": ["{{baseUrl}}"],
-							"path": ["api", "accessories"],
-							"query": [
-								{
-									"key": "page",
-									"value": "1"
-								},
-								{
-									"key": "pageSize",
-									"value": "10"
-								}
-							]
-						}
-					}
-				},
-				{
-					"name": "Update Accessories",
-					"request": {
-						"method": "PUT",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n\t\"gutterQuantity\": 4,\n\t\"partitionThickness\": \"MM_75\",\n\t\"framesPaintCoats\": 3,\n\t\"openings\": [\n\t\t{\n\t\t\t\"kind\": \"SKY_LIGHT\",\n\t\t\t\"length\": 2.5,\n\t\t\t\"width\": 2,\n\t\t\t\"nos\": 2,\n\t\t\t\"quantity\": 2\n\t\t}\n\t]\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{baseUrl}}/api/jobs/:jobId/accessories",
-							"host": ["{{baseUrl}}"],
-							"path": ["api", "jobs", ":jobId", "accessories"],
-							"variable": [
-								{
-									"key": "jobId",
-									"value": ""
-								}
-							]
-						}
-					}
-				},
-				{
-					"name": "Delete Accessories",
-					"request": {
-						"method": "DELETE",
-						"url": {
-							"raw": "{{baseUrl}}/api/jobs/:jobId/accessories",
-							"host": ["{{baseUrl}}"],
-							"path": ["api", "jobs", ":jobId", "accessories"],
-							"variable": [
-								{
-									"key": "jobId",
-									"value": ""
-								}
-							]
-						}
-					}
-				}
-			]
-		}
-	],
-	"variable": [
-		{
-			"key": "baseUrl",
-			"value": "http://localhost:3000"
-		},
-		{
-			"key": "devUserId",
-			"value": "user_your_clerk_id_here"
-		}
-	]
+  "item": [
+    {
+      "name": "Health",
+      "description": "Liveness and readiness endpoints.",
+      "item": [
+        {
+          "name": "Get API and database health",
+          "request": {
+            "name": "Get API and database health",
+            "description": {
+              "content": "Public liveness and readiness probe.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "health"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "body": {}
+          },
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ]
+    },
+    {
+      "name": "User",
+      "description": "Authenticated user endpoints.",
+      "item": [
+        {
+          "name": "Get the authenticated user",
+          "request": {
+            "name": "Get the authenticated user",
+            "description": {
+              "content": "Returns the local profile for the authenticated Clerk user.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "me"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "body": {}
+          },
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ]
+    },
+    {
+      "name": "Jobs",
+      "description": "Structural quotation jobs.",
+      "item": [
+        {
+          "name": "Create a job",
+          "request": {
+            "name": "Create a job",
+            "description": {
+              "content": "Creates a new structural quotation job.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "jobs"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"projectNo\": \"PRJ-001\",\n  \"subject\": \"New Warehouse Design\",\n  \"refNo\": \"REF-2026-001\",\n  \"date\": \"2026-06-05\",\n  \"designedByName\": \"John Doe\",\n  \"designedByMobile\": \"+919876543210\",\n  \"clientName\": \"ABC Corp\",\n  \"estimationEngineerName\": \"Jane Smith\",\n  \"estimationEngineerMobile\": \"+919876543211\",\n  \"headOfSalesName\": \"Bob Wilson\",\n  \"headOfSalesMobile\": \"+919876543212\",\n  \"firmName\": \"Floreat Engineering\",\n  \"buildingUsage\": \"Warehouse\",\n  \"numberOfBuilding\": 2,\n  \"frameType\": \"Steel\",\n  \"configuration\": \"Standard\"\n}",
+              "options": {
+                "raw": {
+                  "headerFamily": "json",
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "name": "List jobs",
+          "request": {
+            "name": "List jobs",
+            "description": {
+              "content": "Returns a paginated list of jobs.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "jobs"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "description": {
+                    "content": "",
+                    "type": "text/plain"
+                  },
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "disabled": false,
+                  "description": {
+                    "content": "",
+                    "type": "text/plain"
+                  },
+                  "key": "pageSize",
+                  "value": "10"
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "body": {}
+          },
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "name": "Get a job by ID",
+          "request": {
+            "name": "Get a job by ID",
+            "description": {
+              "content": "Returns one job by its identifier.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "jobs",
+                ":id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "type": "any",
+                  "value": "cuid_123",
+                  "key": "id",
+                  "disabled": false,
+                  "description": {
+                    "content": "(Required) ",
+                    "type": "text/plain"
+                  }
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "body": {}
+          },
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "name": "Update a job",
+          "request": {
+            "name": "Update a job",
+            "description": {
+              "content": "Partially updates a job by its identifier.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "jobs",
+                ":id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "type": "any",
+                  "value": "cuid_123",
+                  "key": "id",
+                  "disabled": false,
+                  "description": {
+                    "content": "(Required) ",
+                    "type": "text/plain"
+                  }
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "PUT",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"subject\": \"Updated Warehouse Design\",\n  \"buildingUsage\": \"Factory\",\n  \"numberOfBuilding\": 3\n}",
+              "options": {
+                "raw": {
+                  "headerFamily": "json",
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "name": "Delete a job",
+          "request": {
+            "name": "Delete a job",
+            "description": {
+              "content": "Deletes a job by its identifier.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "jobs",
+                ":id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "type": "any",
+                  "value": "cuid_123",
+                  "key": "id",
+                  "disabled": false,
+                  "description": {
+                    "content": "(Required) ",
+                    "type": "text/plain"
+                  }
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "DELETE",
+            "body": {}
+          },
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ]
+    },
+    {
+      "name": "Roof",
+      "description": "Roof configuration endpoints.",
+      "item": [
+        {
+          "name": "Create or replace a job's roof",
+          "request": {
+            "name": "Create or replace a job's roof",
+            "description": {
+              "content": "Creates or replaces the roof configuration for the specified job.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "jobs",
+                ":jobId",
+                "roof"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "type": "any",
+                  "value": "job_cuid_123",
+                  "key": "jobId",
+                  "disabled": false,
+                  "description": {
+                    "content": "(Required) ",
+                    "type": "text/plain"
+                  }
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"buildingOverallLength\": 30,\n  \"buildingOverallWidth\": 15,\n  \"eaveHeight\": 5.645,\n  \"roofSlope\": 6,\n  \"mainRoofFrames\": 4,\n  \"endRoofFrames\": 2,\n  \"roofPurlinSpacing\": 1.27,\n  \"claddingPurlins\": 2,\n  \"internalColumnsForMainRoofFrames\": 2,\n  \"internalColumnsForEndRoofFrames\": 2,\n  \"roofFrameBaseFixing\": \"FOUNDATION_BOLT\",\n  \"columnSegmentsInMainFrame\": 3,\n  \"raftersInOneHalfOfMainFrame\": 2,\n  \"roofPurlinType\": \"Z_C\",\n  \"roofPurlinDepth\": 0.15,\n  \"roofPurlinUnitWeight\": 4.5,\n  \"roofCoveringType\": \"BARE_GALVALUME\",\n  \"roofCoveringThickness\": 0.5,\n  \"windBracingType\": \"ROD\",\n  \"gradeOfPlateMaterial\": \"FE_345\",\n  \"sidewalls\": [\n    {\n      \"side\": \"FRONT\",\n      \"wallType\": \"BRICK\",\n      \"thickness\": 0.23,\n      \"height\": 3.5\n    },\n    {\n      \"side\": \"BACK\",\n      \"wallType\": \"PANEL\",\n      \"thickness\": 0.1,\n      \"height\": 4\n    }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "headerFamily": "json",
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "name": "Get a job's roof",
+          "request": {
+            "name": "Get a job's roof",
+            "description": {
+              "content": "Returns the roof configuration belonging to the specified job.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "jobs",
+                ":jobId",
+                "roof"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "type": "any",
+                  "value": "job_cuid_123",
+                  "key": "jobId",
+                  "disabled": false,
+                  "description": {
+                    "content": "(Required) ",
+                    "type": "text/plain"
+                  }
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "body": {}
+          },
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "name": "Update a job's roof",
+          "request": {
+            "name": "Update a job's roof",
+            "description": {
+              "content": "Partially updates the roof configuration for the specified job.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "jobs",
+                ":jobId",
+                "roof"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "type": "any",
+                  "value": "job_cuid_123",
+                  "key": "jobId",
+                  "disabled": false,
+                  "description": {
+                    "content": "(Required) ",
+                    "type": "text/plain"
+                  }
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "PUT",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"buildingOverallLength\": 30,\n  \"buildingOverallWidth\": 15,\n  \"eaveHeight\": 5.645,\n  \"roofSlope\": 6,\n  \"mainRoofFrames\": 4,\n  \"endRoofFrames\": 2,\n  \"roofPurlinSpacing\": 1.27,\n  \"claddingPurlins\": 2,\n  \"internalColumnsForMainRoofFrames\": 2,\n  \"internalColumnsForEndRoofFrames\": 2,\n  \"roofFrameBaseFixing\": \"FOUNDATION_BOLT\",\n  \"columnSegmentsInMainFrame\": 3,\n  \"raftersInOneHalfOfMainFrame\": 2,\n  \"roofPurlinType\": \"Z_C\",\n  \"roofPurlinDepth\": 0.15,\n  \"roofPurlinUnitWeight\": 4.5,\n  \"roofCoveringType\": \"BARE_GALVALUME\",\n  \"roofCoveringThickness\": 0.5,\n  \"windBracingType\": \"ROD\",\n  \"gradeOfPlateMaterial\": \"FE_345\",\n  \"sidewalls\": [\n    {\n      \"side\": \"FRONT\",\n      \"wallType\": \"BRICK\",\n      \"thickness\": 0.23,\n      \"height\": 3.5\n    },\n    {\n      \"side\": \"BACK\",\n      \"wallType\": \"PANEL\",\n      \"thickness\": 0.1,\n      \"height\": 4\n    }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "headerFamily": "json",
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "name": "Delete a job's roof",
+          "request": {
+            "name": "Delete a job's roof",
+            "description": {
+              "content": "Deletes the roof configuration for the specified job.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "jobs",
+                ":jobId",
+                "roof"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "type": "any",
+                  "value": "job_cuid_123",
+                  "key": "jobId",
+                  "disabled": false,
+                  "description": {
+                    "content": "(Required) ",
+                    "type": "text/plain"
+                  }
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "DELETE",
+            "body": {}
+          },
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "name": "List roofs",
+          "request": {
+            "name": "List roofs",
+            "description": {
+              "content": "Returns a paginated list of roofs.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "roofs"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "description": {
+                    "content": "",
+                    "type": "text/plain"
+                  },
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "disabled": false,
+                  "description": {
+                    "content": "",
+                    "type": "text/plain"
+                  },
+                  "key": "pageSize",
+                  "value": "10"
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "body": {}
+          },
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ]
+    },
+    {
+      "name": "Mezzanine",
+      "description": "Mezzanine configuration endpoints.",
+      "item": [
+        {
+          "name": "Create or replace a job's mezzanine",
+          "request": {
+            "name": "Create or replace a job's mezzanine",
+            "description": {
+              "content": "Creates or replaces the mezzanine configuration for the specified job.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "jobs",
+                ":jobId",
+                "mezzanine"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "type": "any",
+                  "value": "job_cuid_123",
+                  "key": "jobId",
+                  "disabled": false,
+                  "description": {
+                    "content": "(Required) ",
+                    "type": "text/plain"
+                  }
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"floors\": [\n    {\n      \"code\": \"MEZ-1\",\n      \"floor\": \"FLOOR_1\",\n      \"type\": \"DECK_SHEET\",\n      \"heightFrom\": \"GROUND\",\n      \"thicknessMm\": 150,\n      \"lengthM\": 12,\n      \"widthM\": 8,\n      \"heightM\": 3.5,\n      \"materialConsumptionKgPerSqft\": 4.5,\n      \"beamsMidPrimary\": 4,\n      \"beamsEndPrimary\": 2,\n      \"beamsSecondary\": 6,\n      \"jointsMidPrimary\": 2,\n      \"jointsEndPrimary\": 1,\n      \"internalColumnsMidPrimary\": 2,\n      \"internalColumnsEndPrimary\": 1\n    }\n  ],\n  \"extensions\": [\n    {\n      \"type\": \"RCC_SLAB\",\n      \"heightFrom\": \"FIRST_FLOOR\",\n      \"typicalTo\": \"FLOOR_3\",\n      \"thicknessMm\": 120,\n      \"lengthM\": 10,\n      \"widthM\": 6,\n      \"heightM\": 3,\n      \"beamsMidPrimary\": 3,\n      \"beamsEndPrimary\": 1,\n      \"beamsSecondary\": 4,\n      \"jointsMidPrimary\": 1,\n      \"jointsEndPrimary\": 1,\n      \"extendedColumnsMidPrimary\": 2,\n      \"extendedColumnsEndPrimary\": 1\n    }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "headerFamily": "json",
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "name": "Get a job's mezzanine",
+          "request": {
+            "name": "Get a job's mezzanine",
+            "description": {
+              "content": "Returns the mezzanine configuration belonging to the specified job.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "jobs",
+                ":jobId",
+                "mezzanine"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "type": "any",
+                  "value": "job_cuid_123",
+                  "key": "jobId",
+                  "disabled": false,
+                  "description": {
+                    "content": "(Required) ",
+                    "type": "text/plain"
+                  }
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "body": {}
+          },
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "name": "Update a job's mezzanine",
+          "request": {
+            "name": "Update a job's mezzanine",
+            "description": {
+              "content": "Partially updates the mezzanine configuration for the specified job.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "jobs",
+                ":jobId",
+                "mezzanine"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "type": "any",
+                  "value": "job_cuid_123",
+                  "key": "jobId",
+                  "disabled": false,
+                  "description": {
+                    "content": "(Required) ",
+                    "type": "text/plain"
+                  }
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "PUT",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"floors\": [\n    {\n      \"code\": \"MEZ-1\",\n      \"floor\": \"FLOOR_1\",\n      \"type\": \"DECK_SHEET\",\n      \"heightFrom\": \"GROUND\",\n      \"thicknessMm\": 150,\n      \"lengthM\": 12,\n      \"widthM\": 8,\n      \"heightM\": 3.5,\n      \"materialConsumptionKgPerSqft\": 4.5,\n      \"beamsMidPrimary\": 4,\n      \"beamsEndPrimary\": 2,\n      \"beamsSecondary\": 6,\n      \"jointsMidPrimary\": 2,\n      \"jointsEndPrimary\": 1,\n      \"internalColumnsMidPrimary\": 2,\n      \"internalColumnsEndPrimary\": 1\n    }\n  ],\n  \"extensions\": [\n    {\n      \"type\": \"RCC_SLAB\",\n      \"heightFrom\": \"FIRST_FLOOR\",\n      \"typicalTo\": \"FLOOR_3\",\n      \"thicknessMm\": 120,\n      \"lengthM\": 10,\n      \"widthM\": 6,\n      \"heightM\": 3,\n      \"beamsMidPrimary\": 3,\n      \"beamsEndPrimary\": 1,\n      \"beamsSecondary\": 4,\n      \"jointsMidPrimary\": 1,\n      \"jointsEndPrimary\": 1,\n      \"extendedColumnsMidPrimary\": 2,\n      \"extendedColumnsEndPrimary\": 1\n    }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "headerFamily": "json",
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "name": "Delete a job's mezzanine",
+          "request": {
+            "name": "Delete a job's mezzanine",
+            "description": {
+              "content": "Deletes the mezzanine configuration for the specified job.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "jobs",
+                ":jobId",
+                "mezzanine"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "type": "any",
+                  "value": "job_cuid_123",
+                  "key": "jobId",
+                  "disabled": false,
+                  "description": {
+                    "content": "(Required) ",
+                    "type": "text/plain"
+                  }
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "DELETE",
+            "body": {}
+          },
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "name": "List mezzanines",
+          "request": {
+            "name": "List mezzanines",
+            "description": {
+              "content": "Returns a paginated list of mezzanines.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "mezzanines"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "description": {
+                    "content": "",
+                    "type": "text/plain"
+                  },
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "disabled": false,
+                  "description": {
+                    "content": "",
+                    "type": "text/plain"
+                  },
+                  "key": "pageSize",
+                  "value": "10"
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "body": {}
+          },
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ]
+    },
+    {
+      "name": "Stair",
+      "description": "Stair configuration endpoints.",
+      "item": [
+        {
+          "name": "Create or replace a job's stair",
+          "request": {
+            "name": "Create or replace a job's stair",
+            "description": {
+              "content": "Creates or replaces the stair configuration for the specified job.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "jobs",
+                ":jobId",
+                "stair"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "type": "any",
+                  "value": "job_cuid_123",
+                  "key": "jobId",
+                  "disabled": false,
+                  "description": {
+                    "content": "(Required) ",
+                    "type": "text/plain"
+                  }
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"stairs\": [\n    {\n      \"code\": \"STAIR-1\",\n      \"typeOfStep\": \"CHQ_PLATE_6MM\",\n      \"location\": \"MEZ-1\",\n      \"startingFrom\": \"GROUND\",\n      \"endingUpTo\": \"FIRST_FLOOR\",\n      \"length\": 4.2,\n      \"width\": 1.2,\n      \"height\": 3.5,\n      \"numberOfMidLanding\": 1,\n      \"typeOfStringer\": \"FAB_SECTION\",\n      \"unitWeightOfStringer\": 18\n    }\n  ],\n  \"areaDeductions\": [\n    {\n      \"type\": \"LIFT\",\n      \"location\": \"EXT-1\",\n      \"areaM2\": 8,\n      \"numbers\": 1,\n      \"deductionFor\": \"BOTH\"\n    }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "headerFamily": "json",
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "name": "Get a job's stair",
+          "request": {
+            "name": "Get a job's stair",
+            "description": {
+              "content": "Returns the stair configuration belonging to the specified job.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "jobs",
+                ":jobId",
+                "stair"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "type": "any",
+                  "value": "job_cuid_123",
+                  "key": "jobId",
+                  "disabled": false,
+                  "description": {
+                    "content": "(Required) ",
+                    "type": "text/plain"
+                  }
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "body": {}
+          },
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "name": "Update a job's stair",
+          "request": {
+            "name": "Update a job's stair",
+            "description": {
+              "content": "Partially updates the stair configuration for the specified job.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "jobs",
+                ":jobId",
+                "stair"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "type": "any",
+                  "value": "job_cuid_123",
+                  "key": "jobId",
+                  "disabled": false,
+                  "description": {
+                    "content": "(Required) ",
+                    "type": "text/plain"
+                  }
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "PUT",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"stairs\": [\n    {\n      \"code\": \"STAIR-1\",\n      \"typeOfStep\": \"CHQ_PLATE_6MM\",\n      \"location\": \"MEZ-1\",\n      \"startingFrom\": \"GROUND\",\n      \"endingUpTo\": \"FIRST_FLOOR\",\n      \"length\": 4.2,\n      \"width\": 1.2,\n      \"height\": 3.5,\n      \"numberOfMidLanding\": 1,\n      \"typeOfStringer\": \"FAB_SECTION\",\n      \"unitWeightOfStringer\": 18\n    }\n  ],\n  \"areaDeductions\": [\n    {\n      \"type\": \"LIFT\",\n      \"location\": \"EXT-1\",\n      \"areaM2\": 8,\n      \"numbers\": 1,\n      \"deductionFor\": \"BOTH\"\n    }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "headerFamily": "json",
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "name": "Delete a job's stair",
+          "request": {
+            "name": "Delete a job's stair",
+            "description": {
+              "content": "Deletes the stair configuration for the specified job.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "jobs",
+                ":jobId",
+                "stair"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "type": "any",
+                  "value": "job_cuid_123",
+                  "key": "jobId",
+                  "disabled": false,
+                  "description": {
+                    "content": "(Required) ",
+                    "type": "text/plain"
+                  }
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "DELETE",
+            "body": {}
+          },
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "name": "List stairs",
+          "request": {
+            "name": "List stairs",
+            "description": {
+              "content": "Returns a paginated list of stairs.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "stairs"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "description": {
+                    "content": "",
+                    "type": "text/plain"
+                  },
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "disabled": false,
+                  "description": {
+                    "content": "",
+                    "type": "text/plain"
+                  },
+                  "key": "pageSize",
+                  "value": "10"
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "body": {}
+          },
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ]
+    },
+    {
+      "name": "Canopy",
+      "description": "Canopy configuration endpoints.",
+      "item": [
+        {
+          "name": "Create or replace a job's canopy",
+          "request": {
+            "name": "Create or replace a job's canopy",
+            "description": {
+              "content": "Creates or replaces the canopy configuration for the specified job.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "jobs",
+                ":jobId",
+                "canopy"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "type": "any",
+                  "value": "job_cuid_123",
+                  "key": "jobId",
+                  "disabled": false,
+                  "description": {
+                    "content": "(Required) ",
+                    "type": "text/plain"
+                  }
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"canopies\": [\n    {\n      \"code\": \"CANOPY-1\",\n      \"heightFrom\": \"GROUND\",\n      \"length\": 6,\n      \"width\": 3,\n      \"height\": 3.5,\n      \"materialConsumptionKgPerSqft\": 9.5,\n      \"numberOfBeams\": 4,\n      \"numberOfPurlins\": 6,\n      \"purlinDepth\": 150,\n      \"unitWeightOfPurlin\": 5.2,\n      \"canopySheet\": \"PPGL\",\n      \"sheetThick\": 0.5,\n      \"canopySideCoveringHeight\": 1.2,\n      \"gutter\": true,\n      \"downTake\": false,\n      \"flashing\": true\n    }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "headerFamily": "json",
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "name": "Get a job's canopy",
+          "request": {
+            "name": "Get a job's canopy",
+            "description": {
+              "content": "Returns the canopy configuration belonging to the specified job.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "jobs",
+                ":jobId",
+                "canopy"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "type": "any",
+                  "value": "job_cuid_123",
+                  "key": "jobId",
+                  "disabled": false,
+                  "description": {
+                    "content": "(Required) ",
+                    "type": "text/plain"
+                  }
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "body": {}
+          },
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "name": "Update a job's canopy",
+          "request": {
+            "name": "Update a job's canopy",
+            "description": {
+              "content": "Partially updates the canopy configuration for the specified job.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "jobs",
+                ":jobId",
+                "canopy"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "type": "any",
+                  "value": "job_cuid_123",
+                  "key": "jobId",
+                  "disabled": false,
+                  "description": {
+                    "content": "(Required) ",
+                    "type": "text/plain"
+                  }
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "PUT",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"canopies\": [\n    {\n      \"code\": \"CANOPY-1\",\n      \"heightFrom\": \"GROUND\",\n      \"length\": 6,\n      \"width\": 3,\n      \"height\": 3.5,\n      \"materialConsumptionKgPerSqft\": 9.5,\n      \"numberOfBeams\": 4,\n      \"numberOfPurlins\": 6,\n      \"purlinDepth\": 150,\n      \"unitWeightOfPurlin\": 5.2,\n      \"canopySheet\": \"PPGL\",\n      \"sheetThick\": 0.5,\n      \"canopySideCoveringHeight\": 1.2,\n      \"gutter\": true,\n      \"downTake\": false,\n      \"flashing\": true\n    }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "headerFamily": "json",
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "name": "Delete a job's canopy",
+          "request": {
+            "name": "Delete a job's canopy",
+            "description": {
+              "content": "Deletes the canopy configuration for the specified job.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "jobs",
+                ":jobId",
+                "canopy"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "type": "any",
+                  "value": "job_cuid_123",
+                  "key": "jobId",
+                  "disabled": false,
+                  "description": {
+                    "content": "(Required) ",
+                    "type": "text/plain"
+                  }
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "DELETE",
+            "body": {}
+          },
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "name": "List canopies",
+          "request": {
+            "name": "List canopies",
+            "description": {
+              "content": "Returns a paginated list of canopies.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "canopies"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "description": {
+                    "content": "",
+                    "type": "text/plain"
+                  },
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "disabled": false,
+                  "description": {
+                    "content": "",
+                    "type": "text/plain"
+                  },
+                  "key": "pageSize",
+                  "value": "10"
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "body": {}
+          },
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ]
+    },
+    {
+      "name": "Load",
+      "description": "Load configuration endpoints.",
+      "item": [
+        {
+          "name": "Create or replace a job's load",
+          "request": {
+            "name": "Create or replace a job's load",
+            "description": {
+              "content": "Creates or replaces the load configuration for the specified job.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "jobs",
+                ":jobId",
+                "load"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "type": "any",
+                  "value": "job_cuid_123",
+                  "key": "jobId",
+                  "disabled": false,
+                  "description": {
+                    "content": "(Required) ",
+                    "type": "text/plain"
+                  }
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"deadLoadOnRoofRafters\": 0.15,\n  \"liveLoadOnRoofRafters\": 0.75,\n  \"collateralLoadOnRoofRafters\": 0.1,\n  \"windLoadOnRoofRaftersUpward\": 1.2,\n  \"windLoadHorizontal\": 0.9,\n  \"deadLoadOnRoofFloor\": 0.2,\n  \"liveLoadOnRoofFloor\": 0.8,\n  \"floorDeadLoad\": 2.5,\n  \"floorFinishLoad\": 1,\n  \"floorLiveLoad\": 5,\n  \"snowLoad\": 0.5,\n  \"earthquakeLoad\": 0.3,\n  \"approvalDrawingsTime\": 2,\n  \"approvalDrawingsUnit\": \"WEEKS\",\n  \"supplyOfMaterialsDays\": 30,\n  \"erectionOfStructureDays\": 45\n}",
+              "options": {
+                "raw": {
+                  "headerFamily": "json",
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "name": "Get a job's load",
+          "request": {
+            "name": "Get a job's load",
+            "description": {
+              "content": "Returns the load configuration belonging to the specified job.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "jobs",
+                ":jobId",
+                "load"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "type": "any",
+                  "value": "job_cuid_123",
+                  "key": "jobId",
+                  "disabled": false,
+                  "description": {
+                    "content": "(Required) ",
+                    "type": "text/plain"
+                  }
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "body": {}
+          },
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "name": "Update a job's load",
+          "request": {
+            "name": "Update a job's load",
+            "description": {
+              "content": "Partially updates the load configuration for the specified job.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "jobs",
+                ":jobId",
+                "load"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "type": "any",
+                  "value": "job_cuid_123",
+                  "key": "jobId",
+                  "disabled": false,
+                  "description": {
+                    "content": "(Required) ",
+                    "type": "text/plain"
+                  }
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "PUT",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"deadLoadOnRoofRafters\": 0.15,\n  \"liveLoadOnRoofRafters\": 0.75,\n  \"collateralLoadOnRoofRafters\": 0.1,\n  \"windLoadOnRoofRaftersUpward\": 1.2,\n  \"windLoadHorizontal\": 0.9,\n  \"deadLoadOnRoofFloor\": 0.2,\n  \"liveLoadOnRoofFloor\": 0.8,\n  \"floorDeadLoad\": 2.5,\n  \"floorFinishLoad\": 1,\n  \"floorLiveLoad\": 5,\n  \"snowLoad\": 0.5,\n  \"earthquakeLoad\": 0.3,\n  \"approvalDrawingsTime\": 2,\n  \"approvalDrawingsUnit\": \"WEEKS\",\n  \"supplyOfMaterialsDays\": 30,\n  \"erectionOfStructureDays\": 45\n}",
+              "options": {
+                "raw": {
+                  "headerFamily": "json",
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "name": "Delete a job's load",
+          "request": {
+            "name": "Delete a job's load",
+            "description": {
+              "content": "Deletes the load configuration for the specified job.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "jobs",
+                ":jobId",
+                "load"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "type": "any",
+                  "value": "job_cuid_123",
+                  "key": "jobId",
+                  "disabled": false,
+                  "description": {
+                    "content": "(Required) ",
+                    "type": "text/plain"
+                  }
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "DELETE",
+            "body": {}
+          },
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "name": "List loads",
+          "request": {
+            "name": "List loads",
+            "description": {
+              "content": "Returns a paginated list of loads.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "loads"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "description": {
+                    "content": "",
+                    "type": "text/plain"
+                  },
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "disabled": false,
+                  "description": {
+                    "content": "",
+                    "type": "text/plain"
+                  },
+                  "key": "pageSize",
+                  "value": "10"
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "body": {}
+          },
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ]
+    },
+    {
+      "name": "Accessories",
+      "description": "Accessories configuration endpoints.",
+      "item": [
+        {
+          "name": "Create or replace a job's accessories",
+          "request": {
+            "name": "Create or replace a job's accessories",
+            "description": {
+              "content": "Creates or replaces the accessories configuration for the specified job.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "jobs",
+                ":jobId",
+                "accessories"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "type": "any",
+                  "value": "job_cuid_123",
+                  "key": "jobId",
+                  "disabled": false,
+                  "description": {
+                    "content": "(Required) ",
+                    "type": "text/plain"
+                  }
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"gutterType\": \"PPGL\",\n  \"gutterSize\": \"IN_6\",\n  \"gutterQuantity\": 2,\n  \"downTakeType\": \"UPVC\",\n  \"downTakeSize\": \"IN_4\",\n  \"downTakeQuantity\": 3,\n  \"dripTrimType\": \"NCGL\",\n  \"dripTrimThickness\": \"MM_0_47\",\n  \"ridgeType\": \"PPGL\",\n  \"ridgeThickness\": \"MM_0_50\",\n  \"partitionType\": \"AEROCON_PANEL\",\n  \"partitionThickness\": \"MM_50\",\n  \"partitionQuantity\": 4,\n  \"roofInsulationType\": \"GLASS_WOOL\",\n  \"wallInsulationType\": \"ROCK_WOOL\",\n  \"turboVentilatorDiameter\": \"FT_1\",\n  \"turboVentilatorNos\": 2,\n  \"handrailWeightKg\": 45.5,\n  \"deckSheetFlashingEnabled\": true,\n  \"gantryGirderEnabled\": false,\n  \"liftStructureEnabled\": true,\n  \"framesPrimerCoats\": 1,\n  \"framesPrimerType\": \"EPOXY_PRIMER\",\n  \"framesPaintCoats\": 2,\n  \"framesPaintType\": \"EPOXY_PAINT\",\n  \"purlinsGirtsFinish\": \"PRE_GALVANISED\",\n  \"purlinsGirtsGsm\": 120,\n  \"purlinsGirtsPaint\": \"UNPAINTED\",\n  \"foundationBoltFinish\": \"BLACK_UNPAINTED\",\n  \"doors\": [\n    {\n      \"height\": 2.1,\n      \"width\": 1.2,\n      \"nos\": 2,\n      \"quantity\": 2\n    }\n  ],\n  \"windows\": [\n    {\n      \"height\": 1.2,\n      \"width\": 1.5,\n      \"nos\": 4,\n      \"quantity\": 4\n    }\n  ],\n  \"foldedPlates\": [\n    {\n      \"length\": 6,\n      \"width\": 1.2,\n      \"nos\": 3,\n      \"quantity\": 3\n    }\n  ],\n  \"openings\": [\n    {\n      \"kind\": \"ROLLING_SHUTTER\",\n      \"length\": 3.5,\n      \"width\": 3,\n      \"nos\": 1,\n      \"quantity\": 1\n    }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "headerFamily": "json",
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "name": "Get a job's accessories",
+          "request": {
+            "name": "Get a job's accessories",
+            "description": {
+              "content": "Returns the accessories configuration belonging to the specified job.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "jobs",
+                ":jobId",
+                "accessories"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "type": "any",
+                  "value": "job_cuid_123",
+                  "key": "jobId",
+                  "disabled": false,
+                  "description": {
+                    "content": "(Required) ",
+                    "type": "text/plain"
+                  }
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "body": {}
+          },
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "name": "Update a job's accessories",
+          "request": {
+            "name": "Update a job's accessories",
+            "description": {
+              "content": "Partially updates the accessories configuration for the specified job.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "jobs",
+                ":jobId",
+                "accessories"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "type": "any",
+                  "value": "job_cuid_123",
+                  "key": "jobId",
+                  "disabled": false,
+                  "description": {
+                    "content": "(Required) ",
+                    "type": "text/plain"
+                  }
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "PUT",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"gutterType\": \"PPGL\",\n  \"gutterSize\": \"IN_6\",\n  \"gutterQuantity\": 2,\n  \"downTakeType\": \"UPVC\",\n  \"downTakeSize\": \"IN_4\",\n  \"downTakeQuantity\": 3,\n  \"dripTrimType\": \"NCGL\",\n  \"dripTrimThickness\": \"MM_0_47\",\n  \"ridgeType\": \"PPGL\",\n  \"ridgeThickness\": \"MM_0_50\",\n  \"partitionType\": \"AEROCON_PANEL\",\n  \"partitionThickness\": \"MM_50\",\n  \"partitionQuantity\": 4,\n  \"roofInsulationType\": \"GLASS_WOOL\",\n  \"wallInsulationType\": \"ROCK_WOOL\",\n  \"turboVentilatorDiameter\": \"FT_1\",\n  \"turboVentilatorNos\": 2,\n  \"handrailWeightKg\": 45.5,\n  \"deckSheetFlashingEnabled\": true,\n  \"gantryGirderEnabled\": false,\n  \"liftStructureEnabled\": true,\n  \"framesPrimerCoats\": 1,\n  \"framesPrimerType\": \"EPOXY_PRIMER\",\n  \"framesPaintCoats\": 2,\n  \"framesPaintType\": \"EPOXY_PAINT\",\n  \"purlinsGirtsFinish\": \"PRE_GALVANISED\",\n  \"purlinsGirtsGsm\": 120,\n  \"purlinsGirtsPaint\": \"UNPAINTED\",\n  \"foundationBoltFinish\": \"BLACK_UNPAINTED\",\n  \"doors\": [\n    {\n      \"height\": 2.1,\n      \"width\": 1.2,\n      \"nos\": 2,\n      \"quantity\": 2\n    }\n  ],\n  \"windows\": [\n    {\n      \"height\": 1.2,\n      \"width\": 1.5,\n      \"nos\": 4,\n      \"quantity\": 4\n    }\n  ],\n  \"foldedPlates\": [\n    {\n      \"length\": 6,\n      \"width\": 1.2,\n      \"nos\": 3,\n      \"quantity\": 3\n    }\n  ],\n  \"openings\": [\n    {\n      \"kind\": \"ROLLING_SHUTTER\",\n      \"length\": 3.5,\n      \"width\": 3,\n      \"nos\": 1,\n      \"quantity\": 1\n    }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "headerFamily": "json",
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "name": "Delete a job's accessories",
+          "request": {
+            "name": "Delete a job's accessories",
+            "description": {
+              "content": "Deletes the accessories configuration for the specified job.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "jobs",
+                ":jobId",
+                "accessories"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "type": "any",
+                  "value": "job_cuid_123",
+                  "key": "jobId",
+                  "disabled": false,
+                  "description": {
+                    "content": "(Required) ",
+                    "type": "text/plain"
+                  }
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "DELETE",
+            "body": {}
+          },
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "name": "List accessories",
+          "request": {
+            "name": "List accessories",
+            "description": {
+              "content": "Returns a paginated list of accessories.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "accessories"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "description": {
+                    "content": "",
+                    "type": "text/plain"
+                  },
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "disabled": false,
+                  "description": {
+                    "content": "",
+                    "type": "text/plain"
+                  },
+                  "key": "pageSize",
+                  "value": "10"
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "body": {}
+          },
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ]
+    },
+    {
+      "name": "Joint",
+      "description": "Joint configuration endpoints.",
+      "item": [
+        {
+          "name": "Create or replace a job's joint",
+          "request": {
+            "name": "Create or replace a job's joint",
+            "description": {
+              "content": "Creates or replaces the joint configuration for the specified job.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "jobs",
+                ":jobId",
+                "joint"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "type": "any",
+                  "value": "job_cuid_123",
+                  "key": "jobId",
+                  "disabled": false,
+                  "description": {
+                    "content": "(Required) ",
+                    "type": "text/plain"
+                  }
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"secondaryBeamsBoltType\": \"HSFG\",\n  \"secondaryBeamsBoltDiameter\": 12,\n  \"secondaryBeamsNumberOfBolts\": 4,\n  \"purlinFlangeBraceBoltType\": \"ORD\",\n  \"purlinFlangeBraceBoltDiameter\": 10,\n  \"purlinFlangeBraceNumberOfBolts\": 2,\n  \"claddingPurlinsBoltType\": \"ORD\",\n  \"claddingPurlinsBoltDiameter\": 10,\n  \"claddingPurlinsNumberOfBolts\": 2,\n  \"canopyBoltType\": \"HSFG\",\n  \"canopyBoltDiameter\": 12,\n  \"canopyNumberOfBolts\": 3,\n  \"jointBoltRoof\": [\n    {\n      \"roofJointId\": \"A\",\n      \"boltDiameter\": 20,\n      \"numberOfBolts\": 6\n    },\n    {\n      \"roofJointId\": \"A_1\",\n      \"boltDiameter\": 16,\n      \"numberOfBolts\": 4\n    }\n  ],\n  \"jointBoltMezzanine\": [\n    {\n      \"mezzanineJointId\": \"M\",\n      \"boltDiameter\": 16,\n      \"numberOfBolts\": 4\n    }\n  ],\n  \"foundationBoltRoof\": [\n    {\n      \"foundationJointId\": \"FB4\",\n      \"boltDiameter\": 24,\n      \"numberOfBolts\": 4\n    }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "headerFamily": "json",
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "name": "Get a job's joint",
+          "request": {
+            "name": "Get a job's joint",
+            "description": {
+              "content": "Returns the joint configuration belonging to the specified job.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "jobs",
+                ":jobId",
+                "joint"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "type": "any",
+                  "value": "job_cuid_123",
+                  "key": "jobId",
+                  "disabled": false,
+                  "description": {
+                    "content": "(Required) ",
+                    "type": "text/plain"
+                  }
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "body": {}
+          },
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "name": "Update a job's joint",
+          "request": {
+            "name": "Update a job's joint",
+            "description": {
+              "content": "Partially updates the joint configuration for the specified job.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "jobs",
+                ":jobId",
+                "joint"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "type": "any",
+                  "value": "job_cuid_123",
+                  "key": "jobId",
+                  "disabled": false,
+                  "description": {
+                    "content": "(Required) ",
+                    "type": "text/plain"
+                  }
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "PUT",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"secondaryBeamsBoltType\": \"HSFG\",\n  \"secondaryBeamsBoltDiameter\": 12,\n  \"secondaryBeamsNumberOfBolts\": 4,\n  \"purlinFlangeBraceBoltType\": \"ORD\",\n  \"purlinFlangeBraceBoltDiameter\": 10,\n  \"purlinFlangeBraceNumberOfBolts\": 2,\n  \"claddingPurlinsBoltType\": \"ORD\",\n  \"claddingPurlinsBoltDiameter\": 10,\n  \"claddingPurlinsNumberOfBolts\": 2,\n  \"canopyBoltType\": \"HSFG\",\n  \"canopyBoltDiameter\": 12,\n  \"canopyNumberOfBolts\": 3,\n  \"jointBoltRoof\": [\n    {\n      \"roofJointId\": \"A\",\n      \"boltDiameter\": 20,\n      \"numberOfBolts\": 6\n    },\n    {\n      \"roofJointId\": \"A_1\",\n      \"boltDiameter\": 16,\n      \"numberOfBolts\": 4\n    }\n  ],\n  \"jointBoltMezzanine\": [\n    {\n      \"mezzanineJointId\": \"M\",\n      \"boltDiameter\": 16,\n      \"numberOfBolts\": 4\n    }\n  ],\n  \"foundationBoltRoof\": [\n    {\n      \"foundationJointId\": \"FB4\",\n      \"boltDiameter\": 24,\n      \"numberOfBolts\": 4\n    }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "headerFamily": "json",
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "name": "Delete a job's joint",
+          "request": {
+            "name": "Delete a job's joint",
+            "description": {
+              "content": "Deletes the joint configuration for the specified job.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "jobs",
+                ":jobId",
+                "joint"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "type": "any",
+                  "value": "job_cuid_123",
+                  "key": "jobId",
+                  "disabled": false,
+                  "description": {
+                    "content": "(Required) ",
+                    "type": "text/plain"
+                  }
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "DELETE",
+            "body": {}
+          },
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "name": "List joints",
+          "request": {
+            "name": "List joints",
+            "description": {
+              "content": "Returns a paginated list of joints.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "joints"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "description": {
+                    "content": "",
+                    "type": "text/plain"
+                  },
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "disabled": false,
+                  "description": {
+                    "content": "",
+                    "type": "text/plain"
+                  },
+                  "key": "pageSize",
+                  "value": "10"
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "body": {}
+          },
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ]
+    },
+    {
+      "name": "Specs",
+      "description": "Job product specification endpoints.",
+      "item": [
+        {
+          "name": "Create or replace a job's spec",
+          "request": {
+            "name": "Create or replace a job's spec",
+            "description": {
+              "content": "Creates or replaces the spec configuration for the specified job.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "jobs",
+                ":jobId",
+                "spec"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "type": "any",
+                  "value": "job_cuid_123",
+                  "key": "jobId",
+                  "disabled": false,
+                  "description": {
+                    "content": "(Required) ",
+                    "type": "text/plain"
+                  }
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"description\": \"Fabricated Columns and Beams\",\n  \"specifications\": [\n    \"Fabricated from Plates or Stocks by continuous welding process.\",\n    \"Conform to IS2062 Grade E345 / ASTM A572-12 Grade 50.\",\n    \"Minimum plate thickness: 4 mm.\"\n  ],\n  \"makeOrBrand\": [\n    \"JSW\",\n    \"TATA\"\n  ],\n  \"yieldStrengthMpa\": 345\n}",
+              "options": {
+                "raw": {
+                  "headerFamily": "json",
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "name": "Get a job's spec",
+          "request": {
+            "name": "Get a job's spec",
+            "description": {
+              "content": "Returns the spec configuration belonging to the specified job.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "jobs",
+                ":jobId",
+                "spec"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "type": "any",
+                  "value": "job_cuid_123",
+                  "key": "jobId",
+                  "disabled": false,
+                  "description": {
+                    "content": "(Required) ",
+                    "type": "text/plain"
+                  }
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "body": {}
+          },
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "name": "Update a job's spec",
+          "request": {
+            "name": "Update a job's spec",
+            "description": {
+              "content": "Partially updates the spec configuration for the specified job.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "jobs",
+                ":jobId",
+                "spec"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "type": "any",
+                  "value": "job_cuid_123",
+                  "key": "jobId",
+                  "disabled": false,
+                  "description": {
+                    "content": "(Required) ",
+                    "type": "text/plain"
+                  }
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "PUT",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"description\": \"Fabricated Columns and Beams\",\n  \"specifications\": [\n    \"Fabricated from Plates or Stocks by continuous welding process.\",\n    \"Conform to IS2062 Grade E345 / ASTM A572-12 Grade 50.\",\n    \"Minimum plate thickness: 4 mm.\"\n  ],\n  \"makeOrBrand\": [\n    \"JSW\",\n    \"TATA\"\n  ],\n  \"yieldStrengthMpa\": 345\n}",
+              "options": {
+                "raw": {
+                  "headerFamily": "json",
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "name": "Delete a job's spec",
+          "request": {
+            "name": "Delete a job's spec",
+            "description": {
+              "content": "Deletes the spec configuration for the specified job.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "jobs",
+                ":jobId",
+                "spec"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "type": "any",
+                  "value": "job_cuid_123",
+                  "key": "jobId",
+                  "disabled": false,
+                  "description": {
+                    "content": "(Required) ",
+                    "type": "text/plain"
+                  }
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "DELETE",
+            "body": {}
+          },
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "name": "List specs",
+          "request": {
+            "name": "List specs",
+            "description": {
+              "content": "Returns a paginated list of specs.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "specs"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "description": {
+                    "content": "",
+                    "type": "text/plain"
+                  },
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "disabled": false,
+                  "description": {
+                    "content": "",
+                    "type": "text/plain"
+                  },
+                  "key": "pageSize",
+                  "value": "10"
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "body": {}
+          },
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ]
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "if (!pm.request.url.toString().includes('/api/health')) {",
+          "  pm.request.headers.add({ key: 'x-dev-user-id', value: pm.variables.get('devUserId') });",
+          "}"
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3000",
+      "type": "string"
+    },
+    {
+      "key": "devUserId",
+      "value": "user_your_clerk_id_here",
+      "type": "string"
+    }
+  ],
+  "info": {
+    "name": "Floreat API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "Generated from backend/docs/openapi.json. Run npm run docs:generate instead of editing this collection manually."
+  },
+  "auth": {
+    "type": "noauth"
+  }
 }

@@ -1,4 +1,6 @@
 import { prisma } from '../lib/prisma.js'
+import { createSpecSchema } from '../schemas/spec.schema.js'
+import { specSeedData } from './seed-data.js'
 import {
   SideWallSide,
   TypeOfWall,
@@ -143,6 +145,18 @@ async function main() {
     await prisma.job.upsert({ where: { id }, update: data, create: { id, ...data } })
   }
   console.log('✓ Jobs seeded')
+
+  // ── Job-owned product specifications ───────────────────────
+  for (const { jobId, ...data } of specSeedData) {
+    const validatedData = createSpecSchema.parse(data)
+    const products = validatedData.products ?? []
+    await prisma.spec.upsert({
+      where: { jobId },
+      create: { jobId, products: { createMany: { data: products } } },
+      update: { products: { deleteMany: {}, createMany: { data: products } } },
+    })
+  }
+  console.log('✓ Product specifications seeded')
 
   // ── Roofs & Sidewalls ───────────────────────────────────────
   const roofs = [

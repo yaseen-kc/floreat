@@ -11,6 +11,7 @@ import { Step5Canopy } from '@/components/quotation/steps/Step5Canopy'
 import { Step6Accessories } from '@/components/quotation/steps/Step6Accessories'
 import { Step7Load } from '@/components/quotation/steps/Step7Load'
 import { Step8Joint } from '@/components/quotation/steps/Step8Joint'
+import { Step9Spec } from '@/components/quotation/steps/Step9Spec'
 
 
 export default function CreateQuotation() {
@@ -34,6 +35,7 @@ export default function CreateQuotation() {
           {currentStep === 6 && <Step6Accessories />}
           {currentStep === 7 && <Step7Load />}
           {currentStep === 8 && <Step8Joint />}
+          {currentStep === 9 && <Step9Spec />}
         </div>
       </div>
       <WizardActionBar />

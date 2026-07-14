@@ -18,6 +18,7 @@ import {
   canopyItemSchema,
 } from '@/schemas/canopy.schema'
 import { type CreateLoadInput } from '@/schemas/load.schema'
+import { type CreateSpecInput, specProductItemSchema } from '@/schemas/spec.schema'
 import {
   type CreateAccessoriesInput,
   accessoryDoorSchema,
@@ -273,34 +274,48 @@ export type JointDraft = Omit<
   foundationBoltRoof: FoundationBoltRoofDraft[]
 }
 
+/**
+ * A single Step 9 product-spec draft row. Comes straight from the shared Zod
+ * item schema (every field optional), so a row can hold a partial product
+ * exactly as the create/upsert payload accepts it. Blank rows are dropped by
+ * {@link buildSpecPayload}.
+ */
+export type SpecProductDraft = z.infer<typeof specProductItemSchema>
+
+/**
+ * Step 9 spec draft. Spec is a flat, always-on 1:1-per-job resource that owns an
+ * inline `products` array of all-optional rows — each row is one line in the
+ * Step 9 product table. Every field can be left blank and empty rows are dropped
+ * from the payload by {@link buildSpecPayload}.
+ */
+export type SpecDraft = Omit<CreateSpecInput, 'products'> & {
+  products: SpecProductDraft[]
+}
+
 interface QuotationState {
   currentStep: number
   projectInfo: ProjectInfo
   roof: RoofDraft
   roofSectionsEnabled: RoofSectionsEnabled
   mezzanine: MezzanineDraft
-  hasMezzanine: boolean
   stair: StairDraft
-  hasStair: boolean
   canopy: CanopyDraft
-  hasCanopy: boolean
   load: LoadDraft
   accessories: AccessoriesDraft
   joint: JointDraft
+  spec: SpecDraft
   showValidation: boolean
   jobId: string | null
   setProjectInfo: (v: Partial<ProjectInfo>) => void
   setRoof: (v: Partial<RoofDraft>) => void
   toggleRoofSection: (key: RoofSectionKey, enabled: boolean) => void
   setMezzanine: (v: Partial<MezzanineDraft>) => void
-  setHasMezzanine: (enabled: boolean) => void
   setStair: (v: Partial<StairDraft>) => void
-  setHasStair: (enabled: boolean) => void
   setCanopy: (v: Partial<CanopyDraft>) => void
-  setHasCanopy: (enabled: boolean) => void
   setLoad: (v: Partial<LoadDraft>) => void
   setAccessories: (v: Partial<AccessoriesDraft>) => void
   setJoint: (v: Partial<JointDraft>) => void
+  setSpec: (v: Partial<SpecDraft>) => void
   setJobId: (id: string | null) => void
   resetQuotation: () => void
   goStep: (n: number) => void
@@ -392,6 +407,42 @@ const createDefaultJoint = (): JointDraft => ({
   foundationBoltRoof: foundationBoltJointIdEnum.options.map((foundationJointId) => ({ foundationJointId })),
 })
 
+/** Factory for a fresh spec draft — an empty products table (the schema is all-optional). */
+const createDefaultSpec = (): SpecDraft => ({ products: [] })
+
+/** True for a plain, non-array object (the shape of every nested draft slice). */
+const isPlainObject = (v: unknown): v is Record<string, unknown> =>
+  typeof v === 'object' && v !== null && !Array.isArray(v)
+
+/**
+ * One-level-deep merge of a rehydrated persisted draft onto the store's default
+ * state. zustand's default `merge` is a shallow top-level merge, so a persisted
+ * nested slice (`spec`, `canopy`, …) written before a key existed would fully
+ * replace the default and reintroduce that key as `undefined` — crashing any
+ * consumer that reads it (e.g. `spec.products.length`). Here each top-level key
+ * present in the persisted state is merged over its default: nested plain
+ * objects are shallow-merged so default keys survive; arrays and primitives are
+ * taken from the persisted value as-is (persisted wins). Keys absent from the
+ * persisted state keep their default.
+ *
+ * ponytail: one level deep only — draft slices are a single layer of plain
+ * objects over arrays/primitives, so no recursion is needed. If a future slice
+ * nests objects two levels deep, extend this to recurse for that key.
+ */
+function deepMergeDraft(persistedState: unknown, currentState: QuotationState): QuotationState {
+  if (!isPlainObject(persistedState)) return currentState
+  const current = currentState as unknown as Record<string, unknown>
+  const merged: Record<string, unknown> = { ...current }
+  for (const [key, persistedValue] of Object.entries(persistedState)) {
+    const currentValue = current[key]
+    merged[key] =
+      isPlainObject(currentValue) && isPlainObject(persistedValue)
+        ? { ...currentValue, ...persistedValue }
+        : persistedValue
+  }
+  return merged as unknown as QuotationState
+}
+
 export const useQuotationStore = create<QuotationState>()(
   persist(
     (set, get) => ({
@@ -402,14 +453,12 @@ export const useQuotationStore = create<QuotationState>()(
       roof: createDefaultRoof(),
       roofSectionsEnabled: createDefaultRoofSections(),
       mezzanine: createDefaultMezzanine(),
-      hasMezzanine: false,
       stair: createDefaultStair(),
-      hasStair: false,
       canopy: createDefaultCanopy(),
-      hasCanopy: false,
       load: createDefaultLoad(),
       accessories: createDefaultAccessories(),
       joint: createDefaultJoint(),
+      spec: createDefaultSpec(),
 
       setProjectInfo: (v) => set((s) => ({ projectInfo: { ...s.projectInfo, ...v } })),
 
@@ -441,24 +490,9 @@ export const useQuotationStore = create<QuotationState>()(
 
       setMezzanine: (v) => set((s) => ({ mezzanine: { ...s.mezzanine, ...v } })),
 
-      // Turning the toggle off clears any rows so an empty mezzanine drops from
-      // the payload (and the WizardActionBar deletes the server record).
-      setHasMezzanine: (enabled) =>
-        set(() => (enabled ? { hasMezzanine: true } : { hasMezzanine: false, mezzanine: createDefaultMezzanine() })),
-
       setStair: (v) => set((s) => ({ stair: { ...s.stair, ...v } })),
 
-      // Turning the toggle off clears any rows so an empty stair drops from the
-      // payload (and the WizardActionBar deletes the server record).
-      setHasStair: (enabled) =>
-        set(() => (enabled ? { hasStair: true } : { hasStair: false, stair: createDefaultStair() })),
-
       setCanopy: (v) => set((s) => ({ canopy: { ...s.canopy, ...v } })),
-
-      // Turning the toggle off clears any rows so an empty canopy drops from the
-      // payload (and the WizardActionBar deletes the server record).
-      setHasCanopy: (enabled) =>
-        set(() => (enabled ? { hasCanopy: true } : { hasCanopy: false, canopy: createDefaultCanopy() })),
 
       // Load is always-on (no toggle): blank fields are simply dropped from the
       // payload by buildLoadPayload at save time.
@@ -487,6 +521,10 @@ export const useQuotationStore = create<QuotationState>()(
           }
         }),
 
+      // Spec is always-on (no toggle), like Load/Accessories/Joint: blank fields
+      // are dropped from the payload by buildSpecPayload at save time.
+      setSpec: (v) => set((s) => ({ spec: { ...s.spec, ...v } })),
+
       setJobId: (id) => set({ jobId: id }),
 
       resetQuotation: () => set({
@@ -497,14 +535,12 @@ export const useQuotationStore = create<QuotationState>()(
         roof: createDefaultRoof(),
         roofSectionsEnabled: createDefaultRoofSections(),
         mezzanine: createDefaultMezzanine(),
-        hasMezzanine: false,
         stair: createDefaultStair(),
-        hasStair: false,
         canopy: createDefaultCanopy(),
-        hasCanopy: false,
         load: createDefaultLoad(),
         accessories: createDefaultAccessories(),
         joint: createDefaultJoint(),
+        spec: createDefaultSpec(),
       }),
 
       validateStep: (n) => {
@@ -535,7 +571,8 @@ export const useQuotationStore = create<QuotationState>()(
       // in-progress job resume (and re-use PUT) after a refresh instead of
       // creating a duplicate.
       skipHydration: true,
-      partialize: (s) => ({ projectInfo: s.projectInfo, roof: s.roof, roofSectionsEnabled: s.roofSectionsEnabled, mezzanine: s.mezzanine, hasMezzanine: s.hasMezzanine, stair: s.stair, hasStair: s.hasStair, canopy: s.canopy, hasCanopy: s.hasCanopy, load: s.load, accessories: s.accessories, joint: s.joint, currentStep: s.currentStep, jobId: s.jobId }),
+      merge: (persistedState, currentState) => deepMergeDraft(persistedState, currentState),
+      partialize: (s) => ({ projectInfo: s.projectInfo, roof: s.roof, roofSectionsEnabled: s.roofSectionsEnabled, mezzanine: s.mezzanine, stair: s.stair, canopy: s.canopy, load: s.load, accessories: s.accessories, joint: s.joint, spec: s.spec, currentStep: s.currentStep, jobId: s.jobId }),
     }
   )
 )
@@ -709,5 +746,26 @@ export function buildJointPayload(joint: JointDraft): CreateJointInput {
   if (mezz.length > 0) payload.jointBoltMezzanine = mezz as CreateJointInput['jointBoltMezzanine']
   if (foundation.length > 0) payload.foundationBoltRoof = foundation as CreateJointInput['foundationBoltRoof']
 
+  return payload
+}
+
+/**
+ * Builds the spec create/upsert payload from the Step 9 draft.
+ *
+ * Each product row is compacted (blank `undefined` fields dropped) and rows that
+ * carry no value beyond their auto-assigned `code` are removed. The surviving
+ * rows are renumbered `PRODUCT-1..PRODUCT-n` by position (mirroring the canopy
+ * code convention); an empty `products` array is omitted entirely, so an
+ * all-blank draft yields `{}` — which the backend accepts (the always-on form
+ * upserts whatever the user provided).
+ */
+export function buildSpecPayload(spec: SpecDraft): CreateSpecInput {
+  const products = spec.products
+    .map(({ code: _code, ...rest }) => compactRow(rest))
+    .filter((r) => Object.keys(r).length > 0)
+    .map((r, i) => ({ ...r, code: `PRODUCT-${i + 1}` }))
+
+  const payload: CreateSpecInput = {}
+  if (products.length > 0) payload.products = products
   return payload
 }

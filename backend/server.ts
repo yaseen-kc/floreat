@@ -9,6 +9,7 @@ import rateLimit from '@fastify/rate-limit'
 import { clerkPlugin } from '@clerk/fastify'
 import { config } from './config/index.js'
 import { registerRoutes } from './routes/index.js'
+import { registerDevelopmentDocs } from './docs/plugin.js'
 
 const fastify = Fastify({ logger: true })
 
@@ -33,6 +34,7 @@ await fastify.register(rateLimit, {
 })
 
 await fastify.register(clerkPlugin)
+if (config.docs.enabled) await registerDevelopmentDocs(fastify)
 await registerRoutes(fastify)
 
 try {

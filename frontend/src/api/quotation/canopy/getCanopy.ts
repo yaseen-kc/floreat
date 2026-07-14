@@ -1,4 +1,4 @@
-import { apiFetch } from '@/lib/api'
+import { apiFetch, ApiError } from '@/lib/api'
 import { useQuery } from '@tanstack/react-query'
 import { useAuth } from '@clerk/react'
 import { canopyKeys } from './queryKeys'
@@ -107,21 +107,30 @@ export function useCanopies(page = 1, pageSize = 10) {
 
 /**
  * Fetches the canopy belonging to a specific job.
+ * Returns `null` when no canopy exists yet (404) — this is the expected
+ * empty state for a new job, not an error.
  * Requires a Clerk session token for authentication.
  */
-export async function getCanopyByJobId(token: string | null, jobId: string): Promise<Canopy> {
-  return await apiFetch(`/api/jobs/${jobId}/canopy`, token)
+export async function getCanopyByJobId(token: string | null, jobId: string): Promise<Canopy | null> {
+  try {
+    return await apiFetch(`/api/jobs/${jobId}/canopy`, token)
+  } catch (err) {
+    if (err instanceof ApiError && err.status === 404) return null
+    throw err
+  }
 }
 
 /**
  * React Query hook for a single job's canopy. Disabled until a `jobId` is
- * available so it never fires with an empty path segment.
+ * available so it never fires with an empty path segment. Returns `null` when
+ * no canopy exists yet; `retry: false` prevents retry storms on 404.
  */
 export function useCanopy(jobId: string) {
   const { getToken } = useAuth()
   return useQuery({
     queryKey: canopyKeys.detail(jobId),
     enabled: !!jobId,
+    retry: false,
     queryFn: async () => {
       const token = await getToken()
       return getCanopyByJobId(token, jobId)

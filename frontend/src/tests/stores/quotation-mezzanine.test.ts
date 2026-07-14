@@ -1,7 +1,6 @@
-import { describe, it, expect, beforeEach } from 'vitest'
+import { describe, it, expect } from 'vitest'
 import {
   buildMezzaninePayload,
-  useQuotationStore,
   type MezzanineDraft,
 } from '@/stores/quotation-store'
 
@@ -26,24 +25,5 @@ describe('buildMezzaninePayload', () => {
 
   it('returns an empty object for an empty draft', () => {
     expect(buildMezzaninePayload({ floors: [], extensions: [] })).toEqual({})
-  })
-})
-
-describe('setHasMezzanine', () => {
-  beforeEach(() => {
-    localStorage.clear()
-    useQuotationStore.getState().resetQuotation()
-  })
-
-  it('clears floors and extensions when toggled off', () => {
-    const { setMezzanine, setHasMezzanine } = useQuotationStore.getState()
-    setHasMezzanine(true)
-    setMezzanine({ floors: [{ code: 'MEZ-1' }], extensions: [{ type: 'PANEL' }] })
-    expect(useQuotationStore.getState().mezzanine.floors).toHaveLength(1)
-
-    setHasMezzanine(false)
-    const s = useQuotationStore.getState()
-    expect(s.hasMezzanine).toBe(false)
-    expect(s.mezzanine).toEqual({ floors: [], extensions: [] })
   })
 })

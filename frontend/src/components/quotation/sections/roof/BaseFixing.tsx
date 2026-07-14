@@ -39,7 +39,7 @@ export function BaseFixing() {
       <div>
         <Label className="desktop:mb-2">Roof Frame Base Fixing {isRequired('roofFrameBaseFixing') && <span className="text-destructive">*</span>}</Label>
         <Select
-          value={roof.roofFrameBaseFixing || undefined}
+          value={roof.roofFrameBaseFixing ?? ''}
           onValueChange={(v) => setRoof({ roofFrameBaseFixing: v as RoofDraft['roofFrameBaseFixing'] })}
         >
           <SelectTrigger className="w-full" aria-invalid={Boolean(errors.roofFrameBaseFixing)}>

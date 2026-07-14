@@ -200,10 +200,10 @@ describe('getMezzanineByJobId', () => {
     const result = await getMezzanineByJobId('token-123', 'job-2')
 
     expect(result).toEqual(nullableMezzanine)
-    expect(result.floors[0].code).toBeNull()
-    expect(result.floors[0].beamsSecondary).toBeNull()
-    expect(result.extensions[0].type).toBeNull()
-    expect(result.extensions[0].widthM).toBeNull()
+    expect(result!.floors[0].code).toBeNull()
+    expect(result!.floors[0].beamsSecondary).toBeNull()
+    expect(result!.extensions[0].type).toBeNull()
+    expect(result!.extensions[0].widthM).toBeNull()
   })
 
   it('propagates errors thrown by the API layer', async () => {

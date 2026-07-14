@@ -26,8 +26,11 @@ export class ApiError extends Error {
  * available via `ApiError.body`.
  */
 export async function apiFetch(path: string, token: string | null, options?: RequestInit) {
+  // Only declare a JSON body when one is actually present — sending
+  // Content-Type: application/json with no body causes Fastify to return 400.
+  const hasBody = options?.body !== undefined && options?.body !== null
   const headers: Record<string, string> = {
-    'Content-Type': 'application/json',
+    ...(hasBody ? { 'Content-Type': 'application/json' } : {}),
     ...(token ? { Authorization: `Bearer ${token}` } : {}),
   }
 

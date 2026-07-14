@@ -30,7 +30,7 @@ const serverStair = (): Stair => ({
 
 describe('mapStairResponseToDraft', () => {
   it('coerces Decimal strings to numbers and nulls to undefined', () => {
-    const { stair } = mapStairResponseToDraft(serverStair())
+    const stair = mapStairResponseToDraft(serverStair())
     const item = stair.stairs[0]
     expect(item.length).toBe(12.5)
     expect(item.numberOfMidLanding).toBe(2)
@@ -41,10 +41,17 @@ describe('mapStairResponseToDraft', () => {
     expect(item.location).toBe('MEZ-1')
   })
 
-  it('derives hasStair from the presence of stairs/areaDeductions', () => {
-    expect(mapStairResponseToDraft(serverStair()).hasStair).toBe(true)
+  it('returns populated stairs when the server record has data', () => {
+    const stair = mapStairResponseToDraft(serverStair())
+    expect(stair.stairs).toHaveLength(1)
+    expect(stair.areaDeductions).toHaveLength(0)
+  })
+
+  it('returns empty stairs/areaDeductions for an empty server record', () => {
     const empty: Stair = { ...serverStair(), stairs: [], areaDeductions: [] }
-    expect(mapStairResponseToDraft(empty).hasStair).toBe(false)
+    const stair = mapStairResponseToDraft(empty)
+    expect(stair.stairs).toHaveLength(0)
+    expect(stair.areaDeductions).toHaveLength(0)
   })
 })
 

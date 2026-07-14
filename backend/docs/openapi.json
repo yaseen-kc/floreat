@@ -1,0 +1,7064 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Floreat API",
+    "version": "1.0.0",
+    "description": "Structural quotation API for Floreat."
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3000",
+      "description": "Local development server"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Health",
+      "description": "Liveness and readiness endpoints."
+    },
+    {
+      "name": "User",
+      "description": "Authenticated user endpoints."
+    },
+    {
+      "name": "Jobs",
+      "description": "Structural quotation jobs."
+    },
+    {
+      "name": "Roof",
+      "description": "Roof configuration endpoints."
+    },
+    {
+      "name": "Mezzanine",
+      "description": "Mezzanine configuration endpoints."
+    },
+    {
+      "name": "Stair",
+      "description": "Stair configuration endpoints."
+    },
+    {
+      "name": "Canopy",
+      "description": "Canopy configuration endpoints."
+    },
+    {
+      "name": "Load",
+      "description": "Load configuration endpoints."
+    },
+    {
+      "name": "Accessories",
+      "description": "Accessories configuration endpoints."
+    },
+    {
+      "name": "Joint",
+      "description": "Joint configuration endpoints."
+    },
+    {
+      "name": "Specs",
+      "description": "Job product specification endpoints."
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "LocalDevUserId": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "x-dev-user-id",
+        "description": "Development-only user ID used when BYPASS_AUTH=true."
+      }
+    },
+    "schemas": {
+      "HealthResponse": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "ok",
+              "error"
+            ]
+          },
+          "db": {
+            "type": "string",
+            "enum": [
+              "up",
+              "down"
+            ]
+          }
+        },
+        "required": [
+          "status",
+          "db"
+        ]
+      },
+      "ApiError": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "object",
+                "additionalProperties": {
+                  "nullable": true
+                }
+              }
+            ]
+          }
+        },
+        "required": [
+          "error"
+        ]
+      },
+      "UserResponse": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": {
+          "nullable": true
+        }
+      },
+      "JobResponse": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": {
+          "nullable": true
+        }
+      },
+      "CreateJobRequest": {
+        "type": "object",
+        "properties": {
+          "projectNo": {
+            "type": "string",
+            "minLength": 1
+          },
+          "subject": {
+            "type": "string",
+            "minLength": 1
+          },
+          "refNo": {
+            "type": "string",
+            "minLength": 1
+          },
+          "date": {
+            "type": "string",
+            "nullable": true,
+            "format": "date-time"
+          },
+          "designedByName": {
+            "type": "string",
+            "minLength": 1
+          },
+          "designedByMobile": {
+            "type": "string",
+            "minLength": 1
+          },
+          "clientName": {
+            "type": "string"
+          },
+          "estimationEngineerName": {
+            "type": "string"
+          },
+          "estimationEngineerMobile": {
+            "type": "string"
+          },
+          "headOfSalesName": {
+            "type": "string"
+          },
+          "headOfSalesMobile": {
+            "type": "string"
+          },
+          "firmName": {
+            "type": "string"
+          },
+          "buildingUsage": {
+            "type": "string",
+            "minLength": 1
+          },
+          "numberOfBuilding": {
+            "type": "integer",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          },
+          "frameType": {
+            "type": "string",
+            "minLength": 1
+          },
+          "configuration": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "projectNo",
+          "subject",
+          "refNo",
+          "date",
+          "designedByName",
+          "designedByMobile",
+          "buildingUsage",
+          "numberOfBuilding",
+          "frameType",
+          "configuration"
+        ]
+      },
+      "PaginatedJobResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "nullable": true
+            }
+          },
+          "total": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "page": {
+            "type": "integer",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          },
+          "pageSize": {
+            "type": "integer",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          }
+        },
+        "required": [
+          "data",
+          "total",
+          "page",
+          "pageSize"
+        ]
+      },
+      "UpdateJobRequest": {
+        "type": "object",
+        "properties": {
+          "projectNo": {
+            "type": "string",
+            "minLength": 1
+          },
+          "subject": {
+            "type": "string",
+            "minLength": 1
+          },
+          "refNo": {
+            "type": "string",
+            "minLength": 1
+          },
+          "date": {
+            "type": "string",
+            "nullable": true,
+            "format": "date-time"
+          },
+          "designedByName": {
+            "type": "string",
+            "minLength": 1
+          },
+          "designedByMobile": {
+            "type": "string",
+            "minLength": 1
+          },
+          "clientName": {
+            "type": "string"
+          },
+          "estimationEngineerName": {
+            "type": "string"
+          },
+          "estimationEngineerMobile": {
+            "type": "string"
+          },
+          "headOfSalesName": {
+            "type": "string"
+          },
+          "headOfSalesMobile": {
+            "type": "string"
+          },
+          "firmName": {
+            "type": "string"
+          },
+          "buildingUsage": {
+            "type": "string",
+            "minLength": 1
+          },
+          "numberOfBuilding": {
+            "type": "integer",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          },
+          "frameType": {
+            "type": "string",
+            "minLength": 1
+          },
+          "configuration": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      },
+      "RoofResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "jobId": {
+            "type": "string"
+          },
+          "buildingOverallLength": {
+            "$ref": "#/components/schemas/DecimalString"
+          },
+          "buildingOverallWidth": {
+            "$ref": "#/components/schemas/DecimalString"
+          },
+          "eaveHeight": {
+            "$ref": "#/components/schemas/DecimalString"
+          },
+          "roofSlope": {
+            "$ref": "#/components/schemas/DecimalString"
+          }
+        },
+        "additionalProperties": {
+          "nullable": true
+        }
+      },
+      "DecimalString": {
+        "type": "string",
+        "pattern": "^-?\\d+(\\.\\d+)?$",
+        "description": "Prisma Decimal values are serialized as JSON strings over HTTP.",
+        "example": "30.000"
+      },
+      "CreateRoofRequest": {
+        "type": "object",
+        "properties": {
+          "buildingOverallLength": {
+            "type": "number",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          },
+          "buildingOverallWidth": {
+            "type": "number",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          },
+          "eaveHeight": {
+            "type": "number",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          },
+          "roofSlope": {
+            "type": "number",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          },
+          "mainRoofFrames": {
+            "type": "integer",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          },
+          "endRoofFrames": {
+            "type": "integer",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          },
+          "roofPurlinSpacing": {
+            "type": "number",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          },
+          "claddingPurlins": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "internalColumnsForMainRoofFrames": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "internalColumnsForEndRoofFrames": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "roofFrameBaseFixing": {
+            "type": "string",
+            "enum": [
+              "FOUNDATION_BOLT",
+              "ANCHOR_BOLT",
+              "JOINT_BOLT_ON_STEEL_COLUMN"
+            ]
+          },
+          "columnSegmentsInMainFrame": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "raftersInOneHalfOfMainFrame": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "columnSegmentsInEndFrame": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "raftersInOneHalfOfEndFrame": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "endFrameHorizontalTieBeam": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "roofPurlinType": {
+            "type": "string",
+            "enum": [
+              "Z_C",
+              "TUBE"
+            ]
+          },
+          "roofPurlinDepth": {
+            "type": "number",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          },
+          "roofPurlinUnitWeight": {
+            "type": "number",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          },
+          "claddingPurlinType": {
+            "type": "string",
+            "enum": [
+              "Z_C",
+              "TUBE"
+            ]
+          },
+          "claddingPurlinDepth": {
+            "type": "number",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          },
+          "claddingPurlinUnitWeight": {
+            "type": "number",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          },
+          "roofCoveringType": {
+            "type": "string",
+            "enum": [
+              "BARE_GALVALUME",
+              "PPGL",
+              "PUFF_SHEET",
+              "OTHER"
+            ]
+          },
+          "roofCoveringThickness": {
+            "type": "number",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          },
+          "claddingCoveringType": {
+            "type": "string",
+            "enum": [
+              "BARE_GALVALUME",
+              "PPGL",
+              "PUFF_SHEET",
+              "OTHER"
+            ]
+          },
+          "claddingCoveringThickness": {
+            "type": "number",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          },
+          "roofAreaDeduction": {
+            "type": "number",
+            "minimum": 0
+          },
+          "roofFlangeBraceAverageLength": {
+            "type": "number",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          },
+          "claddingFlangeBraceAverageLength": {
+            "type": "number",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          },
+          "endFrameFlangeBraceAverageLength": {
+            "type": "number",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          },
+          "polycarbonateRoofLength": {
+            "type": "number",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          },
+          "polycarbonateRoofWidth": {
+            "type": "number",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          },
+          "polycarbonateRoofCount": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "roofWindBracingSegmentsInOneHalf": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "columnWindBracingSegments": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "roofWindBracingProvidedBays": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "columnWindBracingProvidedBays": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "windBracingColumnHeight": {
+            "type": "number",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          },
+          "windBracingUnitWeight": {
+            "type": "number",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          },
+          "roofWindBracingBaySpacing": {
+            "type": "number",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          },
+          "columnWindBracingBaySpacing": {
+            "type": "number",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          },
+          "roofWindBracingLength": {
+            "type": "number",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          },
+          "columnWindBracingLength": {
+            "type": "number",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          },
+          "windBracingType": {
+            "type": "string",
+            "enum": [
+              "ROD",
+              "TUBE"
+            ]
+          },
+          "frontCladdingOpeningArea": {
+            "type": "number",
+            "minimum": 0
+          },
+          "backCladdingOpeningArea": {
+            "type": "number",
+            "minimum": 0
+          },
+          "rightCladdingOpeningArea": {
+            "type": "number",
+            "minimum": 0
+          },
+          "leftCladdingOpeningArea": {
+            "type": "number",
+            "minimum": 0
+          },
+          "fasciaBoardArea": {
+            "type": "number",
+            "minimum": 0
+          },
+          "fasciaMaterialWeightPerSqft": {
+            "type": "number",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          },
+          "roofExtensionWidthHeight": {
+            "type": "number",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          },
+          "roofExtensionMidFrameCount": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "roofExtensionEndFrameCount": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "claddingExtensionWidthHeight": {
+            "type": "number",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          },
+          "claddingExtensionMidFrameCount": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "claddingExtensionEndFrameCount": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "sideColumnsWidthHeight": {
+            "type": "number",
+            "minimum": 0
+          },
+          "sideColumnsMidFrameCount": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "sideColumnsEndFrameCount": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "gradeOfPlateMaterial": {
+            "type": "string",
+            "enum": [
+              "FE_345",
+              "FE_250",
+              "FE_400"
+            ]
+          },
+          "materialConsumptionExcludingPurlin": {
+            "type": "number",
+            "minimum": 0
+          },
+          "diaOfRoofSagRod": {
+            "type": "number",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          },
+          "diaOfCladdingSagRod": {
+            "type": "number",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          },
+          "sidewalls": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "side": {
+                  "type": "string",
+                  "enum": [
+                    "FRONT",
+                    "BACK",
+                    "RIGHT",
+                    "LEFT"
+                  ]
+                },
+                "wallType": {
+                  "type": "string",
+                  "enum": [
+                    "BRICK",
+                    "PANEL",
+                    "LATERITE",
+                    "AAC",
+                    "BLOCK"
+                  ]
+                },
+                "thickness": {
+                  "type": "number",
+                  "minimum": 0,
+                  "exclusiveMinimum": true
+                },
+                "height": {
+                  "type": "number",
+                  "minimum": 0,
+                  "exclusiveMinimum": true
+                }
+              },
+              "required": [
+                "side",
+                "wallType",
+                "thickness",
+                "height"
+              ]
+            }
+          }
+        },
+        "required": [
+          "buildingOverallLength",
+          "buildingOverallWidth",
+          "eaveHeight",
+          "roofSlope",
+          "mainRoofFrames",
+          "endRoofFrames",
+          "roofPurlinSpacing",
+          "claddingPurlins",
+          "internalColumnsForMainRoofFrames",
+          "internalColumnsForEndRoofFrames"
+        ]
+      },
+      "UpdateRoofRequest": {
+        "type": "object",
+        "properties": {
+          "buildingOverallLength": {
+            "type": "number",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          },
+          "buildingOverallWidth": {
+            "type": "number",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          },
+          "eaveHeight": {
+            "type": "number",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          },
+          "roofSlope": {
+            "type": "number",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          },
+          "mainRoofFrames": {
+            "type": "integer",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          },
+          "endRoofFrames": {
+            "type": "integer",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          },
+          "roofPurlinSpacing": {
+            "type": "number",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          },
+          "claddingPurlins": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "internalColumnsForMainRoofFrames": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "internalColumnsForEndRoofFrames": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "roofFrameBaseFixing": {
+            "type": "string",
+            "enum": [
+              "FOUNDATION_BOLT",
+              "ANCHOR_BOLT",
+              "JOINT_BOLT_ON_STEEL_COLUMN"
+            ]
+          },
+          "columnSegmentsInMainFrame": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "raftersInOneHalfOfMainFrame": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "columnSegmentsInEndFrame": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "raftersInOneHalfOfEndFrame": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "endFrameHorizontalTieBeam": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "roofPurlinType": {
+            "type": "string",
+            "enum": [
+              "Z_C",
+              "TUBE"
+            ]
+          },
+          "roofPurlinDepth": {
+            "type": "number",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          },
+          "roofPurlinUnitWeight": {
+            "type": "number",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          },
+          "claddingPurlinType": {
+            "type": "string",
+            "enum": [
+              "Z_C",
+              "TUBE"
+            ]
+          },
+          "claddingPurlinDepth": {
+            "type": "number",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          },
+          "claddingPurlinUnitWeight": {
+            "type": "number",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          },
+          "roofCoveringType": {
+            "type": "string",
+            "enum": [
+              "BARE_GALVALUME",
+              "PPGL",
+              "PUFF_SHEET",
+              "OTHER"
+            ]
+          },
+          "roofCoveringThickness": {
+            "type": "number",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          },
+          "claddingCoveringType": {
+            "type": "string",
+            "enum": [
+              "BARE_GALVALUME",
+              "PPGL",
+              "PUFF_SHEET",
+              "OTHER"
+            ]
+          },
+          "claddingCoveringThickness": {
+            "type": "number",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          },
+          "roofAreaDeduction": {
+            "type": "number",
+            "minimum": 0
+          },
+          "roofFlangeBraceAverageLength": {
+            "type": "number",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          },
+          "claddingFlangeBraceAverageLength": {
+            "type": "number",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          },
+          "endFrameFlangeBraceAverageLength": {
+            "type": "number",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          },
+          "polycarbonateRoofLength": {
+            "type": "number",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          },
+          "polycarbonateRoofWidth": {
+            "type": "number",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          },
+          "polycarbonateRoofCount": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "roofWindBracingSegmentsInOneHalf": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "columnWindBracingSegments": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "roofWindBracingProvidedBays": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "columnWindBracingProvidedBays": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "windBracingColumnHeight": {
+            "type": "number",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          },
+          "windBracingUnitWeight": {
+            "type": "number",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          },
+          "roofWindBracingBaySpacing": {
+            "type": "number",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          },
+          "columnWindBracingBaySpacing": {
+            "type": "number",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          },
+          "roofWindBracingLength": {
+            "type": "number",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          },
+          "columnWindBracingLength": {
+            "type": "number",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          },
+          "windBracingType": {
+            "type": "string",
+            "enum": [
+              "ROD",
+              "TUBE"
+            ]
+          },
+          "frontCladdingOpeningArea": {
+            "type": "number",
+            "minimum": 0
+          },
+          "backCladdingOpeningArea": {
+            "type": "number",
+            "minimum": 0
+          },
+          "rightCladdingOpeningArea": {
+            "type": "number",
+            "minimum": 0
+          },
+          "leftCladdingOpeningArea": {
+            "type": "number",
+            "minimum": 0
+          },
+          "fasciaBoardArea": {
+            "type": "number",
+            "minimum": 0
+          },
+          "fasciaMaterialWeightPerSqft": {
+            "type": "number",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          },
+          "roofExtensionWidthHeight": {
+            "type": "number",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          },
+          "roofExtensionMidFrameCount": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "roofExtensionEndFrameCount": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "claddingExtensionWidthHeight": {
+            "type": "number",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          },
+          "claddingExtensionMidFrameCount": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "claddingExtensionEndFrameCount": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "sideColumnsWidthHeight": {
+            "type": "number",
+            "minimum": 0
+          },
+          "sideColumnsMidFrameCount": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "sideColumnsEndFrameCount": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "gradeOfPlateMaterial": {
+            "type": "string",
+            "enum": [
+              "FE_345",
+              "FE_250",
+              "FE_400"
+            ]
+          },
+          "materialConsumptionExcludingPurlin": {
+            "type": "number",
+            "minimum": 0
+          },
+          "diaOfRoofSagRod": {
+            "type": "number",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          },
+          "diaOfCladdingSagRod": {
+            "type": "number",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          },
+          "sidewalls": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "side": {
+                  "type": "string",
+                  "enum": [
+                    "FRONT",
+                    "BACK",
+                    "RIGHT",
+                    "LEFT"
+                  ]
+                },
+                "wallType": {
+                  "type": "string",
+                  "enum": [
+                    "BRICK",
+                    "PANEL",
+                    "LATERITE",
+                    "AAC",
+                    "BLOCK"
+                  ]
+                },
+                "thickness": {
+                  "type": "number",
+                  "minimum": 0,
+                  "exclusiveMinimum": true
+                },
+                "height": {
+                  "type": "number",
+                  "minimum": 0,
+                  "exclusiveMinimum": true
+                }
+              },
+              "required": [
+                "side",
+                "wallType",
+                "thickness",
+                "height"
+              ]
+            }
+          }
+        }
+      },
+      "PaginatedRoofResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "nullable": true
+            }
+          },
+          "total": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "page": {
+            "type": "integer",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          },
+          "pageSize": {
+            "type": "integer",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          }
+        },
+        "required": [
+          "data",
+          "total",
+          "page",
+          "pageSize"
+        ]
+      },
+      "MezzanineResponse": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": {
+          "nullable": true
+        }
+      },
+      "CreateMezzanineRequest": {
+        "type": "object",
+        "properties": {
+          "floors": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "string",
+                  "pattern": "^MEZ-[1-9][0-9]*$"
+                },
+                "floor": {
+                  "type": "string",
+                  "enum": [
+                    "FLOOR_1",
+                    "FLOOR_2",
+                    "FLOOR_3",
+                    "FLOOR_4",
+                    "FLOOR_5",
+                    "FLOOR_6",
+                    "FLOOR_7",
+                    "FLOOR_8",
+                    "FLOOR_9",
+                    "FLOOR_10"
+                  ]
+                },
+                "type": {
+                  "type": "string",
+                  "enum": [
+                    "DECK_SHEET",
+                    "FOLDED_PLATE",
+                    "PANEL",
+                    "BOARD",
+                    "RCC_SLAB"
+                  ]
+                },
+                "heightFrom": {
+                  "type": "string",
+                  "enum": [
+                    "GROUND",
+                    "FIRST_FLOOR",
+                    "FLOOR_2",
+                    "FLOOR_3",
+                    "FLOOR_4",
+                    "FLOOR_5"
+                  ]
+                },
+                "thicknessMm": {
+                  "type": "number",
+                  "minimum": 0,
+                  "exclusiveMinimum": true
+                },
+                "lengthM": {
+                  "type": "number",
+                  "minimum": 0,
+                  "exclusiveMinimum": true
+                },
+                "widthM": {
+                  "type": "number",
+                  "minimum": 0,
+                  "exclusiveMinimum": true
+                },
+                "heightM": {
+                  "type": "number",
+                  "minimum": 0,
+                  "exclusiveMinimum": true
+                },
+                "materialConsumptionKgPerSqft": {
+                  "type": "number",
+                  "minimum": 0,
+                  "exclusiveMinimum": true
+                },
+                "beamsMidPrimary": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "beamsEndPrimary": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "beamsSecondary": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "jointsMidPrimary": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "jointsEndPrimary": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "internalColumnsMidPrimary": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "internalColumnsEndPrimary": {
+                  "type": "integer",
+                  "minimum": 0
+                }
+              }
+            }
+          },
+          "extensions": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "enum": [
+                    "DECK_SHEET",
+                    "FOLDED_PLATE",
+                    "PANEL",
+                    "BOARD",
+                    "RCC_SLAB"
+                  ]
+                },
+                "heightFrom": {
+                  "type": "string",
+                  "enum": [
+                    "GROUND",
+                    "FIRST_FLOOR",
+                    "FLOOR_2",
+                    "FLOOR_3",
+                    "FLOOR_4",
+                    "FLOOR_5"
+                  ]
+                },
+                "typicalTo": {
+                  "type": "string",
+                  "enum": [
+                    "FLOOR_1",
+                    "FLOOR_2",
+                    "FLOOR_3",
+                    "FLOOR_4",
+                    "FLOOR_5",
+                    "FLOOR_6",
+                    "FLOOR_7",
+                    "FLOOR_8",
+                    "FLOOR_9",
+                    "FLOOR_10"
+                  ]
+                },
+                "thicknessMm": {
+                  "type": "number",
+                  "minimum": 0,
+                  "exclusiveMinimum": true
+                },
+                "lengthM": {
+                  "type": "number",
+                  "minimum": 0,
+                  "exclusiveMinimum": true
+                },
+                "widthM": {
+                  "type": "number",
+                  "minimum": 0,
+                  "exclusiveMinimum": true
+                },
+                "heightM": {
+                  "type": "number",
+                  "minimum": 0,
+                  "exclusiveMinimum": true
+                },
+                "beamsMidPrimary": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "beamsEndPrimary": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "beamsSecondary": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "jointsMidPrimary": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "jointsEndPrimary": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "extendedColumnsMidPrimary": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "extendedColumnsEndPrimary": {
+                  "type": "integer",
+                  "minimum": 0
+                }
+              }
+            }
+          }
+        }
+      },
+      "UpdateMezzanineRequest": {
+        "type": "object",
+        "properties": {
+          "floors": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "string",
+                  "pattern": "^MEZ-[1-9][0-9]*$"
+                },
+                "floor": {
+                  "type": "string",
+                  "enum": [
+                    "FLOOR_1",
+                    "FLOOR_2",
+                    "FLOOR_3",
+                    "FLOOR_4",
+                    "FLOOR_5",
+                    "FLOOR_6",
+                    "FLOOR_7",
+                    "FLOOR_8",
+                    "FLOOR_9",
+                    "FLOOR_10"
+                  ]
+                },
+                "type": {
+                  "type": "string",
+                  "enum": [
+                    "DECK_SHEET",
+                    "FOLDED_PLATE",
+                    "PANEL",
+                    "BOARD",
+                    "RCC_SLAB"
+                  ]
+                },
+                "heightFrom": {
+                  "type": "string",
+                  "enum": [
+                    "GROUND",
+                    "FIRST_FLOOR",
+                    "FLOOR_2",
+                    "FLOOR_3",
+                    "FLOOR_4",
+                    "FLOOR_5"
+                  ]
+                },
+                "thicknessMm": {
+                  "type": "number",
+                  "minimum": 0,
+                  "exclusiveMinimum": true
+                },
+                "lengthM": {
+                  "type": "number",
+                  "minimum": 0,
+                  "exclusiveMinimum": true
+                },
+                "widthM": {
+                  "type": "number",
+                  "minimum": 0,
+                  "exclusiveMinimum": true
+                },
+                "heightM": {
+                  "type": "number",
+                  "minimum": 0,
+                  "exclusiveMinimum": true
+                },
+                "materialConsumptionKgPerSqft": {
+                  "type": "number",
+                  "minimum": 0,
+                  "exclusiveMinimum": true
+                },
+                "beamsMidPrimary": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "beamsEndPrimary": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "beamsSecondary": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "jointsMidPrimary": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "jointsEndPrimary": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "internalColumnsMidPrimary": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "internalColumnsEndPrimary": {
+                  "type": "integer",
+                  "minimum": 0
+                }
+              }
+            }
+          },
+          "extensions": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "enum": [
+                    "DECK_SHEET",
+                    "FOLDED_PLATE",
+                    "PANEL",
+                    "BOARD",
+                    "RCC_SLAB"
+                  ]
+                },
+                "heightFrom": {
+                  "type": "string",
+                  "enum": [
+                    "GROUND",
+                    "FIRST_FLOOR",
+                    "FLOOR_2",
+                    "FLOOR_3",
+                    "FLOOR_4",
+                    "FLOOR_5"
+                  ]
+                },
+                "typicalTo": {
+                  "type": "string",
+                  "enum": [
+                    "FLOOR_1",
+                    "FLOOR_2",
+                    "FLOOR_3",
+                    "FLOOR_4",
+                    "FLOOR_5",
+                    "FLOOR_6",
+                    "FLOOR_7",
+                    "FLOOR_8",
+                    "FLOOR_9",
+                    "FLOOR_10"
+                  ]
+                },
+                "thicknessMm": {
+                  "type": "number",
+                  "minimum": 0,
+                  "exclusiveMinimum": true
+                },
+                "lengthM": {
+                  "type": "number",
+                  "minimum": 0,
+                  "exclusiveMinimum": true
+                },
+                "widthM": {
+                  "type": "number",
+                  "minimum": 0,
+                  "exclusiveMinimum": true
+                },
+                "heightM": {
+                  "type": "number",
+                  "minimum": 0,
+                  "exclusiveMinimum": true
+                },
+                "beamsMidPrimary": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "beamsEndPrimary": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "beamsSecondary": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "jointsMidPrimary": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "jointsEndPrimary": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "extendedColumnsMidPrimary": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "extendedColumnsEndPrimary": {
+                  "type": "integer",
+                  "minimum": 0
+                }
+              }
+            }
+          }
+        }
+      },
+      "PaginatedMezzanineResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "nullable": true
+            }
+          },
+          "total": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "page": {
+            "type": "integer",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          },
+          "pageSize": {
+            "type": "integer",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          }
+        },
+        "required": [
+          "data",
+          "total",
+          "page",
+          "pageSize"
+        ]
+      },
+      "StairResponse": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": {
+          "nullable": true
+        }
+      },
+      "CreateStairRequest": {
+        "type": "object",
+        "properties": {
+          "stairs": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "string",
+                  "pattern": "^STAIR-[1-9][0-9]*$"
+                },
+                "typeOfStep": {
+                  "type": "string",
+                  "enum": [
+                    "CHQ_PLATE_6MM",
+                    "CHQ_PLATE_4MM",
+                    "TUBE"
+                  ]
+                },
+                "location": {
+                  "type": "string",
+                  "pattern": "^(MEZ|EXT)-[1-9][0-9]*$"
+                },
+                "startingFrom": {
+                  "type": "string",
+                  "enum": [
+                    "GROUND",
+                    "FIRST_FLOOR",
+                    "SECOND_FLOOR",
+                    "THIRD_FLOOR",
+                    "FOURTH_FLOOR",
+                    "FIFTH_FLOOR",
+                    "SIXTH_FLOOR"
+                  ]
+                },
+                "endingUpTo": {
+                  "type": "string",
+                  "enum": [
+                    "GROUND",
+                    "FIRST_FLOOR",
+                    "SECOND_FLOOR",
+                    "THIRD_FLOOR",
+                    "FOURTH_FLOOR",
+                    "FIFTH_FLOOR",
+                    "SIXTH_FLOOR"
+                  ]
+                },
+                "length": {
+                  "type": "number",
+                  "minimum": 0,
+                  "exclusiveMinimum": true
+                },
+                "width": {
+                  "type": "number",
+                  "minimum": 0,
+                  "exclusiveMinimum": true
+                },
+                "height": {
+                  "type": "number",
+                  "minimum": 0,
+                  "exclusiveMinimum": true
+                },
+                "numberOfMidLanding": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "typeOfStringer": {
+                  "type": "string",
+                  "enum": [
+                    "HR_SECTION",
+                    "FAB_SECTION"
+                  ]
+                },
+                "unitWeightOfStringer": {
+                  "type": "number",
+                  "minimum": 0,
+                  "exclusiveMinimum": true
+                }
+              }
+            }
+          },
+          "areaDeductions": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "enum": [
+                    "LIFT",
+                    "DUCT",
+                    "CUT_OUT"
+                  ]
+                },
+                "location": {
+                  "type": "string",
+                  "pattern": "^(MEZ|EXT)-[1-9][0-9]*$"
+                },
+                "areaM2": {
+                  "type": "number",
+                  "minimum": 0,
+                  "exclusiveMinimum": true
+                },
+                "numbers": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "deductionFor": {
+                  "type": "string",
+                  "enum": [
+                    "STRUCTURE_DEDUCTION",
+                    "COVERING_DEDUCTION",
+                    "BOTH"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      },
+      "UpdateStairRequest": {
+        "type": "object",
+        "properties": {
+          "stairs": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "string",
+                  "pattern": "^STAIR-[1-9][0-9]*$"
+                },
+                "typeOfStep": {
+                  "type": "string",
+                  "enum": [
+                    "CHQ_PLATE_6MM",
+                    "CHQ_PLATE_4MM",
+                    "TUBE"
+                  ]
+                },
+                "location": {
+                  "type": "string",
+                  "pattern": "^(MEZ|EXT)-[1-9][0-9]*$"
+                },
+                "startingFrom": {
+                  "type": "string",
+                  "enum": [
+                    "GROUND",
+                    "FIRST_FLOOR",
+                    "SECOND_FLOOR",
+                    "THIRD_FLOOR",
+                    "FOURTH_FLOOR",
+                    "FIFTH_FLOOR",
+                    "SIXTH_FLOOR"
+                  ]
+                },
+                "endingUpTo": {
+                  "type": "string",
+                  "enum": [
+                    "GROUND",
+                    "FIRST_FLOOR",
+                    "SECOND_FLOOR",
+                    "THIRD_FLOOR",
+                    "FOURTH_FLOOR",
+                    "FIFTH_FLOOR",
+                    "SIXTH_FLOOR"
+                  ]
+                },
+                "length": {
+                  "type": "number",
+                  "minimum": 0,
+                  "exclusiveMinimum": true
+                },
+                "width": {
+                  "type": "number",
+                  "minimum": 0,
+                  "exclusiveMinimum": true
+                },
+                "height": {
+                  "type": "number",
+                  "minimum": 0,
+                  "exclusiveMinimum": true
+                },
+                "numberOfMidLanding": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "typeOfStringer": {
+                  "type": "string",
+                  "enum": [
+                    "HR_SECTION",
+                    "FAB_SECTION"
+                  ]
+                },
+                "unitWeightOfStringer": {
+                  "type": "number",
+                  "minimum": 0,
+                  "exclusiveMinimum": true
+                }
+              }
+            }
+          },
+          "areaDeductions": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "enum": [
+                    "LIFT",
+                    "DUCT",
+                    "CUT_OUT"
+                  ]
+                },
+                "location": {
+                  "type": "string",
+                  "pattern": "^(MEZ|EXT)-[1-9][0-9]*$"
+                },
+                "areaM2": {
+                  "type": "number",
+                  "minimum": 0,
+                  "exclusiveMinimum": true
+                },
+                "numbers": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "deductionFor": {
+                  "type": "string",
+                  "enum": [
+                    "STRUCTURE_DEDUCTION",
+                    "COVERING_DEDUCTION",
+                    "BOTH"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      },
+      "PaginatedStairResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "nullable": true
+            }
+          },
+          "total": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "page": {
+            "type": "integer",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          },
+          "pageSize": {
+            "type": "integer",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          }
+        },
+        "required": [
+          "data",
+          "total",
+          "page",
+          "pageSize"
+        ]
+      },
+      "CanopyResponse": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": {
+          "nullable": true
+        }
+      },
+      "CreateCanopyRequest": {
+        "type": "object",
+        "properties": {
+          "canopies": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "string",
+                  "pattern": "^CANOPY-[1-9][0-9]*$"
+                },
+                "heightFrom": {
+                  "type": "string",
+                  "enum": [
+                    "GROUND",
+                    "FF",
+                    "SF",
+                    "FLOOR_3",
+                    "FLOOR_4",
+                    "FLOOR_5"
+                  ]
+                },
+                "length": {
+                  "type": "number",
+                  "minimum": 0,
+                  "exclusiveMinimum": true
+                },
+                "width": {
+                  "type": "number",
+                  "minimum": 0,
+                  "exclusiveMinimum": true
+                },
+                "height": {
+                  "type": "number",
+                  "minimum": 0,
+                  "exclusiveMinimum": true
+                },
+                "materialConsumptionKgPerSqft": {
+                  "type": "number",
+                  "minimum": 0,
+                  "exclusiveMinimum": true
+                },
+                "numberOfBeams": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "numberOfPurlins": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "purlinDepth": {
+                  "type": "number",
+                  "minimum": 0,
+                  "exclusiveMinimum": true
+                },
+                "unitWeightOfPurlin": {
+                  "type": "number",
+                  "minimum": 0,
+                  "exclusiveMinimum": true
+                },
+                "canopySheet": {
+                  "type": "string",
+                  "enum": [
+                    "NCGL",
+                    "PPGL",
+                    "PUFF",
+                    "OTHER"
+                  ]
+                },
+                "sheetThick": {
+                  "type": "number",
+                  "minimum": 0,
+                  "exclusiveMinimum": true
+                },
+                "canopySideCoveringHeight": {
+                  "type": "number",
+                  "minimum": 0,
+                  "exclusiveMinimum": true
+                },
+                "gutter": {
+                  "type": "boolean"
+                },
+                "downTake": {
+                  "type": "boolean"
+                },
+                "flashing": {
+                  "type": "boolean"
+                }
+              }
+            }
+          }
+        }
+      },
+      "UpdateCanopyRequest": {
+        "type": "object",
+        "properties": {
+          "canopies": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "string",
+                  "pattern": "^CANOPY-[1-9][0-9]*$"
+                },
+                "heightFrom": {
+                  "type": "string",
+                  "enum": [
+                    "GROUND",
+                    "FF",
+                    "SF",
+                    "FLOOR_3",
+                    "FLOOR_4",
+                    "FLOOR_5"
+                  ]
+                },
+                "length": {
+                  "type": "number",
+                  "minimum": 0,
+                  "exclusiveMinimum": true
+                },
+                "width": {
+                  "type": "number",
+                  "minimum": 0,
+                  "exclusiveMinimum": true
+                },
+                "height": {
+                  "type": "number",
+                  "minimum": 0,
+                  "exclusiveMinimum": true
+                },
+                "materialConsumptionKgPerSqft": {
+                  "type": "number",
+                  "minimum": 0,
+                  "exclusiveMinimum": true
+                },
+                "numberOfBeams": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "numberOfPurlins": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "purlinDepth": {
+                  "type": "number",
+                  "minimum": 0,
+                  "exclusiveMinimum": true
+                },
+                "unitWeightOfPurlin": {
+                  "type": "number",
+                  "minimum": 0,
+                  "exclusiveMinimum": true
+                },
+                "canopySheet": {
+                  "type": "string",
+                  "enum": [
+                    "NCGL",
+                    "PPGL",
+                    "PUFF",
+                    "OTHER"
+                  ]
+                },
+                "sheetThick": {
+                  "type": "number",
+                  "minimum": 0,
+                  "exclusiveMinimum": true
+                },
+                "canopySideCoveringHeight": {
+                  "type": "number",
+                  "minimum": 0,
+                  "exclusiveMinimum": true
+                },
+                "gutter": {
+                  "type": "boolean"
+                },
+                "downTake": {
+                  "type": "boolean"
+                },
+                "flashing": {
+                  "type": "boolean"
+                }
+              }
+            }
+          }
+        }
+      },
+      "PaginatedCanopyResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "nullable": true
+            }
+          },
+          "total": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "page": {
+            "type": "integer",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          },
+          "pageSize": {
+            "type": "integer",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          }
+        },
+        "required": [
+          "data",
+          "total",
+          "page",
+          "pageSize"
+        ]
+      },
+      "LoadResponse": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": {
+          "nullable": true
+        }
+      },
+      "CreateLoadRequest": {
+        "type": "object",
+        "properties": {
+          "deadLoadOnRoofRafters": {
+            "type": "number",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          },
+          "liveLoadOnRoofRafters": {
+            "type": "number",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          },
+          "collateralLoadOnRoofRafters": {
+            "type": "number",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          },
+          "windLoadOnRoofRaftersUpward": {
+            "type": "number",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          },
+          "windLoadHorizontal": {
+            "type": "number",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          },
+          "deadLoadOnRoofFloor": {
+            "type": "number",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          },
+          "liveLoadOnRoofFloor": {
+            "type": "number",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          },
+          "floorDeadLoad": {
+            "type": "number",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          },
+          "floorFinishLoad": {
+            "type": "number",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          },
+          "floorLiveLoad": {
+            "type": "number",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          },
+          "snowLoad": {
+            "type": "number",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          },
+          "earthquakeLoad": {
+            "type": "number",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          },
+          "approvalDrawingsTime": {
+            "type": "integer",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          },
+          "approvalDrawingsUnit": {
+            "type": "string",
+            "enum": [
+              "DAYS",
+              "WEEKS",
+              "MONTHS"
+            ]
+          },
+          "supplyOfMaterialsDays": {
+            "type": "integer",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          },
+          "erectionOfStructureDays": {
+            "type": "integer",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          }
+        }
+      },
+      "UpdateLoadRequest": {
+        "type": "object",
+        "properties": {
+          "deadLoadOnRoofRafters": {
+            "type": "number",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          },
+          "liveLoadOnRoofRafters": {
+            "type": "number",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          },
+          "collateralLoadOnRoofRafters": {
+            "type": "number",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          },
+          "windLoadOnRoofRaftersUpward": {
+            "type": "number",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          },
+          "windLoadHorizontal": {
+            "type": "number",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          },
+          "deadLoadOnRoofFloor": {
+            "type": "number",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          },
+          "liveLoadOnRoofFloor": {
+            "type": "number",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          },
+          "floorDeadLoad": {
+            "type": "number",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          },
+          "floorFinishLoad": {
+            "type": "number",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          },
+          "floorLiveLoad": {
+            "type": "number",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          },
+          "snowLoad": {
+            "type": "number",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          },
+          "earthquakeLoad": {
+            "type": "number",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          },
+          "approvalDrawingsTime": {
+            "type": "integer",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          },
+          "approvalDrawingsUnit": {
+            "type": "string",
+            "enum": [
+              "DAYS",
+              "WEEKS",
+              "MONTHS"
+            ]
+          },
+          "supplyOfMaterialsDays": {
+            "type": "integer",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          },
+          "erectionOfStructureDays": {
+            "type": "integer",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          }
+        }
+      },
+      "PaginatedLoadResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "nullable": true
+            }
+          },
+          "total": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "page": {
+            "type": "integer",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          },
+          "pageSize": {
+            "type": "integer",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          }
+        },
+        "required": [
+          "data",
+          "total",
+          "page",
+          "pageSize"
+        ]
+      },
+      "AccessoriesResponse": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": {
+          "nullable": true
+        }
+      },
+      "CreateAccessoriesRequest": {
+        "type": "object",
+        "properties": {
+          "gutterType": {
+            "type": "string",
+            "enum": [
+              "PPGL",
+              "UPVC",
+              "ALUMINIUM",
+              "GI",
+              "COPPER",
+              "TIN"
+            ]
+          },
+          "gutterSize": {
+            "type": "string",
+            "enum": [
+              "IN_4",
+              "IN_6",
+              "IN_8",
+              "IN_10",
+              "IN_12",
+              "IN_18",
+              "IN_24"
+            ]
+          },
+          "gutterQuantity": {
+            "type": "number",
+            "minimum": 0
+          },
+          "gutterQuantityManual": {
+            "type": "boolean"
+          },
+          "downTakeType": {
+            "type": "string",
+            "enum": [
+              "PPGL",
+              "UPVC",
+              "ALUMINIUM",
+              "GI",
+              "COPPER",
+              "TIN"
+            ]
+          },
+          "downTakeSize": {
+            "type": "string",
+            "enum": [
+              "IN_4",
+              "IN_6",
+              "IN_8",
+              "IN_10",
+              "IN_12",
+              "IN_18",
+              "IN_24"
+            ]
+          },
+          "downTakeQuantity": {
+            "type": "number",
+            "minimum": 0
+          },
+          "downTakeQuantityManual": {
+            "type": "boolean"
+          },
+          "dripTrimType": {
+            "type": "string",
+            "enum": [
+              "PPGL",
+              "NCGL",
+              "GI"
+            ]
+          },
+          "dripTrimThickness": {
+            "type": "string",
+            "enum": [
+              "MM_0_30",
+              "MM_0_35",
+              "MM_0_40",
+              "MM_0_45",
+              "MM_0_47",
+              "MM_0_50",
+              "MM_0_55",
+              "MM_0_80",
+              "MM_1_00",
+              "MM_1_20",
+              "MM_1_60",
+              "MM_1_80",
+              "MM_2_00"
+            ]
+          },
+          "dripTrimQuantity": {
+            "type": "number",
+            "minimum": 0
+          },
+          "dripTrimQuantityManual": {
+            "type": "boolean"
+          },
+          "gableEndFlashingType": {
+            "type": "string",
+            "enum": [
+              "PPGL",
+              "NCGL",
+              "GI"
+            ]
+          },
+          "gableEndFlashingThickness": {
+            "type": "string",
+            "enum": [
+              "MM_0_30",
+              "MM_0_35",
+              "MM_0_40",
+              "MM_0_45",
+              "MM_0_47",
+              "MM_0_50",
+              "MM_0_55",
+              "MM_0_80",
+              "MM_1_00",
+              "MM_1_20",
+              "MM_1_60",
+              "MM_1_80",
+              "MM_2_00"
+            ]
+          },
+          "gableEndFlashingQuantity": {
+            "type": "number",
+            "minimum": 0
+          },
+          "gableEndFlashingQuantityManual": {
+            "type": "boolean"
+          },
+          "cornerFlashType": {
+            "type": "string",
+            "enum": [
+              "PPGL",
+              "NCGL",
+              "GI"
+            ]
+          },
+          "cornerFlashThickness": {
+            "type": "string",
+            "enum": [
+              "MM_0_30",
+              "MM_0_35",
+              "MM_0_40",
+              "MM_0_45",
+              "MM_0_47",
+              "MM_0_50",
+              "MM_0_55",
+              "MM_0_80",
+              "MM_1_00",
+              "MM_1_20",
+              "MM_1_60",
+              "MM_1_80",
+              "MM_2_00"
+            ]
+          },
+          "cornerFlashQuantity": {
+            "type": "number",
+            "minimum": 0
+          },
+          "cornerFlashQuantityManual": {
+            "type": "boolean"
+          },
+          "ridgeType": {
+            "type": "string",
+            "enum": [
+              "PPGL",
+              "NCGL",
+              "GI"
+            ]
+          },
+          "ridgeThickness": {
+            "type": "string",
+            "enum": [
+              "MM_0_30",
+              "MM_0_35",
+              "MM_0_40",
+              "MM_0_45",
+              "MM_0_47",
+              "MM_0_50",
+              "MM_0_55",
+              "MM_0_80",
+              "MM_1_00",
+              "MM_1_20",
+              "MM_1_60",
+              "MM_1_80",
+              "MM_2_00"
+            ]
+          },
+          "ridgeQuantity": {
+            "type": "number",
+            "minimum": 0
+          },
+          "ridgeQuantityManual": {
+            "type": "boolean"
+          },
+          "partitionType": {
+            "type": "string",
+            "enum": [
+              "AEROCON_PANEL",
+              "CEMENT_BOARD",
+              "PPGL_SHEET",
+              "PUFF_SHEET",
+              "PLY_BOARD"
+            ]
+          },
+          "partitionThickness": {
+            "type": "string",
+            "enum": [
+              "MM_0_40",
+              "MM_0_45",
+              "MM_0_47",
+              "MM_6",
+              "MM_8",
+              "MM_12",
+              "MM_16",
+              "MM_18",
+              "MM_30",
+              "MM_40",
+              "MM_50",
+              "MM_75"
+            ]
+          },
+          "partitionQuantity": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "roofInsulationType": {
+            "type": "string",
+            "enum": [
+              "XLPE",
+              "ROCK_WOOL",
+              "GLASS_WOOL",
+              "ALUMINIUM_BUBBLE",
+              "COOL_BOARD"
+            ]
+          },
+          "wallInsulationType": {
+            "type": "string",
+            "enum": [
+              "XLPE",
+              "ROCK_WOOL",
+              "GLASS_WOOL",
+              "ALUMINIUM_BUBBLE",
+              "COOL_BOARD"
+            ]
+          },
+          "turboVentilatorDiameter": {
+            "type": "string",
+            "enum": [
+              "IN_6",
+              "FT_1",
+              "IN_18",
+              "FT_2"
+            ]
+          },
+          "turboVentilatorNos": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "handrailWeightKg": {
+            "type": "number",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          },
+          "deckSheetFlashingEnabled": {
+            "type": "boolean"
+          },
+          "gantryGirderEnabled": {
+            "type": "boolean"
+          },
+          "liftStructureEnabled": {
+            "type": "boolean"
+          },
+          "framesPrimerCoats": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "framesPrimerType": {
+            "type": "string",
+            "enum": [
+              "EPOXY_PRIMER",
+              "EPOXY_PAINT"
+            ]
+          },
+          "framesPaintCoats": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "framesPaintType": {
+            "type": "string",
+            "enum": [
+              "EPOXY_PRIMER",
+              "EPOXY_PAINT"
+            ]
+          },
+          "purlinsGirtsFinish": {
+            "type": "string",
+            "enum": [
+              "PRE_GALVANISED"
+            ]
+          },
+          "purlinsGirtsGsm": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "purlinsGirtsPaint": {
+            "type": "string",
+            "enum": [
+              "UNPAINTED",
+              "PAINTED"
+            ]
+          },
+          "foundationBoltFinish": {
+            "type": "string",
+            "enum": [
+              "BLACK_UNPAINTED"
+            ]
+          },
+          "doors": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "height": {
+                  "type": "number",
+                  "minimum": 0,
+                  "exclusiveMinimum": true
+                },
+                "width": {
+                  "type": "number",
+                  "minimum": 0,
+                  "exclusiveMinimum": true
+                },
+                "nos": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "quantity": {
+                  "type": "number",
+                  "minimum": 0
+                }
+              }
+            }
+          },
+          "windows": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "height": {
+                  "type": "number",
+                  "minimum": 0,
+                  "exclusiveMinimum": true
+                },
+                "width": {
+                  "type": "number",
+                  "minimum": 0,
+                  "exclusiveMinimum": true
+                },
+                "nos": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "quantity": {
+                  "type": "number",
+                  "minimum": 0
+                }
+              }
+            }
+          },
+          "foldedPlates": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "length": {
+                  "type": "number",
+                  "minimum": 0,
+                  "exclusiveMinimum": true
+                },
+                "width": {
+                  "type": "number",
+                  "minimum": 0,
+                  "exclusiveMinimum": true
+                },
+                "nos": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "quantity": {
+                  "type": "number",
+                  "minimum": 0
+                }
+              }
+            }
+          },
+          "openings": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "kind": {
+                  "type": "string",
+                  "enum": [
+                    "ROLLING_SHUTTER",
+                    "LOUVER",
+                    "SKY_LIGHT",
+                    "WALL_LIGHT"
+                  ]
+                },
+                "length": {
+                  "type": "number",
+                  "minimum": 0,
+                  "exclusiveMinimum": true
+                },
+                "width": {
+                  "type": "number",
+                  "minimum": 0,
+                  "exclusiveMinimum": true
+                },
+                "nos": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "quantity": {
+                  "type": "number",
+                  "minimum": 0
+                }
+              },
+              "required": [
+                "kind"
+              ]
+            }
+          }
+        }
+      },
+      "UpdateAccessoriesRequest": {
+        "type": "object",
+        "properties": {
+          "gutterType": {
+            "type": "string",
+            "enum": [
+              "PPGL",
+              "UPVC",
+              "ALUMINIUM",
+              "GI",
+              "COPPER",
+              "TIN"
+            ]
+          },
+          "gutterSize": {
+            "type": "string",
+            "enum": [
+              "IN_4",
+              "IN_6",
+              "IN_8",
+              "IN_10",
+              "IN_12",
+              "IN_18",
+              "IN_24"
+            ]
+          },
+          "gutterQuantity": {
+            "type": "number",
+            "minimum": 0
+          },
+          "gutterQuantityManual": {
+            "type": "boolean"
+          },
+          "downTakeType": {
+            "type": "string",
+            "enum": [
+              "PPGL",
+              "UPVC",
+              "ALUMINIUM",
+              "GI",
+              "COPPER",
+              "TIN"
+            ]
+          },
+          "downTakeSize": {
+            "type": "string",
+            "enum": [
+              "IN_4",
+              "IN_6",
+              "IN_8",
+              "IN_10",
+              "IN_12",
+              "IN_18",
+              "IN_24"
+            ]
+          },
+          "downTakeQuantity": {
+            "type": "number",
+            "minimum": 0
+          },
+          "downTakeQuantityManual": {
+            "type": "boolean"
+          },
+          "dripTrimType": {
+            "type": "string",
+            "enum": [
+              "PPGL",
+              "NCGL",
+              "GI"
+            ]
+          },
+          "dripTrimThickness": {
+            "type": "string",
+            "enum": [
+              "MM_0_30",
+              "MM_0_35",
+              "MM_0_40",
+              "MM_0_45",
+              "MM_0_47",
+              "MM_0_50",
+              "MM_0_55",
+              "MM_0_80",
+              "MM_1_00",
+              "MM_1_20",
+              "MM_1_60",
+              "MM_1_80",
+              "MM_2_00"
+            ]
+          },
+          "dripTrimQuantity": {
+            "type": "number",
+            "minimum": 0
+          },
+          "dripTrimQuantityManual": {
+            "type": "boolean"
+          },
+          "gableEndFlashingType": {
+            "type": "string",
+            "enum": [
+              "PPGL",
+              "NCGL",
+              "GI"
+            ]
+          },
+          "gableEndFlashingThickness": {
+            "type": "string",
+            "enum": [
+              "MM_0_30",
+              "MM_0_35",
+              "MM_0_40",
+              "MM_0_45",
+              "MM_0_47",
+              "MM_0_50",
+              "MM_0_55",
+              "MM_0_80",
+              "MM_1_00",
+              "MM_1_20",
+              "MM_1_60",
+              "MM_1_80",
+              "MM_2_00"
+            ]
+          },
+          "gableEndFlashingQuantity": {
+            "type": "number",
+            "minimum": 0
+          },
+          "gableEndFlashingQuantityManual": {
+            "type": "boolean"
+          },
+          "cornerFlashType": {
+            "type": "string",
+            "enum": [
+              "PPGL",
+              "NCGL",
+              "GI"
+            ]
+          },
+          "cornerFlashThickness": {
+            "type": "string",
+            "enum": [
+              "MM_0_30",
+              "MM_0_35",
+              "MM_0_40",
+              "MM_0_45",
+              "MM_0_47",
+              "MM_0_50",
+              "MM_0_55",
+              "MM_0_80",
+              "MM_1_00",
+              "MM_1_20",
+              "MM_1_60",
+              "MM_1_80",
+              "MM_2_00"
+            ]
+          },
+          "cornerFlashQuantity": {
+            "type": "number",
+            "minimum": 0
+          },
+          "cornerFlashQuantityManual": {
+            "type": "boolean"
+          },
+          "ridgeType": {
+            "type": "string",
+            "enum": [
+              "PPGL",
+              "NCGL",
+              "GI"
+            ]
+          },
+          "ridgeThickness": {
+            "type": "string",
+            "enum": [
+              "MM_0_30",
+              "MM_0_35",
+              "MM_0_40",
+              "MM_0_45",
+              "MM_0_47",
+              "MM_0_50",
+              "MM_0_55",
+              "MM_0_80",
+              "MM_1_00",
+              "MM_1_20",
+              "MM_1_60",
+              "MM_1_80",
+              "MM_2_00"
+            ]
+          },
+          "ridgeQuantity": {
+            "type": "number",
+            "minimum": 0
+          },
+          "ridgeQuantityManual": {
+            "type": "boolean"
+          },
+          "partitionType": {
+            "type": "string",
+            "enum": [
+              "AEROCON_PANEL",
+              "CEMENT_BOARD",
+              "PPGL_SHEET",
+              "PUFF_SHEET",
+              "PLY_BOARD"
+            ]
+          },
+          "partitionThickness": {
+            "type": "string",
+            "enum": [
+              "MM_0_40",
+              "MM_0_45",
+              "MM_0_47",
+              "MM_6",
+              "MM_8",
+              "MM_12",
+              "MM_16",
+              "MM_18",
+              "MM_30",
+              "MM_40",
+              "MM_50",
+              "MM_75"
+            ]
+          },
+          "partitionQuantity": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "roofInsulationType": {
+            "type": "string",
+            "enum": [
+              "XLPE",
+              "ROCK_WOOL",
+              "GLASS_WOOL",
+              "ALUMINIUM_BUBBLE",
+              "COOL_BOARD"
+            ]
+          },
+          "wallInsulationType": {
+            "type": "string",
+            "enum": [
+              "XLPE",
+              "ROCK_WOOL",
+              "GLASS_WOOL",
+              "ALUMINIUM_BUBBLE",
+              "COOL_BOARD"
+            ]
+          },
+          "turboVentilatorDiameter": {
+            "type": "string",
+            "enum": [
+              "IN_6",
+              "FT_1",
+              "IN_18",
+              "FT_2"
+            ]
+          },
+          "turboVentilatorNos": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "handrailWeightKg": {
+            "type": "number",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          },
+          "deckSheetFlashingEnabled": {
+            "type": "boolean"
+          },
+          "gantryGirderEnabled": {
+            "type": "boolean"
+          },
+          "liftStructureEnabled": {
+            "type": "boolean"
+          },
+          "framesPrimerCoats": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "framesPrimerType": {
+            "type": "string",
+            "enum": [
+              "EPOXY_PRIMER",
+              "EPOXY_PAINT"
+            ]
+          },
+          "framesPaintCoats": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "framesPaintType": {
+            "type": "string",
+            "enum": [
+              "EPOXY_PRIMER",
+              "EPOXY_PAINT"
+            ]
+          },
+          "purlinsGirtsFinish": {
+            "type": "string",
+            "enum": [
+              "PRE_GALVANISED"
+            ]
+          },
+          "purlinsGirtsGsm": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "purlinsGirtsPaint": {
+            "type": "string",
+            "enum": [
+              "UNPAINTED",
+              "PAINTED"
+            ]
+          },
+          "foundationBoltFinish": {
+            "type": "string",
+            "enum": [
+              "BLACK_UNPAINTED"
+            ]
+          },
+          "doors": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "height": {
+                  "type": "number",
+                  "minimum": 0,
+                  "exclusiveMinimum": true
+                },
+                "width": {
+                  "type": "number",
+                  "minimum": 0,
+                  "exclusiveMinimum": true
+                },
+                "nos": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "quantity": {
+                  "type": "number",
+                  "minimum": 0
+                }
+              }
+            }
+          },
+          "windows": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "height": {
+                  "type": "number",
+                  "minimum": 0,
+                  "exclusiveMinimum": true
+                },
+                "width": {
+                  "type": "number",
+                  "minimum": 0,
+                  "exclusiveMinimum": true
+                },
+                "nos": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "quantity": {
+                  "type": "number",
+                  "minimum": 0
+                }
+              }
+            }
+          },
+          "foldedPlates": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "length": {
+                  "type": "number",
+                  "minimum": 0,
+                  "exclusiveMinimum": true
+                },
+                "width": {
+                  "type": "number",
+                  "minimum": 0,
+                  "exclusiveMinimum": true
+                },
+                "nos": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "quantity": {
+                  "type": "number",
+                  "minimum": 0
+                }
+              }
+            }
+          },
+          "openings": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "kind": {
+                  "type": "string",
+                  "enum": [
+                    "ROLLING_SHUTTER",
+                    "LOUVER",
+                    "SKY_LIGHT",
+                    "WALL_LIGHT"
+                  ]
+                },
+                "length": {
+                  "type": "number",
+                  "minimum": 0,
+                  "exclusiveMinimum": true
+                },
+                "width": {
+                  "type": "number",
+                  "minimum": 0,
+                  "exclusiveMinimum": true
+                },
+                "nos": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "quantity": {
+                  "type": "number",
+                  "minimum": 0
+                }
+              },
+              "required": [
+                "kind"
+              ]
+            }
+          }
+        }
+      },
+      "PaginatedAccessoriesResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "nullable": true
+            }
+          },
+          "total": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "page": {
+            "type": "integer",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          },
+          "pageSize": {
+            "type": "integer",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          }
+        },
+        "required": [
+          "data",
+          "total",
+          "page",
+          "pageSize"
+        ]
+      },
+      "JointResponse": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": {
+          "nullable": true
+        }
+      },
+      "CreateJointRequest": {
+        "type": "object",
+        "properties": {
+          "secondaryBeamsBoltType": {
+            "type": "string",
+            "enum": [
+              "HSFG",
+              "ORD"
+            ]
+          },
+          "secondaryBeamsBoltDiameter": {
+            "type": "number",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          },
+          "secondaryBeamsNumberOfBolts": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "purlinFlangeBraceBoltType": {
+            "type": "string",
+            "enum": [
+              "HSFG",
+              "ORD"
+            ]
+          },
+          "purlinFlangeBraceBoltDiameter": {
+            "type": "number",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          },
+          "purlinFlangeBraceNumberOfBolts": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "claddingPurlinsBoltType": {
+            "type": "string",
+            "enum": [
+              "HSFG",
+              "ORD"
+            ]
+          },
+          "claddingPurlinsBoltDiameter": {
+            "type": "number",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          },
+          "claddingPurlinsNumberOfBolts": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "canopyBoltType": {
+            "type": "string",
+            "enum": [
+              "HSFG",
+              "ORD"
+            ]
+          },
+          "canopyBoltDiameter": {
+            "type": "number",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          },
+          "canopyNumberOfBolts": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "jointBoltRoof": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "roofJointId": {
+                  "type": "string",
+                  "enum": [
+                    "A",
+                    "B",
+                    "C",
+                    "D",
+                    "E",
+                    "F",
+                    "G",
+                    "H",
+                    "I",
+                    "J",
+                    "K",
+                    "L",
+                    "A_1",
+                    "B_1",
+                    "B_2",
+                    "C_1",
+                    "D_1",
+                    "G_1",
+                    "H_1",
+                    "I_1",
+                    "K_1",
+                    "L_1"
+                  ]
+                },
+                "boltDiameter": {
+                  "type": "number",
+                  "minimum": 0,
+                  "exclusiveMinimum": true
+                },
+                "numberOfBolts": {
+                  "type": "integer",
+                  "minimum": 0
+                }
+              },
+              "required": [
+                "roofJointId"
+              ]
+            }
+          },
+          "jointBoltMezzanine": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "mezzanineJointId": {
+                  "type": "string",
+                  "enum": [
+                    "M",
+                    "N",
+                    "O",
+                    "P",
+                    "Q",
+                    "R",
+                    "S",
+                    "SEC"
+                  ]
+                },
+                "boltDiameter": {
+                  "type": "number",
+                  "minimum": 0,
+                  "exclusiveMinimum": true
+                },
+                "numberOfBolts": {
+                  "type": "integer",
+                  "minimum": 0
+                }
+              },
+              "required": [
+                "mezzanineJointId"
+              ]
+            }
+          },
+          "foundationBoltRoof": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "foundationJointId": {
+                  "type": "string",
+                  "enum": [
+                    "FB4",
+                    "FB5",
+                    "FB6"
+                  ]
+                },
+                "boltDiameter": {
+                  "type": "number",
+                  "minimum": 0,
+                  "exclusiveMinimum": true
+                },
+                "numberOfBolts": {
+                  "type": "integer",
+                  "minimum": 0
+                }
+              },
+              "required": [
+                "foundationJointId"
+              ]
+            }
+          }
+        }
+      },
+      "UpdateJointRequest": {
+        "type": "object",
+        "properties": {
+          "secondaryBeamsBoltType": {
+            "type": "string",
+            "enum": [
+              "HSFG",
+              "ORD"
+            ]
+          },
+          "secondaryBeamsBoltDiameter": {
+            "type": "number",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          },
+          "secondaryBeamsNumberOfBolts": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "purlinFlangeBraceBoltType": {
+            "type": "string",
+            "enum": [
+              "HSFG",
+              "ORD"
+            ]
+          },
+          "purlinFlangeBraceBoltDiameter": {
+            "type": "number",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          },
+          "purlinFlangeBraceNumberOfBolts": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "claddingPurlinsBoltType": {
+            "type": "string",
+            "enum": [
+              "HSFG",
+              "ORD"
+            ]
+          },
+          "claddingPurlinsBoltDiameter": {
+            "type": "number",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          },
+          "claddingPurlinsNumberOfBolts": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "canopyBoltType": {
+            "type": "string",
+            "enum": [
+              "HSFG",
+              "ORD"
+            ]
+          },
+          "canopyBoltDiameter": {
+            "type": "number",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          },
+          "canopyNumberOfBolts": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "jointBoltRoof": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "roofJointId": {
+                  "type": "string",
+                  "enum": [
+                    "A",
+                    "B",
+                    "C",
+                    "D",
+                    "E",
+                    "F",
+                    "G",
+                    "H",
+                    "I",
+                    "J",
+                    "K",
+                    "L",
+                    "A_1",
+                    "B_1",
+                    "B_2",
+                    "C_1",
+                    "D_1",
+                    "G_1",
+                    "H_1",
+                    "I_1",
+                    "K_1",
+                    "L_1"
+                  ]
+                },
+                "boltDiameter": {
+                  "type": "number",
+                  "minimum": 0,
+                  "exclusiveMinimum": true
+                },
+                "numberOfBolts": {
+                  "type": "integer",
+                  "minimum": 0
+                }
+              },
+              "required": [
+                "roofJointId"
+              ]
+            }
+          },
+          "jointBoltMezzanine": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "mezzanineJointId": {
+                  "type": "string",
+                  "enum": [
+                    "M",
+                    "N",
+                    "O",
+                    "P",
+                    "Q",
+                    "R",
+                    "S",
+                    "SEC"
+                  ]
+                },
+                "boltDiameter": {
+                  "type": "number",
+                  "minimum": 0,
+                  "exclusiveMinimum": true
+                },
+                "numberOfBolts": {
+                  "type": "integer",
+                  "minimum": 0
+                }
+              },
+              "required": [
+                "mezzanineJointId"
+              ]
+            }
+          },
+          "foundationBoltRoof": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "foundationJointId": {
+                  "type": "string",
+                  "enum": [
+                    "FB4",
+                    "FB5",
+                    "FB6"
+                  ]
+                },
+                "boltDiameter": {
+                  "type": "number",
+                  "minimum": 0,
+                  "exclusiveMinimum": true
+                },
+                "numberOfBolts": {
+                  "type": "integer",
+                  "minimum": 0
+                }
+              },
+              "required": [
+                "foundationJointId"
+              ]
+            }
+          }
+        }
+      },
+      "PaginatedJointResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "nullable": true
+            }
+          },
+          "total": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "page": {
+            "type": "integer",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          },
+          "pageSize": {
+            "type": "integer",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          }
+        },
+        "required": [
+          "data",
+          "total",
+          "page",
+          "pageSize"
+        ]
+      },
+      "SpecResponse": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": {
+          "nullable": true
+        }
+      },
+      "CreateSpecRequest": {
+        "type": "object",
+        "properties": {
+          "products": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "description": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "specification": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "makeOrBrand": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "yieldStrengthMpa": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "exclusiveMinimum": true
+                }
+              }
+            }
+          }
+        }
+      },
+      "UpdateSpecRequest": {
+        "type": "object",
+        "properties": {
+          "products": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "description": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "specification": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "makeOrBrand": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "yieldStrengthMpa": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "exclusiveMinimum": true
+                }
+              }
+            }
+          }
+        }
+      },
+      "PaginatedSpecResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "nullable": true
+            }
+          },
+          "total": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "page": {
+            "type": "integer",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          },
+          "pageSize": {
+            "type": "integer",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          }
+        },
+        "required": [
+          "data",
+          "total",
+          "page",
+          "pageSize"
+        ]
+      }
+    },
+    "parameters": {}
+  },
+  "paths": {
+    "/api/health": {
+      "get": {
+        "operationId": "getHealth",
+        "tags": [
+          "Health"
+        ],
+        "summary": "Get API and database health",
+        "description": "Public liveness and readiness probe.",
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "The API and database are healthy.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HealthResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/me": {
+      "get": {
+        "operationId": "getMe",
+        "tags": [
+          "User"
+        ],
+        "summary": "Get the authenticated user",
+        "description": "Returns the local profile for the authenticated Clerk user.",
+        "security": [
+          {
+            "LocalDevUserId": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Authenticated user returned.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/jobs": {
+      "post": {
+        "operationId": "createJob",
+        "tags": [
+          "Jobs"
+        ],
+        "summary": "Create a job",
+        "description": "Creates a new structural quotation job.",
+        "security": [
+          {
+            "LocalDevUserId": []
+          }
+        ],
+        "requestBody": {
+          "description": "New job payload.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateJobRequest"
+              },
+              "example": {
+                "projectNo": "PRJ-001",
+                "subject": "New Warehouse Design",
+                "refNo": "REF-2026-001",
+                "date": "2026-06-05",
+                "designedByName": "John Doe",
+                "designedByMobile": "+919876543210",
+                "clientName": "ABC Corp",
+                "estimationEngineerName": "Jane Smith",
+                "estimationEngineerMobile": "+919876543211",
+                "headOfSalesName": "Bob Wilson",
+                "headOfSalesMobile": "+919876543212",
+                "firmName": "Floreat Engineering",
+                "buildingUsage": "Warehouse",
+                "numberOfBuilding": 2,
+                "frameType": "Steel",
+                "configuration": "Standard"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Job created.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/JobResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "operationId": "listJobs",
+        "tags": [
+          "Jobs"
+        ],
+        "summary": "List jobs",
+        "description": "Returns a paginated list of jobs.",
+        "security": [
+          {
+            "LocalDevUserId": []
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "exclusiveMinimum": true,
+              "default": 1
+            },
+            "required": false,
+            "name": "page",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "exclusiveMinimum": true,
+              "maximum": 100,
+              "default": 10
+            },
+            "required": false,
+            "name": "pageSize",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Paginated job list returned.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedJobResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/jobs/{id}": {
+      "get": {
+        "operationId": "getJobById",
+        "tags": [
+          "Jobs"
+        ],
+        "summary": "Get a job by ID",
+        "description": "Returns one job by its identifier.",
+        "security": [
+          {
+            "LocalDevUserId": []
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "example": "cuid_123"
+            },
+            "required": true,
+            "name": "id",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Job returned.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/JobResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "operationId": "updateJob",
+        "tags": [
+          "Jobs"
+        ],
+        "summary": "Update a job",
+        "description": "Partially updates a job by its identifier.",
+        "security": [
+          {
+            "LocalDevUserId": []
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "example": "cuid_123"
+            },
+            "required": true,
+            "name": "id",
+            "in": "path"
+          }
+        ],
+        "requestBody": {
+          "description": "Partial job payload.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateJobRequest"
+              },
+              "example": {
+                "subject": "Updated Warehouse Design",
+                "buildingUsage": "Factory",
+                "numberOfBuilding": 3
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Job updated.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/JobResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "operationId": "deleteJob",
+        "tags": [
+          "Jobs"
+        ],
+        "summary": "Delete a job",
+        "description": "Deletes a job by its identifier.",
+        "security": [
+          {
+            "LocalDevUserId": []
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "example": "cuid_123"
+            },
+            "required": true,
+            "name": "id",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Job deleted. No response body is returned."
+          },
+          "400": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/jobs/{jobId}/roof": {
+      "post": {
+        "operationId": "upsertRoof",
+        "tags": [
+          "Roof"
+        ],
+        "summary": "Create or replace a job's roof",
+        "description": "Creates or replaces the roof configuration for the specified job.",
+        "security": [
+          {
+            "LocalDevUserId": []
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "example": "job_cuid_123"
+            },
+            "required": true,
+            "name": "jobId",
+            "in": "path"
+          }
+        ],
+        "requestBody": {
+          "description": "Validated roof payload.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateRoofRequest"
+              },
+              "example": {
+                "buildingOverallLength": 30,
+                "buildingOverallWidth": 15,
+                "eaveHeight": 5.645,
+                "roofSlope": 6,
+                "mainRoofFrames": 4,
+                "endRoofFrames": 2,
+                "roofPurlinSpacing": 1.27,
+                "claddingPurlins": 2,
+                "internalColumnsForMainRoofFrames": 2,
+                "internalColumnsForEndRoofFrames": 2,
+                "roofFrameBaseFixing": "FOUNDATION_BOLT",
+                "columnSegmentsInMainFrame": 3,
+                "raftersInOneHalfOfMainFrame": 2,
+                "roofPurlinType": "Z_C",
+                "roofPurlinDepth": 0.15,
+                "roofPurlinUnitWeight": 4.5,
+                "roofCoveringType": "BARE_GALVALUME",
+                "roofCoveringThickness": 0.5,
+                "windBracingType": "ROD",
+                "gradeOfPlateMaterial": "FE_345",
+                "sidewalls": [
+                  {
+                    "side": "FRONT",
+                    "wallType": "BRICK",
+                    "thickness": 0.23,
+                    "height": 3.5
+                  },
+                  {
+                    "side": "BACK",
+                    "wallType": "PANEL",
+                    "thickness": 0.1,
+                    "height": 4
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Resource saved.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RoofResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "operationId": "getRoofByJob",
+        "tags": [
+          "Roof"
+        ],
+        "summary": "Get a job's roof",
+        "description": "Returns the roof configuration belonging to the specified job.",
+        "security": [
+          {
+            "LocalDevUserId": []
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "example": "job_cuid_123"
+            },
+            "required": true,
+            "name": "jobId",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Resource returned.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RoofResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "operationId": "updateRoof",
+        "tags": [
+          "Roof"
+        ],
+        "summary": "Update a job's roof",
+        "description": "Partially updates the roof configuration for the specified job.",
+        "security": [
+          {
+            "LocalDevUserId": []
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "example": "job_cuid_123"
+            },
+            "required": true,
+            "name": "jobId",
+            "in": "path"
+          }
+        ],
+        "requestBody": {
+          "description": "Partial roof payload.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateRoofRequest"
+              },
+              "example": {
+                "buildingOverallLength": 30,
+                "buildingOverallWidth": 15,
+                "eaveHeight": 5.645,
+                "roofSlope": 6,
+                "mainRoofFrames": 4,
+                "endRoofFrames": 2,
+                "roofPurlinSpacing": 1.27,
+                "claddingPurlins": 2,
+                "internalColumnsForMainRoofFrames": 2,
+                "internalColumnsForEndRoofFrames": 2,
+                "roofFrameBaseFixing": "FOUNDATION_BOLT",
+                "columnSegmentsInMainFrame": 3,
+                "raftersInOneHalfOfMainFrame": 2,
+                "roofPurlinType": "Z_C",
+                "roofPurlinDepth": 0.15,
+                "roofPurlinUnitWeight": 4.5,
+                "roofCoveringType": "BARE_GALVALUME",
+                "roofCoveringThickness": 0.5,
+                "windBracingType": "ROD",
+                "gradeOfPlateMaterial": "FE_345",
+                "sidewalls": [
+                  {
+                    "side": "FRONT",
+                    "wallType": "BRICK",
+                    "thickness": 0.23,
+                    "height": 3.5
+                  },
+                  {
+                    "side": "BACK",
+                    "wallType": "PANEL",
+                    "thickness": 0.1,
+                    "height": 4
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Resource updated.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RoofResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "operationId": "deleteRoof",
+        "tags": [
+          "Roof"
+        ],
+        "summary": "Delete a job's roof",
+        "description": "Deletes the roof configuration for the specified job.",
+        "security": [
+          {
+            "LocalDevUserId": []
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "example": "job_cuid_123"
+            },
+            "required": true,
+            "name": "jobId",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Resource deleted. No response body is returned."
+          },
+          "400": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/roofs": {
+      "get": {
+        "operationId": "listRoofs",
+        "tags": [
+          "Roof"
+        ],
+        "summary": "List roofs",
+        "description": "Returns a paginated list of roofs.",
+        "security": [
+          {
+            "LocalDevUserId": []
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "exclusiveMinimum": true,
+              "default": 1
+            },
+            "required": false,
+            "name": "page",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "exclusiveMinimum": true,
+              "maximum": 100,
+              "default": 10
+            },
+            "required": false,
+            "name": "pageSize",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Paginated resource list returned.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedRoofResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/jobs/{jobId}/mezzanine": {
+      "post": {
+        "operationId": "upsertMezzanine",
+        "tags": [
+          "Mezzanine"
+        ],
+        "summary": "Create or replace a job's mezzanine",
+        "description": "Creates or replaces the mezzanine configuration for the specified job.",
+        "security": [
+          {
+            "LocalDevUserId": []
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "example": "job_cuid_123"
+            },
+            "required": true,
+            "name": "jobId",
+            "in": "path"
+          }
+        ],
+        "requestBody": {
+          "description": "Validated mezzanine payload.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateMezzanineRequest"
+              },
+              "example": {
+                "floors": [
+                  {
+                    "code": "MEZ-1",
+                    "floor": "FLOOR_1",
+                    "type": "DECK_SHEET",
+                    "heightFrom": "GROUND",
+                    "thicknessMm": 150,
+                    "lengthM": 12,
+                    "widthM": 8,
+                    "heightM": 3.5,
+                    "materialConsumptionKgPerSqft": 4.5,
+                    "beamsMidPrimary": 4,
+                    "beamsEndPrimary": 2,
+                    "beamsSecondary": 6,
+                    "jointsMidPrimary": 2,
+                    "jointsEndPrimary": 1,
+                    "internalColumnsMidPrimary": 2,
+                    "internalColumnsEndPrimary": 1
+                  }
+                ],
+                "extensions": [
+                  {
+                    "type": "RCC_SLAB",
+                    "heightFrom": "FIRST_FLOOR",
+                    "typicalTo": "FLOOR_3",
+                    "thicknessMm": 120,
+                    "lengthM": 10,
+                    "widthM": 6,
+                    "heightM": 3,
+                    "beamsMidPrimary": 3,
+                    "beamsEndPrimary": 1,
+                    "beamsSecondary": 4,
+                    "jointsMidPrimary": 1,
+                    "jointsEndPrimary": 1,
+                    "extendedColumnsMidPrimary": 2,
+                    "extendedColumnsEndPrimary": 1
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Resource saved.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MezzanineResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "operationId": "getMezzanineByJob",
+        "tags": [
+          "Mezzanine"
+        ],
+        "summary": "Get a job's mezzanine",
+        "description": "Returns the mezzanine configuration belonging to the specified job.",
+        "security": [
+          {
+            "LocalDevUserId": []
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "example": "job_cuid_123"
+            },
+            "required": true,
+            "name": "jobId",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Resource returned.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MezzanineResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "operationId": "updateMezzanine",
+        "tags": [
+          "Mezzanine"
+        ],
+        "summary": "Update a job's mezzanine",
+        "description": "Partially updates the mezzanine configuration for the specified job.",
+        "security": [
+          {
+            "LocalDevUserId": []
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "example": "job_cuid_123"
+            },
+            "required": true,
+            "name": "jobId",
+            "in": "path"
+          }
+        ],
+        "requestBody": {
+          "description": "Partial mezzanine payload.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateMezzanineRequest"
+              },
+              "example": {
+                "floors": [
+                  {
+                    "code": "MEZ-1",
+                    "floor": "FLOOR_1",
+                    "type": "DECK_SHEET",
+                    "heightFrom": "GROUND",
+                    "thicknessMm": 150,
+                    "lengthM": 12,
+                    "widthM": 8,
+                    "heightM": 3.5,
+                    "materialConsumptionKgPerSqft": 4.5,
+                    "beamsMidPrimary": 4,
+                    "beamsEndPrimary": 2,
+                    "beamsSecondary": 6,
+                    "jointsMidPrimary": 2,
+                    "jointsEndPrimary": 1,
+                    "internalColumnsMidPrimary": 2,
+                    "internalColumnsEndPrimary": 1
+                  }
+                ],
+                "extensions": [
+                  {
+                    "type": "RCC_SLAB",
+                    "heightFrom": "FIRST_FLOOR",
+                    "typicalTo": "FLOOR_3",
+                    "thicknessMm": 120,
+                    "lengthM": 10,
+                    "widthM": 6,
+                    "heightM": 3,
+                    "beamsMidPrimary": 3,
+                    "beamsEndPrimary": 1,
+                    "beamsSecondary": 4,
+                    "jointsMidPrimary": 1,
+                    "jointsEndPrimary": 1,
+                    "extendedColumnsMidPrimary": 2,
+                    "extendedColumnsEndPrimary": 1
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Resource updated.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MezzanineResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "operationId": "deleteMezzanine",
+        "tags": [
+          "Mezzanine"
+        ],
+        "summary": "Delete a job's mezzanine",
+        "description": "Deletes the mezzanine configuration for the specified job.",
+        "security": [
+          {
+            "LocalDevUserId": []
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "example": "job_cuid_123"
+            },
+            "required": true,
+            "name": "jobId",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Resource deleted. No response body is returned."
+          },
+          "400": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/mezzanines": {
+      "get": {
+        "operationId": "listMezzanines",
+        "tags": [
+          "Mezzanine"
+        ],
+        "summary": "List mezzanines",
+        "description": "Returns a paginated list of mezzanines.",
+        "security": [
+          {
+            "LocalDevUserId": []
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "exclusiveMinimum": true,
+              "default": 1
+            },
+            "required": false,
+            "name": "page",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "exclusiveMinimum": true,
+              "maximum": 100,
+              "default": 10
+            },
+            "required": false,
+            "name": "pageSize",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Paginated resource list returned.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedMezzanineResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/jobs/{jobId}/stair": {
+      "post": {
+        "operationId": "upsertStair",
+        "tags": [
+          "Stair"
+        ],
+        "summary": "Create or replace a job's stair",
+        "description": "Creates or replaces the stair configuration for the specified job.",
+        "security": [
+          {
+            "LocalDevUserId": []
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "example": "job_cuid_123"
+            },
+            "required": true,
+            "name": "jobId",
+            "in": "path"
+          }
+        ],
+        "requestBody": {
+          "description": "Validated stair payload.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateStairRequest"
+              },
+              "example": {
+                "stairs": [
+                  {
+                    "code": "STAIR-1",
+                    "typeOfStep": "CHQ_PLATE_6MM",
+                    "location": "MEZ-1",
+                    "startingFrom": "GROUND",
+                    "endingUpTo": "FIRST_FLOOR",
+                    "length": 4.2,
+                    "width": 1.2,
+                    "height": 3.5,
+                    "numberOfMidLanding": 1,
+                    "typeOfStringer": "FAB_SECTION",
+                    "unitWeightOfStringer": 18
+                  }
+                ],
+                "areaDeductions": [
+                  {
+                    "type": "LIFT",
+                    "location": "EXT-1",
+                    "areaM2": 8,
+                    "numbers": 1,
+                    "deductionFor": "BOTH"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Resource saved.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StairResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "operationId": "getStairByJob",
+        "tags": [
+          "Stair"
+        ],
+        "summary": "Get a job's stair",
+        "description": "Returns the stair configuration belonging to the specified job.",
+        "security": [
+          {
+            "LocalDevUserId": []
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "example": "job_cuid_123"
+            },
+            "required": true,
+            "name": "jobId",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Resource returned.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StairResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "operationId": "updateStair",
+        "tags": [
+          "Stair"
+        ],
+        "summary": "Update a job's stair",
+        "description": "Partially updates the stair configuration for the specified job.",
+        "security": [
+          {
+            "LocalDevUserId": []
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "example": "job_cuid_123"
+            },
+            "required": true,
+            "name": "jobId",
+            "in": "path"
+          }
+        ],
+        "requestBody": {
+          "description": "Partial stair payload.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateStairRequest"
+              },
+              "example": {
+                "stairs": [
+                  {
+                    "code": "STAIR-1",
+                    "typeOfStep": "CHQ_PLATE_6MM",
+                    "location": "MEZ-1",
+                    "startingFrom": "GROUND",
+                    "endingUpTo": "FIRST_FLOOR",
+                    "length": 4.2,
+                    "width": 1.2,
+                    "height": 3.5,
+                    "numberOfMidLanding": 1,
+                    "typeOfStringer": "FAB_SECTION",
+                    "unitWeightOfStringer": 18
+                  }
+                ],
+                "areaDeductions": [
+                  {
+                    "type": "LIFT",
+                    "location": "EXT-1",
+                    "areaM2": 8,
+                    "numbers": 1,
+                    "deductionFor": "BOTH"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Resource updated.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StairResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "operationId": "deleteStair",
+        "tags": [
+          "Stair"
+        ],
+        "summary": "Delete a job's stair",
+        "description": "Deletes the stair configuration for the specified job.",
+        "security": [
+          {
+            "LocalDevUserId": []
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "example": "job_cuid_123"
+            },
+            "required": true,
+            "name": "jobId",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Resource deleted. No response body is returned."
+          },
+          "400": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/stairs": {
+      "get": {
+        "operationId": "listStairs",
+        "tags": [
+          "Stair"
+        ],
+        "summary": "List stairs",
+        "description": "Returns a paginated list of stairs.",
+        "security": [
+          {
+            "LocalDevUserId": []
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "exclusiveMinimum": true,
+              "default": 1
+            },
+            "required": false,
+            "name": "page",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "exclusiveMinimum": true,
+              "maximum": 100,
+              "default": 10
+            },
+            "required": false,
+            "name": "pageSize",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Paginated resource list returned.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedStairResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/jobs/{jobId}/canopy": {
+      "post": {
+        "operationId": "upsertCanopy",
+        "tags": [
+          "Canopy"
+        ],
+        "summary": "Create or replace a job's canopy",
+        "description": "Creates or replaces the canopy configuration for the specified job.",
+        "security": [
+          {
+            "LocalDevUserId": []
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "example": "job_cuid_123"
+            },
+            "required": true,
+            "name": "jobId",
+            "in": "path"
+          }
+        ],
+        "requestBody": {
+          "description": "Validated canopy payload.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateCanopyRequest"
+              },
+              "example": {
+                "canopies": [
+                  {
+                    "code": "CANOPY-1",
+                    "heightFrom": "GROUND",
+                    "length": 6,
+                    "width": 3,
+                    "height": 3.5,
+                    "materialConsumptionKgPerSqft": 9.5,
+                    "numberOfBeams": 4,
+                    "numberOfPurlins": 6,
+                    "purlinDepth": 150,
+                    "unitWeightOfPurlin": 5.2,
+                    "canopySheet": "PPGL",
+                    "sheetThick": 0.5,
+                    "canopySideCoveringHeight": 1.2,
+                    "gutter": true,
+                    "downTake": false,
+                    "flashing": true
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Resource saved.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CanopyResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "operationId": "getCanopyByJob",
+        "tags": [
+          "Canopy"
+        ],
+        "summary": "Get a job's canopy",
+        "description": "Returns the canopy configuration belonging to the specified job.",
+        "security": [
+          {
+            "LocalDevUserId": []
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "example": "job_cuid_123"
+            },
+            "required": true,
+            "name": "jobId",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Resource returned.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CanopyResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "operationId": "updateCanopy",
+        "tags": [
+          "Canopy"
+        ],
+        "summary": "Update a job's canopy",
+        "description": "Partially updates the canopy configuration for the specified job.",
+        "security": [
+          {
+            "LocalDevUserId": []
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "example": "job_cuid_123"
+            },
+            "required": true,
+            "name": "jobId",
+            "in": "path"
+          }
+        ],
+        "requestBody": {
+          "description": "Partial canopy payload.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateCanopyRequest"
+              },
+              "example": {
+                "canopies": [
+                  {
+                    "code": "CANOPY-1",
+                    "heightFrom": "GROUND",
+                    "length": 6,
+                    "width": 3,
+                    "height": 3.5,
+                    "materialConsumptionKgPerSqft": 9.5,
+                    "numberOfBeams": 4,
+                    "numberOfPurlins": 6,
+                    "purlinDepth": 150,
+                    "unitWeightOfPurlin": 5.2,
+                    "canopySheet": "PPGL",
+                    "sheetThick": 0.5,
+                    "canopySideCoveringHeight": 1.2,
+                    "gutter": true,
+                    "downTake": false,
+                    "flashing": true
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Resource updated.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CanopyResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "operationId": "deleteCanopy",
+        "tags": [
+          "Canopy"
+        ],
+        "summary": "Delete a job's canopy",
+        "description": "Deletes the canopy configuration for the specified job.",
+        "security": [
+          {
+            "LocalDevUserId": []
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "example": "job_cuid_123"
+            },
+            "required": true,
+            "name": "jobId",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Resource deleted. No response body is returned."
+          },
+          "400": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/canopies": {
+      "get": {
+        "operationId": "listCanopies",
+        "tags": [
+          "Canopy"
+        ],
+        "summary": "List canopies",
+        "description": "Returns a paginated list of canopies.",
+        "security": [
+          {
+            "LocalDevUserId": []
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "exclusiveMinimum": true,
+              "default": 1
+            },
+            "required": false,
+            "name": "page",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "exclusiveMinimum": true,
+              "maximum": 100,
+              "default": 10
+            },
+            "required": false,
+            "name": "pageSize",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Paginated resource list returned.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedCanopyResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/jobs/{jobId}/load": {
+      "post": {
+        "operationId": "upsertLoad",
+        "tags": [
+          "Load"
+        ],
+        "summary": "Create or replace a job's load",
+        "description": "Creates or replaces the load configuration for the specified job.",
+        "security": [
+          {
+            "LocalDevUserId": []
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "example": "job_cuid_123"
+            },
+            "required": true,
+            "name": "jobId",
+            "in": "path"
+          }
+        ],
+        "requestBody": {
+          "description": "Validated load payload.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateLoadRequest"
+              },
+              "example": {
+                "deadLoadOnRoofRafters": 0.15,
+                "liveLoadOnRoofRafters": 0.75,
+                "collateralLoadOnRoofRafters": 0.1,
+                "windLoadOnRoofRaftersUpward": 1.2,
+                "windLoadHorizontal": 0.9,
+                "deadLoadOnRoofFloor": 0.2,
+                "liveLoadOnRoofFloor": 0.8,
+                "floorDeadLoad": 2.5,
+                "floorFinishLoad": 1,
+                "floorLiveLoad": 5,
+                "snowLoad": 0.5,
+                "earthquakeLoad": 0.3,
+                "approvalDrawingsTime": 2,
+                "approvalDrawingsUnit": "WEEKS",
+                "supplyOfMaterialsDays": 30,
+                "erectionOfStructureDays": 45
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Resource saved.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoadResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "operationId": "getLoadByJob",
+        "tags": [
+          "Load"
+        ],
+        "summary": "Get a job's load",
+        "description": "Returns the load configuration belonging to the specified job.",
+        "security": [
+          {
+            "LocalDevUserId": []
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "example": "job_cuid_123"
+            },
+            "required": true,
+            "name": "jobId",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Resource returned.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoadResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "operationId": "updateLoad",
+        "tags": [
+          "Load"
+        ],
+        "summary": "Update a job's load",
+        "description": "Partially updates the load configuration for the specified job.",
+        "security": [
+          {
+            "LocalDevUserId": []
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "example": "job_cuid_123"
+            },
+            "required": true,
+            "name": "jobId",
+            "in": "path"
+          }
+        ],
+        "requestBody": {
+          "description": "Partial load payload.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateLoadRequest"
+              },
+              "example": {
+                "deadLoadOnRoofRafters": 0.15,
+                "liveLoadOnRoofRafters": 0.75,
+                "collateralLoadOnRoofRafters": 0.1,
+                "windLoadOnRoofRaftersUpward": 1.2,
+                "windLoadHorizontal": 0.9,
+                "deadLoadOnRoofFloor": 0.2,
+                "liveLoadOnRoofFloor": 0.8,
+                "floorDeadLoad": 2.5,
+                "floorFinishLoad": 1,
+                "floorLiveLoad": 5,
+                "snowLoad": 0.5,
+                "earthquakeLoad": 0.3,
+                "approvalDrawingsTime": 2,
+                "approvalDrawingsUnit": "WEEKS",
+                "supplyOfMaterialsDays": 30,
+                "erectionOfStructureDays": 45
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Resource updated.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoadResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "operationId": "deleteLoad",
+        "tags": [
+          "Load"
+        ],
+        "summary": "Delete a job's load",
+        "description": "Deletes the load configuration for the specified job.",
+        "security": [
+          {
+            "LocalDevUserId": []
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "example": "job_cuid_123"
+            },
+            "required": true,
+            "name": "jobId",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Resource deleted. No response body is returned."
+          },
+          "400": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/loads": {
+      "get": {
+        "operationId": "listLoads",
+        "tags": [
+          "Load"
+        ],
+        "summary": "List loads",
+        "description": "Returns a paginated list of loads.",
+        "security": [
+          {
+            "LocalDevUserId": []
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "exclusiveMinimum": true,
+              "default": 1
+            },
+            "required": false,
+            "name": "page",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "exclusiveMinimum": true,
+              "maximum": 100,
+              "default": 10
+            },
+            "required": false,
+            "name": "pageSize",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Paginated resource list returned.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedLoadResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/jobs/{jobId}/accessories": {
+      "post": {
+        "operationId": "upsertAccessories",
+        "tags": [
+          "Accessories"
+        ],
+        "summary": "Create or replace a job's accessories",
+        "description": "Creates or replaces the accessories configuration for the specified job.",
+        "security": [
+          {
+            "LocalDevUserId": []
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "example": "job_cuid_123"
+            },
+            "required": true,
+            "name": "jobId",
+            "in": "path"
+          }
+        ],
+        "requestBody": {
+          "description": "Validated accessories payload.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateAccessoriesRequest"
+              },
+              "example": {
+                "gutterType": "PPGL",
+                "gutterSize": "IN_6",
+                "gutterQuantity": 2,
+                "downTakeType": "UPVC",
+                "downTakeSize": "IN_4",
+                "downTakeQuantity": 3,
+                "dripTrimType": "NCGL",
+                "dripTrimThickness": "MM_0_47",
+                "ridgeType": "PPGL",
+                "ridgeThickness": "MM_0_50",
+                "partitionType": "AEROCON_PANEL",
+                "partitionThickness": "MM_50",
+                "partitionQuantity": 4,
+                "roofInsulationType": "GLASS_WOOL",
+                "wallInsulationType": "ROCK_WOOL",
+                "turboVentilatorDiameter": "FT_1",
+                "turboVentilatorNos": 2,
+                "handrailWeightKg": 45.5,
+                "deckSheetFlashingEnabled": true,
+                "gantryGirderEnabled": false,
+                "liftStructureEnabled": true,
+                "framesPrimerCoats": 1,
+                "framesPrimerType": "EPOXY_PRIMER",
+                "framesPaintCoats": 2,
+                "framesPaintType": "EPOXY_PAINT",
+                "purlinsGirtsFinish": "PRE_GALVANISED",
+                "purlinsGirtsGsm": 120,
+                "purlinsGirtsPaint": "UNPAINTED",
+                "foundationBoltFinish": "BLACK_UNPAINTED",
+                "doors": [
+                  {
+                    "height": 2.1,
+                    "width": 1.2,
+                    "nos": 2,
+                    "quantity": 2
+                  }
+                ],
+                "windows": [
+                  {
+                    "height": 1.2,
+                    "width": 1.5,
+                    "nos": 4,
+                    "quantity": 4
+                  }
+                ],
+                "foldedPlates": [
+                  {
+                    "length": 6,
+                    "width": 1.2,
+                    "nos": 3,
+                    "quantity": 3
+                  }
+                ],
+                "openings": [
+                  {
+                    "kind": "ROLLING_SHUTTER",
+                    "length": 3.5,
+                    "width": 3,
+                    "nos": 1,
+                    "quantity": 1
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Resource saved.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AccessoriesResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "operationId": "getAccessoriesByJob",
+        "tags": [
+          "Accessories"
+        ],
+        "summary": "Get a job's accessories",
+        "description": "Returns the accessories configuration belonging to the specified job.",
+        "security": [
+          {
+            "LocalDevUserId": []
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "example": "job_cuid_123"
+            },
+            "required": true,
+            "name": "jobId",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Resource returned.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AccessoriesResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "operationId": "updateAccessories",
+        "tags": [
+          "Accessories"
+        ],
+        "summary": "Update a job's accessories",
+        "description": "Partially updates the accessories configuration for the specified job.",
+        "security": [
+          {
+            "LocalDevUserId": []
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "example": "job_cuid_123"
+            },
+            "required": true,
+            "name": "jobId",
+            "in": "path"
+          }
+        ],
+        "requestBody": {
+          "description": "Partial accessories payload.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateAccessoriesRequest"
+              },
+              "example": {
+                "gutterType": "PPGL",
+                "gutterSize": "IN_6",
+                "gutterQuantity": 2,
+                "downTakeType": "UPVC",
+                "downTakeSize": "IN_4",
+                "downTakeQuantity": 3,
+                "dripTrimType": "NCGL",
+                "dripTrimThickness": "MM_0_47",
+                "ridgeType": "PPGL",
+                "ridgeThickness": "MM_0_50",
+                "partitionType": "AEROCON_PANEL",
+                "partitionThickness": "MM_50",
+                "partitionQuantity": 4,
+                "roofInsulationType": "GLASS_WOOL",
+                "wallInsulationType": "ROCK_WOOL",
+                "turboVentilatorDiameter": "FT_1",
+                "turboVentilatorNos": 2,
+                "handrailWeightKg": 45.5,
+                "deckSheetFlashingEnabled": true,
+                "gantryGirderEnabled": false,
+                "liftStructureEnabled": true,
+                "framesPrimerCoats": 1,
+                "framesPrimerType": "EPOXY_PRIMER",
+                "framesPaintCoats": 2,
+                "framesPaintType": "EPOXY_PAINT",
+                "purlinsGirtsFinish": "PRE_GALVANISED",
+                "purlinsGirtsGsm": 120,
+                "purlinsGirtsPaint": "UNPAINTED",
+                "foundationBoltFinish": "BLACK_UNPAINTED",
+                "doors": [
+                  {
+                    "height": 2.1,
+                    "width": 1.2,
+                    "nos": 2,
+                    "quantity": 2
+                  }
+                ],
+                "windows": [
+                  {
+                    "height": 1.2,
+                    "width": 1.5,
+                    "nos": 4,
+                    "quantity": 4
+                  }
+                ],
+                "foldedPlates": [
+                  {
+                    "length": 6,
+                    "width": 1.2,
+                    "nos": 3,
+                    "quantity": 3
+                  }
+                ],
+                "openings": [
+                  {
+                    "kind": "ROLLING_SHUTTER",
+                    "length": 3.5,
+                    "width": 3,
+                    "nos": 1,
+                    "quantity": 1
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Resource updated.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AccessoriesResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "operationId": "deleteAccessories",
+        "tags": [
+          "Accessories"
+        ],
+        "summary": "Delete a job's accessories",
+        "description": "Deletes the accessories configuration for the specified job.",
+        "security": [
+          {
+            "LocalDevUserId": []
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "example": "job_cuid_123"
+            },
+            "required": true,
+            "name": "jobId",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Resource deleted. No response body is returned."
+          },
+          "400": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/accessories": {
+      "get": {
+        "operationId": "listAccessories",
+        "tags": [
+          "Accessories"
+        ],
+        "summary": "List accessories",
+        "description": "Returns a paginated list of accessories.",
+        "security": [
+          {
+            "LocalDevUserId": []
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "exclusiveMinimum": true,
+              "default": 1
+            },
+            "required": false,
+            "name": "page",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "exclusiveMinimum": true,
+              "maximum": 100,
+              "default": 10
+            },
+            "required": false,
+            "name": "pageSize",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Paginated resource list returned.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedAccessoriesResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/jobs/{jobId}/joint": {
+      "post": {
+        "operationId": "upsertJoint",
+        "tags": [
+          "Joint"
+        ],
+        "summary": "Create or replace a job's joint",
+        "description": "Creates or replaces the joint configuration for the specified job.",
+        "security": [
+          {
+            "LocalDevUserId": []
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "example": "job_cuid_123"
+            },
+            "required": true,
+            "name": "jobId",
+            "in": "path"
+          }
+        ],
+        "requestBody": {
+          "description": "Validated joint payload.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateJointRequest"
+              },
+              "example": {
+                "secondaryBeamsBoltType": "HSFG",
+                "secondaryBeamsBoltDiameter": 12,
+                "secondaryBeamsNumberOfBolts": 4,
+                "purlinFlangeBraceBoltType": "ORD",
+                "purlinFlangeBraceBoltDiameter": 10,
+                "purlinFlangeBraceNumberOfBolts": 2,
+                "claddingPurlinsBoltType": "ORD",
+                "claddingPurlinsBoltDiameter": 10,
+                "claddingPurlinsNumberOfBolts": 2,
+                "canopyBoltType": "HSFG",
+                "canopyBoltDiameter": 12,
+                "canopyNumberOfBolts": 3,
+                "jointBoltRoof": [
+                  {
+                    "roofJointId": "A",
+                    "boltDiameter": 20,
+                    "numberOfBolts": 6
+                  },
+                  {
+                    "roofJointId": "A_1",
+                    "boltDiameter": 16,
+                    "numberOfBolts": 4
+                  }
+                ],
+                "jointBoltMezzanine": [
+                  {
+                    "mezzanineJointId": "M",
+                    "boltDiameter": 16,
+                    "numberOfBolts": 4
+                  }
+                ],
+                "foundationBoltRoof": [
+                  {
+                    "foundationJointId": "FB4",
+                    "boltDiameter": 24,
+                    "numberOfBolts": 4
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Resource saved.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/JointResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "operationId": "getJointByJob",
+        "tags": [
+          "Joint"
+        ],
+        "summary": "Get a job's joint",
+        "description": "Returns the joint configuration belonging to the specified job.",
+        "security": [
+          {
+            "LocalDevUserId": []
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "example": "job_cuid_123"
+            },
+            "required": true,
+            "name": "jobId",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Resource returned.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/JointResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "operationId": "updateJoint",
+        "tags": [
+          "Joint"
+        ],
+        "summary": "Update a job's joint",
+        "description": "Partially updates the joint configuration for the specified job.",
+        "security": [
+          {
+            "LocalDevUserId": []
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "example": "job_cuid_123"
+            },
+            "required": true,
+            "name": "jobId",
+            "in": "path"
+          }
+        ],
+        "requestBody": {
+          "description": "Partial joint payload.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateJointRequest"
+              },
+              "example": {
+                "secondaryBeamsBoltType": "HSFG",
+                "secondaryBeamsBoltDiameter": 12,
+                "secondaryBeamsNumberOfBolts": 4,
+                "purlinFlangeBraceBoltType": "ORD",
+                "purlinFlangeBraceBoltDiameter": 10,
+                "purlinFlangeBraceNumberOfBolts": 2,
+                "claddingPurlinsBoltType": "ORD",
+                "claddingPurlinsBoltDiameter": 10,
+                "claddingPurlinsNumberOfBolts": 2,
+                "canopyBoltType": "HSFG",
+                "canopyBoltDiameter": 12,
+                "canopyNumberOfBolts": 3,
+                "jointBoltRoof": [
+                  {
+                    "roofJointId": "A",
+                    "boltDiameter": 20,
+                    "numberOfBolts": 6
+                  },
+                  {
+                    "roofJointId": "A_1",
+                    "boltDiameter": 16,
+                    "numberOfBolts": 4
+                  }
+                ],
+                "jointBoltMezzanine": [
+                  {
+                    "mezzanineJointId": "M",
+                    "boltDiameter": 16,
+                    "numberOfBolts": 4
+                  }
+                ],
+                "foundationBoltRoof": [
+                  {
+                    "foundationJointId": "FB4",
+                    "boltDiameter": 24,
+                    "numberOfBolts": 4
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Resource updated.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/JointResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "operationId": "deleteJoint",
+        "tags": [
+          "Joint"
+        ],
+        "summary": "Delete a job's joint",
+        "description": "Deletes the joint configuration for the specified job.",
+        "security": [
+          {
+            "LocalDevUserId": []
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "example": "job_cuid_123"
+            },
+            "required": true,
+            "name": "jobId",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Resource deleted. No response body is returned."
+          },
+          "400": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/joints": {
+      "get": {
+        "operationId": "listJoints",
+        "tags": [
+          "Joint"
+        ],
+        "summary": "List joints",
+        "description": "Returns a paginated list of joints.",
+        "security": [
+          {
+            "LocalDevUserId": []
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "exclusiveMinimum": true,
+              "default": 1
+            },
+            "required": false,
+            "name": "page",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "exclusiveMinimum": true,
+              "maximum": 100,
+              "default": 10
+            },
+            "required": false,
+            "name": "pageSize",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Paginated resource list returned.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedJointResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/jobs/{jobId}/spec": {
+      "post": {
+        "operationId": "upsertSpec",
+        "tags": [
+          "Specs"
+        ],
+        "summary": "Create or replace a job's spec",
+        "description": "Creates or replaces the spec configuration for the specified job.",
+        "security": [
+          {
+            "LocalDevUserId": []
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "example": "job_cuid_123"
+            },
+            "required": true,
+            "name": "jobId",
+            "in": "path"
+          }
+        ],
+        "requestBody": {
+          "description": "Validated spec payload.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateSpecRequest"
+              },
+              "example": {
+                "description": "Fabricated Columns and Beams",
+                "specifications": [
+                  "Fabricated from Plates or Stocks by continuous welding process.",
+                  "Conform to IS2062 Grade E345 / ASTM A572-12 Grade 50.",
+                  "Minimum plate thickness: 4 mm."
+                ],
+                "makeOrBrand": [
+                  "JSW",
+                  "TATA"
+                ],
+                "yieldStrengthMpa": 345
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Resource saved.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SpecResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "operationId": "getSpecByJob",
+        "tags": [
+          "Specs"
+        ],
+        "summary": "Get a job's spec",
+        "description": "Returns the spec configuration belonging to the specified job.",
+        "security": [
+          {
+            "LocalDevUserId": []
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "example": "job_cuid_123"
+            },
+            "required": true,
+            "name": "jobId",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Resource returned.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SpecResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "operationId": "updateSpec",
+        "tags": [
+          "Specs"
+        ],
+        "summary": "Update a job's spec",
+        "description": "Partially updates the spec configuration for the specified job.",
+        "security": [
+          {
+            "LocalDevUserId": []
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "example": "job_cuid_123"
+            },
+            "required": true,
+            "name": "jobId",
+            "in": "path"
+          }
+        ],
+        "requestBody": {
+          "description": "Partial spec payload.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateSpecRequest"
+              },
+              "example": {
+                "description": "Fabricated Columns and Beams",
+                "specifications": [
+                  "Fabricated from Plates or Stocks by continuous welding process.",
+                  "Conform to IS2062 Grade E345 / ASTM A572-12 Grade 50.",
+                  "Minimum plate thickness: 4 mm."
+                ],
+                "makeOrBrand": [
+                  "JSW",
+                  "TATA"
+                ],
+                "yieldStrengthMpa": 345
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Resource updated.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SpecResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "operationId": "deleteSpec",
+        "tags": [
+          "Specs"
+        ],
+        "summary": "Delete a job's spec",
+        "description": "Deletes the spec configuration for the specified job.",
+        "security": [
+          {
+            "LocalDevUserId": []
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "example": "job_cuid_123"
+            },
+            "required": true,
+            "name": "jobId",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Resource deleted. No response body is returned."
+          },
+          "400": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/specs": {
+      "get": {
+        "operationId": "listSpecs",
+        "tags": [
+          "Specs"
+        ],
+        "summary": "List specs",
+        "description": "Returns a paginated list of specs.",
+        "security": [
+          {
+            "LocalDevUserId": []
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "exclusiveMinimum": true,
+              "default": 1
+            },
+            "required": false,
+            "name": "page",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "exclusiveMinimum": true,
+              "maximum": 100,
+              "default": 10
+            },
+            "required": false,
+            "name": "pageSize",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Paginated resource list returned.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedSpecResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

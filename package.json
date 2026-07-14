@@ -13,6 +13,8 @@
     "build:shared": "npm run build --workspace @floreat/shared",
     "build": "npm run build:shared && npm run build --workspace frontend && npm run build --workspace backend",
     "dev:backend": "npm run build:shared && npm run dev --workspace backend",
+    "docs:generate": "npm run build:shared && npm run docs:generate --workspace backend",
+    "docs:check": "npm run build:shared && npm run docs:check --workspace backend",
     "dev:frontend": "npm run build:shared && npm run dev --workspace frontend",
     "test": "npm run test --workspaces --if-present",
     "typecheck": "npm run typecheck --workspaces --if-present"

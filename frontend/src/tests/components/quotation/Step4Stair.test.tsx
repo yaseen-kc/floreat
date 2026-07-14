@@ -18,29 +18,19 @@ describe('Step4Stair', () => {
     mocks.stairData = undefined
   })
 
-  it('renders the heading and the stair toggle', () => {
+  it('renders the heading', () => {
     render(<Step4Stair />)
     expect(screen.getByRole('heading', { name: 'Stair' })).toBeInTheDocument()
-    expect(screen.getByText('This job has a stair')).toBeInTheDocument()
   })
 
-  it('hides the editors until the toggle is on', () => {
+  it('always shows the staircases and area deductions editors', () => {
     render(<Step4Stair />)
-    expect(screen.queryByText('Staircases')).not.toBeInTheDocument()
-    expect(screen.queryByText('Area Deductions')).not.toBeInTheDocument()
-  })
-
-  it('reveals the staircases/area-deductions editors when the toggle is enabled', async () => {
-    const user = userEvent.setup()
-    render(<Step4Stair />)
-    await user.click(screen.getByRole('switch', { name: 'This job has a stair' }))
     expect(screen.getByText('Staircases')).toBeInTheDocument()
     expect(screen.getByText('Area Deductions')).toBeInTheDocument()
   })
 
   it('adds a staircase row with an auto-assigned code', async () => {
     const user = userEvent.setup()
-    useQuotationStore.getState().setHasStair(true)
     render(<Step4Stair />)
 
     await user.click(screen.getByRole('button', { name: /add staircase/i }))

@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach } from 'vitest'
-import { useQuotationStore } from '@/stores/quotation-store'
+import { useQuotationStore, buildSpecPayload } from '@/stores/quotation-store'
 import { validRoofDraft } from '@/tests/fixtures/roof'
 
 const STORAGE_KEY = 'Floreat:draft'
@@ -291,5 +291,71 @@ describe('quotation-store per-user persistence scoping', () => {
     const s = useQuotationStore.getState()
     expect(s.jobId).toBeNull()
     expect(s.projectInfo.projectNo).toBe('')
+  })
+})
+
+describe('quotation-store rehydrate self-heals missing nested keys', () => {
+  beforeEach(() => {
+    localStorage.clear()
+    useQuotationStore.persist.setOptions({ name: 'Floreat:draft' })
+    useQuotationStore.getState().resetQuotation()
+  })
+
+  it('backfills a nested slice key absent from an older persisted draft', async () => {
+    // A draft written before `spec.products` (and `canopy.canopies`) existed:
+    // the nested objects are present but missing their array keys, and one
+    // section flag is absent entirely. A shallow merge would leave
+    // `spec.products` undefined and crash Step 9 (SpecProducts / buildSpecPayload).
+    localStorage.setItem(
+      'Floreat:draft:legacy',
+      JSON.stringify({
+        state: {
+          jobId: 'job-legacy',
+          currentStep: 9,
+          spec: {},
+          canopy: {},
+          roofSectionsEnabled: { purlins: true },
+        },
+        version: 1,
+      }),
+    )
+
+    useQuotationStore.persist.setOptions({ name: 'Floreat:draft:legacy' })
+    await useQuotationStore.persist.rehydrate()
+
+    const s = useQuotationStore.getState()
+    // Persisted primitives still win.
+    expect(s.jobId).toBe('job-legacy')
+    expect(s.currentStep).toBe(9)
+    // Missing nested array keys fall back to their defaults instead of undefined.
+    expect(Array.isArray(s.spec.products)).toBe(true)
+    expect(s.spec.products).toEqual([])
+    expect(Array.isArray(s.canopy.canopies)).toBe(true)
+    expect(s.canopy.canopies).toEqual([])
+    // The one persisted section flag is kept; the rest retain their defaults.
+    expect(s.roofSectionsEnabled.purlins).toBe(true)
+    expect(s.roofSectionsEnabled.coverings).toBe(false)
+    // The build helper that maps over products no longer throws.
+    expect(() => buildSpecPayload(s.spec)).not.toThrow()
+    expect(buildSpecPayload(s.spec)).toEqual({})
+  })
+
+  it('preserves populated nested slices from a current-shape persisted draft', async () => {
+    localStorage.setItem(
+      'Floreat:draft:full',
+      JSON.stringify({
+        state: {
+          spec: { products: [{ code: 'PRODUCT-1', description: 'Beam' }] },
+        },
+        version: 1,
+      }),
+    )
+
+    useQuotationStore.persist.setOptions({ name: 'Floreat:draft:full' })
+    await useQuotationStore.persist.rehydrate()
+
+    expect(useQuotationStore.getState().spec.products).toEqual([
+      { code: 'PRODUCT-1', description: 'Beam' },
+    ])
   })
 })
