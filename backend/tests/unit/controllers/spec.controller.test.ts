@@ -40,7 +40,7 @@ describe('spec.controller', () => {
   it('returns 400 for an invalid upsert body', async () => {
     const reply = makeReply()
 
-    await upsert({ params: { jobId: 'job-1' }, body: { yieldStrengthMpa: -1 } } as unknown as FastifyRequest, reply)
+    await upsert({ params: { jobId: 'job-1' }, body: { products: [{ yieldStrengthMpa: -1 }] } } as unknown as FastifyRequest, reply)
 
     expect(reply.status).toHaveBeenCalledWith(400)
     expect(serviceMock.upsertSpec).not.toHaveBeenCalled()
@@ -71,7 +71,7 @@ describe('spec.controller', () => {
     serviceMock.updateSpec.mockRejectedValue(Object.assign(new Error('missing'), { code: 'P2025' }))
     const reply = makeReply()
 
-    await update({ params: { jobId: 'missing' }, body: { description: 'Updated' } } as unknown as FastifyRequest, reply)
+    await update({ params: { jobId: 'missing' }, body: { products: [{ description: 'Updated' }] } } as unknown as FastifyRequest, reply)
 
     expect(reply.status).toHaveBeenCalledWith(404)
     expect(reply.send).toHaveBeenCalledWith({ error: 'Spec not found' })

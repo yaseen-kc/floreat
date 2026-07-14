@@ -3,12 +3,26 @@ model Spec {
   jobId String @unique
   job   Job    @relation(fields: [jobId], references: [id], onDelete: Cascade)
 
-  description      String?
-  specifications   String[]
-  makeOrBrand      String[]
-  yieldStrengthMpa Int?
-  createdAt        DateTime @default(now())
-  updatedAt        DateTime @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  products SpecProduct[]
 
   @@index([createdAt])
+}
+
+model SpecProduct {
+  id     String @id @default(cuid())
+  specId String
+  spec   Spec   @relation(fields: [specId], references: [id], onDelete: Cascade)
+
+  code             String?
+  description      String?
+  specification    String?
+  makeOrBrand      String?
+  yieldStrengthMpa Int?
+
+  // `code` is nullable to allow draft items; the composite unique therefore
+  // only constrains rows that have a code (Postgres treats NULLs as distinct).
+  @@unique([specId, code])
 }

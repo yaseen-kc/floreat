@@ -46,7 +46,7 @@ describe('Spec routes integration', () => {
     })
 
     it('rejects an invalid payload', async () => {
-      const res = await app.inject({ method: 'POST', url: '/api/jobs/job-1/spec', payload: { yieldStrengthMpa: -1 } })
+      const res = await app.inject({ method: 'POST', url: '/api/jobs/job-1/spec', payload: { products: [{ yieldStrengthMpa: -1 }] } })
 
       expect(res.statusCode).toBe(400)
     })
@@ -100,7 +100,7 @@ describe('Spec routes integration', () => {
       const res = await app.inject({
         method: 'PUT',
         url: '/api/jobs/job-1/spec',
-        payload: { description: 'Updated description' },
+        payload: { products: [{ description: 'Updated description' }] },
       })
 
       expect(res.statusCode).toBe(200)
@@ -112,7 +112,7 @@ describe('Spec routes integration', () => {
       const res = await app.inject({
         method: 'PUT',
         url: '/api/jobs/job-1/spec',
-        payload: { description: 'Updated description' },
+        payload: { products: [{ description: 'Updated description' }] },
       })
 
       expect(res.statusCode).toBe(404)

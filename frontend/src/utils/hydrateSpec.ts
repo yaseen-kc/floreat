@@ -1,17 +1,23 @@
 import type { Spec } from '@/api/quotation/spec/getSpec'
-import type { SpecDraft } from '@/stores/quotation-store'
+import type { SpecDraft, SpecProductDraft } from '@/stores/quotation-store'
+
+/** Collapses a nullable/blank response string into an optional draft value. */
+const opt = (v: string | null): string | undefined => (v?.trim() ? v : undefined)
 
 /**
- * Maps a `Spec` API response into a Step 9 {@link SpecDraft}. Spec is flat with
- * no child arrays: the two string-list fields default to `[]` when absent, a
- * blank `description` collapses to `undefined`, and `yieldStrengthMpa` is kept
- * as a number (dropped when absent).
+ * Maps a `Spec` API response into a Step 9 {@link SpecDraft}. Each server
+ * product row becomes a {@link SpecProductDraft}: nullable/blank string fields
+ * collapse to `undefined`, and `yieldStrengthMpa` is kept as a number (dropped
+ * when absent). An absent `products` array yields an empty table.
  */
 export function mapSpecResponseToDraft(s: Spec): SpecDraft {
-  return {
-    description: s.description?.trim() ? s.description : undefined,
-    specifications: s.specifications ?? [],
-    makeOrBrand: s.makeOrBrand ?? [],
-    yieldStrengthMpa: s.yieldStrengthMpa ?? undefined,
-  }
+  const products: SpecProductDraft[] = (s.products ?? []).map((p) => ({
+    code: opt(p.code),
+    description: opt(p.description),
+    specification: opt(p.specification),
+    makeOrBrand: opt(p.makeOrBrand),
+    yieldStrengthMpa: p.yieldStrengthMpa ?? undefined,
+  }))
+
+  return { products }
 }

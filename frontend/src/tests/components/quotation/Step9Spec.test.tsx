@@ -17,13 +17,11 @@ describe('Step9Spec', () => {
     mocks.specData = undefined
   })
 
-  it('renders the step heading and the spec details section', () => {
+  it('renders the step heading and the products table section', () => {
     render(<Step9Spec />)
     expect(screen.getByRole('heading', { name: 'Product specification' })).toBeInTheDocument()
     expect(screen.getByText('Product Specification')).toBeInTheDocument()
-    expect(screen.getByText('Description')).toBeInTheDocument()
-    expect(screen.getByText('Specifications')).toBeInTheDocument()
-    expect(screen.getByText('Make / Brand')).toBeInTheDocument()
-    expect(screen.getByText('Yield Strength')).toBeInTheDocument()
+    expect(screen.getByText('No products added yet.')).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Add product' })).toBeInTheDocument()
   })
 })

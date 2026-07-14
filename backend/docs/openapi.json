@@ -3551,56 +3551,68 @@
       "CreateSpecRequest": {
         "type": "object",
         "properties": {
-          "description": {
-            "type": "string",
-            "minLength": 1
-          },
-          "specifications": {
+          "products": {
             "type": "array",
             "items": {
-              "type": "string",
-              "minLength": 1
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "description": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "specification": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "makeOrBrand": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "yieldStrengthMpa": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "exclusiveMinimum": true
+                }
+              }
             }
-          },
-          "makeOrBrand": {
-            "type": "array",
-            "items": {
-              "type": "string",
-              "minLength": 1
-            }
-          },
-          "yieldStrengthMpa": {
-            "type": "integer",
-            "minimum": 0,
-            "exclusiveMinimum": true
           }
         }
       },
       "UpdateSpecRequest": {
         "type": "object",
         "properties": {
-          "description": {
-            "type": "string",
-            "minLength": 1
-          },
-          "specifications": {
+          "products": {
             "type": "array",
             "items": {
-              "type": "string",
-              "minLength": 1
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "description": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "specification": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "makeOrBrand": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "yieldStrengthMpa": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "exclusiveMinimum": true
+                }
+              }
             }
-          },
-          "makeOrBrand": {
-            "type": "array",
-            "items": {
-              "type": "string",
-              "minLength": 1
-            }
-          },
-          "yieldStrengthMpa": {
-            "type": "integer",
-            "minimum": 0,
-            "exclusiveMinimum": true
           }
         }
       },

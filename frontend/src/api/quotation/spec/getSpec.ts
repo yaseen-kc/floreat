@@ -3,14 +3,21 @@ import { useAuth } from '@clerk/react'
 import { apiFetch } from '@/lib/api'
 import { specKeys } from './queryKeys'
 
+/** A single product entry within a job's specification. */
+export interface SpecProduct {
+  id: string
+  code: string | null
+  description: string | null
+  specification: string | null
+  makeOrBrand: string | null
+  yieldStrengthMpa: number | null
+}
+
 /** A job-owned product specification returned by the backend. */
 export interface Spec {
   id: string
   jobId: string
-  description: string
-  specifications: string[]
-  makeOrBrand: string[]
-  yieldStrengthMpa: number
+  products: SpecProduct[]
   createdAt: string
   updatedAt: string
 }

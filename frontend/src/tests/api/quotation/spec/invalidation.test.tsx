@@ -21,10 +21,9 @@ import type { CreateSpecPayload } from '@/api/quotation/spec/postSpec'
 const mockedApiFetch = vi.mocked(apiFetch)
 
 const createPayload: CreateSpecPayload = {
-  description: 'Structural steel',
-  specifications: ['IS 2062'],
-  makeOrBrand: ['Tata'],
-  yieldStrengthMpa: 345,
+  products: [
+    { code: 'PRODUCT-1', description: 'Structural steel', specification: 'IS 2062', makeOrBrand: 'Tata', yieldStrengthMpa: 345 },
+  ],
 }
 
 const response = {
@@ -63,7 +62,7 @@ describe('spec mutation cache invalidation', () => {
     const { wrapper, invalidateSpy } = makeWrapper()
 
     const { result } = renderHook(() => useUpdateSpec(), { wrapper })
-    result.current.mutate({ jobId: 'job-1', payload: { description: 'Updated' } })
+    result.current.mutate({ jobId: 'job-1', payload: { products: [{ description: 'Updated' }] } })
 
     await waitFor(() => expect(result.current.isSuccess).toBe(true))
     expect(invalidateSpy).toHaveBeenCalledWith({ queryKey: specKeys.detail('job-1') })

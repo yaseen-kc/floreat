@@ -515,7 +515,7 @@ describe('WizardActionBar Step 9 spec finalise', () => {
 
   it('upserts the spec, finalises and navigates home on Finish & save', async () => {
     mocks.upsertSpecMutateAsync.mockResolvedValueOnce({ id: 'spec-1' })
-    useQuotationStore.getState().setSpec({ description: 'Structural steel', yieldStrengthMpa: 345 })
+    useQuotationStore.getState().setSpec({ products: [{ description: 'Structural steel', yieldStrengthMpa: 345 }] })
     render(<WizardActionBar />)
 
     await userEvent.click(screen.getByRole('button', { name: /finish & save/i }))
@@ -523,7 +523,7 @@ describe('WizardActionBar Step 9 spec finalise', () => {
     await waitFor(() => expect(mocks.navigate).toHaveBeenCalledWith('/'))
     expect(mocks.upsertSpecMutateAsync).toHaveBeenCalledWith({
       jobId: 'job-1',
-      payload: { description: 'Structural steel', yieldStrengthMpa: 345 },
+      payload: { products: [{ code: 'PRODUCT-1', description: 'Structural steel', yieldStrengthMpa: 345 }] },
     })
     // resetQuotation returns the wizard to step 1.
     expect(useQuotationStore.getState().currentStep).toBe(1)

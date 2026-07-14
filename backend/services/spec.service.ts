@@ -1,20 +1,25 @@
 /**
  * Spec service — encapsulates database operations for the Spec model.
- * Spec is a flat 1-to-1 job-owned record (no child arrays), so upsert simply
- * spreads the validated payload.
+ * Handles the inline products array (replace-all strategy on upsert/update).
  */
 import { prisma } from '../lib/prisma.js'
 import type { CreateSpecInput, UpdateSpecInput } from '../schemas/spec.schema.js'
 
-type SpecCreateData = Parameters<typeof prisma.spec.create>[0]['data']
-type SpecUpdateData = Parameters<typeof prisma.spec.update>[0]['data']
-
-/** Creates or updates the spec for a given job. */
+/** Creates or updates the spec for a given job. Products are replaced entirely on update. */
 export function upsertSpec(jobId: string, data: CreateSpecInput) {
+  const { products } = data
+  const productData = products ?? []
+
   return prisma.spec.upsert({
     where: { jobId },
-    create: { jobId, ...data } as SpecCreateData,
-    update: { ...data } as SpecUpdateData,
+    create: {
+      jobId,
+      products: { createMany: { data: productData } },
+    },
+    update: {
+      products: { deleteMany: {}, createMany: { data: productData } },
+    },
+    include: { products: true },
   })
 }
 
@@ -22,7 +27,7 @@ export function upsertSpec(jobId: string, data: CreateSpecInput) {
 export async function getSpecs(userId: string, page: number, pageSize: number) {
   const where = { job: { userId } }
   const [data, total] = await Promise.all([
-    prisma.spec.findMany({ where, skip: (page - 1) * pageSize, take: pageSize, orderBy: { createdAt: 'desc' } }),
+    prisma.spec.findMany({ where, skip: (page - 1) * pageSize, take: pageSize, orderBy: { createdAt: 'desc' }, include: { products: true } }),
     prisma.spec.count({ where }),
   ])
   return { data, total, page, pageSize }
@@ -30,12 +35,19 @@ export async function getSpecs(userId: string, page: number, pageSize: number) {
 
 /** Finds a spec by its associated job ID. Returns null if not found. */
 export function getSpecByJobId(jobId: string) {
-  return prisma.spec.findUnique({ where: { jobId } })
+  return prisma.spec.findUnique({ where: { jobId }, include: { products: true } })
 }
 
-/** Updates a spec by job ID. Throws P2025 if not found. */
+/** Updates a spec by job ID. Replaces products entirely if provided. Throws P2025 if not found. */
 export function updateSpec(jobId: string, data: UpdateSpecInput) {
-  return prisma.spec.update({ where: { jobId }, data: data as SpecUpdateData })
+  const { products } = data
+  const updateData: Record<string, unknown> = {}
+
+  if (products !== undefined) {
+    updateData.products = { deleteMany: {}, createMany: { data: products } }
+  }
+
+  return prisma.spec.update({ where: { jobId }, data: updateData, include: { products: true } })
 }
 
 /** Deletes a spec by its associated job ID. Throws P2025 if not found. */

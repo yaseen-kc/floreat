@@ -1,11 +1,19 @@
 import { faker } from '@faker-js/faker'
 
+export function makeSpecProduct(overrides = {}) {
+  return {
+    code: 'PRODUCT-1',
+    description: faker.lorem.sentence(),
+    specification: faker.lorem.sentence(),
+    makeOrBrand: faker.company.name(),
+    yieldStrengthMpa: faker.number.int({ min: 1, max: 1000 }),
+    ...overrides,
+  }
+}
+
 export function makeSpecInput(overrides = {}) {
   return {
-    description: faker.lorem.sentence(),
-    specifications: [faker.lorem.sentence(), faker.lorem.sentence()],
-    makeOrBrand: [faker.company.name()],
-    yieldStrengthMpa: faker.number.int({ min: 1, max: 1000 }),
+    products: [makeSpecProduct()],
     ...overrides,
   }
 }
@@ -14,7 +22,7 @@ export function makeSpec(overrides = {}) {
   return {
     id: faker.string.uuid(),
     jobId: faker.string.uuid(),
-    ...makeSpecInput(),
+    products: [],
     createdAt: new Date(),
     updatedAt: new Date(),
     ...overrides,

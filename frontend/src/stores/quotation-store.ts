@@ -18,7 +18,7 @@ import {
   canopyItemSchema,
 } from '@/schemas/canopy.schema'
 import { type CreateLoadInput } from '@/schemas/load.schema'
-import { type CreateSpecInput } from '@/schemas/spec.schema'
+import { type CreateSpecInput, specProductItemSchema } from '@/schemas/spec.schema'
 import {
   type CreateAccessoriesInput,
   accessoryDoorSchema,
@@ -275,13 +275,22 @@ export type JointDraft = Omit<
 }
 
 /**
- * Step 9 spec draft. Spec is a flat, always-on 1:1-per-job resource with NO
- * child arrays and an entirely optional schema (a description, two string-list
- * fields and a yield-strength number) — so the draft is just the create input.
- * Every field can be left blank and is dropped from the payload by
+ * A single Step 9 product-spec draft row. Comes straight from the shared Zod
+ * item schema (every field optional), so a row can hold a partial product
+ * exactly as the create/upsert payload accepts it. Blank rows are dropped by
  * {@link buildSpecPayload}.
  */
-export type SpecDraft = CreateSpecInput
+export type SpecProductDraft = z.infer<typeof specProductItemSchema>
+
+/**
+ * Step 9 spec draft. Spec is a flat, always-on 1:1-per-job resource that owns an
+ * inline `products` array of all-optional rows — each row is one line in the
+ * Step 9 product table. Every field can be left blank and empty rows are dropped
+ * from the payload by {@link buildSpecPayload}.
+ */
+export type SpecDraft = Omit<CreateSpecInput, 'products'> & {
+  products: SpecProductDraft[]
+}
 
 interface QuotationState {
   currentStep: number
@@ -404,8 +413,41 @@ const createDefaultJoint = (): JointDraft => ({
   foundationBoltRoof: foundationBoltJointIdEnum.options.map((foundationJointId) => ({ foundationJointId })),
 })
 
-/** Factory for a fresh spec draft — every field blank (the schema is all-optional). */
-const createDefaultSpec = (): SpecDraft => ({})
+/** Factory for a fresh spec draft — an empty products table (the schema is all-optional). */
+const createDefaultSpec = (): SpecDraft => ({ products: [] })
+
+/** True for a plain, non-array object (the shape of every nested draft slice). */
+const isPlainObject = (v: unknown): v is Record<string, unknown> =>
+  typeof v === 'object' && v !== null && !Array.isArray(v)
+
+/**
+ * One-level-deep merge of a rehydrated persisted draft onto the store's default
+ * state. zustand's default `merge` is a shallow top-level merge, so a persisted
+ * nested slice (`spec`, `canopy`, …) written before a key existed would fully
+ * replace the default and reintroduce that key as `undefined` — crashing any
+ * consumer that reads it (e.g. `spec.products.length`). Here each top-level key
+ * present in the persisted state is merged over its default: nested plain
+ * objects are shallow-merged so default keys survive; arrays and primitives are
+ * taken from the persisted value as-is (persisted wins). Keys absent from the
+ * persisted state keep their default.
+ *
+ * ponytail: one level deep only — draft slices are a single layer of plain
+ * objects over arrays/primitives, so no recursion is needed. If a future slice
+ * nests objects two levels deep, extend this to recurse for that key.
+ */
+function deepMergeDraft(persistedState: unknown, currentState: QuotationState): QuotationState {
+  if (!isPlainObject(persistedState)) return currentState
+  const current = currentState as unknown as Record<string, unknown>
+  const merged: Record<string, unknown> = { ...current }
+  for (const [key, persistedValue] of Object.entries(persistedState)) {
+    const currentValue = current[key]
+    merged[key] =
+      isPlainObject(currentValue) && isPlainObject(persistedValue)
+        ? { ...currentValue, ...persistedValue }
+        : persistedValue
+  }
+  return merged as unknown as QuotationState
+}
 
 export const useQuotationStore = create<QuotationState>()(
   persist(
@@ -556,6 +598,7 @@ export const useQuotationStore = create<QuotationState>()(
       // in-progress job resume (and re-use PUT) after a refresh instead of
       // creating a duplicate.
       skipHydration: true,
+      merge: (persistedState, currentState) => deepMergeDraft(persistedState, currentState),
       partialize: (s) => ({ projectInfo: s.projectInfo, roof: s.roof, roofSectionsEnabled: s.roofSectionsEnabled, mezzanine: s.mezzanine, hasMezzanine: s.hasMezzanine, stair: s.stair, hasStair: s.hasStair, canopy: s.canopy, hasCanopy: s.hasCanopy, load: s.load, accessories: s.accessories, joint: s.joint, spec: s.spec, currentStep: s.currentStep, jobId: s.jobId }),
     }
   )
@@ -736,26 +779,20 @@ export function buildJointPayload(joint: JointDraft): CreateJointInput {
 /**
  * Builds the spec create/upsert payload from the Step 9 draft.
  *
- * Spec is a flat, always-on resource with an all-optional schema. A blank
- * `description` (empty/whitespace) is dropped; each string-list field
- * (`specifications`, `makeOrBrand`) is trimmed and blank entries removed, and an
- * empty list is omitted entirely; `yieldStrengthMpa` is dropped when blank.
- * An entirely blank draft yields `{}` — which the backend accepts (the always-on
- * form upserts whatever the user provided).
+ * Each product row is compacted (blank `undefined` fields dropped) and rows that
+ * carry no value beyond their auto-assigned `code` are removed. The surviving
+ * rows are renumbered `PRODUCT-1..PRODUCT-n` by position (mirroring the canopy
+ * code convention); an empty `products` array is omitted entirely, so an
+ * all-blank draft yields `{}` — which the backend accepts (the always-on form
+ * upserts whatever the user provided).
  */
 export function buildSpecPayload(spec: SpecDraft): CreateSpecInput {
+  const products = spec.products
+    .map(({ code: _code, ...rest }) => compactRow(rest))
+    .filter((r) => Object.keys(r).length > 0)
+    .map((r, i) => ({ ...r, code: `PRODUCT-${i + 1}` }))
+
   const payload: CreateSpecInput = {}
-
-  const description = spec.description?.trim()
-  if (description) payload.description = description
-
-  const specifications = (spec.specifications ?? []).map((s) => s.trim()).filter(Boolean)
-  if (specifications.length > 0) payload.specifications = specifications
-
-  const makeOrBrand = (spec.makeOrBrand ?? []).map((s) => s.trim()).filter(Boolean)
-  if (makeOrBrand.length > 0) payload.makeOrBrand = makeOrBrand
-
-  if (spec.yieldStrengthMpa !== undefined) payload.yieldStrengthMpa = spec.yieldStrengthMpa
-
+  if (products.length > 0) payload.products = products
   return payload
 }

@@ -18,14 +18,13 @@ import type { Spec } from '@/api/quotation/spec/getSpec'
 
 const mockedApiFetch = vi.mocked(apiFetch)
 
-const payload: UpdateSpecPayload = { description: 'Updated steel' }
+const payload: UpdateSpecPayload = { products: [{ code: 'PRODUCT-1', description: 'Updated steel' }] }
 const spec: Spec = {
   id: 'spec-1',
   jobId: 'job-1',
-  description: 'Updated steel',
-  specifications: ['IS 2062'],
-  makeOrBrand: ['Tata'],
-  yieldStrengthMpa: 345,
+  products: [
+    { id: 'p1', code: 'PRODUCT-1', description: 'Updated steel', specification: 'IS 2062', makeOrBrand: 'Tata', yieldStrengthMpa: 345 },
+  ],
   createdAt: '2026-01-01T00:00:00.000Z',
   updatedAt: '2026-01-02T00:00:00.000Z',
 }

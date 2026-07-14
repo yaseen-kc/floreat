@@ -8,11 +8,10 @@ describe('spec store draft', () => {
     useQuotationStore.getState().resetQuotation()
   })
 
-  it('starts as an empty object and setSpec merges fields', () => {
-    expect(useQuotationStore.getState().spec).toEqual({})
-    useQuotationStore.getState().setSpec({ description: 'Steel' })
-    useQuotationStore.getState().setSpec({ yieldStrengthMpa: 345 })
-    expect(useQuotationStore.getState().spec).toEqual({ description: 'Steel', yieldStrengthMpa: 345 })
+  it('starts as an empty products table and setSpec replaces products', () => {
+    expect(useQuotationStore.getState().spec).toEqual({ products: [] })
+    useQuotationStore.getState().setSpec({ products: [{ description: 'Steel' }] })
+    expect(useQuotationStore.getState().spec).toEqual({ products: [{ description: 'Steel' }] })
   })
 })
 
@@ -26,41 +25,33 @@ describe('buildSpecPayload', () => {
     expect(buildSpecPayload(useQuotationStore.getState().spec)).toEqual({})
   })
 
-  it('keeps provided fields and drops blank ones', () => {
+  it('compacts each product row and renumbers PRODUCT-n by position', () => {
     useQuotationStore.getState().setSpec({
-      description: 'Structural steel',
-      specifications: ['IS 2062'],
-      makeOrBrand: ['Tata'],
-      yieldStrengthMpa: 345,
+      products: [
+        { description: 'Structural steel', specification: 'IS 2062', makeOrBrand: 'Tata', yieldStrengthMpa: 345 },
+        { description: 'Purlins' },
+      ],
     })
     const payload = buildSpecPayload(useQuotationStore.getState().spec)
     expect(payload).toEqual({
-      description: 'Structural steel',
-      specifications: ['IS 2062'],
-      makeOrBrand: ['Tata'],
-      yieldStrengthMpa: 345,
+      products: [
+        { code: 'PRODUCT-1', description: 'Structural steel', specification: 'IS 2062', makeOrBrand: 'Tata', yieldStrengthMpa: 345 },
+        { code: 'PRODUCT-2', description: 'Purlins' },
+      ],
     })
   })
 
-  it('trims entries and drops blank lines / empty arrays', () => {
-    useQuotationStore.getState().setSpec({
-      description: '   ',
-      specifications: ['  IS 2062  ', '', '   '],
-      makeOrBrand: [],
-    })
-    const payload = buildSpecPayload(useQuotationStore.getState().spec)
-    expect(payload).toEqual({ specifications: ['IS 2062'] })
-    expect(payload).not.toHaveProperty('description')
-    expect(payload).not.toHaveProperty('makeOrBrand')
-    expect(payload).not.toHaveProperty('yieldStrengthMpa')
+  it('drops fully-empty rows and omits products entirely when none remain', () => {
+    useQuotationStore.getState().setSpec({ products: [{}, { code: 'PRODUCT-9' }] })
+    expect(buildSpecPayload(useQuotationStore.getState().spec)).toEqual({})
   })
 
   it('produces a payload that satisfies the create schema', () => {
     useQuotationStore.getState().setSpec({
-      description: 'Structural steel',
-      specifications: ['IS 2062', 'IS 800'],
-      makeOrBrand: ['Tata', 'JSW'],
-      yieldStrengthMpa: 345,
+      products: [
+        { description: 'Structural steel', specification: 'IS 2062', makeOrBrand: 'Tata', yieldStrengthMpa: 345 },
+        { description: 'Roofing sheet', makeOrBrand: 'JSW' },
+      ],
     })
     const payload = buildSpecPayload(useQuotationStore.getState().spec)
     expect(createSpecSchema.safeParse(payload).success).toBe(true)
