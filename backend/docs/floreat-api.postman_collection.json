@@ -915,6 +915,129 @@
 					}
 				}
 			]
+		},
+		{
+			"name": "Specs",
+			"item": [
+				{
+					"name": "Create Spec",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"description\": \"Fabricated Columns and Beams\",\n\t\"specifications\": [\n\t\t\"Fabricated from Plates or Stocks by continuous welding process.\",\n\t\t\"Conform to IS2062 Grade E345 / ASTM A572-12 Grade 50.\",\n\t\t\"Shall be killed / semi-killed.\",\n\t\t\"Minimum plate thickness: 4 mm.\"\n\t],\n\t\"makeOrBrand\": [\"JSW\", \"TATA\"],\n\t\"yieldStrengthMpa\": 345\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/specs",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "specs"]
+						},
+						"description": "Creates a global product specification. Requires the x-dev-user-id header injected by the collection prerequest script."
+					}
+				},
+				{
+					"name": "Get All Specs",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{baseUrl}}/api/specs?page=1&pageSize=10",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "specs"],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "pageSize",
+									"value": "10"
+								}
+							]
+						},
+						"description": "Returns the paginated global product-specification catalog."
+					}
+				},
+				{
+					"name": "Get Spec by ID",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{baseUrl}}/api/specs/:id",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "specs", ":id"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "spec-fabricated-columns-beams"
+								}
+							]
+						},
+						"description": "Returns one global product specification by ID."
+					}
+				},
+				{
+					"name": "Update Spec",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"specifications\": [\n\t\t\"Fabricated from plates by continuous welding process.\",\n\t\t\"Conform to IS2062 Grade E345 / ASTM A572-12 Grade 50.\"\n\t],\n\t\"yieldStrengthMpa\": 345\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/specs/:id",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "specs", ":id"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "spec-fabricated-columns-beams"
+								}
+							]
+						},
+						"description": "Partially updates a global product specification by ID."
+					}
+				},
+				{
+					"name": "Delete Spec",
+					"request": {
+						"method": "DELETE",
+						"url": {
+							"raw": "{{baseUrl}}/api/specs/:id",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "specs", ":id"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "spec-fabricated-columns-beams"
+								}
+							]
+						},
+						"description": "Deletes a global product specification by ID. Returns 204 No Content on success."
+					}
+				}
+			]
 		}
 	],
 	"variable": [

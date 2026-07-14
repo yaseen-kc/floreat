@@ -17,6 +17,7 @@ import { canopyRoutes } from './canopy.routes.js'
 import { loadRoutes } from './load.routes.js'
 import { accessoriesRoutes } from './accessories.routes.js'
 import { jointRoutes } from './joint.routes.js'
+import { specRoutes } from './spec.routes.js'
 
 export async function registerRoutes(app: FastifyInstance) {
   await app.register(healthRoutes, { prefix: '/api' })
@@ -29,4 +30,5 @@ export async function registerRoutes(app: FastifyInstance) {
   await app.register(loadRoutes, { prefix: '/api' })
   await app.register(accessoriesRoutes, { prefix: '/api' })
   await app.register(jointRoutes, { prefix: '/api' })
+  await app.register(specRoutes, { prefix: '/api' })
 }

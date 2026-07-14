@@ -1,5 +1,25 @@
 import { faker } from '@faker-js/faker'
 
+export function makeSpecInput(overrides = {}) {
+  return {
+    description: faker.lorem.sentence(),
+    specifications: [faker.lorem.sentence(), faker.lorem.sentence()],
+    makeOrBrand: [faker.company.name()],
+    yieldStrengthMpa: faker.number.int({ min: 1, max: 1000 }),
+    ...overrides,
+  }
+}
+
+export function makeSpec(overrides = {}) {
+  return {
+    id: faker.string.uuid(),
+    ...makeSpecInput(),
+    createdAt: new Date(),
+    updatedAt: new Date(),
+    ...overrides,
+  }
+}
+
 export function makeJobInput() {
   return {
     projectNo: faker.string.alphanumeric(8),

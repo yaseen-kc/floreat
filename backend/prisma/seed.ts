@@ -144,6 +144,74 @@ async function main() {
   }
   console.log('✓ Jobs seeded')
 
+  // ── Global product specifications ──────────────────────────
+  const specs = [
+    {
+      id: 'spec-fabricated-columns-beams',
+      description: 'Fabricated Columns and Beams',
+      specifications: [
+        'Fabricated from Plates or Stocks by continuous welding process.',
+        'Conform to IS2062 Grade E345 / ASTM A572-12 Grade 50.',
+        'Shall be killed / semi-killed.',
+        'Minimum plate thickness: 4 mm.',
+      ],
+      makeOrBrand: ['JSW', 'TATA'],
+      yieldStrengthMpa: 345,
+    },
+    {
+      id: 'spec-cold-formed-purlins-girts',
+      description: 'Cold Formed Purlins / Girts',
+      specifications: ['ASTM A653 Grade 275.', 'Z120 coating or equivalent.'],
+      makeOrBrand: ['JSW'],
+      yieldStrengthMpa: 275,
+    },
+    {
+      id: 'spec-roofing-sheet',
+      description: 'Roofing Sheet',
+      specifications: ['30 mm PUF Sheet.'],
+      makeOrBrand: ['Metecno', 'JSW'],
+      yieldStrengthMpa: 550,
+    },
+    {
+      id: 'spec-cladding-sheet',
+      description: 'Cladding Sheet',
+      specifications: ['Zincalume Steel.', 'Roof sheet 0.40 mm TCT.', 'Grade 550.'],
+      makeOrBrand: ['JSW'],
+      yieldStrengthMpa: 550,
+    },
+    {
+      id: 'spec-decking-sheet',
+      description: 'Decking Sheet',
+      specifications: [
+        'Decking Profile 50/230 (Depth/Pitch).',
+        'Panel thickness: 0.8 mm.',
+        'Yield Strength: 250 MPa.',
+        'Zinc Coating: Z120 GSM.',
+      ],
+      makeOrBrand: ['JSW'],
+      yieldStrengthMpa: 250,
+    },
+    {
+      id: 'spec-primary-connection',
+      description: 'Primary Connection',
+      specifications: ['Primary bolts conforming to ASTM A325 (or equivalent).', 'Grade 8.8.'],
+      makeOrBrand: ['UNBRACO'],
+      yieldStrengthMpa: 640,
+    },
+    {
+      id: 'spec-secondary-connection',
+      description: 'Secondary Connection',
+      specifications: ['Secondary machine bolts conforming to ASTM A307 (or equivalent).', 'Grade 4.6.'],
+      makeOrBrand: ['SS'],
+      yieldStrengthMpa: 240,
+    },
+  ]
+
+  for (const { id, ...data } of specs) {
+    await prisma.spec.upsert({ where: { id }, update: data, create: { id, ...data } })
+  }
+  console.log('✓ Product specifications seeded')
+
   // ── Roofs & Sidewalls ───────────────────────────────────────
   const roofs = [
     {

@@ -1,0 +1,11 @@
+model Spec {
+  id               String   @id @default(cuid())
+  description      String
+  specifications   String[]
+  makeOrBrand      String[]
+  yieldStrengthMpa Int
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  @@index([description])
+}
