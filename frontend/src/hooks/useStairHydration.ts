@@ -22,9 +22,9 @@ export function useStairHydration(): void {
 
     // Don't clobber a draft the user has already started.
     const s = useQuotationStore.getState()
-    if (s.hasStair || s.stair.stairs.length > 0 || s.stair.areaDeductions.length > 0) return
+    if (s.stair.stairs.length > 0 || s.stair.areaDeductions.length > 0) return
 
-    const { stair, hasStair } = mapStairResponseToDraft(data)
-    useQuotationStore.setState({ stair, hasStair })
+    const stair = mapStairResponseToDraft(data)
+    useQuotationStore.setState({ stair })
   }, [data])
 }

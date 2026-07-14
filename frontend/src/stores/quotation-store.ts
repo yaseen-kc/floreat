@@ -298,11 +298,8 @@ interface QuotationState {
   roof: RoofDraft
   roofSectionsEnabled: RoofSectionsEnabled
   mezzanine: MezzanineDraft
-  hasMezzanine: boolean
   stair: StairDraft
-  hasStair: boolean
   canopy: CanopyDraft
-  hasCanopy: boolean
   load: LoadDraft
   accessories: AccessoriesDraft
   joint: JointDraft
@@ -313,11 +310,8 @@ interface QuotationState {
   setRoof: (v: Partial<RoofDraft>) => void
   toggleRoofSection: (key: RoofSectionKey, enabled: boolean) => void
   setMezzanine: (v: Partial<MezzanineDraft>) => void
-  setHasMezzanine: (enabled: boolean) => void
   setStair: (v: Partial<StairDraft>) => void
-  setHasStair: (enabled: boolean) => void
   setCanopy: (v: Partial<CanopyDraft>) => void
-  setHasCanopy: (enabled: boolean) => void
   setLoad: (v: Partial<LoadDraft>) => void
   setAccessories: (v: Partial<AccessoriesDraft>) => void
   setJoint: (v: Partial<JointDraft>) => void
@@ -459,11 +453,8 @@ export const useQuotationStore = create<QuotationState>()(
       roof: createDefaultRoof(),
       roofSectionsEnabled: createDefaultRoofSections(),
       mezzanine: createDefaultMezzanine(),
-      hasMezzanine: false,
       stair: createDefaultStair(),
-      hasStair: false,
       canopy: createDefaultCanopy(),
-      hasCanopy: false,
       load: createDefaultLoad(),
       accessories: createDefaultAccessories(),
       joint: createDefaultJoint(),
@@ -499,24 +490,9 @@ export const useQuotationStore = create<QuotationState>()(
 
       setMezzanine: (v) => set((s) => ({ mezzanine: { ...s.mezzanine, ...v } })),
 
-      // Turning the toggle off clears any rows so an empty mezzanine drops from
-      // the payload (and the WizardActionBar deletes the server record).
-      setHasMezzanine: (enabled) =>
-        set(() => (enabled ? { hasMezzanine: true } : { hasMezzanine: false, mezzanine: createDefaultMezzanine() })),
-
       setStair: (v) => set((s) => ({ stair: { ...s.stair, ...v } })),
 
-      // Turning the toggle off clears any rows so an empty stair drops from the
-      // payload (and the WizardActionBar deletes the server record).
-      setHasStair: (enabled) =>
-        set(() => (enabled ? { hasStair: true } : { hasStair: false, stair: createDefaultStair() })),
-
       setCanopy: (v) => set((s) => ({ canopy: { ...s.canopy, ...v } })),
-
-      // Turning the toggle off clears any rows so an empty canopy drops from the
-      // payload (and the WizardActionBar deletes the server record).
-      setHasCanopy: (enabled) =>
-        set(() => (enabled ? { hasCanopy: true } : { hasCanopy: false, canopy: createDefaultCanopy() })),
 
       // Load is always-on (no toggle): blank fields are simply dropped from the
       // payload by buildLoadPayload at save time.
@@ -559,11 +535,8 @@ export const useQuotationStore = create<QuotationState>()(
         roof: createDefaultRoof(),
         roofSectionsEnabled: createDefaultRoofSections(),
         mezzanine: createDefaultMezzanine(),
-        hasMezzanine: false,
         stair: createDefaultStair(),
-        hasStair: false,
         canopy: createDefaultCanopy(),
-        hasCanopy: false,
         load: createDefaultLoad(),
         accessories: createDefaultAccessories(),
         joint: createDefaultJoint(),
@@ -599,7 +572,7 @@ export const useQuotationStore = create<QuotationState>()(
       // creating a duplicate.
       skipHydration: true,
       merge: (persistedState, currentState) => deepMergeDraft(persistedState, currentState),
-      partialize: (s) => ({ projectInfo: s.projectInfo, roof: s.roof, roofSectionsEnabled: s.roofSectionsEnabled, mezzanine: s.mezzanine, hasMezzanine: s.hasMezzanine, stair: s.stair, hasStair: s.hasStair, canopy: s.canopy, hasCanopy: s.hasCanopy, load: s.load, accessories: s.accessories, joint: s.joint, spec: s.spec, currentStep: s.currentStep, jobId: s.jobId }),
+      partialize: (s) => ({ projectInfo: s.projectInfo, roof: s.roof, roofSectionsEnabled: s.roofSectionsEnabled, mezzanine: s.mezzanine, stair: s.stair, canopy: s.canopy, load: s.load, accessories: s.accessories, joint: s.joint, spec: s.spec, currentStep: s.currentStep, jobId: s.jobId }),
     }
   )
 )

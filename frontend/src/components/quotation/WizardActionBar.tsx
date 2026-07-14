@@ -6,11 +6,8 @@ import { useCreateJob } from '@/api/quotation/jobs/postJobs'
 import { useUpdateJob } from '@/api/quotation/jobs/putJobs'
 import { useUpsertRoof } from '@/api/quotation/roof/postRoof'
 import { useUpsertMezzanine } from '@/api/quotation/mezz/postMezz'
-import { useDeleteMezzanine } from '@/api/quotation/mezz/deleteMezz'
 import { useUpsertStair } from '@/api/quotation/stair/postStairs'
-import { useDeleteStair } from '@/api/quotation/stair/deleteStairs'
 import { useUpsertCanopy } from '@/api/quotation/canopy/postCanopy'
-import { useDeleteCanopy } from '@/api/quotation/canopy/deleteCanopy'
 import { useUpsertLoad } from '@/api/quotation/load/postLoad'
 import { useUpsertAccessories } from '@/api/quotation/accessories/postAccessories'
 import { useUpsertJoint } from '@/api/quotation/joint/postJoint'
@@ -30,7 +27,7 @@ export const successToast = (message: string) => {
 }
 
 export function WizardActionBar() {
-  const { currentStep, nextStep, prevStep, validateStep, goStep, projectInfo, roof, jobId, setJobId, resetQuotation, mezzanine, hasMezzanine, stair, hasStair, canopy, hasCanopy, load, accessories, joint, spec } =
+  const { currentStep, nextStep, prevStep, validateStep, goStep, projectInfo, roof, jobId, setJobId, resetQuotation, mezzanine, stair, canopy, load, accessories, joint, spec } =
     useQuotationStore(
       useShallow((s) => ({
         currentStep: s.currentStep,
@@ -44,11 +41,8 @@ export function WizardActionBar() {
         setJobId: s.setJobId,
         resetQuotation: s.resetQuotation,
         mezzanine: s.mezzanine,
-        hasMezzanine: s.hasMezzanine,
         stair: s.stair,
-        hasStair: s.hasStair,
         canopy: s.canopy,
-        hasCanopy: s.hasCanopy,
         load: s.load,
         accessories: s.accessories,
         joint: s.joint,
@@ -63,11 +57,8 @@ export function WizardActionBar() {
   const updateJob = useUpdateJob()
   const upsertRoof = useUpsertRoof()
   const upsertMezzanine = useUpsertMezzanine()
-  const deleteMezzanine = useDeleteMezzanine()
   const upsertStair = useUpsertStair()
-  const deleteStair = useDeleteStair()
   const upsertCanopy = useUpsertCanopy()
-  const deleteCanopy = useDeleteCanopy()
   const upsertLoad = useUpsertLoad()
   const upsertAccessories = useUpsertAccessories()
   const upsertJoint = useUpsertJoint()
@@ -78,11 +69,8 @@ export function WizardActionBar() {
     updateJob.isPending ||
     upsertRoof.isPending ||
     upsertMezzanine.isPending ||
-    deleteMezzanine.isPending ||
     upsertStair.isPending ||
-    deleteStair.isPending ||
     upsertCanopy.isPending ||
-    deleteCanopy.isPending ||
     upsertLoad.isPending ||
     upsertAccessories.isPending ||
     upsertJoint.isPending ||
@@ -151,10 +139,10 @@ export function WizardActionBar() {
   }
 
   /**
-   * Persists Step 3 mezzanine data. Requires the Step 1 `jobId`. Upserts the
-   * mezzanine when the job has one, otherwise deletes any existing record (the
-   * toggle is off). Resolves on success and rejects on failure so callers can
-   * gate navigation.
+   * Persists Step 3 mezzanine data via an idempotent upsert. Requires the
+   * Step 1 `jobId`. Mezzanine is always-on: an empty draft upserts `{}` and
+   * the backend creates/updates the record. Resolves on success and rejects on
+   * failure so callers can gate navigation.
    */
   const submitMezzanine = async () => {
     if (!jobId) {
@@ -163,11 +151,7 @@ export function WizardActionBar() {
     }
     try {
       setSaving()
-      if (hasMezzanine) {
-        await upsertMezzanine.mutateAsync({ jobId, payload: buildMezzaninePayload(mezzanine) })
-      } else {
-        await deleteMezzanine.mutateAsync(jobId)
-      }
+      await upsertMezzanine.mutateAsync({ jobId, payload: buildMezzaninePayload(mezzanine) })
       setSaved()
       successToast('Mezzanine saved successfully')
     } catch (err) {
@@ -178,10 +162,10 @@ export function WizardActionBar() {
   }
 
   /**
-   * Persists Step 4 stair data. Requires the Step 1 `jobId`. Upserts the stair
-   * when the job has one, otherwise deletes any existing record (the toggle is
-   * off). Resolves on success and rejects on failure so callers can gate
-   * navigation.
+   * Persists Step 4 stair data via an idempotent upsert. Requires the Step 1
+   * `jobId`. Stair is always-on: an empty draft upserts `{}` and the backend
+   * creates/updates the record. Resolves on success and rejects on failure so
+   * callers can gate navigation.
    */
   const submitStair = async () => {
     if (!jobId) {
@@ -190,11 +174,7 @@ export function WizardActionBar() {
     }
     try {
       setSaving()
-      if (hasStair) {
-        await upsertStair.mutateAsync({ jobId, payload: buildStairPayload(stair) })
-      } else {
-        await deleteStair.mutateAsync(jobId)
-      }
+      await upsertStair.mutateAsync({ jobId, payload: buildStairPayload(stair) })
       setSaved()
       successToast('Stair saved successfully')
     } catch (err) {
@@ -205,10 +185,10 @@ export function WizardActionBar() {
   }
 
   /**
-   * Persists Step 5 canopy data. Requires the Step 1 `jobId`. Upserts the
-   * canopy when the job has one, otherwise deletes any existing record (the
-   * toggle is off). Resolves on success and rejects on failure so callers can
-   * gate navigation.
+   * Persists Step 5 canopy data via an idempotent upsert. Requires the Step 1
+   * `jobId`. Canopy is always-on: an empty draft upserts `{}` and the backend
+   * creates/updates the record. Resolves on success and rejects on failure so
+   * callers can gate navigation.
    */
   const submitCanopy = async () => {
     if (!jobId) {
@@ -217,11 +197,7 @@ export function WizardActionBar() {
     }
     try {
       setSaving()
-      if (hasCanopy) {
-        await upsertCanopy.mutateAsync({ jobId, payload: buildCanopyPayload(canopy) })
-      } else {
-        await deleteCanopy.mutateAsync(jobId)
-      }
+      await upsertCanopy.mutateAsync({ jobId, payload: buildCanopyPayload(canopy) })
       setSaved()
       successToast('Canopy saved successfully')
     } catch (err) {

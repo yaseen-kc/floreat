@@ -21,9 +21,9 @@ export function useCanopyHydration(): void {
     hydrated.current = true
 
     const s = useQuotationStore.getState()
-    if (s.hasCanopy || s.canopy.canopies.length > 0) return
+    if (s.canopy.canopies.length > 0) return
 
-    const { canopy, hasCanopy } = mapCanopyResponseToDraft(data)
-    useQuotationStore.setState({ canopy, hasCanopy })
+    const canopy = mapCanopyResponseToDraft(data)
+    useQuotationStore.setState({ canopy })
   }, [data])
 }

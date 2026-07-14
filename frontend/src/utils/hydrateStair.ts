@@ -7,16 +7,12 @@ import type {
 
 import { num, int } from '@floreat/shared/units'
 
-/** The mapped stair draft plus the derived top-level toggle. */
-export interface HydratedStair {
-  stair: StairDraft
-  hasStair: boolean
-}
+/** The mapped stair draft. */
+export type HydratedStair = StairDraft
 
 /**
  * Maps a `Stair` API response (Decimal columns as strings, optionals as `null`)
- * into a Step 4 {@link StairDraft}. `hasStair` is enabled when the response
- * contains at least one staircase or area deduction.
+ * into a Step 4 {@link StairDraft}.
  */
 export function mapStairResponseToDraft(s: Stair): HydratedStair {
   const stairs: StairItemDraft[] = s.stairs.map((it) => ({
@@ -41,5 +37,5 @@ export function mapStairResponseToDraft(s: Stair): HydratedStair {
     deductionFor: d.deductionFor ?? undefined,
   }))
 
-  return { stair: { stairs, areaDeductions }, hasStair: stairs.length > 0 || areaDeductions.length > 0 }
+  return { stairs, areaDeductions }
 }

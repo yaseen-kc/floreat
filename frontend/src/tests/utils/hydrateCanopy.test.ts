@@ -15,16 +15,15 @@ describe('mapCanopyResponseToDraft', () => {
         gutter: true, downTake: false, flashing: null,
       }],
     }
-    const { canopy, hasCanopy } = mapCanopyResponseToDraft(response)
-    expect(hasCanopy).toBe(true)
+    const canopy = mapCanopyResponseToDraft(response)
+    expect(canopy.canopies).toHaveLength(1)
     expect(canopy.canopies[0].length).toBe(5.5)
     expect(canopy.canopies[0].flashing).toBeUndefined()
     expect(canopy.canopies[0].gutter).toBe(true)
   })
 
-  it('returns hasCanopy false for empty canopies', () => {
+  it('returns empty canopies array for an empty server record', () => {
     const response: Canopy = { id: 'c1', jobId: 'j1', createdAt: '', updatedAt: '', canopies: [] }
-    const { hasCanopy } = mapCanopyResponseToDraft(response)
-    expect(hasCanopy).toBe(false)
+    expect(mapCanopyResponseToDraft(response).canopies).toHaveLength(0)
   })
 })

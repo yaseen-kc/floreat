@@ -22,9 +22,9 @@ export function useMezzanineHydration(): void {
 
     // Don't clobber a draft the user has already started.
     const s = useQuotationStore.getState()
-    if (s.hasMezzanine || s.mezzanine.floors.length > 0 || s.mezzanine.extensions.length > 0) return
+    if (s.mezzanine.floors.length > 0 || s.mezzanine.extensions.length > 0) return
 
-    const { mezzanine, hasMezzanine } = mapMezzanineResponseToDraft(data)
-    useQuotationStore.setState({ mezzanine, hasMezzanine })
+    const mezzanine = mapMezzanineResponseToDraft(data)
+    useQuotationStore.setState({ mezzanine })
   }, [data])
 }

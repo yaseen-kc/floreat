@@ -3,16 +3,12 @@ import type { CanopyDraft, CanopyItemDraft } from '@/stores/quotation-store'
 
 import { num, int } from '@floreat/shared/units'
 
-/** The mapped canopy draft plus the derived top-level toggle. */
-export interface HydratedCanopy {
-  canopy: CanopyDraft
-  hasCanopy: boolean
-}
+/** The mapped canopy draft. */
+export type HydratedCanopy = CanopyDraft
 
 /**
  * Maps a `Canopy` API response (Decimal columns as strings, optionals as `null`)
- * into a Step 5 {@link CanopyDraft}. `hasCanopy` is enabled when the response
- * contains at least one canopy item.
+ * into a Step 5 {@link CanopyDraft}.
  */
 export function mapCanopyResponseToDraft(c: Canopy): HydratedCanopy {
   const canopies: CanopyItemDraft[] = c.canopies.map((it) => ({
@@ -34,5 +30,5 @@ export function mapCanopyResponseToDraft(c: Canopy): HydratedCanopy {
     flashing: it.flashing ?? undefined,
   }))
 
-  return { canopy: { canopies }, hasCanopy: canopies.length > 0 }
+  return { canopies }
 }

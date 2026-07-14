@@ -1,4 +1,4 @@
-import { apiFetch } from '@/lib/api'
+import { apiFetch, ApiError } from '@/lib/api'
 import { useQuery } from '@tanstack/react-query'
 import { useAuth } from '@clerk/react'
 import { stairKeys } from './queryKeys'
@@ -96,21 +96,30 @@ export function useStairs(page = 1, pageSize = 10) {
 
 /**
  * Fetches the stair belonging to a specific job via GET /api/jobs/:jobId/stair.
+ * Returns `null` when no stair exists yet (404) — this is the expected
+ * empty state for a new job, not an error.
  * Requires a Clerk session token for authentication.
  */
-export async function getStairByJobId(token: string | null, jobId: string): Promise<Stair> {
-  return await apiFetch(`/api/jobs/${jobId}/stair`, token)
+export async function getStairByJobId(token: string | null, jobId: string): Promise<Stair | null> {
+  try {
+    return await apiFetch(`/api/jobs/${jobId}/stair`, token)
+  } catch (err) {
+    if (err instanceof ApiError && err.status === 404) return null
+    throw err
+  }
 }
 
 /**
  * React Query hook for a single job's stair. Disabled until a `jobId` is
- * available so it never fires with an empty path segment.
+ * available so it never fires with an empty path segment. Returns `null` when
+ * no stair exists yet; `retry: false` prevents retry storms on 404.
  */
 export function useStair(jobId: string) {
   const { getToken } = useAuth()
   return useQuery({
     queryKey: stairKeys.detail(jobId),
     enabled: !!jobId,
+    retry: false,
     queryFn: async () => {
       const token = await getToken()
       return getStairByJobId(token, jobId)

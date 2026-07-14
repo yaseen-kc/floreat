@@ -10,11 +10,8 @@ const mocks = vi.hoisted(() => ({
   updateMutateAsync: vi.fn(),
   upsertRoofMutateAsync: vi.fn(),
   upsertMezzMutateAsync: vi.fn(),
-  deleteMezzMutateAsync: vi.fn(),
   upsertStairMutateAsync: vi.fn(),
-  deleteStairMutateAsync: vi.fn(),
   upsertCanopyMutateAsync: vi.fn(),
-  deleteCanopyMutateAsync: vi.fn(),
   upsertLoadMutateAsync: vi.fn(),
   upsertAccessoriesMutateAsync: vi.fn(),
   upsertJointMutateAsync: vi.fn(),
@@ -48,24 +45,12 @@ vi.mock('@/api/quotation/mezz/postMezz', () => ({
   useUpsertMezzanine: () => ({ mutateAsync: mocks.upsertMezzMutateAsync, isPending: false }),
 }))
 
-vi.mock('@/api/quotation/mezz/deleteMezz', () => ({
-  useDeleteMezzanine: () => ({ mutateAsync: mocks.deleteMezzMutateAsync, isPending: false }),
-}))
-
 vi.mock('@/api/quotation/stair/postStairs', () => ({
   useUpsertStair: () => ({ mutateAsync: mocks.upsertStairMutateAsync, isPending: false }),
 }))
 
-vi.mock('@/api/quotation/stair/deleteStairs', () => ({
-  useDeleteStair: () => ({ mutateAsync: mocks.deleteStairMutateAsync, isPending: false }),
-}))
-
 vi.mock('@/api/quotation/canopy/postCanopy', () => ({
   useUpsertCanopy: () => ({ mutateAsync: mocks.upsertCanopyMutateAsync, isPending: false }),
-}))
-
-vi.mock('@/api/quotation/canopy/deleteCanopy', () => ({
-  useDeleteCanopy: () => ({ mutateAsync: mocks.deleteCanopyMutateAsync, isPending: false }),
 }))
 
 vi.mock('@/api/quotation/load/postLoad', () => ({
@@ -271,14 +256,12 @@ describe('WizardActionBar Step 3 mezzanine persistence', () => {
     mocks.toastSuccess.mockReset()
     mocks.toastError.mockReset()
     mocks.upsertMezzMutateAsync.mockReset()
-    mocks.deleteMezzMutateAsync.mockReset()
     useQuotationStore.getState().setJobId('job-1')
     useQuotationStore.setState({ currentStep: 3 })
   })
 
-  it('upserts the mezzanine and advances to step 4 when the toggle is on', async () => {
+  it('upserts the mezzanine with populated rows and advances to step 4', async () => {
     mocks.upsertMezzMutateAsync.mockResolvedValueOnce({ id: 'mezz-1' })
-    useQuotationStore.getState().setHasMezzanine(true)
     useQuotationStore.getState().setMezzanine({ floors: [{ code: 'MEZ-1', lengthM: 12 }] })
     render(<WizardActionBar />)
 
@@ -289,23 +272,20 @@ describe('WizardActionBar Step 3 mezzanine persistence', () => {
       jobId: 'job-1',
       payload: { floors: [{ code: 'MEZ-1', lengthM: 12 }] },
     })
-    expect(mocks.deleteMezzMutateAsync).not.toHaveBeenCalled()
   })
 
-  it('deletes any existing mezzanine and advances when the toggle is off', async () => {
-    mocks.deleteMezzMutateAsync.mockResolvedValueOnce(undefined)
+  it('upserts an empty payload for a blank draft and still advances', async () => {
+    mocks.upsertMezzMutateAsync.mockResolvedValueOnce({ id: 'mezz-1' })
     render(<WizardActionBar />)
 
     await userEvent.click(screen.getByRole('button', { name: /continue/i }))
 
     await waitFor(() => expect(useQuotationStore.getState().currentStep).toBe(4))
-    expect(mocks.deleteMezzMutateAsync).toHaveBeenCalledWith('job-1')
-    expect(mocks.upsertMezzMutateAsync).not.toHaveBeenCalled()
+    expect(mocks.upsertMezzMutateAsync).toHaveBeenCalledWith({ jobId: 'job-1', payload: {} })
   })
 
   it('stays on step 3 when the mezzanine upsert fails', async () => {
     mocks.upsertMezzMutateAsync.mockRejectedValueOnce(new Error('API error: 500'))
-    useQuotationStore.getState().setHasMezzanine(true)
     render(<WizardActionBar />)
 
     await userEvent.click(screen.getByRole('button', { name: /continue/i }))
@@ -324,14 +304,12 @@ describe('WizardActionBar Step 4 stair persistence', () => {
     mocks.toastSuccess.mockReset()
     mocks.toastError.mockReset()
     mocks.upsertStairMutateAsync.mockReset()
-    mocks.deleteStairMutateAsync.mockReset()
     useQuotationStore.getState().setJobId('job-1')
     useQuotationStore.setState({ currentStep: 4 })
   })
 
-  it('upserts the stair and advances to step 5 when the toggle is on', async () => {
+  it('upserts the stair with populated rows and advances to step 5', async () => {
     mocks.upsertStairMutateAsync.mockResolvedValueOnce({ id: 'stair-1' })
-    useQuotationStore.getState().setHasStair(true)
     useQuotationStore.getState().setStair({ stairs: [{ code: 'STAIR-1', length: 12 }] })
     render(<WizardActionBar />)
 
@@ -342,23 +320,20 @@ describe('WizardActionBar Step 4 stair persistence', () => {
       jobId: 'job-1',
       payload: { stairs: [{ code: 'STAIR-1', length: 12 }] },
     })
-    expect(mocks.deleteStairMutateAsync).not.toHaveBeenCalled()
   })
 
-  it('deletes any existing stair and advances when the toggle is off', async () => {
-    mocks.deleteStairMutateAsync.mockResolvedValueOnce(undefined)
+  it('upserts an empty payload for a blank draft and still advances', async () => {
+    mocks.upsertStairMutateAsync.mockResolvedValueOnce({ id: 'stair-1' })
     render(<WizardActionBar />)
 
     await userEvent.click(screen.getByRole('button', { name: /continue/i }))
 
     await waitFor(() => expect(useQuotationStore.getState().currentStep).toBe(5))
-    expect(mocks.deleteStairMutateAsync).toHaveBeenCalledWith('job-1')
-    expect(mocks.upsertStairMutateAsync).not.toHaveBeenCalled()
+    expect(mocks.upsertStairMutateAsync).toHaveBeenCalledWith({ jobId: 'job-1', payload: {} })
   })
 
   it('stays on step 4 when the stair upsert fails', async () => {
     mocks.upsertStairMutateAsync.mockRejectedValueOnce(new Error('API error: 500'))
-    useQuotationStore.getState().setHasStair(true)
     render(<WizardActionBar />)
 
     await userEvent.click(screen.getByRole('button', { name: /continue/i }))

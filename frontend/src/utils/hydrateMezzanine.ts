@@ -7,16 +7,12 @@ import type {
 
 import { num, int } from '@floreat/shared/units'
 
-/** The mapped mezzanine draft plus the derived top-level toggle. */
-export interface HydratedMezzanine {
-  mezzanine: MezzanineDraft
-  hasMezzanine: boolean
-}
+/** The mapped mezzanine draft. */
+export type HydratedMezzanine = MezzanineDraft
 
 /**
  * Maps a `Mezzanine` API response (Decimal columns as strings, optionals as
- * `null`) into a Step 3 {@link MezzanineDraft}. `hasMezzanine` is enabled when
- * the response contains at least one floor or extension.
+ * `null`) into a Step 3 {@link MezzanineDraft}.
  */
 export function mapMezzanineResponseToDraft(m: Mezzanine): HydratedMezzanine {
   const floors: MezzanineFloorDraft[] = m.floors.map((f) => ({
@@ -55,5 +51,5 @@ export function mapMezzanineResponseToDraft(m: Mezzanine): HydratedMezzanine {
     extendedColumnsEndPrimary: int(e.extendedColumnsEndPrimary),
   }))
 
-  return { mezzanine: { floors, extensions }, hasMezzanine: floors.length > 0 || extensions.length > 0 }
+  return { floors, extensions }
 }

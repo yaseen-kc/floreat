@@ -18,29 +18,19 @@ describe('Step3Mezzanine', () => {
     mocks.mezzData = undefined
   })
 
-  it('renders the heading and the mezzanine toggle', () => {
+  it('renders the heading', () => {
     render(<Step3Mezzanine />)
     expect(screen.getByRole('heading', { name: 'Mezzanine' })).toBeInTheDocument()
-    expect(screen.getByText('This job has a mezzanine')).toBeInTheDocument()
   })
 
-  it('hides the editors until the toggle is on', () => {
+  it('always shows the floors and floor extensions editors', () => {
     render(<Step3Mezzanine />)
-    expect(screen.queryByText('Floors')).not.toBeInTheDocument()
-    expect(screen.queryByText('Floor Extensions')).not.toBeInTheDocument()
-  })
-
-  it('reveals the floors/extensions editors when the toggle is enabled', async () => {
-    const user = userEvent.setup()
-    render(<Step3Mezzanine />)
-    await user.click(screen.getByRole('switch', { name: 'This job has a mezzanine' }))
     expect(screen.getByText('Floors')).toBeInTheDocument()
     expect(screen.getByText('Floor Extensions')).toBeInTheDocument()
   })
 
   it('adds a floor row with an auto-assigned code', async () => {
     const user = userEvent.setup()
-    useQuotationStore.getState().setHasMezzanine(true)
     render(<Step3Mezzanine />)
 
     await user.click(screen.getByRole('button', { name: /add floor/i }))

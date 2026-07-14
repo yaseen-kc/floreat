@@ -29,22 +29,10 @@ describe('buildStairPayload', () => {
   })
 })
 
-describe('setHasStair', () => {
+describe('setStair', () => {
   beforeEach(() => {
     localStorage.clear()
     useQuotationStore.getState().resetQuotation()
-  })
-
-  it('clears stairs and area deductions when toggled off', () => {
-    const { setStair, setHasStair } = useQuotationStore.getState()
-    setHasStair(true)
-    setStair({ stairs: [{ code: 'STAIR-1' }], areaDeductions: [{ type: 'LIFT' }] })
-    expect(useQuotationStore.getState().stair.stairs).toHaveLength(1)
-
-    setHasStair(false)
-    const s = useQuotationStore.getState()
-    expect(s.hasStair).toBe(false)
-    expect(s.stair).toEqual({ stairs: [], areaDeductions: [] })
   })
 
   it('patches the stair draft via setStair', () => {
