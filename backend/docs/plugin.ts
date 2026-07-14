@@ -17,7 +17,7 @@ function openApiPath(): string {
 export async function registerDevelopmentDocs(app: FastifyInstance): Promise<void> {
   await app.register(swagger, {
     mode: 'static',
-    specification: { path: openApiPath() },
+    specification: { path: openApiPath(), baseDir: dirname(openApiPath()) },
   })
   await app.register(swaggerUi, {
     routePrefix: '/docs',
