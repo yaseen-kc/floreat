@@ -1329,16 +1329,26 @@ When new commits land on GitHub, update the server like this:
 cd ~/floreat
 git pull                     # fetch the latest code
 npm install                  # install any new/changed dependencies
-npm run build                # rebuild shared + frontend + backend
 cd backend
+npm run db:generate          # regenerate the Prisma client (REQUIRED if the schema changed)
 npm run db:migrate:deploy    # apply any NEW database migrations
-pm2 restart floreat-api      # restart the backend on the new code
 cd ~/floreat
+npm run build                # rebuild shared + frontend + backend
+pm2 restart floreat-api      # restart the backend on the new code
 sudo systemctl reload nginx  # pick up the new frontend files
 ```
 
-- **Why this order:** pull code → install deps → build → migrate DB → restart backend →
-  reload Nginx (which now serves the freshly built `frontend/dist`).
+- **Why this order:** pull code → install deps → **regenerate the Prisma client** →
+  migrate DB → build → restart backend → reload Nginx (which now serves the freshly built
+  `frontend/dist`).
+- **Why `db:generate` before `build`:** if a pulled commit changed the Prisma schema
+  (new model/enum/field), the previously generated client in `backend/generated/prisma`
+  is stale. The backend's `tsc` build compiles against that client, so it will **fail**
+  with errors like `Property '<model>' does not exist on type 'PrismaClient'` or
+  `Module '.../client.js' has no exported member '<Enum>'`. A failed backend build means
+  `backend/dist` is never updated, so `pm2 restart` just reboots the *old* code and your
+  changes never appear. Regenerating the client first fixes this. Run `db:migrate:deploy`
+  too so the new tables actually exist at runtime.
 - *Verify:* `pm2 status` shows `floreat-api` online, and `http://YOUR_EC2_IP` reflects the
   changes (hard-refresh the browser: **Ctrl+F5**).
 
@@ -1432,7 +1442,7 @@ pm2 monit    # live CPU/memory for the backend
 | DB shell (admin) | `sudo -u postgres psql` |
 | DB shell (app user) | `psql "postgresql://floreat_user:PW@127.0.0.1:5432/floreat"` |
 | Apply migrations | `cd ~/floreat/backend && npm run db:migrate:deploy` |
-| Full redeploy | `cd ~/floreat && git pull && npm install && npm run build && pm2 restart floreat-api && sudo systemctl reload nginx` |
+| Full redeploy | `cd ~/floreat && git pull && npm install && npm --prefix backend run db:generate && npm --prefix backend run db:migrate:deploy && npm run build && pm2 restart floreat-api && sudo systemctl reload nginx` |
 | Backup DB | `pg_dump "postgresql://floreat_user:PW@127.0.0.1:5432/floreat" \| gzip > ~/backups/floreat-$(date +%F).sql.gz` |
 
 **You're done.** Following these steps in order takes a fresh EC2 instance to a fully
