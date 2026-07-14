@@ -18,6 +18,7 @@ import {
   canopyItemSchema,
 } from '@/schemas/canopy.schema'
 import { type CreateLoadInput } from '@/schemas/load.schema'
+import { type CreateSpecInput } from '@/schemas/spec.schema'
 import {
   type CreateAccessoriesInput,
   accessoryDoorSchema,
@@ -273,6 +274,15 @@ export type JointDraft = Omit<
   foundationBoltRoof: FoundationBoltRoofDraft[]
 }
 
+/**
+ * Step 9 spec draft. Spec is a flat, always-on 1:1-per-job resource with NO
+ * child arrays and an entirely optional schema (a description, two string-list
+ * fields and a yield-strength number) — so the draft is just the create input.
+ * Every field can be left blank and is dropped from the payload by
+ * {@link buildSpecPayload}.
+ */
+export type SpecDraft = CreateSpecInput
+
 interface QuotationState {
   currentStep: number
   projectInfo: ProjectInfo
@@ -287,6 +297,7 @@ interface QuotationState {
   load: LoadDraft
   accessories: AccessoriesDraft
   joint: JointDraft
+  spec: SpecDraft
   showValidation: boolean
   jobId: string | null
   setProjectInfo: (v: Partial<ProjectInfo>) => void
@@ -301,6 +312,7 @@ interface QuotationState {
   setLoad: (v: Partial<LoadDraft>) => void
   setAccessories: (v: Partial<AccessoriesDraft>) => void
   setJoint: (v: Partial<JointDraft>) => void
+  setSpec: (v: Partial<SpecDraft>) => void
   setJobId: (id: string | null) => void
   resetQuotation: () => void
   goStep: (n: number) => void
@@ -392,6 +404,9 @@ const createDefaultJoint = (): JointDraft => ({
   foundationBoltRoof: foundationBoltJointIdEnum.options.map((foundationJointId) => ({ foundationJointId })),
 })
 
+/** Factory for a fresh spec draft — every field blank (the schema is all-optional). */
+const createDefaultSpec = (): SpecDraft => ({})
+
 export const useQuotationStore = create<QuotationState>()(
   persist(
     (set, get) => ({
@@ -410,6 +425,7 @@ export const useQuotationStore = create<QuotationState>()(
       load: createDefaultLoad(),
       accessories: createDefaultAccessories(),
       joint: createDefaultJoint(),
+      spec: createDefaultSpec(),
 
       setProjectInfo: (v) => set((s) => ({ projectInfo: { ...s.projectInfo, ...v } })),
 
@@ -487,6 +503,10 @@ export const useQuotationStore = create<QuotationState>()(
           }
         }),
 
+      // Spec is always-on (no toggle), like Load/Accessories/Joint: blank fields
+      // are dropped from the payload by buildSpecPayload at save time.
+      setSpec: (v) => set((s) => ({ spec: { ...s.spec, ...v } })),
+
       setJobId: (id) => set({ jobId: id }),
 
       resetQuotation: () => set({
@@ -505,6 +525,7 @@ export const useQuotationStore = create<QuotationState>()(
         load: createDefaultLoad(),
         accessories: createDefaultAccessories(),
         joint: createDefaultJoint(),
+        spec: createDefaultSpec(),
       }),
 
       validateStep: (n) => {
@@ -535,7 +556,7 @@ export const useQuotationStore = create<QuotationState>()(
       // in-progress job resume (and re-use PUT) after a refresh instead of
       // creating a duplicate.
       skipHydration: true,
-      partialize: (s) => ({ projectInfo: s.projectInfo, roof: s.roof, roofSectionsEnabled: s.roofSectionsEnabled, mezzanine: s.mezzanine, hasMezzanine: s.hasMezzanine, stair: s.stair, hasStair: s.hasStair, canopy: s.canopy, hasCanopy: s.hasCanopy, load: s.load, accessories: s.accessories, joint: s.joint, currentStep: s.currentStep, jobId: s.jobId }),
+      partialize: (s) => ({ projectInfo: s.projectInfo, roof: s.roof, roofSectionsEnabled: s.roofSectionsEnabled, mezzanine: s.mezzanine, hasMezzanine: s.hasMezzanine, stair: s.stair, hasStair: s.hasStair, canopy: s.canopy, hasCanopy: s.hasCanopy, load: s.load, accessories: s.accessories, joint: s.joint, spec: s.spec, currentStep: s.currentStep, jobId: s.jobId }),
     }
   )
 )
@@ -708,6 +729,33 @@ export function buildJointPayload(joint: JointDraft): CreateJointInput {
   if (roof.length > 0) payload.jointBoltRoof = roof as CreateJointInput['jointBoltRoof']
   if (mezz.length > 0) payload.jointBoltMezzanine = mezz as CreateJointInput['jointBoltMezzanine']
   if (foundation.length > 0) payload.foundationBoltRoof = foundation as CreateJointInput['foundationBoltRoof']
+
+  return payload
+}
+
+/**
+ * Builds the spec create/upsert payload from the Step 9 draft.
+ *
+ * Spec is a flat, always-on resource with an all-optional schema. A blank
+ * `description` (empty/whitespace) is dropped; each string-list field
+ * (`specifications`, `makeOrBrand`) is trimmed and blank entries removed, and an
+ * empty list is omitted entirely; `yieldStrengthMpa` is dropped when blank.
+ * An entirely blank draft yields `{}` — which the backend accepts (the always-on
+ * form upserts whatever the user provided).
+ */
+export function buildSpecPayload(spec: SpecDraft): CreateSpecInput {
+  const payload: CreateSpecInput = {}
+
+  const description = spec.description?.trim()
+  if (description) payload.description = description
+
+  const specifications = (spec.specifications ?? []).map((s) => s.trim()).filter(Boolean)
+  if (specifications.length > 0) payload.specifications = specifications
+
+  const makeOrBrand = (spec.makeOrBrand ?? []).map((s) => s.trim()).filter(Boolean)
+  if (makeOrBrand.length > 0) payload.makeOrBrand = makeOrBrand
+
+  if (spec.yieldStrengthMpa !== undefined) payload.yieldStrengthMpa = spec.yieldStrengthMpa
 
   return payload
 }

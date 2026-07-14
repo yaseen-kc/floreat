@@ -54,7 +54,7 @@
     },
     {
       "name": "Specs",
-      "description": "Global product specification endpoints."
+      "description": "Job product specification endpoints."
     }
   ],
   "components": {
@@ -3560,29 +3560,49 @@
             "items": {
               "type": "string",
               "minLength": 1
-            },
-            "minItems": 1
+            }
           },
           "makeOrBrand": {
             "type": "array",
             "items": {
               "type": "string",
               "minLength": 1
-            },
-            "minItems": 1
+            }
           },
           "yieldStrengthMpa": {
             "type": "integer",
             "minimum": 0,
             "exclusiveMinimum": true
           }
-        },
-        "required": [
-          "description",
-          "specifications",
-          "makeOrBrand",
-          "yieldStrengthMpa"
-        ]
+        }
+      },
+      "UpdateSpecRequest": {
+        "type": "object",
+        "properties": {
+          "description": {
+            "type": "string",
+            "minLength": 1
+          },
+          "specifications": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "makeOrBrand": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "yieldStrengthMpa": {
+            "type": "integer",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          }
+        }
       },
       "PaginatedSpecResponse": {
         "type": "object",
@@ -3614,36 +3634,6 @@
           "page",
           "pageSize"
         ]
-      },
-      "UpdateSpecRequest": {
-        "type": "object",
-        "properties": {
-          "description": {
-            "type": "string",
-            "minLength": 1
-          },
-          "specifications": {
-            "type": "array",
-            "items": {
-              "type": "string",
-              "minLength": 1
-            },
-            "minItems": 1
-          },
-          "makeOrBrand": {
-            "type": "array",
-            "items": {
-              "type": "string",
-              "minLength": 1
-            },
-            "minItems": 1
-          },
-          "yieldStrengthMpa": {
-            "type": "integer",
-            "minimum": 0,
-            "exclusiveMinimum": true
-          }
-        }
       }
     },
     "parameters": {}
@@ -6721,21 +6711,32 @@
         }
       }
     },
-    "/api/specs": {
+    "/api/jobs/{jobId}/spec": {
       "post": {
-        "operationId": "createSpec",
+        "operationId": "upsertSpec",
         "tags": [
           "Specs"
         ],
-        "summary": "Create a specification",
-        "description": "Creates a global product specification.",
+        "summary": "Create or replace a job's spec",
+        "description": "Creates or replaces the spec configuration for the specified job.",
         "security": [
           {
             "LocalDevUserId": []
           }
         ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "example": "job_cuid_123"
+            },
+            "required": true,
+            "name": "jobId",
+            "in": "path"
+          }
+        ],
         "requestBody": {
-          "description": "New specification payload.",
+          "description": "Validated spec payload.",
           "content": {
             "application/json": {
               "schema": {
@@ -6758,8 +6759,8 @@
           }
         },
         "responses": {
-          "201": {
-            "description": "Specification created.",
+          "200": {
+            "description": "Resource saved.",
             "content": {
               "application/json": {
                 "schema": {
@@ -6791,84 +6792,12 @@
         }
       },
       "get": {
-        "operationId": "listSpecs",
+        "operationId": "getSpecByJob",
         "tags": [
           "Specs"
         ],
-        "summary": "List specifications",
-        "description": "Returns the paginated global product-specification catalog.",
-        "security": [
-          {
-            "LocalDevUserId": []
-          }
-        ],
-        "parameters": [
-          {
-            "schema": {
-              "type": "integer",
-              "minimum": 0,
-              "exclusiveMinimum": true,
-              "default": 1
-            },
-            "required": false,
-            "name": "page",
-            "in": "query"
-          },
-          {
-            "schema": {
-              "type": "integer",
-              "minimum": 0,
-              "exclusiveMinimum": true,
-              "maximum": 100,
-              "default": 10
-            },
-            "required": false,
-            "name": "pageSize",
-            "in": "query"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Paginated specification list returned.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/PaginatedSpecResponse"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Validation error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiError"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Authentication required",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiError"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/specs/{id}": {
-      "get": {
-        "operationId": "getSpecById",
-        "tags": [
-          "Specs"
-        ],
-        "summary": "Get a specification by ID",
-        "description": "Returns one global product specification by ID.",
+        "summary": "Get a job's spec",
+        "description": "Returns the spec configuration belonging to the specified job.",
         "security": [
           {
             "LocalDevUserId": []
@@ -6878,16 +6807,16 @@
           {
             "schema": {
               "type": "string",
-              "example": "cuid_123"
+              "example": "job_cuid_123"
             },
             "required": true,
-            "name": "id",
+            "name": "jobId",
             "in": "path"
           }
         ],
         "responses": {
           "200": {
-            "description": "Specification returned.",
+            "description": "Resource returned.",
             "content": {
               "application/json": {
                 "schema": {
@@ -6923,8 +6852,8 @@
         "tags": [
           "Specs"
         ],
-        "summary": "Update a specification",
-        "description": "Partially updates a global product specification by ID.",
+        "summary": "Update a job's spec",
+        "description": "Partially updates the spec configuration for the specified job.",
         "security": [
           {
             "LocalDevUserId": []
@@ -6934,24 +6863,30 @@
           {
             "schema": {
               "type": "string",
-              "example": "cuid_123"
+              "example": "job_cuid_123"
             },
             "required": true,
-            "name": "id",
+            "name": "jobId",
             "in": "path"
           }
         ],
         "requestBody": {
-          "description": "Partial specification payload.",
+          "description": "Partial spec payload.",
           "content": {
             "application/json": {
               "schema": {
                 "$ref": "#/components/schemas/UpdateSpecRequest"
               },
               "example": {
+                "description": "Fabricated Columns and Beams",
                 "specifications": [
-                  "Fabricated from plates by continuous welding process.",
-                  "Conform to IS2062 Grade E345 / ASTM A572-12 Grade 50."
+                  "Fabricated from Plates or Stocks by continuous welding process.",
+                  "Conform to IS2062 Grade E345 / ASTM A572-12 Grade 50.",
+                  "Minimum plate thickness: 4 mm."
+                ],
+                "makeOrBrand": [
+                  "JSW",
+                  "TATA"
                 ],
                 "yieldStrengthMpa": 345
               }
@@ -6960,7 +6895,7 @@
         },
         "responses": {
           "200": {
-            "description": "Specification updated.",
+            "description": "Resource updated.",
             "content": {
               "application/json": {
                 "schema": {
@@ -6996,8 +6931,8 @@
         "tags": [
           "Specs"
         ],
-        "summary": "Delete a specification",
-        "description": "Deletes a global product specification by ID.",
+        "summary": "Delete a job's spec",
+        "description": "Deletes the spec configuration for the specified job.",
         "security": [
           {
             "LocalDevUserId": []
@@ -7007,16 +6942,88 @@
           {
             "schema": {
               "type": "string",
-              "example": "cuid_123"
+              "example": "job_cuid_123"
             },
             "required": true,
-            "name": "id",
+            "name": "jobId",
             "in": "path"
           }
         ],
         "responses": {
           "204": {
-            "description": "Specification deleted. No response body is returned."
+            "description": "Resource deleted. No response body is returned."
+          },
+          "400": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/specs": {
+      "get": {
+        "operationId": "listSpecs",
+        "tags": [
+          "Specs"
+        ],
+        "summary": "List specs",
+        "description": "Returns a paginated list of specs.",
+        "security": [
+          {
+            "LocalDevUserId": []
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "exclusiveMinimum": true,
+              "default": 1
+            },
+            "required": false,
+            "name": "page",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "exclusiveMinimum": true,
+              "maximum": 100,
+              "default": 10
+            },
+            "required": false,
+            "name": "pageSize",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Paginated resource list returned.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedSpecResponse"
+                }
+              }
+            }
           },
           "400": {
             "description": "Validation error",

@@ -146,10 +146,10 @@ async function main() {
   }
   console.log('✓ Jobs seeded')
 
-  // ── Global product specifications ──────────────────────────
-  for (const { id, ...data } of specSeedData) {
+  // ── Job-owned product specifications ───────────────────────
+  for (const { jobId, ...data } of specSeedData) {
     const validatedData = createSpecSchema.parse(data)
-    await prisma.spec.upsert({ where: { id }, update: validatedData, create: { id, ...validatedData } })
+    await prisma.spec.upsert({ where: { jobId }, create: { jobId, ...validatedData }, update: validatedData })
   }
   console.log('✓ Product specifications seeded')
 

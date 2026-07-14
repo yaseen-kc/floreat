@@ -50,6 +50,7 @@ model Job {
   load        Load?
   accessories Accessories?
   joint       Joint?
+  spec        Spec?
 
   @@index([userId])
   @@index([userId, createdAt])

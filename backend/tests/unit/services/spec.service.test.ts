@@ -1,64 +1,83 @@
-import { describe, expect, it } from 'vitest'
+import { describe, it, expect } from 'vitest'
 import '../../../tests/mocks/prisma.js'
 import { prismaMock } from '../../mocks/prisma.js'
 import { makeSpec, makeSpecInput } from '../../helpers/factories.js'
-import { createSpec, deleteSpec, getSpecById, getSpecs, updateSpec } from '../../../services/spec.service.js'
+import { upsertSpec, getSpecs, getSpecByJobId, updateSpec, deleteSpec } from '../../../services/spec.service.js'
 
 describe('spec.service', () => {
-  it('creates a global specification', async () => {
-    const input = makeSpecInput()
-    const spec = makeSpec(input)
-    prismaMock.spec.create.mockResolvedValue(spec as any)
+  describe('upsertSpec', () => {
+    it('upserts a spec for the given job', async () => {
+      const input = makeSpecInput()
+      const spec = makeSpec({ jobId: 'job-1', ...input })
+      prismaMock.spec.upsert.mockResolvedValue(spec as any)
 
-    const result = await createSpec(input)
+      const result = await upsertSpec('job-1', input)
 
-    expect(result).toEqual(spec)
-    expect(prismaMock.spec.create).toHaveBeenCalledWith({ data: input })
-  })
-
-  it('returns a paginated specification list', async () => {
-    const specs = [makeSpec(), makeSpec()]
-    prismaMock.spec.findMany.mockResolvedValue(specs as any)
-    prismaMock.spec.count.mockResolvedValue(2)
-
-    const result = await getSpecs(2, 10)
-
-    expect(result).toEqual({ data: specs, total: 2, page: 2, pageSize: 10 })
-    expect(prismaMock.spec.findMany).toHaveBeenCalledWith({
-      skip: 10,
-      take: 10,
-      orderBy: { createdAt: 'desc' },
+      expect(result).toEqual(spec)
+      expect(prismaMock.spec.upsert).toHaveBeenCalledWith({
+        where: { jobId: 'job-1' },
+        create: { jobId: 'job-1', ...input },
+        update: { ...input },
+      })
     })
-    expect(prismaMock.spec.count).toHaveBeenCalledWith()
   })
 
-  it('returns a specification by ID', async () => {
-    const spec = makeSpec()
-    prismaMock.spec.findUnique.mockResolvedValue(spec as any)
+  describe('getSpecs', () => {
+    it("returns the user's paginated specs", async () => {
+      const specs = [makeSpec(), makeSpec()]
+      prismaMock.spec.findMany.mockResolvedValue(specs as any)
+      prismaMock.spec.count.mockResolvedValue(2)
 
-    const result = await getSpecById(spec.id)
+      const result = await getSpecs('user_1', 2, 10)
 
-    expect(result).toEqual(spec)
-    expect(prismaMock.spec.findUnique).toHaveBeenCalledWith({ where: { id: spec.id } })
+      expect(result).toEqual({ data: specs, total: 2, page: 2, pageSize: 10 })
+      expect(prismaMock.spec.findMany).toHaveBeenCalledWith({
+        where: { job: { userId: 'user_1' } }, skip: 10, take: 10, orderBy: { createdAt: 'desc' },
+      })
+      expect(prismaMock.spec.count).toHaveBeenCalledWith({ where: { job: { userId: 'user_1' } } })
+    })
   })
 
-  it('updates a specification by ID', async () => {
-    const spec = makeSpec()
-    const data = { description: 'Updated description' }
-    prismaMock.spec.update.mockResolvedValue(spec as any)
+  describe('getSpecByJobId', () => {
+    it('returns spec when found', async () => {
+      const spec = makeSpec()
+      prismaMock.spec.findUnique.mockResolvedValue(spec as any)
 
-    const result = await updateSpec(spec.id, data)
+      const result = await getSpecByJobId('job-1')
 
-    expect(result).toEqual(spec)
-    expect(prismaMock.spec.update).toHaveBeenCalledWith({ where: { id: spec.id }, data })
+      expect(result).toEqual(spec)
+      expect(prismaMock.spec.findUnique).toHaveBeenCalledWith({ where: { jobId: 'job-1' } })
+    })
+
+    it('returns null when not found', async () => {
+      prismaMock.spec.findUnique.mockResolvedValue(null)
+
+      const result = await getSpecByJobId('nonexistent')
+
+      expect(result).toBeNull()
+    })
   })
 
-  it('deletes a specification by ID', async () => {
-    const spec = makeSpec()
-    prismaMock.spec.delete.mockResolvedValue(spec as any)
+  describe('updateSpec', () => {
+    it('updates a spec by job ID', async () => {
+      const spec = makeSpec()
+      const data = { description: 'Updated description' }
+      prismaMock.spec.update.mockResolvedValue(spec as any)
 
-    await deleteSpec(spec.id)
+      const result = await updateSpec('job-1', data)
 
-    expect(prismaMock.spec.delete).toHaveBeenCalledWith({ where: { id: spec.id } })
+      expect(result).toEqual(spec)
+      expect(prismaMock.spec.update).toHaveBeenCalledWith({ where: { jobId: 'job-1' }, data })
+    })
+  })
+
+  describe('deleteSpec', () => {
+    it('deletes the spec by job ID', async () => {
+      prismaMock.spec.delete.mockResolvedValue({} as any)
+
+      await deleteSpec('job-1')
+
+      expect(prismaMock.spec.delete).toHaveBeenCalledWith({ where: { jobId: 'job-1' } })
+    })
   })
 })

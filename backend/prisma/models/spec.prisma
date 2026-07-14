@@ -1,11 +1,14 @@
 model Spec {
-  id               String   @id @default(cuid())
-  description      String
+  id    String @id @default(cuid())
+  jobId String @unique
+  job   Job    @relation(fields: [jobId], references: [id], onDelete: Cascade)
+
+  description      String?
   specifications   String[]
   makeOrBrand      String[]
-  yieldStrengthMpa Int
+  yieldStrengthMpa Int?
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
 
-  @@index([description])
+  @@index([createdAt])
 }

@@ -2208,26 +2208,39 @@
     },
     {
       "name": "Specs",
-      "description": "Global product specification endpoints.",
+      "description": "Job product specification endpoints.",
       "item": [
         {
-          "name": "Create a specification",
+          "name": "Create or replace a job's spec",
           "request": {
-            "name": "Create a specification",
+            "name": "Create or replace a job's spec",
             "description": {
-              "content": "Creates a global product specification.",
+              "content": "Creates or replaces the spec configuration for the specified job.",
               "type": "text/plain"
             },
             "url": {
               "path": [
                 "api",
-                "specs"
+                "jobs",
+                ":jobId",
+                "spec"
               ],
               "host": [
                 "{{baseUrl}}"
               ],
               "query": [],
-              "variable": []
+              "variable": [
+                {
+                  "type": "any",
+                  "value": "job_cuid_123",
+                  "key": "jobId",
+                  "disabled": false,
+                  "description": {
+                    "content": "(Required) ",
+                    "type": "text/plain"
+                  }
+                }
+              ]
             },
             "header": [
               {
@@ -2257,11 +2270,162 @@
           }
         },
         {
-          "name": "List specifications",
+          "name": "Get a job's spec",
           "request": {
-            "name": "List specifications",
+            "name": "Get a job's spec",
             "description": {
-              "content": "Returns the paginated global product-specification catalog.",
+              "content": "Returns the spec configuration belonging to the specified job.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "jobs",
+                ":jobId",
+                "spec"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "type": "any",
+                  "value": "job_cuid_123",
+                  "key": "jobId",
+                  "disabled": false,
+                  "description": {
+                    "content": "(Required) ",
+                    "type": "text/plain"
+                  }
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "body": {}
+          },
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "name": "Update a job's spec",
+          "request": {
+            "name": "Update a job's spec",
+            "description": {
+              "content": "Partially updates the spec configuration for the specified job.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "jobs",
+                ":jobId",
+                "spec"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "type": "any",
+                  "value": "job_cuid_123",
+                  "key": "jobId",
+                  "disabled": false,
+                  "description": {
+                    "content": "(Required) ",
+                    "type": "text/plain"
+                  }
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "PUT",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"description\": \"Fabricated Columns and Beams\",\n  \"specifications\": [\n    \"Fabricated from Plates or Stocks by continuous welding process.\",\n    \"Conform to IS2062 Grade E345 / ASTM A572-12 Grade 50.\",\n    \"Minimum plate thickness: 4 mm.\"\n  ],\n  \"makeOrBrand\": [\n    \"JSW\",\n    \"TATA\"\n  ],\n  \"yieldStrengthMpa\": 345\n}",
+              "options": {
+                "raw": {
+                  "headerFamily": "json",
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "name": "Delete a job's spec",
+          "request": {
+            "name": "Delete a job's spec",
+            "description": {
+              "content": "Deletes the spec configuration for the specified job.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "jobs",
+                ":jobId",
+                "spec"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "type": "any",
+                  "value": "job_cuid_123",
+                  "key": "jobId",
+                  "disabled": false,
+                  "description": {
+                    "content": "(Required) ",
+                    "type": "text/plain"
+                  }
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "DELETE",
+            "body": {}
+          },
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "name": "List specs",
+          "request": {
+            "name": "List specs",
+            "description": {
+              "content": "Returns a paginated list of specs.",
               "type": "text/plain"
             },
             "url": {
@@ -2301,154 +2465,6 @@
               }
             ],
             "method": "GET",
-            "body": {}
-          },
-          "event": [],
-          "protocolProfileBehavior": {
-            "disableBodyPruning": true
-          }
-        },
-        {
-          "name": "Get a specification by ID",
-          "request": {
-            "name": "Get a specification by ID",
-            "description": {
-              "content": "Returns one global product specification by ID.",
-              "type": "text/plain"
-            },
-            "url": {
-              "path": [
-                "api",
-                "specs",
-                ":id"
-              ],
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "query": [],
-              "variable": [
-                {
-                  "type": "any",
-                  "value": "cuid_123",
-                  "key": "id",
-                  "disabled": false,
-                  "description": {
-                    "content": "(Required) ",
-                    "type": "text/plain"
-                  }
-                }
-              ]
-            },
-            "header": [
-              {
-                "key": "Accept",
-                "value": "application/json"
-              }
-            ],
-            "method": "GET",
-            "body": {}
-          },
-          "event": [],
-          "protocolProfileBehavior": {
-            "disableBodyPruning": true
-          }
-        },
-        {
-          "name": "Update a specification",
-          "request": {
-            "name": "Update a specification",
-            "description": {
-              "content": "Partially updates a global product specification by ID.",
-              "type": "text/plain"
-            },
-            "url": {
-              "path": [
-                "api",
-                "specs",
-                ":id"
-              ],
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "query": [],
-              "variable": [
-                {
-                  "type": "any",
-                  "value": "cuid_123",
-                  "key": "id",
-                  "disabled": false,
-                  "description": {
-                    "content": "(Required) ",
-                    "type": "text/plain"
-                  }
-                }
-              ]
-            },
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              },
-              {
-                "key": "Accept",
-                "value": "application/json"
-              }
-            ],
-            "method": "PUT",
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"specifications\": [\n    \"Fabricated from plates by continuous welding process.\",\n    \"Conform to IS2062 Grade E345 / ASTM A572-12 Grade 50.\"\n  ],\n  \"yieldStrengthMpa\": 345\n}",
-              "options": {
-                "raw": {
-                  "headerFamily": "json",
-                  "language": "json"
-                }
-              }
-            }
-          },
-          "event": [],
-          "protocolProfileBehavior": {
-            "disableBodyPruning": true
-          }
-        },
-        {
-          "name": "Delete a specification",
-          "request": {
-            "name": "Delete a specification",
-            "description": {
-              "content": "Deletes a global product specification by ID.",
-              "type": "text/plain"
-            },
-            "url": {
-              "path": [
-                "api",
-                "specs",
-                ":id"
-              ],
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "query": [],
-              "variable": [
-                {
-                  "type": "any",
-                  "value": "cuid_123",
-                  "key": "id",
-                  "disabled": false,
-                  "description": {
-                    "content": "(Required) ",
-                    "type": "text/plain"
-                  }
-                }
-              ]
-            },
-            "header": [
-              {
-                "key": "Accept",
-                "value": "application/json"
-              }
-            ],
-            "method": "DELETE",
             "body": {}
           },
           "event": [],

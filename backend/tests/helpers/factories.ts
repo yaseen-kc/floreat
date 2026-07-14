@@ -13,6 +13,7 @@ export function makeSpecInput(overrides = {}) {
 export function makeSpec(overrides = {}) {
   return {
     id: faker.string.uuid(),
+    jobId: faker.string.uuid(),
     ...makeSpecInput(),
     createdAt: new Date(),
     updatedAt: new Date(),

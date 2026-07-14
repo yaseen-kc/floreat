@@ -249,6 +249,7 @@ const resourceDefinitions: ResourceDefinition[] = [
   { singular: 'Load', plural: 'loads', tag: 'Load', createSchema: schemas.CreateLoadRequest, updateSchema: schemas.UpdateLoadRequest, responseSchema: responseSchemas.LoadResponse, paginatedSchema: responseSchemas.PaginatedLoadResponse, example: examples.load },
   { singular: 'Accessories', plural: 'accessories', tag: 'Accessories', createSchema: schemas.CreateAccessoriesRequest, updateSchema: schemas.UpdateAccessoriesRequest, responseSchema: responseSchemas.AccessoriesResponse, paginatedSchema: responseSchemas.PaginatedAccessoriesResponse, example: examples.accessories },
   { singular: 'Joint', plural: 'joints', tag: 'Joint', createSchema: schemas.CreateJointRequest, updateSchema: schemas.UpdateJointRequest, responseSchema: responseSchemas.JointResponse, paginatedSchema: responseSchemas.PaginatedJointResponse, example: examples.joint },
+  { singular: 'Spec', plural: 'specs', tag: 'Specs', createSchema: schemas.CreateSpecRequest, updateSchema: schemas.UpdateSpecRequest, responseSchema: responseSchemas.SpecResponse, paginatedSchema: responseSchemas.PaginatedSpecResponse, example: examples.spec },
 ]
 
 export const documentedOperations: string[] = []
@@ -391,34 +392,6 @@ registerOperation({
 
 for (const resource of resourceDefinitions) registerResourceOperations(resource)
 
-registerOperation({
-  method: 'post', path: '/api/specs', operationId: 'createSpec', tag: 'Specs', auth: true,
-  summary: 'Create a specification', description: 'Creates a global product specification.',
-  body: { schema: schemas.CreateSpecRequest, example: examples.spec, description: 'New specification payload.' },
-  responseSchema: responseSchemas.SpecResponse, responseDescription: 'Specification created.', status: 201,
-})
-registerOperation({
-  method: 'get', path: '/api/specs', operationId: 'listSpecs', tag: 'Specs', auth: true,
-  summary: 'List specifications', description: 'Returns the paginated global product-specification catalog.', query: paginationQuery(),
-  responseSchema: responseSchemas.PaginatedSpecResponse, responseDescription: 'Paginated specification list returned.',
-})
-registerOperation({
-  method: 'get', path: '/api/specs/{id}', operationId: 'getSpecById', tag: 'Specs', auth: true,
-  summary: 'Get a specification by ID', description: 'Returns one global product specification by ID.', params: idParams(),
-  responseSchema: responseSchemas.SpecResponse, responseDescription: 'Specification returned.',
-})
-registerOperation({
-  method: 'put', path: '/api/specs/{id}', operationId: 'updateSpec', tag: 'Specs', auth: true,
-  summary: 'Update a specification', description: 'Partially updates a global product specification by ID.', params: idParams(),
-  body: { schema: schemas.UpdateSpecRequest, example: { specifications: ['Fabricated from plates by continuous welding process.', 'Conform to IS2062 Grade E345 / ASTM A572-12 Grade 50.'], yieldStrengthMpa: 345 }, description: 'Partial specification payload.' },
-  responseSchema: responseSchemas.SpecResponse, responseDescription: 'Specification updated.',
-})
-registerOperation({
-  method: 'delete', path: '/api/specs/{id}', operationId: 'deleteSpec', tag: 'Specs', auth: true,
-  summary: 'Delete a specification', description: 'Deletes a global product specification by ID.', params: idParams(),
-  responseDescription: 'Specification deleted. No response body is returned.',
-})
-
 export const documentedRouteKeys = [...documentedOperations].sort()
 
 export function buildOpenApiDocument() {
@@ -442,7 +415,7 @@ export function buildOpenApiDocument() {
       { name: 'Load', description: 'Load configuration endpoints.' },
       { name: 'Accessories', description: 'Accessories configuration endpoints.' },
       { name: 'Joint', description: 'Joint configuration endpoints.' },
-      { name: 'Specs', description: 'Global product specification endpoints.' },
+      { name: 'Specs', description: 'Job product specification endpoints.' },
     ],
   })
 }

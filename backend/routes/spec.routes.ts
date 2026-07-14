@@ -1,16 +1,22 @@
+/**
+ * Spec route definitions.
+ * Nested under /jobs/:jobId/spec for single-job operations,
+ * plus a flat /specs endpoint for paginated listing.
+ * All routes require authentication before handling.
+ */
 import { FastifyInstance } from 'fastify'
 import { authMiddleware } from '../middlewares/auth.js'
+import { jobOwnership } from '../middlewares/job-ownership.js'
 import * as specController from '../controllers/spec.controller.js'
 
-/** Global product-specification route definitions. */
 export async function specRoutes(app: FastifyInstance) {
   const writeLimit = { config: { rateLimit: { max: 20, timeWindow: '1 minute' } } }
-  const read = { preHandler: [authMiddleware] }
-  const write = { preHandler: [authMiddleware], ...writeLimit }
+  const owned = { preHandler: [authMiddleware, jobOwnership] }
+  const ownedWrite = { preHandler: [authMiddleware, jobOwnership], ...writeLimit }
 
-  app.post('/specs', write, specController.create)
-  app.get('/specs', read, specController.getAll)
-  app.get('/specs/:id', read, specController.getById)
-  app.put('/specs/:id', write, specController.update)
-  app.delete('/specs/:id', write, specController.remove)
+  app.post('/jobs/:jobId/spec', ownedWrite, specController.upsert)
+  app.get('/jobs/:jobId/spec', owned, specController.getByJobId)
+  app.put('/jobs/:jobId/spec', ownedWrite, specController.update)
+  app.delete('/jobs/:jobId/spec', ownedWrite, specController.remove)
+  app.get('/specs', { preHandler: [authMiddleware] }, specController.getAll)
 }

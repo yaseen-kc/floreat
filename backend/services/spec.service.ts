@@ -1,38 +1,44 @@
+/**
+ * Spec service — encapsulates database operations for the Spec model.
+ * Spec is a flat 1-to-1 job-owned record (no child arrays), so upsert simply
+ * spreads the validated payload.
+ */
 import { prisma } from '../lib/prisma.js'
 import type { CreateSpecInput, UpdateSpecInput } from '../schemas/spec.schema.js'
 
 type SpecCreateData = Parameters<typeof prisma.spec.create>[0]['data']
 type SpecUpdateData = Parameters<typeof prisma.spec.update>[0]['data']
 
-/** Creates a global product specification. */
-export function createSpec(data: CreateSpecInput) {
-  return prisma.spec.create({ data: data as SpecCreateData })
+/** Creates or updates the spec for a given job. */
+export function upsertSpec(jobId: string, data: CreateSpecInput) {
+  return prisma.spec.upsert({
+    where: { jobId },
+    create: { jobId, ...data } as SpecCreateData,
+    update: { ...data } as SpecUpdateData,
+  })
 }
 
-/** Returns a paginated global specification list ordered by newest first. */
-export async function getSpecs(page: number, pageSize: number) {
+/** Returns a paginated list of the user's specs ordered by most recent first. */
+export async function getSpecs(userId: string, page: number, pageSize: number) {
+  const where = { job: { userId } }
   const [data, total] = await Promise.all([
-    prisma.spec.findMany({
-      skip: (page - 1) * pageSize,
-      take: pageSize,
-      orderBy: { createdAt: 'desc' },
-    }),
-    prisma.spec.count(),
+    prisma.spec.findMany({ where, skip: (page - 1) * pageSize, take: pageSize, orderBy: { createdAt: 'desc' } }),
+    prisma.spec.count({ where }),
   ])
   return { data, total, page, pageSize }
 }
 
-/** Finds a global product specification by ID, returning null when absent. */
-export function getSpecById(id: string) {
-  return prisma.spec.findUnique({ where: { id } })
+/** Finds a spec by its associated job ID. Returns null if not found. */
+export function getSpecByJobId(jobId: string) {
+  return prisma.spec.findUnique({ where: { jobId } })
 }
 
-/** Partially updates a global product specification; throws P2025 when absent. */
-export function updateSpec(id: string, data: UpdateSpecInput) {
-  return prisma.spec.update({ where: { id }, data: data as SpecUpdateData })
+/** Updates a spec by job ID. Throws P2025 if not found. */
+export function updateSpec(jobId: string, data: UpdateSpecInput) {
+  return prisma.spec.update({ where: { jobId }, data: data as SpecUpdateData })
 }
 
-/** Deletes a global product specification; throws P2025 when absent. */
-export function deleteSpec(id: string) {
-  return prisma.spec.delete({ where: { id } })
+/** Deletes a spec by its associated job ID. Throws P2025 if not found. */
+export function deleteSpec(jobId: string) {
+  return prisma.spec.delete({ where: { jobId } })
 }

@@ -2,43 +2,24 @@ import { describe, expect, it } from 'vitest'
 import { createSpecSchema } from '../../../schemas/spec.schema.js'
 import { specSeedData } from '../../../prisma/seed-data.js'
 
-const originalSpecIds = [
-  'spec-fabricated-columns-beams',
-  'spec-cold-formed-purlins-girts',
-  'spec-roofing-sheet',
-  'spec-cladding-sheet',
-  'spec-decking-sheet',
-  'spec-primary-connection',
-  'spec-secondary-connection',
-]
-
-const addedSpecIds = [
-  'spec-structural-steel-sections',
-  'spec-high-strength-bolts',
-  'spec-insulated-roofing-panels',
-  'spec-wall-cladding-panels',
-  'spec-thermal-insulation-material',
-  'spec-protective-paint-coating',
-  'spec-foundation-materials',
-  'spec-doors-windows-accessories',
-]
+const specJobIds = ['seed_job_1', 'seed_job_2', 'seed_job_3', 'seed_job_4', 'seed_job_5']
 
 describe('Spec seed data', () => {
-  it('contains the seven original and eight added records', () => {
-    expect(specSeedData).toHaveLength(15)
-    expect(specSeedData.map(({ id }) => id)).toEqual([...originalSpecIds, ...addedSpecIds])
+  it('contains one job-owned spec per seed job', () => {
+    expect(specSeedData).toHaveLength(5)
+    expect(specSeedData.map(({ jobId }) => jobId)).toEqual(specJobIds)
   })
 
-  it('contains unique ids', () => {
-    const ids = specSeedData.map(({ id }) => id)
+  it('contains unique job ids (1-to-1 with jobs)', () => {
+    const jobIds = specSeedData.map(({ jobId }) => jobId)
 
-    expect(new Set(ids).size).toBe(ids.length)
+    expect(new Set(jobIds).size).toBe(jobIds.length)
   })
 
-  it.each(specSeedData)('validates $id against the shared Spec schema', (spec) => {
-    const { id, ...data } = spec
+  it.each(specSeedData)('validates the spec for $jobId against the shared Spec schema', (spec) => {
+    const { jobId, ...data } = spec
     const result = createSpecSchema.safeParse(data)
 
-    expect(result.success, `${id} failed validation: ${result.success ? '' : result.error.message}`).toBe(true)
+    expect(result.success, `${jobId} failed validation: ${result.success ? '' : result.error.message}`).toBe(true)
   })
 })
