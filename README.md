@@ -1455,3 +1455,36 @@ running Floreat deployment (app + PostgreSQL on one server), reachable at
 `http://YOUR_EC2_IP`, surviving reboots, with logging, updates, and backups in place. When
 you're ready, the next phase is adding a domain name and HTTPS (Certbot/Let's Encrypt) and
 switching Clerk to production keys.
+
+---
+
+## API documentation and Postman workflow
+
+The backend API documentation is generated from the shared Zod request schemas plus
+route metadata and realistic examples. Do not edit
+`backend/docs/floreat-api.postman_collection.json` manually; it is generated.
+
+After adding or changing an API route:
+
+```bash
+npm run docs:generate
+npm run docs:check
+```
+
+`docs:generate` writes:
+
+- `backend/docs/openapi.json` — the OpenAPI 3 document;
+- `backend/docs/floreat-api.postman_collection.json` — a Postman Collection v2.1
+  generated from that document.
+
+When the backend is running in development, Swagger UI is available at
+`http://localhost:3000/docs`. Set `SWAGGER_UI=false` to disable it locally. It is
+disabled automatically when `NODE_ENV=production`.
+
+For local Postman requests, set the generated collection's `devUserId` variable to a
+valid development user ID. The collection automatically sends `x-dev-user-id` for
+protected requests when `BYPASS_AUTH=true`; the public `/api/health` request does not
+need that header.
+
+If `docs:check` reports stale artifacts, run `npm run docs:generate` and commit the
+updated generated files together with the route/schema/metadata change.

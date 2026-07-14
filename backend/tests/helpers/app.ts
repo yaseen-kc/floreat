@@ -5,10 +5,12 @@ import rateLimit from '@fastify/rate-limit'
 import { clerkPlugin } from '@clerk/fastify'
 import { config } from '../../config/index.js'
 import { registerRoutes } from '../../routes/index.js'
+import { registerDevelopmentDocs } from '../../docs/plugin.js'
 
 interface BuildAppOptions {
   rateLimit?: { max: number; timeWindow: string }
   corsOrigins?: string[]
+  docs?: boolean
 }
 
 /**
@@ -29,6 +31,7 @@ export async function buildApp(options: BuildAppOptions = {}) {
   })
   await app.register(rateLimit, options.rateLimit ?? config.rateLimit)
   await app.register(clerkPlugin)
+  if (options.docs) await registerDevelopmentDocs(app)
   await registerRoutes(app)
   await app.ready()
   return app
