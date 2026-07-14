@@ -17,6 +17,7 @@ const mocks = vi.hoisted(() => ({
   deleteCanopyMutateAsync: vi.fn(),
   upsertLoadMutateAsync: vi.fn(),
   upsertAccessoriesMutateAsync: vi.fn(),
+  upsertJointMutateAsync: vi.fn(),
   createPending: false,
   updatePending: false,
   upsertRoofPending: false,
@@ -72,6 +73,10 @@ vi.mock('@/api/quotation/load/postLoad', () => ({
 
 vi.mock('@/api/quotation/accessories/postAccessories', () => ({
   useUpsertAccessories: () => ({ mutateAsync: mocks.upsertAccessoriesMutateAsync, isPending: false }),
+}))
+
+vi.mock('@/api/quotation/joint/postJoint', () => ({
+  useUpsertJoint: () => ({ mutateAsync: mocks.upsertJointMutateAsync, isPending: false }),
 }))
 
 import { WizardActionBar, successToast } from '@/components/quotation/WizardActionBar'
@@ -404,6 +409,100 @@ describe('WizardActionBar Step 6 accessories persistence', () => {
 
     await waitFor(() => expect(mocks.toastError).toHaveBeenCalledWith('Failed to save accessories'))
     expect(useQuotationStore.getState().currentStep).toBe(6)
+  })
+})
+
+
+describe('WizardActionBar Step 7 load persistence', () => {
+  beforeEach(() => {
+    localStorage.clear()
+    useQuotationStore.getState().resetQuotation()
+    mocks.navigate.mockReset()
+    mocks.toastSuccess.mockReset()
+    mocks.toastError.mockReset()
+    mocks.upsertLoadMutateAsync.mockReset()
+    useQuotationStore.getState().setJobId('job-1')
+    useQuotationStore.setState({ currentStep: 7 })
+  })
+
+  it('upserts the load and advances to step 8 (Joint) without finalising', async () => {
+    mocks.upsertLoadMutateAsync.mockResolvedValueOnce({ id: 'load-1' })
+    useQuotationStore.getState().setLoad({ snowLoad: 1.2 })
+    render(<WizardActionBar />)
+
+    await userEvent.click(screen.getByRole('button', { name: /continue/i }))
+
+    await waitFor(() => expect(useQuotationStore.getState().currentStep).toBe(8))
+    expect(mocks.upsertLoadMutateAsync).toHaveBeenCalledWith({ jobId: 'job-1', payload: { snowLoad: 1.2 } })
+    expect(mocks.navigate).not.toHaveBeenCalled()
+  })
+
+  it('stays on step 7 when the load upsert fails', async () => {
+    mocks.upsertLoadMutateAsync.mockRejectedValueOnce(new Error('API error: 500'))
+    render(<WizardActionBar />)
+
+    await userEvent.click(screen.getByRole('button', { name: /continue/i }))
+
+    await waitFor(() => expect(mocks.toastError).toHaveBeenCalledWith('Failed to save load'))
+    expect(useQuotationStore.getState().currentStep).toBe(7)
+  })
+})
+
+
+describe('WizardActionBar Step 8 joint finalise', () => {
+  beforeEach(() => {
+    localStorage.clear()
+    useQuotationStore.getState().resetQuotation()
+    mocks.navigate.mockReset()
+    mocks.toastSuccess.mockReset()
+    mocks.toastError.mockReset()
+    mocks.upsertJointMutateAsync.mockReset()
+    useQuotationStore.getState().setJobId('job-1')
+    useQuotationStore.setState({ currentStep: 8 })
+  })
+
+  it('upserts the joint, finalises and navigates home on Finish & save', async () => {
+    mocks.upsertJointMutateAsync.mockResolvedValueOnce({ id: 'joint-1' })
+    useQuotationStore.getState().setJoint({ canopyBoltDiameter: 16 })
+    render(<WizardActionBar />)
+
+    await userEvent.click(screen.getByRole('button', { name: /finish & save/i }))
+
+    await waitFor(() => expect(mocks.navigate).toHaveBeenCalledWith('/'))
+    // Any joint edit injects the fixed F=4 / J=8 roof rows via the derivation.
+    expect(mocks.upsertJointMutateAsync).toHaveBeenCalledWith({
+      jobId: 'job-1',
+      payload: {
+        canopyBoltDiameter: 16,
+        jointBoltRoof: [
+          { roofJointId: 'F', numberOfBolts: 4 },
+          { roofJointId: 'J', numberOfBolts: 8 },
+        ],
+      },
+    })
+    // resetQuotation returns the wizard to step 1.
+    expect(useQuotationStore.getState().currentStep).toBe(1)
+  })
+
+  it('upserts an empty payload for a blank draft and still finalises', async () => {
+    mocks.upsertJointMutateAsync.mockResolvedValueOnce({ id: 'joint-1' })
+    render(<WizardActionBar />)
+
+    await userEvent.click(screen.getByRole('button', { name: /finish & save/i }))
+
+    await waitFor(() => expect(mocks.navigate).toHaveBeenCalledWith('/'))
+    expect(mocks.upsertJointMutateAsync).toHaveBeenCalledWith({ jobId: 'job-1', payload: {} })
+  })
+
+  it('stays on step 8 and does not navigate when the joint upsert fails', async () => {
+    mocks.upsertJointMutateAsync.mockRejectedValueOnce(new Error('API error: 500'))
+    render(<WizardActionBar />)
+
+    await userEvent.click(screen.getByRole('button', { name: /finish & save/i }))
+
+    await waitFor(() => expect(mocks.toastError).toHaveBeenCalledWith('Failed to save joint'))
+    expect(useQuotationStore.getState().currentStep).toBe(8)
+    expect(mocks.navigate).not.toHaveBeenCalled()
   })
 })
 

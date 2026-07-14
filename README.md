@@ -780,8 +780,9 @@ npm install
 2. **Apply migrations** — run the SQL that creates all the tables in your empty `floreat`
    database.
 
-All Prisma commands run from the **`backend`** folder because that's where
-`prisma/schema.prisma` and the migrations live. They read `DATABASE_URL` from
+All Prisma commands run from the **`backend`** folder because that's where the Prisma
+schema (`prisma/schema.prisma` for the generator/datasource config, plus `prisma/models/`
+for the models and enums) and the migrations live. They read `DATABASE_URL` from
 `backend/.env`.
 
 ### 13.1 Generate the Prisma client
@@ -883,11 +884,12 @@ node dist/server.js
   `{"level":30,...,"msg":"Server listening at http://127.0.0.1:3000"}` (or `0.0.0.0:3000`).
 - In **another** SSH window (or after stopping), test it:
   ```bash
-  curl -i http://127.0.0.1:3000/api/jobs
+  curl -i http://127.0.0.1:3000/api/health
   ```
-  You'll likely get **`401 Unauthorized`** — that's a **success signal**: the server is
-  up and the auth layer is protecting the route. A `Connection refused` would mean it
-  isn't running.
+  You should get **`200 OK`** with body `{"status":"ok","db":"up"}` — the public health
+  endpoint confirms the server is up **and** the database is reachable. A `503` with
+  `{"status":"error","db":"down"}` means the app is running but can't reach PostgreSQL;
+  a `Connection refused` means the server isn't running at all.
 - Stop this manual run with **Ctrl+C**. (PM2 will run it properly in the next section.)
 
 **Verify this section:** `backend/dist/server.js` and `frontend/dist/index.html` both
@@ -952,11 +954,11 @@ pm2 logs floreat-api --lines 20
 ### 15.4 Confirm it answers locally
 
 ```bash
-curl -i http://127.0.0.1:3000/api/jobs
+curl -i http://127.0.0.1:3000/api/health
 ```
 
-- *Expected output:* HTTP headers with **`401 Unauthorized`** (auth is working) — proof
-  the backend is live behind PM2.
+- *Expected output:* HTTP **`200 OK`** with body `{"status":"ok","db":"up"}` — proof the
+  backend is live behind PM2 and can reach the database.
 
 **Useful PM2 commands (reference):**
 - `pm2 restart floreat-api` — restart after a code change/rebuild.
@@ -966,7 +968,7 @@ curl -i http://127.0.0.1:3000/api/jobs
 - `pm2 monit` — live CPU/memory dashboard.
 
 **Verify this section:** `pm2 status` shows `floreat-api` **online**, and the local
-`curl` returns 401.
+`curl` to `/api/health` returns 200 `{"status":"ok","db":"up"}`.
 
 ---
 
@@ -1201,11 +1203,12 @@ sudo reboot
 ```bash
 pm2 status
 sudo systemctl status nginx postgresql --no-pager
-curl -i http://127.0.0.1:3000/api/jobs
+curl -i http://127.0.0.1:3000/api/health
 ```
 
 - *Expected output:* `floreat-api` **online**, Nginx and PostgreSQL **active**, and the
-  `curl` returns **401** — meaning the whole stack self-recovered after reboot.
+  `curl` returns **200** `{"status":"ok","db":"up"}` — meaning the whole stack
+  self-recovered after reboot.
 
 **Verify this section:** After `sudo reboot`, the app is reachable at `http://YOUR_EC2_IP`
 without you starting anything manually.
@@ -1230,15 +1233,17 @@ Let's confirm the whole chain end-to-end: browser → Nginx → (frontend + back
 From your **local machine** (or the server), test the proxied path:
 
 ```bash
-curl -i http://YOUR_EC2_IP/api/jobs
+curl -i http://YOUR_EC2_IP/api/health
 ```
 
-- *Expected output:* HTTP **`401 Unauthorized`** with a JSON body. This is the correct,
-  healthy response for a protected route hit without a token — it proves:
+- *Expected output:* HTTP **`200 OK`** with body `{"status":"ok","db":"up"}`. This is the
+  correct, healthy response — it proves:
   1. Nginx received the request on port 80,
   2. matched `/api/` and proxied it to the Node backend,
-  3. the backend ran and enforced auth.
-- A `502 Bad Gateway` means Nginx is up but the backend isn't reachable (see Section 20).
+  3. the backend ran and reached PostgreSQL.
+- A `503` `{"status":"error","db":"down"}` means the proxy + app work but the database is
+  unreachable. A `502 Bad Gateway` means Nginx is up but the backend isn't reachable
+  (see Section 20).
 
 ### 19.3 Authentication (Clerk) works
 - On the frontend, click **Sign in / Sign up** and complete a Clerk flow.
@@ -1258,7 +1263,7 @@ psql "postgresql://floreat_user:YOUR_DB_PASSWORD@127.0.0.1:5432/floreat" -c "SEL
 - *Expected output:* a count that increases as you create jobs in the app. (Table names
   are quoted because Prisma uses capitalized names.)
 
-**Verify this section:** frontend loads over HTTP, `/api/jobs` returns 401 unauthenticated,
+**Verify this section:** frontend loads over HTTP, `/api/health` returns 200 `{"status":"ok","db":"up"}`,
 Clerk dev sign-in succeeds, and created data appears in PostgreSQL.
 
 ---

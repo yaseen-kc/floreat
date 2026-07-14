@@ -67,7 +67,7 @@ export function MezzanineExtensions() {
 
   return (
     <SectionCard icon={<StretchHorizontal className="w-3.5 h-3.5" />} title="Floor Extensions">
-      <div className="flex flex-col gap-[18px]">
+      <div className="flex flex-col gap-[18px] desktop:gap-6">
         {extensions.length === 0 && (
           <EmptyState
             icon={<StretchHorizontal />}

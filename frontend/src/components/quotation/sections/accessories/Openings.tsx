@@ -38,7 +38,7 @@ export function Openings() {
 
   return (
     <SectionCard icon={<Blinds className="w-3.5 h-3.5" />} title="Openings">
-      <div className="flex flex-col gap-[18px]">
+      <div className="flex flex-col gap-[18px] desktop:gap-6">
         {openings.length === 0 && (
           <EmptyState
             icon={<Blinds />}

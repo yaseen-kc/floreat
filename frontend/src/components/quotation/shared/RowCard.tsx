@@ -57,7 +57,7 @@ export function RowCard({ title, badge, groups, values, onChange, onRemove }: Ro
         {groups.map((group) => (
           <div key={group.title}>
             <p className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground mb-2">{group.title}</p>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-[18px]">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-[18px] desktop:gap-6">
               {group.fields.map((field) =>
                 field.kind === 'number' ? (
                   <NumberField

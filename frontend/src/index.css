@@ -17,6 +17,11 @@
 @theme inline {
     --font-heading: var(--font-sans);
     --font-sans: 'Geist Variable', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+
+    /* True-desktop breakpoint (DESIGN.md §8.3): the icon-rail tier ends at
+       1180px, so `desktop:` (min-width 1181px) targets full-desktop only,
+       leaving the tablet/icon-rail and mobile tiers untouched. */
+    --breakpoint-desktop: 1181px;
     /* Mono is the "engineering" signal — used for all numerics, codes, labels,
        eyebrows and table headers. */
     --font-mono: 'JetBrains Mono Variable', 'JetBrains Mono', ui-monospace, 'SF Mono', 'IBM Plex Mono', Menlo, monospace;

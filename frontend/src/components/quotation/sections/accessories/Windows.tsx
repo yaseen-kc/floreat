@@ -31,7 +31,7 @@ export function Windows() {
 
   return (
     <SectionCard icon={<AppWindow className="w-3.5 h-3.5" />} title="Windows">
-      <div className="flex flex-col gap-[18px]">
+      <div className="flex flex-col gap-[18px] desktop:gap-6">
         {windows.length === 0 && (
           <EmptyState
             icon={<AppWindow />}

@@ -1,0 +1,40 @@
+// ── Load Enums ────────────────────────────────────
+
+enum ApprovalDrawingsTimeUnit {
+  DAYS
+  WEEKS
+  MONTHS
+}
+
+// ── Load Model ────────────────────────────────────
+
+model Load {
+  id    String @id @default(cuid())
+  jobId String @unique
+  job   Job    @relation(fields: [jobId], references: [id], onDelete: Cascade)
+
+  // ── Load details (units implied: KN/M²; wind = KMPH) ──
+  deadLoadOnRoofRafters       Decimal? @db.Decimal(10, 3)
+  liveLoadOnRoofRafters       Decimal? @db.Decimal(10, 3)
+  collateralLoadOnRoofRafters Decimal? @db.Decimal(10, 3)
+  windLoadOnRoofRaftersUpward Decimal? @db.Decimal(10, 3) // KMPH
+  windLoadHorizontal          Decimal? @db.Decimal(10, 3) // KMPH
+  deadLoadOnRoofFloor         Decimal? @db.Decimal(10, 3)
+  liveLoadOnRoofFloor         Decimal? @db.Decimal(10, 3)
+  floorDeadLoad               Decimal? @db.Decimal(10, 3)
+  floorFinishLoad             Decimal? @db.Decimal(10, 3)
+  floorLiveLoad               Decimal? @db.Decimal(10, 3)
+  snowLoad                    Decimal? @db.Decimal(10, 3)
+  earthquakeLoad              Decimal? @db.Decimal(10, 3)
+
+  // ── Completion period ──
+  approvalDrawingsTime    Int?
+  approvalDrawingsUnit    ApprovalDrawingsTimeUnit?
+  supplyOfMaterialsDays   Int?
+  erectionOfStructureDays Int?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([createdAt])
+}

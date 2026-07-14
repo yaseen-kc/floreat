@@ -27,7 +27,7 @@ export function MaterialConsumption() {
       onToggle={(e) => toggleRoofSection('materialConsumption', e)}
       error={sectionError}
     >
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-[18px]">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-[18px] desktop:gap-6">
         <NumberField
           label="Material Consumption (Excluding Purlin)"
           unit="kg/m²"

@@ -46,7 +46,7 @@ export function NumberField({
 }: NumberFieldProps) {
   return (
     <div className={className}>
-      <Label>{label} {required && !readOnly && <span className="text-destructive">*</span>}</Label>
+      <Label className="desktop:mb-2">{label} {required && !readOnly && <span className="text-destructive">*</span>}</Label>
       <InputUnit
         value={value}
         unit={unit}

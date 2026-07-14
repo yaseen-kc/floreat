@@ -23,7 +23,7 @@ export function Field({
 }) {
   return (
     <div>
-      <Label>{label} {required && <span className="text-destructive">*</span>}</Label>
+      <Label className="desktop:mb-2">{label} {required && <span className="text-destructive">*</span>}</Label>
       <Input value={value} onChange={(e) => onChange(e.target.value)} className={cn(error && 'border-destructive')} />
       {error && <ErrMsg>{label} is required</ErrMsg>}
     </div>

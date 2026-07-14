@@ -19,6 +19,26 @@
 	],
 	"item": [
 		{
+			"name": "Health",
+			"item": [
+				{
+					"name": "Get Health",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"url": {
+							"raw": "{{baseUrl}}/api/health",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "health"]
+						},
+						"description": "Public liveness + readiness probe. No authentication. Returns 200 {\"status\":\"ok\",\"db\":\"up\"} when the DB is reachable, or 503 {\"status\":\"error\",\"db\":\"down\"} when it is not."
+					}
+				}
+			]
+		},
+		{
 			"name": "User",
 			"item": [
 				{
@@ -513,6 +533,130 @@
 							"raw": "{{baseUrl}}/api/jobs/:jobId/canopy",
 							"host": ["{{baseUrl}}"],
 							"path": ["api", "jobs", ":jobId", "canopy"],
+							"variable": [
+								{
+									"key": "jobId",
+									"value": ""
+								}
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Joint",
+			"item": [
+				{
+					"name": "Upsert Joint",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"secondaryBeamsBoltType\": \"HSFG\",\n\t\"secondaryBeamsBoltDiameter\": 12,\n\t\"secondaryBeamsNumberOfBolts\": 4,\n\t\"purlinFlangeBraceBoltType\": \"ORD\",\n\t\"purlinFlangeBraceBoltDiameter\": 10,\n\t\"purlinFlangeBraceNumberOfBolts\": 2,\n\t\"claddingPurlinsBoltType\": \"ORD\",\n\t\"claddingPurlinsBoltDiameter\": 10,\n\t\"claddingPurlinsNumberOfBolts\": 2,\n\t\"canopyBoltType\": \"HSFG\",\n\t\"canopyBoltDiameter\": 12,\n\t\"canopyNumberOfBolts\": 3,\n\t\"jointBoltRoof\": [\n\t\t{\n\t\t\t\"roofJointId\": \"A\",\n\t\t\t\"boltDiameter\": 20,\n\t\t\t\"numberOfBolts\": 6\n\t\t},\n\t\t{\n\t\t\t\"roofJointId\": \"A_1\",\n\t\t\t\"boltDiameter\": 16,\n\t\t\t\"numberOfBolts\": 4\n\t\t}\n\t],\n\t\"jointBoltMezzanine\": [\n\t\t{\n\t\t\t\"mezzanineJointId\": \"M\",\n\t\t\t\"boltDiameter\": 16,\n\t\t\t\"numberOfBolts\": 4\n\t\t},\n\t\t{\n\t\t\t\"mezzanineJointId\": \"SEC\",\n\t\t\t\"boltDiameter\": 16,\n\t\t\t\"numberOfBolts\": 2\n\t\t}\n\t],\n\t\"foundationBoltRoof\": [\n\t\t{\n\t\t\t\"foundationJointId\": \"FB4\",\n\t\t\t\"boltDiameter\": 24,\n\t\t\t\"numberOfBolts\": 4\n\t\t}\n\t]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/jobs/:jobId/joint",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "jobs", ":jobId", "joint"],
+							"variable": [
+								{
+									"key": "jobId",
+									"value": ""
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Joint by Job",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{baseUrl}}/api/jobs/:jobId/joint",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "jobs", ":jobId", "joint"],
+							"variable": [
+								{
+									"key": "jobId",
+									"value": ""
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Get All Joints",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{baseUrl}}/api/joints?page=1&pageSize=10",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "joints"],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "pageSize",
+									"value": "10"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Update Joint",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"secondaryBeamsNumberOfBolts\": 6,\n\t\"canopyBoltType\": \"ORD\",\n\t\"jointBoltRoof\": [\n\t\t{\n\t\t\t\"roofJointId\": \"B\",\n\t\t\t\"boltDiameter\": 20,\n\t\t\t\"numberOfBolts\": 8\n\t\t}\n\t]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/jobs/:jobId/joint",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "jobs", ":jobId", "joint"],
+							"variable": [
+								{
+									"key": "jobId",
+									"value": ""
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Delete Joint",
+					"request": {
+						"method": "DELETE",
+						"url": {
+							"raw": "{{baseUrl}}/api/jobs/:jobId/joint",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "jobs", ":jobId", "joint"],
 							"variable": [
 								{
 									"key": "jobId",

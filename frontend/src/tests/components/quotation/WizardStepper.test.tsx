@@ -97,12 +97,12 @@ describe('WizardStepper', () => {
       await userEvent.click(screen.getByRole('button', { name: /Select step/i }))
 
       const items = await screen.findAllByRole('menuitem')
-      expect(items).toHaveLength(7)
+      expect(items).toHaveLength(8)
 
       // From an invalid step 1: step 1 itself is reachable, step 2+ are not.
       expect(items[0]).not.toHaveAttribute('aria-disabled', 'true')
       expect(items[1]).toHaveAttribute('aria-disabled', 'true')
-      expect(items[6]).toHaveAttribute('aria-disabled', 'true')
+      expect(items[7]).toHaveAttribute('aria-disabled', 'true')
     })
 
     it('jumps to an allowed step via goStep', async () => {

@@ -352,3 +352,77 @@ export function makeAccessories(overrides = {}) {
     ...overrides,
   }
 }
+
+
+export function makeJointBoltRoofItem(overrides = {}) {
+  return {
+    roofJointId: 'A' as const,
+    boltDiameter: 16,
+    numberOfBolts: 8,
+    ...overrides,
+  }
+}
+
+export function makeJointBoltMezzanineItem(overrides = {}) {
+  return {
+    mezzanineJointId: 'M' as const,
+    boltDiameter: 16,
+    numberOfBolts: 8,
+    ...overrides,
+  }
+}
+
+export function makeFoundationBoltRoofItem(overrides = {}) {
+  return {
+    foundationJointId: 'FB4' as const,
+    boltDiameter: 20,
+    numberOfBolts: 8,
+    ...overrides,
+  }
+}
+
+export function makeJointInput(jobId = faker.string.uuid()) {
+  return {
+    jobId,
+    secondaryBeamsBoltType: 'HSFG' as const,
+    secondaryBeamsBoltDiameter: 16,
+    secondaryBeamsNumberOfBolts: 6,
+    purlinFlangeBraceBoltType: 'ORD' as const,
+    purlinFlangeBraceBoltDiameter: 12,
+    purlinFlangeBraceNumberOfBolts: 14,
+    claddingPurlinsBoltType: 'ORD' as const,
+    claddingPurlinsBoltDiameter: 12,
+    claddingPurlinsNumberOfBolts: 10,
+    canopyBoltType: 'ORD' as const,
+    canopyBoltDiameter: 16,
+    canopyNumberOfBolts: 8,
+    jointBoltRoof: [makeJointBoltRoofItem()],
+    jointBoltMezzanine: [makeJointBoltMezzanineItem()],
+    foundationBoltRoof: [makeFoundationBoltRoofItem()],
+  }
+}
+
+export function makeJoint(overrides = {}) {
+  return {
+    id: faker.string.uuid(),
+    jobId: faker.string.uuid(),
+    secondaryBeamsBoltType: null,
+    secondaryBeamsBoltDiameter: null,
+    secondaryBeamsNumberOfBolts: null,
+    purlinFlangeBraceBoltType: null,
+    purlinFlangeBraceBoltDiameter: null,
+    purlinFlangeBraceNumberOfBolts: null,
+    claddingPurlinsBoltType: null,
+    claddingPurlinsBoltDiameter: null,
+    claddingPurlinsNumberOfBolts: null,
+    canopyBoltType: null,
+    canopyBoltDiameter: null,
+    canopyNumberOfBolts: null,
+    jointBoltRoof: [],
+    jointBoltMezzanine: [],
+    foundationBoltRoof: [],
+    createdAt: new Date(),
+    updatedAt: new Date(),
+    ...overrides,
+  }
+}

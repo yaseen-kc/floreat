@@ -37,7 +37,7 @@ export function LoadDetails() {
 
   return (
     <SectionCard icon={<Gauge className="w-3.5 h-3.5" />} title="Load Details">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 desktop:gap-6">
         {LOAD_DETAIL_FIELDS.map((f) => (
           <NumberField
             key={f.name}

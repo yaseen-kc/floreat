@@ -28,7 +28,7 @@ export function PaintPrimer() {
       <div className="flex flex-col gap-4">
         <div>
           <p className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground mb-2">Frames</p>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 desktop:gap-6">
             <NumberField
               label="Primer Coats"
               value={accessories.framesPrimerCoats}
@@ -68,7 +68,7 @@ export function PaintPrimer() {
 
         <div>
           <p className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground mb-2">Purlins & Girts</p>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 desktop:gap-6">
             <SelectField
               label="Finish"
               value={accessories.purlinsGirtsFinish}
@@ -99,7 +99,7 @@ export function PaintPrimer() {
 
         <div>
           <p className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground mb-2">Foundation Bolt</p>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 desktop:gap-6">
             <SelectField
               label="Finish"
               value={accessories.foundationBoltFinish}
