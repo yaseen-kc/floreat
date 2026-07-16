@@ -1,0 +1,26 @@
+enum RateUnit {
+  KG
+  RM
+  SQM
+  NOS
+}
+
+model Rate {
+  id    String   @id @default(cuid())
+  item  String   @unique
+  unit  RateUnit
+
+  material         Decimal? @db.Decimal(10, 3)
+  fabrication      Decimal? @db.Decimal(10, 3)
+  transportation   Decimal? @db.Decimal(10, 3)
+  installation     Decimal? @db.Decimal(10, 3)
+  loadingUnloading Decimal? @db.Decimal(10, 3)
+  overheads        Decimal? @db.Decimal(10, 3)
+  others           Decimal? @db.Decimal(10, 3)
+  marginPercentage Decimal? @db.Decimal(10, 3)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([createdAt])
+}

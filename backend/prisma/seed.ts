@@ -1,6 +1,6 @@
 import { prisma } from '../lib/prisma.js'
 import { createSpecSchema } from '../schemas/spec.schema.js'
-import { specSeedData } from './seed-data.js'
+import { specSeedData, rateSeedData } from './seed-data.js'
 import {
   SideWallSide,
   TypeOfWall,
@@ -756,6 +756,13 @@ async function main() {
     })
   }
   console.log('✓ Joints seeded')
+
+  // ── Rates ───────────────────────────────────────────────────
+  // Global master/lookup table keyed by unique `item` — not job-scoped.
+  for (const rate of rateSeedData) {
+    await prisma.rate.upsert({ where: { item: rate.item }, update: rate, create: rate })
+  }
+  console.log('✓ Rates seeded')
 }
 
 main()
