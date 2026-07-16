@@ -55,6 +55,10 @@
     {
       "name": "Specs",
       "description": "Job product specification endpoints."
+    },
+    {
+      "name": "Rates",
+      "description": "Global rate master-data endpoints."
     }
   ],
   "components": {
@@ -295,6 +299,148 @@
           "configuration": {
             "type": "string",
             "minLength": 1
+          }
+        }
+      },
+      "RateResponse": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": {
+          "nullable": true
+        }
+      },
+      "CreateRateRequest": {
+        "type": "object",
+        "properties": {
+          "item": {
+            "type": "string",
+            "minLength": 1
+          },
+          "unit": {
+            "type": "string",
+            "enum": [
+              "KG",
+              "RM",
+              "SQM",
+              "NOS"
+            ]
+          },
+          "material": {
+            "type": "number",
+            "minimum": 0
+          },
+          "fabrication": {
+            "type": "number",
+            "minimum": 0
+          },
+          "transportation": {
+            "type": "number",
+            "minimum": 0
+          },
+          "installation": {
+            "type": "number",
+            "minimum": 0
+          },
+          "loadingUnloading": {
+            "type": "number",
+            "minimum": 0
+          },
+          "overheads": {
+            "type": "number",
+            "minimum": 0
+          },
+          "others": {
+            "type": "number",
+            "minimum": 0
+          },
+          "marginPercentage": {
+            "type": "number",
+            "minimum": 0
+          }
+        },
+        "required": [
+          "item",
+          "unit"
+        ]
+      },
+      "PaginatedRateResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "nullable": true
+            }
+          },
+          "total": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "page": {
+            "type": "integer",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          },
+          "pageSize": {
+            "type": "integer",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          }
+        },
+        "required": [
+          "data",
+          "total",
+          "page",
+          "pageSize"
+        ]
+      },
+      "UpdateRateRequest": {
+        "type": "object",
+        "properties": {
+          "item": {
+            "type": "string",
+            "minLength": 1
+          },
+          "unit": {
+            "type": "string",
+            "enum": [
+              "KG",
+              "RM",
+              "SQM",
+              "NOS"
+            ]
+          },
+          "material": {
+            "type": "number",
+            "minimum": 0
+          },
+          "fabrication": {
+            "type": "number",
+            "minimum": 0
+          },
+          "transportation": {
+            "type": "number",
+            "minimum": 0
+          },
+          "installation": {
+            "type": "number",
+            "minimum": 0
+          },
+          "loadingUnloading": {
+            "type": "number",
+            "minimum": 0
+          },
+          "overheads": {
+            "type": "number",
+            "minimum": 0
+          },
+          "others": {
+            "type": "number",
+            "minimum": 0
+          },
+          "marginPercentage": {
+            "type": "number",
+            "minimum": 0
           }
         }
       },
@@ -4043,6 +4189,371 @@
           },
           "401": {
             "description": "Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/rates": {
+      "post": {
+        "operationId": "createRate",
+        "tags": [
+          "Rates"
+        ],
+        "summary": "Create a rate",
+        "description": "Creates a new rate master item in the global rate table.",
+        "security": [
+          {
+            "LocalDevUserId": []
+          }
+        ],
+        "requestBody": {
+          "description": "New rate master item payload.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateRateRequest"
+              },
+              "example": {
+                "item": "STEEL STRUCTURE",
+                "unit": "KG",
+                "material": 63,
+                "fabrication": 15,
+                "transportation": 1.5,
+                "installation": 8,
+                "loadingUnloading": 3,
+                "overheads": 0,
+                "others": 0,
+                "marginPercentage": 15
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Rate created.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RateResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Resource already exists",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "operationId": "listRates",
+        "tags": [
+          "Rates"
+        ],
+        "summary": "List rates",
+        "description": "Returns a paginated list of rate master items.",
+        "security": [
+          {
+            "LocalDevUserId": []
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "exclusiveMinimum": true,
+              "default": 1
+            },
+            "required": false,
+            "name": "page",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "exclusiveMinimum": true,
+              "maximum": 100,
+              "default": 10
+            },
+            "required": false,
+            "name": "pageSize",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Paginated rate list returned.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedRateResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/rates/{id}": {
+      "get": {
+        "operationId": "getRateById",
+        "tags": [
+          "Rates"
+        ],
+        "summary": "Get a rate by ID",
+        "description": "Returns one rate master item by its identifier.",
+        "security": [
+          {
+            "LocalDevUserId": []
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "example": "cuid_123"
+            },
+            "required": true,
+            "name": "id",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Rate returned.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RateResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Resource not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "operationId": "updateRate",
+        "tags": [
+          "Rates"
+        ],
+        "summary": "Update a rate",
+        "description": "Partially updates a rate master item by its identifier.",
+        "security": [
+          {
+            "LocalDevUserId": []
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "example": "cuid_123"
+            },
+            "required": true,
+            "name": "id",
+            "in": "path"
+          }
+        ],
+        "requestBody": {
+          "description": "Partial rate master item payload.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateRateRequest"
+              },
+              "example": {
+                "marginPercentage": 20
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Rate updated.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RateResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Resource not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Resource already exists",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "operationId": "deleteRate",
+        "tags": [
+          "Rates"
+        ],
+        "summary": "Delete a rate",
+        "description": "Deletes a rate master item by its identifier.",
+        "security": [
+          {
+            "LocalDevUserId": []
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "example": "cuid_123"
+            },
+            "required": true,
+            "name": "id",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Rate deleted. No response body is returned."
+          },
+          "400": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Resource not found",
             "content": {
               "application/json": {
                 "schema": {

@@ -1,8 +1,63 @@
-import type { CreateSpecInput } from '../schemas/spec.schema.js'
+import type { CreateSpecInput, CreateRateInput } from '../schemas/spec.schema.js'
 
 export interface SeedSpec extends CreateSpecInput {
   jobId: string
 }
+
+/**
+ * Rate master items used by the Prisma seed runner. Rate is a global lookup
+ * table keyed by unique `item` (not job-scoped). Mirrors `rate.json`: only
+ * STEEL STRUCTURE carries full pricing; the rest are draft rows (item + unit),
+ * to be priced later. Derived rates are computed on read (never seeded).
+ */
+export const rateSeedData: CreateRateInput[] = [
+  {
+    item: 'STEEL STRUCTURE',
+    unit: 'KG',
+    material: 63,
+    fabrication: 15,
+    transportation: 1.5,
+    installation: 8,
+    loadingUnloading: 3,
+    overheads: 0,
+    others: 0,
+    marginPercentage: 15,
+  },
+  { item: 'WIND BRACING - ROD', unit: 'RM' },
+  { item: 'SAG ROD - 12 MM', unit: 'RM' },
+  { item: 'FLANGE BRACE - GI', unit: 'KG' },
+  { item: 'Z/C - PURLINS', unit: 'KG' },
+  { item: 'PUFF SHEET 30MM THICK - ROOF', unit: 'SQM' },
+  { item: 'PPGL 0.4MM THICK - CLADDING', unit: 'SQM' },
+  { item: 'PPGL 0.4MM THICK - CANOPY', unit: 'SQM' },
+  { item: '12 MM DIA BOLT - ORD', unit: 'NOS' },
+  { item: '16 MM DIA BOLT - HSFG', unit: 'NOS' },
+  { item: '20 MM FOUNDATION BOLT', unit: 'NOS' },
+  { item: '20 MM ANCHOR BOLT', unit: 'NOS' },
+  { item: 'RIDGE', unit: 'RM' },
+  { item: 'GUTTER', unit: 'RM' },
+  { item: 'DOWNTAKE', unit: 'RM' },
+  { item: 'DRIP TRIM', unit: 'RM' },
+  { item: 'FLASHING', unit: 'RM' },
+  { item: 'ROLLING SHUTTER', unit: 'SQM' },
+  { item: 'LOUVERS', unit: 'NOS' },
+  { item: 'SKY LIGHT', unit: 'NOS' },
+  { item: 'WALL LIGHT', unit: 'NOS' },
+  { item: 'INSULATION', unit: 'SQM' },
+  { item: 'TURBO VENTILATORS', unit: 'NOS' },
+  { item: 'DECKING SHEET', unit: 'SQM' },
+  { item: 'SHEAR STUDS', unit: 'NOS' },
+  { item: 'POLYCARBONATE SHEET', unit: 'SQM' },
+  { item: 'STAIR - HR SECTION', unit: 'KG' },
+  { item: 'STAIR 6MM CHQ PLATE STEPS', unit: 'KG' },
+  { item: 'HANDRAIL', unit: 'KG' },
+  { item: 'CANOPY SIDE COVERING', unit: 'SQM' },
+  { item: 'DOORS', unit: 'SQM' },
+  { item: 'WINDOWS', unit: 'SQM' },
+  { item: 'FASCIA STRUCTURE', unit: 'KG' },
+  { item: 'FASCIA COVERING SHEET / BOARD', unit: 'SQM' },
+  { item: 'INTERNAL PARTITIONS', unit: 'SQM' },
+]
 
 /**
  * Deterministic job-owned product specifications used by the Prisma seed runner.

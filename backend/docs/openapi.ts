@@ -9,6 +9,7 @@ const {
   createJointSchema,
   createLoadSchema,
   createMezzanineSchema,
+  createRateSchema,
   createRoofSchema,
   createSpecSchema,
   createStairSchema,
@@ -19,6 +20,7 @@ const {
   updateJointSchema,
   updateLoadSchema,
   updateMezzanineSchema,
+  updateRateSchema,
   updateRoofSchema,
   updateSpecSchema,
   updateStairSchema,
@@ -45,6 +47,8 @@ const schemas = {
   UpdateSpecRequest: updateSpecSchema.meta({ id: 'UpdateSpecRequest' }),
   CreateStairRequest: createStairSchema.meta({ id: 'CreateStairRequest' }),
   UpdateStairRequest: updateStairSchema.meta({ id: 'UpdateStairRequest' }),
+  CreateRateRequest: createRateSchema.meta({ id: 'CreateRateRequest' }),
+  UpdateRateRequest: updateRateSchema.meta({ id: 'UpdateRateRequest' }),
   PaginationQuery: paginationSchema.meta({ id: 'PaginationQuery' }),
 }
 
@@ -88,6 +92,7 @@ const responseSchemas = {
   RoofResponse: roofResponseSchema.meta({ id: 'RoofResponse' }),
   SpecResponse: resourceResponseSchema.meta({ id: 'SpecResponse' }),
   StairResponse: resourceResponseSchema.meta({ id: 'StairResponse' }),
+  RateResponse: resourceResponseSchema.meta({ id: 'RateResponse' }),
   UserResponse: resourceResponseSchema.meta({ id: 'UserResponse' }),
   PaginatedAccessoriesResponse: paginatedResponseSchema.meta({ id: 'PaginatedAccessoriesResponse' }),
   PaginatedCanopyResponse: paginatedResponseSchema.meta({ id: 'PaginatedCanopyResponse' }),
@@ -98,6 +103,7 @@ const responseSchemas = {
   PaginatedRoofResponse: paginatedResponseSchema.meta({ id: 'PaginatedRoofResponse' }),
   PaginatedSpecResponse: paginatedResponseSchema.meta({ id: 'PaginatedSpecResponse' }),
   PaginatedStairResponse: paginatedResponseSchema.meta({ id: 'PaginatedStairResponse' }),
+  PaginatedRateResponse: paginatedResponseSchema.meta({ id: 'PaginatedRateResponse' }),
   ApiError: apiErrorSchema.meta({ id: 'ApiError' }),
   HealthResponse: healthResponseSchema.meta({ id: 'HealthResponse' }),
 }
@@ -228,6 +234,18 @@ const examples = {
     makeOrBrand: ['JSW', 'TATA'],
     yieldStrengthMpa: 345,
   },
+  rate: {
+    item: 'STEEL STRUCTURE',
+    unit: 'KG',
+    material: 63,
+    fabrication: 15,
+    transportation: 1.5,
+    installation: 8,
+    loadingUnloading: 3,
+    overheads: 0,
+    others: 0,
+    marginPercentage: 15,
+  },
 }
 
 interface ResourceDefinition {
@@ -272,6 +290,8 @@ function registerOperation(options: {
   responseSchema?: z.ZodType
   responseDescription: string
   status?: 200 | 201
+  notFound?: boolean
+  conflict?: boolean
 }) {
   const request: RouteConfig['request'] = {}
   if (options.params) request.params = options.params
@@ -300,6 +320,12 @@ function registerOperation(options: {
   responses['400'] = { description: 'Validation error', content: { 'application/json': { schema: responseSchemas.ApiError } } }
   if (options.auth !== false) {
     responses['401'] = { description: 'Authentication required', content: { 'application/json': { schema: responseSchemas.ApiError } } }
+  }
+  if (options.conflict) {
+    responses['409'] = { description: 'Resource already exists', content: { 'application/json': { schema: responseSchemas.ApiError } } }
+  }
+  if (options.notFound) {
+    responses['404'] = { description: 'Resource not found', content: { 'application/json': { schema: responseSchemas.ApiError } } }
   }
 
   registry.registerPath({
@@ -389,6 +415,33 @@ registerOperation({
   summary: 'Delete a job', description: 'Deletes a job by its identifier.', params: idParams(),
   responseDescription: 'Job deleted. No response body is returned.',
 })
+registerOperation({
+  method: 'post', path: '/api/rates', operationId: 'createRate', tag: 'Rates', auth: true,
+  summary: 'Create a rate', description: 'Creates a new rate master item in the global rate table.',
+  body: { schema: schemas.CreateRateRequest, example: examples.rate, description: 'New rate master item payload.' },
+  responseSchema: responseSchemas.RateResponse, responseDescription: 'Rate created.', status: 201, conflict: true,
+})
+registerOperation({
+  method: 'get', path: '/api/rates', operationId: 'listRates', tag: 'Rates', auth: true,
+  summary: 'List rates', description: 'Returns a paginated list of rate master items.', query: paginationQuery(),
+  responseSchema: responseSchemas.PaginatedRateResponse, responseDescription: 'Paginated rate list returned.',
+})
+registerOperation({
+  method: 'get', path: '/api/rates/{id}', operationId: 'getRateById', tag: 'Rates', auth: true,
+  summary: 'Get a rate by ID', description: 'Returns one rate master item by its identifier.', params: idParams(),
+  responseSchema: responseSchemas.RateResponse, responseDescription: 'Rate returned.', notFound: true,
+})
+registerOperation({
+  method: 'put', path: '/api/rates/{id}', operationId: 'updateRate', tag: 'Rates', auth: true,
+  summary: 'Update a rate', description: 'Partially updates a rate master item by its identifier.', params: idParams(),
+  body: { schema: schemas.UpdateRateRequest, example: { marginPercentage: 20 }, description: 'Partial rate master item payload.' },
+  responseSchema: responseSchemas.RateResponse, responseDescription: 'Rate updated.', notFound: true, conflict: true,
+})
+registerOperation({
+  method: 'delete', path: '/api/rates/{id}', operationId: 'deleteRate', tag: 'Rates', auth: true,
+  summary: 'Delete a rate', description: 'Deletes a rate master item by its identifier.', params: idParams(),
+  responseDescription: 'Rate deleted. No response body is returned.', notFound: true,
+})
 
 for (const resource of resourceDefinitions) registerResourceOperations(resource)
 
@@ -416,6 +469,7 @@ export function buildOpenApiDocument() {
       { name: 'Accessories', description: 'Accessories configuration endpoints.' },
       { name: 'Joint', description: 'Joint configuration endpoints.' },
       { name: 'Specs', description: 'Job product specification endpoints.' },
+      { name: 'Rates', description: 'Global rate master-data endpoints.' },
     ],
   })
 }
