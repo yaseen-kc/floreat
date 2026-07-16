@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach } from 'vitest'
-import { useQuotationStore, buildSpecPayload } from '@/stores/quotation-store'
+import { useQuotationStore, buildSpecPayload, DEFAULT_SPEC_PRODUCTS } from '@/stores/quotation-store'
 import { validRoofDraft } from '@/tests/fixtures/roof'
 
 const STORAGE_KEY = 'Floreat:draft'
@@ -329,7 +329,12 @@ describe('quotation-store rehydrate self-heals missing nested keys', () => {
     expect(s.currentStep).toBe(9)
     // Missing nested array keys fall back to their defaults instead of undefined.
     expect(Array.isArray(s.spec.products)).toBe(true)
-    expect(s.spec.products).toEqual([])
+    expect(s.spec.products).toEqual(
+      DEFAULT_SPEC_PRODUCTS.map((product, index) => ({
+        code: `PRODUCT-${index + 1}`,
+        ...product,
+      })),
+    )
     expect(Array.isArray(s.canopy.canopies)).toBe(true)
     expect(s.canopy.canopies).toEqual([])
     // The one persisted section flag is kept; the rest retain their defaults.
@@ -337,7 +342,12 @@ describe('quotation-store rehydrate self-heals missing nested keys', () => {
     expect(s.roofSectionsEnabled.coverings).toBe(false)
     // The build helper that maps over products no longer throws.
     expect(() => buildSpecPayload(s.spec)).not.toThrow()
-    expect(buildSpecPayload(s.spec)).toEqual({})
+    expect(buildSpecPayload(s.spec)).toEqual({
+      products: DEFAULT_SPEC_PRODUCTS.map((product, index) => ({
+        code: `PRODUCT-${index + 1}`,
+        ...product,
+      })),
+    })
   })
 
   it('preserves populated nested slices from a current-shape persisted draft', async () => {

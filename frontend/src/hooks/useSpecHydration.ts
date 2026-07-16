@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react'
 import { useSpec } from '@/api/quotation/spec/getSpec'
-import { useQuotationStore, buildSpecPayload } from '@/stores/quotation-store'
+import { useQuotationStore, isDefaultSpecDraft } from '@/stores/quotation-store'
 import { mapSpecResponseToDraft } from '@/utils/hydrateSpec'
 
 /**
@@ -8,7 +8,7 @@ import { mapSpecResponseToDraft } from '@/utils/hydrateSpec'
  *
  * Fetches the job's spec (no-op until a `jobId` exists) and, the first time the
  * response arrives, maps it into the store — but only if the local draft is
- * still untouched (every field blank). A locally-edited draft is never
+ * still seeded with the default rows. A locally-edited draft is never
  * overwritten, so unsaved work survives a resume.
  */
 export function useSpecHydration(): void {
@@ -21,7 +21,7 @@ export function useSpecHydration(): void {
     hydrated.current = true
 
     const s = useQuotationStore.getState()
-    if (Object.keys(buildSpecPayload(s.spec)).length > 0) return
+    if (!isDefaultSpecDraft(s.spec)) return
 
     useQuotationStore.setState({ spec: mapSpecResponseToDraft(data) })
   }, [data])

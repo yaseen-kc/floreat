@@ -292,6 +292,53 @@ export type SpecDraft = Omit<CreateSpecInput, 'products'> & {
   products: SpecProductDraft[]
 }
 
+export const DEFAULT_SPEC_PRODUCTS: ReadonlyArray<Required<Pick<SpecProductDraft, 'description' | 'specification' | 'makeOrBrand' | 'yieldStrengthMpa'>>> = [
+  {
+    description: 'Fabricated Columns and Beams',
+    specification:
+      'Fabricated from plates or stocks by continuous welding process. Conforms to IS 2062 Grade E345 / ASTM A572 Grade 50. Steel shall be killed or semi-killed. Minimum plate thickness: 4 mm.',
+    makeOrBrand: 'JSW / TATA',
+    yieldStrengthMpa: 345,
+  },
+  {
+    description: 'Cold Formed Purlins / Girts',
+    specification: 'ASTM A653 Grade 275. Zinc coating: Z120 or equivalent.',
+    makeOrBrand: 'JSW',
+    yieldStrengthMpa: 275,
+  },
+  {
+    description: 'Roofing Sheet',
+    specification: '30 mm Puff Sheet.',
+    makeOrBrand: 'Metecno / JSW',
+    yieldStrengthMpa: 550,
+  },
+  {
+    description: 'Cladding Sheet',
+    specification: 'Zincalume steel roof sheet. Thickness: 0.40 mm TCT. Grade 550.',
+    makeOrBrand: 'JSW',
+    yieldStrengthMpa: 550,
+  },
+  {
+    description: 'Decking Sheet',
+    specification:
+      'Decking Profile 50/230 (Depth/Pitch). Panel thickness: 0.8 mm. Yield Strength: 250 MPa. Zinc Coating: Z120 GSM.',
+    makeOrBrand: 'JSW',
+    yieldStrengthMpa: 250,
+  },
+  {
+    description: 'Primary Connection',
+    specification: 'High-strength bolts conforming to ASTM A325 (or equivalent). Grade 8.8.',
+    makeOrBrand: 'UNBRACO',
+    yieldStrengthMpa: 640,
+  },
+  {
+    description: 'Secondary Connection',
+    specification: 'Machine bolts conforming to ASTM A307 (or equivalent). Grade 4.6.',
+    makeOrBrand: 'SS',
+    yieldStrengthMpa: 240,
+  },
+]
+
 interface QuotationState {
   currentStep: number
   projectInfo: ProjectInfo
@@ -408,7 +455,27 @@ const createDefaultJoint = (): JointDraft => ({
 })
 
 /** Factory for a fresh spec draft — an empty products table (the schema is all-optional). */
-const createDefaultSpec = (): SpecDraft => ({ products: [] })
+const createDefaultSpec = (): SpecDraft => ({
+  products: DEFAULT_SPEC_PRODUCTS.map((product, index) => ({
+    code: `PRODUCT-${index + 1}`,
+    ...product,
+  })),
+})
+
+export function isDefaultSpecDraft(spec: SpecDraft): boolean {
+  if (spec.products.length !== DEFAULT_SPEC_PRODUCTS.length) return false
+
+  return spec.products.every((product, index) => {
+    const seeded = DEFAULT_SPEC_PRODUCTS[index]
+    return (
+      product.code === `PRODUCT-${index + 1}` &&
+      product.description === seeded.description &&
+      product.specification === seeded.specification &&
+      product.makeOrBrand === seeded.makeOrBrand &&
+      product.yieldStrengthMpa === seeded.yieldStrengthMpa
+    )
+  })
+}
 
 /** True for a plain, non-array object (the shape of every nested draft slice). */
 const isPlainObject = (v: unknown): v is Record<string, unknown> =>

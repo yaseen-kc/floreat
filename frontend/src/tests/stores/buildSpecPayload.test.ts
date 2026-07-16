@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach } from 'vitest'
-import { useQuotationStore, buildSpecPayload } from '@/stores/quotation-store'
+import { useQuotationStore, buildSpecPayload, DEFAULT_SPEC_PRODUCTS } from '@/stores/quotation-store'
 import { createSpecSchema } from '@/schemas/spec.schema'
 
 describe('spec store draft', () => {
@@ -8,8 +8,13 @@ describe('spec store draft', () => {
     useQuotationStore.getState().resetQuotation()
   })
 
-  it('starts as an empty products table and setSpec replaces products', () => {
-    expect(useQuotationStore.getState().spec).toEqual({ products: [] })
+  it('starts with the seeded default products and setSpec replaces products', () => {
+    expect(useQuotationStore.getState().spec).toEqual({
+      products: DEFAULT_SPEC_PRODUCTS.map((product, index) => ({
+        code: `PRODUCT-${index + 1}`,
+        ...product,
+      })),
+    })
     useQuotationStore.getState().setSpec({ products: [{ description: 'Steel' }] })
     expect(useQuotationStore.getState().spec).toEqual({ products: [{ description: 'Steel' }] })
   })
@@ -21,8 +26,13 @@ describe('buildSpecPayload', () => {
     useQuotationStore.getState().resetQuotation()
   })
 
-  it('returns an empty object for a fresh (untouched) draft', () => {
-    expect(buildSpecPayload(useQuotationStore.getState().spec)).toEqual({})
+  it('returns the seeded default rows for a fresh (untouched) draft', () => {
+    expect(buildSpecPayload(useQuotationStore.getState().spec)).toEqual({
+      products: DEFAULT_SPEC_PRODUCTS.map((product, index) => ({
+        code: `PRODUCT-${index + 1}`,
+        ...product,
+      })),
+    })
   })
 
   it('compacts each product row and renumbers PRODUCT-n by position', () => {
