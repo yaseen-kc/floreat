@@ -8,7 +8,8 @@ vi.mock('@clerk/react', () => ({
   useAuth: () => ({ getToken: vi.fn().mockResolvedValue('test-token') }),
 }))
 
-vi.mock('@/lib/api', () => ({
+vi.mock('@/lib/api', async (importOriginal) => ({
+  ...(await importOriginal<typeof import('@/lib/api')>()),
   apiFetch: vi.fn(),
 }))
 

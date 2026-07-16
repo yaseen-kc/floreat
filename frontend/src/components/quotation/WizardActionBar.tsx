@@ -398,16 +398,26 @@ export function WizardActionBar() {
       return
     }
 
-    // Final step (Spec): persist the spec, then finalise and return to the
-    // dashboard. Stay on the step if persistence fails.
-    if (isLast) {
+    // Step 9 (Spec): persist the spec, then advance to the Rate Master step.
+    if (currentStep === 9) {
       try {
         await submitSpec()
+        goStep(10)
+      } catch {
+        // Error toast already shown; stay on Step 9.
+      }
+      return
+    }
+
+    // Final step (Rate Master): finalise and return to the dashboard.
+    if (isLast) {
+      try {
         successToast('Quotation finalised & saved')
         resetQuotation()
         navigate('/')
       } catch {
-        // Error toast already shown; stay on the final step.
+        // No persistence is performed at this step; this block is here for
+        // symmetry and future extension.
       }
       return
     }

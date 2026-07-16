@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { ClerkProvider, Show } from '@clerk/react'
 import { Navigate, Outlet, Route, Routes, useNavigate } from 'react-router-dom'
 import Login from './pages/authentication/Login'
@@ -10,6 +10,7 @@ import { Toaster } from './components/ui/sonner'
 import { useDraftPersistenceScope } from './hooks/useDraftPersistenceScope'
 import { useSearchShortcuts } from './hooks/useSearchShortcuts'
 import { clerkAppearance } from './lib/clerk'
+import { resolveInitialCollapsed, setCollapsedPref } from './lib/sidebar'
 
 
 const PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY
@@ -69,12 +70,29 @@ function ProtectedLayout() {
 function SignedInLayout() {
   useDraftPersistenceScope()
   const [navOpen, setNavOpen] = useState(false)
+  const [collapsed, setCollapsed] = useState(resolveInitialCollapsed)
   const searchRef = useRef<HTMLInputElement>(null)
   useSearchShortcuts(searchRef)
 
+  // Mirror the collapsed preference onto <html> so the CSS width override
+  // (index.css) applies, and persist the choice.
+  useEffect(() => {
+    const root = document.documentElement
+    if (collapsed) root.setAttribute('data-sidebar', 'collapsed')
+    else root.removeAttribute('data-sidebar')
+    setCollapsedPref(collapsed)
+  }, [collapsed])
+
+  const toggleCollapse = useCallback(() => setCollapsed((c) => !c), [])
+
   return (
-    <div className="grid min-h-screen grid-cols-[var(--sidebar-w)_1fr]">
-      <Sidebar navOpen={navOpen} onClose={() => setNavOpen(false)} />
+    <div className="grid min-h-screen grid-cols-[var(--sidebar-w)_1fr] transition-[grid-template-columns] duration-200 ease-(--ease)">
+      <Sidebar
+        navOpen={navOpen}
+        onClose={() => setNavOpen(false)}
+        collapsed={collapsed}
+        onToggleCollapse={toggleCollapse}
+      />
 
       {/* Scrim behind the mobile drawer. */}
       {navOpen && (

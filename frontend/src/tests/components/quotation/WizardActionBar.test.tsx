@@ -476,7 +476,7 @@ describe('WizardActionBar Step 8 joint persistence', () => {
 })
 
 
-describe('WizardActionBar Step 9 spec finalise', () => {
+describe('WizardActionBar Step 9 spec advance', () => {
   beforeEach(() => {
     localStorage.clear()
     useQuotationStore.getState().resetQuotation()
@@ -488,41 +488,62 @@ describe('WizardActionBar Step 9 spec finalise', () => {
     useQuotationStore.setState({ currentStep: 9 })
   })
 
-  it('upserts the spec, finalises and navigates home on Finish & save', async () => {
+  it('upserts the spec and advances to step 10 on Continue', async () => {
     mocks.upsertSpecMutateAsync.mockResolvedValueOnce({ id: 'spec-1' })
     useQuotationStore.getState().setSpec({ products: [{ description: 'Structural steel', yieldStrengthMpa: 345 }] })
     render(<WizardActionBar />)
 
-    await userEvent.click(screen.getByRole('button', { name: /finish & save/i }))
+    await userEvent.click(screen.getByRole('button', { name: /continue/i }))
 
-    await waitFor(() => expect(mocks.navigate).toHaveBeenCalledWith('/'))
+    await waitFor(() => expect(useQuotationStore.getState().currentStep).toBe(10))
     expect(mocks.upsertSpecMutateAsync).toHaveBeenCalledWith({
       jobId: 'job-1',
       payload: { products: [{ code: 'PRODUCT-1', description: 'Structural steel', yieldStrengthMpa: 345 }] },
     })
-    // resetQuotation returns the wizard to step 1.
-    expect(useQuotationStore.getState().currentStep).toBe(1)
+    expect(mocks.navigate).not.toHaveBeenCalled()
   })
 
-  it('upserts an empty payload for a blank draft and still finalises', async () => {
+  it('upserts an empty payload for a blank draft and still advances', async () => {
     mocks.upsertSpecMutateAsync.mockResolvedValueOnce({ id: 'spec-1' })
+    render(<WizardActionBar />)
+
+    await userEvent.click(screen.getByRole('button', { name: /continue/i }))
+
+    await waitFor(() => expect(useQuotationStore.getState().currentStep).toBe(10))
+    expect(mocks.upsertSpecMutateAsync).toHaveBeenCalledWith({ jobId: 'job-1', payload: {} })
+  })
+
+  it('stays on step 9 and does not advance when the spec upsert fails', async () => {
+    mocks.upsertSpecMutateAsync.mockRejectedValueOnce(new Error('API error: 500'))
+    render(<WizardActionBar />)
+
+    await userEvent.click(screen.getByRole('button', { name: /continue/i }))
+
+    await waitFor(() => expect(mocks.toastError).toHaveBeenCalledWith('Failed to save spec'))
+    expect(useQuotationStore.getState().currentStep).toBe(9)
+    expect(mocks.navigate).not.toHaveBeenCalled()
+  })
+})
+
+
+describe('WizardActionBar Step 10 finalise', () => {
+  beforeEach(() => {
+    localStorage.clear()
+    useQuotationStore.getState().resetQuotation()
+    mocks.navigate.mockReset()
+    mocks.toastSuccess.mockReset()
+    mocks.toastError.mockReset()
+    useQuotationStore.getState().setJobId('job-1')
+    useQuotationStore.setState({ currentStep: 10 })
+  })
+
+  it('finalises and navigates home on Finish & save', async () => {
     render(<WizardActionBar />)
 
     await userEvent.click(screen.getByRole('button', { name: /finish & save/i }))
 
     await waitFor(() => expect(mocks.navigate).toHaveBeenCalledWith('/'))
-    expect(mocks.upsertSpecMutateAsync).toHaveBeenCalledWith({ jobId: 'job-1', payload: {} })
-  })
-
-  it('stays on step 9 and does not navigate when the spec upsert fails', async () => {
-    mocks.upsertSpecMutateAsync.mockRejectedValueOnce(new Error('API error: 500'))
-    render(<WizardActionBar />)
-
-    await userEvent.click(screen.getByRole('button', { name: /finish & save/i }))
-
-    await waitFor(() => expect(mocks.toastError).toHaveBeenCalledWith('Failed to save spec'))
-    expect(useQuotationStore.getState().currentStep).toBe(9)
-    expect(mocks.navigate).not.toHaveBeenCalled()
+    expect(useQuotationStore.getState().currentStep).toBe(1)
   })
 })
 
