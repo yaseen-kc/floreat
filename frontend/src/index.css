@@ -175,6 +175,12 @@
 @media (max-width: 768px) {
   :root { --sidebar-w: 0px; }
 }
+/* User-controlled collapse — only on the full-desktop tier. Shrinks the
+   sidebar to the same 68px icon rail; the grid column animates via a
+   transition on the shell (App.tsx). Rail/drawer tiers above still win. */
+@media (min-width: 1181px) {
+  :root[data-sidebar="collapsed"] { --sidebar-w: 68px; }
+}
 
 .dark {
     /* Override the core + derived tokens only; components are untouched.

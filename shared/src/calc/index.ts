@@ -7,3 +7,4 @@
 export * from './roof.calc.js'
 export * from './accessories.calc.js'
 export * from './joint.calc.js'
+export * from './rate.calc.js'

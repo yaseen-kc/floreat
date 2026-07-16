@@ -455,3 +455,38 @@ export function makeJoint(overrides = {}) {
     ...overrides,
   }
 }
+
+export function makeRateInput(overrides = {}) {
+  return {
+    item: `ITEM-${faker.string.alphanumeric(6)}`,
+    unit: faker.helpers.arrayElement(['KG', 'RM', 'SQM', 'NOS']),
+    material: faker.number.float({ min: 0, max: 100, fractionDigits: 3 }),
+    fabrication: faker.number.float({ min: 0, max: 50, fractionDigits: 3 }),
+    transportation: faker.number.float({ min: 0, max: 10, fractionDigits: 3 }),
+    installation: faker.number.float({ min: 0, max: 20, fractionDigits: 3 }),
+    loadingUnloading: faker.number.float({ min: 0, max: 10, fractionDigits: 3 }),
+    overheads: faker.number.float({ min: 0, max: 5, fractionDigits: 3 }),
+    others: faker.number.float({ min: 0, max: 5, fractionDigits: 3 }),
+    marginPercentage: faker.number.float({ min: 0, max: 30, fractionDigits: 3 }),
+    ...overrides,
+  }
+}
+
+export function makeRate(overrides = {}) {
+  return {
+    id: faker.string.uuid(),
+    item: `ITEM-${faker.string.alphanumeric(6)}`,
+    unit: 'KG',
+    material: null,
+    fabrication: null,
+    transportation: null,
+    installation: null,
+    loadingUnloading: null,
+    overheads: null,
+    others: null,
+    marginPercentage: null,
+    createdAt: new Date(),
+    updatedAt: new Date(),
+    ...overrides,
+  }
+}
