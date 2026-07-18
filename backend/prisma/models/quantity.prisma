@@ -1,0 +1,458 @@
+// ── Quantity Enums ────────────────────────────────
+
+enum QuantityUnit {
+    KG
+    M
+    NOS
+    SQFT
+    SQM
+    KG_PER_SQFT @map("KG/SQFT")
+    KG_PER_M    @map("KG/M")
+    KG_PER_SQM  @map("KG/SQM")
+}
+
+// ── Quantity Models ───────────────────────────────
+//
+// Calculated bill-of-quantities output for a job. The JSON source is deeply
+// nested and repeats leaf names (unit/quantity/additionalQuantity/...) across
+// sections, so — following the Roof pattern of flattening 1-to-1 substructures
+// — each top-level category is one model whose fields carry the JSON leaf name
+// prefixed by its section. Every field is nullable to allow partial/draft saves.
+
+model Quantity {
+    id    String @id @default(cuid())
+    jobId String @unique
+    job   Job    @relation(fields: [jobId], references: [id], onDelete: Cascade)
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    pebRoof         QuantityPebRoof?
+    cladding        QuantityCladding?
+    canopy          QuantityCanopy?
+    accessories     QuantityAccessories?
+    mezzanine       QuantityMezzanine?
+    stair           QuantityStair?
+    additionalBolts QuantityAdditionalBolts?
+
+    @@index([createdAt])
+}
+
+// pebRoof.materialWithPurlin — top-level material plus its member breakdowns.
+model QuantityPebRoof {
+    id         String   @id @default(cuid())
+    quantityId String   @unique
+    quantity   Quantity @relation(fields: [quantityId], references: [id], onDelete: Cascade)
+
+    // materialWithPurlin
+    quantityPebRoofValue       Boolean? // Condition Value
+    materialWithPurlinUnit     QuantityUnit?
+    materialWithPurlinQuantity Decimal?      @db.Decimal(10, 3)
+
+    // raftersAndColumns
+    raftersAndColumnsSpecification           String?
+    raftersAndColumnsUnit                    QuantityUnit?
+    raftersAndColumnsQuantity                Decimal?      @db.Decimal(10, 3)
+    raftersAndColumnsAdditionalQuantity      Decimal?      @db.Decimal(10, 3)
+    raftersAndColumnsBuildingLength          Decimal?      @db.Decimal(10, 3)
+    raftersAndColumnsBuildingLengthUnit      QuantityUnit?
+    raftersAndColumnsInclinedLengthOneHalf   Decimal?      @db.Decimal(10, 3)
+    raftersAndColumnsInclinedLengthUnit      QuantityUnit?
+    raftersAndColumnsRoofArea                Decimal?      @db.Decimal(10, 3)
+    raftersAndColumnsRoofAreaUnit            QuantityUnit?
+    raftersAndColumnsMaterialConsumption     Decimal?      @db.Decimal(10, 3)
+    raftersAndColumnsMaterialConsumptionUnit QuantityUnit?
+
+    // roofPurlins
+    roofPurlinesValue                 Decimal? // Condition Value
+    roofPurlinsSpecification          String?
+    roofPurlinsUnit                   QuantityUnit?
+    roofPurlinsQuantity               Decimal?      @db.Decimal(10, 3)
+    roofPurlinsAdditionalQuantity     Decimal?      @db.Decimal(10, 3)
+    roofPurlinsSinglePurlinLength     Decimal?      @db.Decimal(10, 3)
+    roofPurlinsSinglePurlinLengthUnit QuantityUnit?
+    roofPurlinsPurlinsPerFrame        Int?
+    roofPurlinsTotalPurlinBays        Int?
+    roofPurlinsPurlinUnitWeight       Decimal?      @db.Decimal(10, 3)
+    roofPurlinsPurlinUnitWeightUnit   QuantityUnit?
+    roofPurlinsExtendedFramePurlins   Int?
+    roofPurlinsExtendedPurlinBays     Int?
+
+    // roofSheet
+    roofSheetSpecification                  String?
+    roofSheetUnit                           QuantityUnit?
+    roofSheetQuantity                       Decimal?      @db.Decimal(10, 3)
+    roofSheetPurchaseQuantity               Decimal?      @db.Decimal(10, 3)
+    roofSheetAdditionalQuantity             Decimal?      @db.Decimal(10, 3)
+    roofSheetExtendedRoofWidth              Decimal?      @db.Decimal(10, 3)
+    roofSheetExtendedRoofWidthUnit          QuantityUnit?
+    roofSheetExtendedRoofLength             Decimal?      @db.Decimal(10, 3)
+    roofSheetExtendedRoofLengthUnit         QuantityUnit?
+    roofSheetRoofAreaDeductions             Decimal?      @db.Decimal(10, 3)
+    roofSheetRoofAreaDeductionsUnit         QuantityUnit?
+    roofSheetPolycarbonateAreaDeduction     Decimal?      @db.Decimal(10, 3)
+    roofSheetPolycarbonateAreaDeductionUnit QuantityUnit?
+
+    // polycarbonateSheet
+    polycarbonateSheetUnit               QuantityUnit?
+    polycarbonateSheetQuantity           Decimal?      @db.Decimal(10, 3)
+    polycarbonateSheetPurchaseQuantity   Decimal?      @db.Decimal(10, 3)
+    polycarbonateSheetAdditionalQuantity Decimal?      @db.Decimal(10, 3)
+    polycarbonateSheetSheetLength        Decimal?      @db.Decimal(10, 3)
+    polycarbonateSheetSheetLengthUnit    QuantityUnit?
+    polycarbonateSheetSheetWidth         Decimal?      @db.Decimal(10, 3)
+    polycarbonateSheetSheetWidthUnit     QuantityUnit?
+    polycarbonateSheetNumberOfSheets     Int?
+
+    // roofWindBracings
+    roofWindBracingsUnit                    QuantityUnit?
+    roofWindBracingsQuantity                Decimal?      @db.Decimal(10, 3)
+    roofWindBracingsAdditionalQuantity      Decimal?      @db.Decimal(10, 3)
+    roofWindBracingsSingleBracingLength     Decimal?      @db.Decimal(10, 3)
+    roofWindBracingsSingleBracingLengthUnit QuantityUnit?
+    roofWindBracingsTotalBracings           Int?
+    roofWindBracingsUnitWeight              Decimal?      @db.Decimal(10, 3)
+    roofWindBracingsUnitWeightUnit          QuantityUnit?
+
+    // roofSagRod
+    roofSagRodValue                  Decimal? // Condition Value
+    roofSagRodUnit                   QuantityUnit?
+    roofSagRodQuantity               Decimal?      @db.Decimal(10, 3)
+    roofSagRodAdditionalQuantity     Decimal?      @db.Decimal(10, 3)
+    roofSagRodSingleSagRodLength     Decimal?      @db.Decimal(10, 3)
+    roofSagRodSingleSagRodLengthUnit QuantityUnit?
+    roofSagRodSagRodsPerFrame        Int?
+    roofSagRodSagRodBays             Int?
+    roofSagRodExtendedFrameSagRods   Int?
+    roofSagRodExtendedSagRodBays     Int?
+    roofSagRodUnitWeight             Decimal?      @db.Decimal(10, 3)
+    roofSagRodUnitWeightUnit         QuantityUnit?
+
+    // roofFlangeBrace
+    roofFlangeBraceUnit                    QuantityUnit?
+    roofFlangeBraceQuantity                Decimal?      @db.Decimal(10, 3)
+    roofFlangeBraceAdditionalQuantity      Decimal?      @db.Decimal(10, 3)
+    roofFlangeBraceMidFrameBraceLength     Decimal?      @db.Decimal(10, 3)
+    roofFlangeBraceMidFrameBraceLengthUnit QuantityUnit?
+    roofFlangeBraceMidFrameBraces          Int?
+    roofFlangeBraceEndFrameBraces          Int?
+    roofFlangeBraceMidFrames               Int?
+    roofFlangeBraceEndFrames               Int?
+    roofFlangeBraceExtendedFrameMidBraces  Int?
+    roofFlangeBraceExtendedFrameEndBraces  Int?
+    roofFlangeBraceExtendedMidFrames       Int?
+    roofFlangeBraceExtendedEndFrames       Int?
+    roofFlangeBraceEndFrameBraceLength     Decimal?      @db.Decimal(10, 3)
+    roofFlangeBraceEndFrameBraceLengthUnit QuantityUnit?
+
+    // purlinBolts
+    purlinBoltsSpecification            String?
+    purlinBoltsUnit                     QuantityUnit?
+    purlinBoltsQuantity                 Decimal?      @db.Decimal(10, 3)
+    purlinBoltsPurlinJointsPerFrame     Int?
+    purlinBoltsTotalFrames              Int?
+    purlinBoltsExtendedFramePurlinNodes Int?
+    purlinBoltsExtendedFrames           Int?
+    purlinBoltsBoltsPerPurlinJoint      Int?
+
+    // roofJointBolts
+    roofJointBoltsSpecification String?
+    roofJointBoltsUnit          QuantityUnit?
+    roofJointBoltsQuantity      Decimal?      @db.Decimal(10, 3)
+
+    // foundationBolts
+    foundationBoltsSpecification String?
+    foundationBoltsUnit          QuantityUnit?
+    foundationBoltsQuantity      Decimal?      @db.Decimal(10, 3)
+
+    // anchorBolts
+    anchorBoltsSpecification String?
+    anchorBoltsUnit          QuantityUnit?
+    anchorBoltsQuantity      Decimal?      @db.Decimal(10, 3)
+}
+
+model QuantityCladding {
+    id         String   @id @default(cuid())
+    quantityId String   @unique
+    quantity   Quantity @relation(fields: [quantityId], references: [id], onDelete: Cascade)
+
+    // claddingStructure
+    claddingStructureUnit                           QuantityUnit?
+    claddingStructureQuantity                       Decimal?      @db.Decimal(10, 3)
+    claddingStructureAdditionalQuantity             Decimal?      @db.Decimal(10, 3)
+    claddingStructureFrontEaveHeight                Decimal?      @db.Decimal(10, 3)
+    claddingStructureBackEaveHeight                 Decimal?      @db.Decimal(10, 3)
+    claddingStructureRightEaveHeight                Decimal?      @db.Decimal(10, 3)
+    claddingStructureLeftEaveHeight                 Decimal?      @db.Decimal(10, 3)
+    claddingStructureEaveHeightUnit                 QuantityUnit?
+    claddingStructureExtendedColumnHeight           Decimal?      @db.Decimal(10, 3)
+    claddingStructureExtendedColumnHeightUnit       QuantityUnit?
+    claddingStructureExtendedFrameWidth             Decimal?      @db.Decimal(10, 3)
+    claddingStructureExtendedFrameWidthUnit         QuantityUnit?
+    claddingStructureSideCladdingPurlins            Int?
+    claddingStructureFaceCladdingPurlins            Int?
+    claddingStructureTotalCladdingPurlinLength      Decimal?      @db.Decimal(10, 3)
+    claddingStructureTotalCladdingPurlinLengthUnit  QuantityUnit?
+    claddingStructureTotalCladdingPurlinWeight      Decimal?      @db.Decimal(10, 3)
+    claddingStructureTotalCladdingPurlinWeightUnit  QuantityUnit?
+    claddingStructureCladdingArea                   Decimal?      @db.Decimal(10, 3)
+    claddingStructureCladdingAreaUnit               QuantityUnit?
+    claddingStructureAverageMaterialConsumption     Decimal?      @db.Decimal(10, 3)
+    claddingStructureAverageMaterialConsumptionUnit QuantityUnit?
+    claddingStructureTotalOpenings                  Decimal?      @db.Decimal(10, 3)
+    claddingStructureTotalOpeningsUnit              QuantityUnit?
+    claddingStructureFasciaOpening                  Decimal?      @db.Decimal(10, 3)
+    claddingStructureFasciaOpeningUnit              QuantityUnit?
+
+    // claddingSheet
+    claddingSheetUnit             QuantityUnit?
+    claddingSheetQuantity         Decimal?      @db.Decimal(10, 3)
+    claddingSheetPurchaseQuantity Decimal?      @db.Decimal(10, 3)
+
+    // columnWindBracings
+    columnWindBracingsUnit     QuantityUnit?
+    columnWindBracingsQuantity Decimal?      @db.Decimal(10, 3)
+
+    // claddingSagRod
+    claddingSagRodUnit     QuantityUnit?
+    claddingSagRodQuantity Decimal?      @db.Decimal(10, 3)
+
+    // claddingFlangeBrace
+    claddingFlangeBraceUnit     QuantityUnit?
+    claddingFlangeBraceQuantity Decimal?      @db.Decimal(10, 3)
+
+    // claddingPurlinBolts
+    claddingPurlinBoltsUnit     QuantityUnit?
+    claddingPurlinBoltsQuantity Decimal?      @db.Decimal(10, 3)
+}
+
+model QuantityCanopy {
+    id         String   @id @default(cuid())
+    quantityId String   @unique
+    quantity   Quantity @relation(fields: [quantityId], references: [id], onDelete: Cascade)
+
+    // structure
+    structureUnit           QuantityUnit?
+    structureQuantity       Decimal?      @db.Decimal(10, 3)
+    structureCanopyArea     Decimal?      @db.Decimal(10, 3)
+    structureCanopyAreaUnit QuantityUnit?
+
+    // purlin
+    purlinUnit     QuantityUnit?
+    purlinQuantity Decimal?      @db.Decimal(10, 3)
+
+    // sheet
+    sheetUnit             QuantityUnit?
+    sheetQuantity         Decimal?      @db.Decimal(10, 3)
+    sheetPurchaseQuantity Decimal?      @db.Decimal(10, 3)
+
+    // gutter
+    gutterUnit     QuantityUnit?
+    gutterQuantity Decimal?      @db.Decimal(10, 3)
+
+    // downTake
+    downTakeUnit     QuantityUnit?
+    downTakeQuantity Decimal?      @db.Decimal(10, 3)
+
+    // sideCovering
+    sideCoveringUnit     QuantityUnit?
+    sideCoveringQuantity Decimal?      @db.Decimal(10, 3)
+
+    // flashing
+    flashingUnit     QuantityUnit?
+    flashingQuantity Decimal?      @db.Decimal(10, 3)
+
+    // purlinBolts
+    purlinBoltsUnit     QuantityUnit?
+    purlinBoltsQuantity Decimal?      @db.Decimal(10, 3)
+
+    // jointBolts
+    jointBoltsUnit     QuantityUnit?
+    jointBoltsQuantity Decimal?      @db.Decimal(10, 3)
+}
+
+model QuantityAccessories {
+    id         String   @id @default(cuid())
+    quantityId String   @unique
+    quantity   Quantity @relation(fields: [quantityId], references: [id], onDelete: Cascade)
+
+    // doors
+    doorsCount     Int?
+    doorsCountUnit QuantityUnit?
+    doorsArea      Decimal?      @db.Decimal(10, 3)
+    doorsAreaUnit  QuantityUnit?
+
+    // windows
+    windowsCount     Int?
+    windowsCountUnit QuantityUnit?
+    windowsArea      Decimal?      @db.Decimal(10, 3)
+    windowsAreaUnit  QuantityUnit?
+
+    // fasciaStructure
+    fasciaStructureUnit     QuantityUnit?
+    fasciaStructureQuantity Decimal?      @db.Decimal(10, 3)
+
+    // fasciaCoveringSheet
+    fasciaCoveringSheetUnit     QuantityUnit?
+    fasciaCoveringSheetQuantity Decimal?      @db.Decimal(10, 3)
+
+    // internalPartitions
+    internalPartitionsUnit     QuantityUnit?
+    internalPartitionsQuantity Decimal?      @db.Decimal(10, 3)
+
+    // ridge
+    ridgeUnit     QuantityUnit?
+    ridgeQuantity Decimal?      @db.Decimal(10, 3)
+
+    // gutter
+    gutterUnit     QuantityUnit?
+    gutterQuantity Decimal?      @db.Decimal(10, 3)
+
+    // downTake
+    downTakeUnit     QuantityUnit?
+    downTakeQuantity Decimal?      @db.Decimal(10, 3)
+
+    // dripTrim
+    dripTrimUnit     QuantityUnit?
+    dripTrimQuantity Decimal?      @db.Decimal(10, 3)
+
+    // gableEndFlashing
+    gableEndFlashingUnit     QuantityUnit?
+    gableEndFlashingQuantity Decimal?      @db.Decimal(10, 3)
+
+    // cornerFlash
+    cornerFlashCount      Int?
+    cornerFlashCountUnit  QuantityUnit?
+    cornerFlashLength     Decimal?      @db.Decimal(10, 3)
+    cornerFlashLengthUnit QuantityUnit?
+
+    // rollingShutter
+    rollingShutterCount     Int?
+    rollingShutterCountUnit QuantityUnit?
+    rollingShutterArea      Decimal?      @db.Decimal(10, 3)
+    rollingShutterAreaUnit  QuantityUnit?
+
+    // louvers
+    louversCount     Int?
+    louversCountUnit QuantityUnit?
+    louversArea      Decimal?      @db.Decimal(10, 3)
+    louversAreaUnit  QuantityUnit?
+
+    // skyLight
+    skyLightCount     Int?
+    skyLightCountUnit QuantityUnit?
+    skyLightArea      Decimal?      @db.Decimal(10, 3)
+    skyLightAreaUnit  QuantityUnit?
+
+    // wallLight
+    wallLightCount     Int?
+    wallLightCountUnit QuantityUnit?
+    wallLightArea      Decimal?      @db.Decimal(10, 3)
+    wallLightAreaUnit  QuantityUnit?
+
+    // roofInsulation
+    roofInsulationType     String?
+    roofInsulationUnit     QuantityUnit?
+    roofInsulationQuantity Decimal?      @db.Decimal(10, 3)
+
+    // wallInsulation
+    wallInsulationType     String?
+    wallInsulationUnit     QuantityUnit?
+    wallInsulationQuantity Decimal?      @db.Decimal(10, 3)
+
+    // turboVentilators
+    turboVentilatorsUnit     QuantityUnit?
+    turboVentilatorsQuantity Decimal?      @db.Decimal(10, 3)
+
+    // handrail
+    handrailUnit     QuantityUnit?
+    handrailQuantity Decimal?      @db.Decimal(10, 3)
+}
+
+model QuantityMezzanine {
+    id         String   @id @default(cuid())
+    quantityId String   @unique
+    quantity   Quantity @relation(fields: [quantityId], references: [id], onDelete: Cascade)
+
+    // structure
+    structureUnit                    QuantityUnit?
+    structureQuantity                Decimal?      @db.Decimal(10, 3)
+    structureAdditionalQuantity      Decimal?      @db.Decimal(10, 3)
+    structureTotalArea               Decimal?      @db.Decimal(10, 3)
+    structureTotalAreaUnit           QuantityUnit?
+    structureMaterialConsumption     Decimal?      @db.Decimal(10, 3)
+    structureMaterialConsumptionUnit QuantityUnit?
+
+    // deckSheet
+    deckSheetUnit               QuantityUnit?
+    deckSheetQuantity           Decimal?      @db.Decimal(10, 3)
+    deckSheetPurchaseQuantity   Decimal?      @db.Decimal(10, 3)
+    deckSheetAdditionalQuantity Decimal?      @db.Decimal(10, 3)
+
+    // shearStuds
+    shearStudsUnit     QuantityUnit?
+    shearStudsQuantity Decimal?      @db.Decimal(10, 3)
+
+    // concreteFlashing
+    concreteFlashingUnit     QuantityUnit?
+    concreteFlashingQuantity Decimal?      @db.Decimal(10, 3)
+
+    // jointBolts
+    jointBoltsSpecification String?
+    jointBoltsQuantity      Decimal? @db.Decimal(10, 3)
+
+    // foundationBolts — source may be "NA"; stored as null when not applicable.
+    foundationBoltsQuantity Decimal? @db.Decimal(10, 3)
+}
+
+model QuantityStair {
+    id         String   @id @default(cuid())
+    quantityId String   @unique
+    quantity   Quantity @relation(fields: [quantityId], references: [id], onDelete: Cascade)
+
+    // totalArea
+    totalAreaUnit     QuantityUnit?
+    totalAreaQuantity Decimal?      @db.Decimal(10, 3)
+
+    // stringerBeams
+    stringerBeamsSection            String?
+    stringerBeamsUnit               QuantityUnit?
+    stringerBeamsQuantity           Decimal?      @db.Decimal(10, 3)
+    stringerBeamsAdditionalQuantity Decimal?      @db.Decimal(10, 3)
+
+    // steps
+    stepsSpecification      String?
+    stepsUnit               QuantityUnit?
+    stepsQuantity           Decimal?      @db.Decimal(10, 3)
+    stepsAdditionalQuantity Decimal?      @db.Decimal(10, 3)
+}
+
+model QuantityAdditionalBolts {
+    id         String   @id @default(cuid())
+    quantityId String   @unique
+    quantity   Quantity @relation(fields: [quantityId], references: [id], onDelete: Cascade)
+
+    // jointBolt24mmHsfg
+    jointBolt24mmHsfgUnit     QuantityUnit?
+    jointBolt24mmHsfgQuantity Decimal?      @db.Decimal(10, 3)
+
+    // jointBolt20mmHsfg
+    jointBolt20mmHsfgUnit     QuantityUnit?
+    jointBolt20mmHsfgQuantity Decimal?      @db.Decimal(10, 3)
+
+    // jointBolt16mmHsfg
+    jointBolt16mmHsfgUnit     QuantityUnit?
+    jointBolt16mmHsfgQuantity Decimal?      @db.Decimal(10, 3)
+
+    // purlinBolt12mmOrdinary
+    purlinBolt12mmOrdinaryUnit     QuantityUnit?
+    purlinBolt12mmOrdinaryQuantity Decimal?      @db.Decimal(10, 3)
+
+    // anchorBolt
+    anchorBoltUnit     QuantityUnit?
+    anchorBoltQuantity Decimal?      @db.Decimal(10, 3)
+
+    // foundationBolt
+    foundationBoltUnit     QuantityUnit?
+    foundationBoltQuantity Decimal?      @db.Decimal(10, 3)
+}

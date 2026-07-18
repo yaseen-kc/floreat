@@ -490,3 +490,56 @@ export function makeRate(overrides = {}) {
     ...overrides,
   }
 }
+
+/** A quantity pebRoof section with a couple of representative leaves. */
+export function makeQuantityPebRoof(overrides = {}) {
+  return {
+    materialWithPurlinUnit: 'KG' as const,
+    materialWithPurlinQuantity: 12500.5,
+    raftersAndColumnsSpecification: 'ISMB 300',
+    raftersAndColumnsUnit: 'KG' as const,
+    raftersAndColumnsQuantity: 8000,
+    roofSheetSpecification: '0.50 MM PPGL',
+    roofSheetUnit: 'SQM' as const,
+    roofSheetQuantity: 450.25,
+    ...overrides,
+  }
+}
+
+/** A quantity mezzanine section with a few representative leaves. */
+export function makeQuantityMezzanine(overrides = {}) {
+  return {
+    structureUnit: 'KG' as const,
+    structureQuantity: 3200.75,
+    deckSheetUnit: 'SQM' as const,
+    deckSheetQuantity: 90,
+    ...overrides,
+  }
+}
+
+/** Wire input for creating/upserting a quantity — a couple of sections filled. */
+export function makeQuantityInput(overrides = {}) {
+  return {
+    pebRoof: makeQuantityPebRoof(),
+    mezzanine: makeQuantityMezzanine(),
+    ...overrides,
+  }
+}
+
+/** A persisted quantity row with all seven sections loaded (null by default). */
+export function makeQuantity(overrides = {}) {
+  return {
+    id: faker.string.uuid(),
+    jobId: faker.string.uuid(),
+    pebRoof: null,
+    cladding: null,
+    canopy: null,
+    accessories: null,
+    mezzanine: null,
+    stair: null,
+    additionalBolts: null,
+    createdAt: new Date(),
+    updatedAt: new Date(),
+    ...overrides,
+  }
+}

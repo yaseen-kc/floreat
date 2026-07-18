@@ -30,7 +30,7 @@ describe('generated API documentation', () => {
   it('generates all registered operations with stable metadata', async () => {
     const document = buildOpenApiDocument()
     const generatedOperations = operations(document)
-    expect(generatedOperations).toHaveLength(52)
+    expect(generatedOperations).toHaveLength(57)
     expect(generatedOperations.every((operation) => operation.operationId)).toBe(true)
     expect(Object.keys(document.paths).every((path) => !path.includes(':'))).toBe(true)
     expect(document.components?.securitySchemes).toHaveProperty('LocalDevUserId')
@@ -59,7 +59,7 @@ describe('generated API documentation', () => {
 
   it('keeps route coverage synchronized with the Fastify registry', async () => {
     await checkDocumentation()
-    expect(getExpectedRouteKeys()).toHaveLength(52)
+    expect(getExpectedRouteKeys()).toHaveLength(57)
   })
 
   it('generates one Postman request per documented operation with local auth variables', async () => {
@@ -70,7 +70,7 @@ describe('generated API documentation', () => {
       event: unknown[]
     }
     const requests = flattenPostman(collection.item)
-    expect(requests).toHaveLength(52)
+    expect(requests).toHaveLength(57)
     expect(requests.some((request) => request.name?.toLowerCase().includes('stair'))).toBe(true)
     expect(collection.variable).toEqual(expect.arrayContaining([
       expect.objectContaining({ key: 'baseUrl', value: 'http://localhost:3000' }),

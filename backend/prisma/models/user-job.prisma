@@ -51,6 +51,7 @@ model Job {
   accessories Accessories?
   joint       Joint?
   spec        Spec?
+  quantity    Quantity?
 
   @@index([userId])
   @@index([userId, createdAt])

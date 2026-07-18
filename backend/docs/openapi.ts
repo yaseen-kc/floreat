@@ -9,6 +9,7 @@ const {
   createJointSchema,
   createLoadSchema,
   createMezzanineSchema,
+  createQuantitySchema,
   createRateSchema,
   createRoofSchema,
   createSpecSchema,
@@ -20,6 +21,7 @@ const {
   updateJointSchema,
   updateLoadSchema,
   updateMezzanineSchema,
+  updateQuantitySchema,
   updateRateSchema,
   updateRoofSchema,
   updateSpecSchema,
@@ -49,6 +51,8 @@ const schemas = {
   UpdateStairRequest: updateStairSchema.meta({ id: 'UpdateStairRequest' }),
   CreateRateRequest: createRateSchema.meta({ id: 'CreateRateRequest' }),
   UpdateRateRequest: updateRateSchema.meta({ id: 'UpdateRateRequest' }),
+  CreateQuantityRequest: createQuantitySchema.meta({ id: 'CreateQuantityRequest' }),
+  UpdateQuantityRequest: updateQuantitySchema.meta({ id: 'UpdateQuantityRequest' }),
   PaginationQuery: paginationSchema.meta({ id: 'PaginationQuery' }),
 }
 
@@ -93,6 +97,7 @@ const responseSchemas = {
   SpecResponse: resourceResponseSchema.meta({ id: 'SpecResponse' }),
   StairResponse: resourceResponseSchema.meta({ id: 'StairResponse' }),
   RateResponse: resourceResponseSchema.meta({ id: 'RateResponse' }),
+  QuantityResponse: resourceResponseSchema.meta({ id: 'QuantityResponse' }),
   UserResponse: resourceResponseSchema.meta({ id: 'UserResponse' }),
   PaginatedAccessoriesResponse: paginatedResponseSchema.meta({ id: 'PaginatedAccessoriesResponse' }),
   PaginatedCanopyResponse: paginatedResponseSchema.meta({ id: 'PaginatedCanopyResponse' }),
@@ -104,6 +109,7 @@ const responseSchemas = {
   PaginatedSpecResponse: paginatedResponseSchema.meta({ id: 'PaginatedSpecResponse' }),
   PaginatedStairResponse: paginatedResponseSchema.meta({ id: 'PaginatedStairResponse' }),
   PaginatedRateResponse: paginatedResponseSchema.meta({ id: 'PaginatedRateResponse' }),
+  PaginatedQuantityResponse: paginatedResponseSchema.meta({ id: 'PaginatedQuantityResponse' }),
   ApiError: apiErrorSchema.meta({ id: 'ApiError' }),
   HealthResponse: healthResponseSchema.meta({ id: 'HealthResponse' }),
 }
@@ -246,6 +252,19 @@ const examples = {
     others: 0,
     marginPercentage: 15,
   },
+  quantity: {
+    pebRoof: {
+      materialWithPurlinUnit: 'KG',
+      materialWithPurlinQuantity: 12500.5,
+      roofSheetSpecification: '0.50 MM PPGL',
+      roofSheetUnit: 'SQM',
+      roofSheetQuantity: 450.25,
+    },
+    mezzanine: {
+      structureUnit: 'KG',
+      structureQuantity: 3200.75,
+    },
+  },
 }
 
 interface ResourceDefinition {
@@ -268,6 +287,7 @@ const resourceDefinitions: ResourceDefinition[] = [
   { singular: 'Accessories', plural: 'accessories', tag: 'Accessories', createSchema: schemas.CreateAccessoriesRequest, updateSchema: schemas.UpdateAccessoriesRequest, responseSchema: responseSchemas.AccessoriesResponse, paginatedSchema: responseSchemas.PaginatedAccessoriesResponse, example: examples.accessories },
   { singular: 'Joint', plural: 'joints', tag: 'Joint', createSchema: schemas.CreateJointRequest, updateSchema: schemas.UpdateJointRequest, responseSchema: responseSchemas.JointResponse, paginatedSchema: responseSchemas.PaginatedJointResponse, example: examples.joint },
   { singular: 'Spec', plural: 'specs', tag: 'Specs', createSchema: schemas.CreateSpecRequest, updateSchema: schemas.UpdateSpecRequest, responseSchema: responseSchemas.SpecResponse, paginatedSchema: responseSchemas.PaginatedSpecResponse, example: examples.spec },
+  { singular: 'Quantity', plural: 'quantities', tag: 'Quantity', createSchema: schemas.CreateQuantityRequest, updateSchema: schemas.UpdateQuantityRequest, responseSchema: responseSchemas.QuantityResponse, paginatedSchema: responseSchemas.PaginatedQuantityResponse, example: examples.quantity },
 ]
 
 export const documentedOperations: string[] = []
