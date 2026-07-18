@@ -46,12 +46,12 @@ export type ProjectInfo = JobInput
  * `roofFrameBaseFixing` enum start unselected (`''`) so the Select renders empty
  * and validation flags it, exactly like the Step 1 string fields.
  *
- * The structural section fields are now required in `createRoofSchema` (the
- * Step 2 form forces the user to complete them), but the draft must still be
- * able to hold them as `undefined` — while the user is filling the form, and
- * when a section is toggled off (which clears its fields). So the draft keeps
- * every non-core field optional; required-ness is enforced at validate time by
- * `createRoofSchema.safeParse`.
+ * The structural section fields are optional in `createRoofSchema` (the Step 2
+ * form lets the user skip any section), and the draft holds them as `undefined`
+ * — while the user is filling the form, and when a section is toggled off
+ * (which clears its fields). So the draft keeps every non-core field optional;
+ * validity is enforced at validate time by `createRoofSchema.safeParse`, which
+ * only requires the core dimensions and the selected `roofFrameBaseFixing`.
  */
 type RoofCoreField =
   | 'buildingOverallLength'
@@ -340,7 +340,8 @@ const createDefaultProjectInfo = (): ProjectInfo => ({
 /**
  * Factory for a fresh roof draft. The required core dimensions default to `0`
  * (rejected by the schema's `.positive()`) and `roofFrameBaseFixing` starts
- * unselected (`''`), so Step 2 is invalid until the user fills it in.
+ * unselected (`''`), so Step 2 is invalid until the core dimensions and the
+ * fixing are filled in. Every optional section starts empty/undefined.
  */
 const createDefaultRoof = (): RoofDraft => ({
   buildingOverallLength: 0,

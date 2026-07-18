@@ -1,11 +1,11 @@
 import type { RoofDraft } from '@/stores/quotation-store'
 
 /**
- * A fully-valid Step 2 roof draft for tests: every required core dimension AND
- * every required structural section field. Under the frontend-stricter
- * `createRoofSchema`, all section fields (except the optional Fascia Board
- * fields and the inline `sidewalls` array) are required, so passing this to
- * `setRoof` is what makes `validateStep(2)` succeed.
+ * A fully-populated Step 2 roof draft for tests: every core dimension plus every
+ * optional structural section field. Under `createRoofSchema` only the core
+ * dimensions and `roofFrameBaseFixing` are required, so the core fields alone are
+ * enough to make `validateStep(2)` succeed — this fixture additionally exercises
+ * that a fully-filled draft validates and builds a complete payload.
  */
 export const validRoofDraft: Partial<RoofDraft> = {
   // core dimensions

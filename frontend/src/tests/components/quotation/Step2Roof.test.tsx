@@ -12,7 +12,7 @@ import { useQuotationStore } from '@/stores/quotation-store'
 import type { Roof } from '@/api/quotation/roof/getRoof'
 import { validRoofDraft } from '@/tests/fixtures/roof'
 
-/** Fills every required roof field so step 2 validates. */
+/** Fills every roof field (core + all optional sections) so step 2 validates. */
 const fillCoreDimensions = () => useQuotationStore.getState().setRoof(validRoofDraft)
 
 describe('Step2Roof', () => {

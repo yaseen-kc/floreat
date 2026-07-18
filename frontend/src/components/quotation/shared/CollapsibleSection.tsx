@@ -12,9 +12,9 @@ interface CollapsibleSectionProps {
   /** Fired with the next enabled state when the toggle is flipped. */
   onToggle: (enabled: boolean) => void
   /**
-   * When true, the card is flagged as invalid (destructive border + message),
-   * even while collapsed. Used for required sections the user must enable and
-   * complete before Step 2 validates.
+   * When true, the card is flagged as invalid (destructive border + message).
+   * The section is optional, so this only fires once it is enabled and one of
+   * its fields holds an invalid value.
    */
   error?: boolean
   /** Override for the error prompt shown when `error` is true. */
@@ -29,9 +29,8 @@ interface CollapsibleSectionProps {
  * `enabled`, so disabling a section both hides it and — paired with the store's
  * field-clearing — drops its values from the roof payload.
  *
- * When `error` is set the card is visibly flagged regardless of `enabled`, so a
- * required section that is left disabled (and therefore incomplete) still
- * surfaces a prompt instead of silently blocking the wizard.
+ * Sections are optional, so `error` only surfaces when an enabled section holds
+ * an invalid value; a disabled section is always valid.
  */
 export function CollapsibleSection({
   icon,
@@ -39,7 +38,7 @@ export function CollapsibleSection({
   enabled,
   onToggle,
   error = false,
-  errorMessage = 'This section is required — enable it and complete all fields.',
+  errorMessage = 'Complete every field in this section, or turn it off.',
   children,
   className,
 }: CollapsibleSectionProps) {

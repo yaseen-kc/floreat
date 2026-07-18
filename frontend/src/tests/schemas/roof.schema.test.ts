@@ -10,9 +10,11 @@ function omit<T extends object, K extends keyof T>(obj: T, key: K): Omit<T, K> {
 }
 
 /**
- * Every field the (frontend-stricter) `createRoofSchema` now requires: the core
- * dimensions plus all structural section fields. Fascia Board fields and the
- * inline `sidewalls` array remain optional and are deliberately omitted.
+ * A full roof payload: the required core dimensions plus every optional
+ * structural section field. Sections are optional in `createRoofSchema`, but a
+ * fully-populated payload must still validate — that is what this fixture
+ * exercises. Fascia Board fields and the inline `sidewalls` array are omitted
+ * (also optional).
  */
 const requiredRoof: CreateRoofInput = {
   // core dimensions
@@ -91,9 +93,26 @@ const requiredRoof: CreateRoofInput = {
 }
 
 describe('createRoofSchema', () => {
-  it('accepts a required-only payload (no fascia board, no sidewalls)', () => {
+  it('accepts a full payload (no fascia board, no sidewalls)', () => {
     const result = createRoofSchema.safeParse(requiredRoof)
     expect(result.success).toBe(true)
+  })
+
+  it('accepts a core-only payload with every section omitted', () => {
+    const coreOnly = {
+      buildingOverallLength: 100,
+      buildingOverallWidth: 50,
+      eaveHeight: 6,
+      roofSlope: 10,
+      mainRoofFrames: 5,
+      endRoofFrames: 2,
+      roofPurlinSpacing: 1.5,
+      claddingPurlins: 4,
+      internalColumnsForMainRoofFrames: 0,
+      internalColumnsForEndRoofFrames: 0,
+      roofFrameBaseFixing: 'FOUNDATION_BOLT',
+    }
+    expect(createRoofSchema.safeParse(coreOnly).success).toBe(true)
   })
 
   it('accepts a full payload with the optional fascia board and inline sidewalls', () => {
@@ -115,19 +134,26 @@ describe('createRoofSchema', () => {
     expect(result.success).toBe(false)
   })
 
-  it('rejects a payload missing a required section field (roofPurlinDepth)', () => {
+  it('accepts a payload missing an optional section field (roofPurlinDepth)', () => {
     const result = createRoofSchema.safeParse(omit(requiredRoof, 'roofPurlinDepth'))
-    expect(result.success).toBe(false)
+    expect(result.success).toBe(true)
   })
 
-  it('rejects a payload missing a required section enum (windBracingType)', () => {
+  it('accepts a payload missing an optional section enum (windBracingType)', () => {
     const result = createRoofSchema.safeParse(omit(requiredRoof, 'windBracingType'))
-    expect(result.success).toBe(false)
+    expect(result.success).toBe(true)
   })
 
-  it('accepts a payload that omits only the optional fascia board fields', () => {
+  it('accepts a payload that omits the optional fascia board fields', () => {
     // requiredRoof already omits fascia board fields — confirm that's valid.
     expect(createRoofSchema.safeParse(requiredRoof).success).toBe(true)
+  })
+
+  it('still rejects an invalid value in a provided optional section field', () => {
+    // Optional means "omittable", not "anything goes" — a present value must
+    // still satisfy its constraint (`.positive()`).
+    const result = createRoofSchema.safeParse({ ...requiredRoof, roofPurlinDepth: 0 })
+    expect(result.success).toBe(false)
   })
 
   it('rejects an invalid enum value for roofFrameBaseFixing', () => {
@@ -207,7 +233,7 @@ const CORE_FIELDS: RoofField[] = [
   'roofFrameBaseFixing',
 ]
 
-/** A representative section field per now-required section. */
+/** A representative section field per optional section. */
 const SECTION_FIELDS: RoofField[] = [
   'endFrameHorizontalTieBeam',
   'roofPurlinDepth',
@@ -229,13 +255,13 @@ describe('isRequired', () => {
     }
   })
 
-  it('reports every structural section field as required', () => {
+  it('reports every structural section field as not required', () => {
     for (const field of SECTION_FIELDS) {
-      expect(isRequired(field)).toBe(true)
+      expect(isRequired(field)).toBe(false)
     }
   })
 
-  it('reports the excluded fascia board fields and sidewalls as not required', () => {
+  it('reports the fascia board fields and sidewalls as not required', () => {
     expect(isRequired('fasciaBoardArea')).toBe(false)
     expect(isRequired('fasciaMaterialWeightPerSqft')).toBe(false)
     expect(isRequired('sidewalls')).toBe(false)
@@ -254,10 +280,10 @@ describe('getFieldErrors', () => {
     }
   })
 
-  it('flags every section field when given an empty object', () => {
+  it('does not flag optional section fields when given an empty object', () => {
     const errors = getFieldErrors({})
     for (const field of SECTION_FIELDS) {
-      expect(errors[field]).toBeDefined()
+      expect(errors[field]).toBeUndefined()
     }
   })
 
@@ -266,9 +292,9 @@ describe('getFieldErrors', () => {
     expect(errors.eaveHeight).toBeDefined()
   })
 
-  it('flags a missing required section field', () => {
+  it('does not flag a missing optional section field', () => {
     const errors = getFieldErrors(omit(requiredRoof, 'roofPurlinDepth'))
-    expect(errors.roofPurlinDepth).toBeDefined()
+    expect(errors.roofPurlinDepth).toBeUndefined()
   })
 
   it('does not flag the optional fascia board fields when absent', () => {

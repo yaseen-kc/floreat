@@ -139,7 +139,7 @@ describe('quotation-store step 2 roof slice', () => {
     expect(useQuotationStore.getState().validateStep(2)).toBe(false)
   })
 
-  it('validateStep(2) is invalid with only the core filled (sections are required)', () => {
+  it('validateStep(2) is valid with only the core filled (sections are optional)', () => {
     useQuotationStore.getState().setRoof({
       buildingOverallLength: 100,
       buildingOverallWidth: 50,
@@ -153,10 +153,10 @@ describe('quotation-store step 2 roof slice', () => {
       internalColumnsForEndRoofFrames: 0,
       roofFrameBaseFixing: 'FOUNDATION_BOLT',
     })
-    expect(useQuotationStore.getState().validateStep(2)).toBe(false)
+    expect(useQuotationStore.getState().validateStep(2)).toBe(true)
   })
 
-  it('validateStep(2) is valid once every required field is filled', () => {
+  it('validateStep(2) is valid once every field is filled', () => {
     fillValidRoof()
     expect(useQuotationStore.getState().validateStep(2)).toBe(true)
   })

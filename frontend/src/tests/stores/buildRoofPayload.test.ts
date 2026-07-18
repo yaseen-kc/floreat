@@ -63,29 +63,34 @@ describe('buildRoofPayload', () => {
   })
 })
 
-describe('validateStep(2) with the frontend-stricter required sections', () => {
+describe('validateStep(2) with optional sections (core + fixing required)', () => {
   beforeEach(() => {
     localStorage.clear()
     useQuotationStore.getState().resetQuotation()
   })
 
-  it('is invalid by default (core unfilled, sections undefined)', () => {
+  it('is invalid by default (core unfilled)', () => {
     expect(useQuotationStore.getState().validateStep(2)).toBe(false)
   })
 
-  it('is invalid with only the required core filled (sections are required)', () => {
+  it('is valid with only the core dimensions + fixing filled (sections optional)', () => {
     useQuotationStore.getState().setRoof(CORE)
-    expect(useQuotationStore.getState().validateStep(2)).toBe(false)
+    expect(useQuotationStore.getState().validateStep(2)).toBe(true)
   })
 
-  it('is valid once every required field is filled', () => {
+  it('is valid with every field filled', () => {
     useQuotationStore.getState().setRoof(validRoofDraft)
     expect(useQuotationStore.getState().validateStep(2)).toBe(true)
   })
 
+  it('is invalid when the fixing is unselected', () => {
+    useQuotationStore.getState().setRoof({ ...CORE, roofFrameBaseFixing: '' })
+    expect(useQuotationStore.getState().validateStep(2)).toBe(false)
+  })
+
   it('is invalid when a sidewall row has a non-positive dimension', () => {
     useQuotationStore.getState().setRoof({
-      ...validRoofDraft,
+      ...CORE,
       sidewalls: [{ side: 'FRONT', wallType: 'BRICK', thickness: 0, height: 0 }],
     })
     expect(useQuotationStore.getState().validateStep(2)).toBe(false)

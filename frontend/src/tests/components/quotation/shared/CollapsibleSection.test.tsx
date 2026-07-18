@@ -43,17 +43,17 @@ describe('CollapsibleSection shared primitive', () => {
     expect(onToggle).toHaveBeenCalledWith(true)
   })
 
-  it('shows the error prompt when error is set, even while collapsed', () => {
+  it('shows the error prompt when an enabled section holds an invalid value', () => {
     render(
-      <CollapsibleSection icon={<Box />} title="Frame Members" enabled={false} error onToggle={() => {}}>
+      <CollapsibleSection icon={<Box />} title="Frame Members" enabled error onToggle={() => {}}>
         <p>body</p>
       </CollapsibleSection>,
     )
     expect(
-      screen.getByText('This section is required — enable it and complete all fields.'),
+      screen.getByText('Complete every field in this section, or turn it off.'),
     ).toBeInTheDocument()
-    // Body stays hidden while disabled.
-    expect(screen.queryByText('body')).not.toBeInTheDocument()
+    // The body (fields) is shown while enabled.
+    expect(screen.getByText('body')).toBeInTheDocument()
   })
 
   it('supports a custom error message', () => {
@@ -79,7 +79,7 @@ describe('CollapsibleSection shared primitive', () => {
       </CollapsibleSection>,
     )
     expect(
-      screen.queryByText('This section is required — enable it and complete all fields.'),
+      screen.queryByText('Complete every field in this section, or turn it off.'),
     ).not.toBeInTheDocument()
   })
 })
