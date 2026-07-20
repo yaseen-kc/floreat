@@ -12,6 +12,8 @@ import { useUpsertLoad } from '@/api/quotation/load/postLoad'
 import { useUpsertAccessories } from '@/api/quotation/accessories/postAccessories'
 import { useUpsertJoint } from '@/api/quotation/joint/postJoint'
 import { useUpsertSpec } from '@/api/quotation/spec/postSpec'
+import { useUpsertAmount } from '@/api/quotation/amount/postAmount'
+import { DEFAULT_AMOUNT_ITEMS } from '@/schemas/amount.schema'
 import { useNavigate } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
 import { Spinner } from '@/components/ui/spinner'
@@ -63,6 +65,7 @@ export function WizardActionBar() {
   const upsertAccessories = useUpsertAccessories()
   const upsertJoint = useUpsertJoint()
   const upsertSpec = useUpsertSpec()
+  const upsertAmount = useUpsertAmount()
   const isLast = currentStep === STEP_COUNT
   const isSubmitting =
     createJob.isPending ||
@@ -74,7 +77,8 @@ export function WizardActionBar() {
     upsertLoad.isPending ||
     upsertAccessories.isPending ||
     upsertJoint.isPending ||
-    upsertSpec.isPending
+    upsertSpec.isPending ||
+    upsertAmount.isPending
 
   /**
    * Persists Step 1 data. Creates the job once (POST) and stores its id;
@@ -299,6 +303,28 @@ export function WizardActionBar() {
     }
   }
 
+  /**
+   * Persists Step 11 amount data by upserting the 36 canonical line items for
+   * the job. All numeric fields are null until equations are implemented.
+   * Requires the Step 1 `jobId`.
+   */
+  const submitAmount = async () => {
+    if (!jobId) {
+      toast.error('Save the project details first')
+      throw new Error('Cannot save amount before the job is created')
+    }
+    try {
+      setSaving()
+      await upsertAmount.mutateAsync({ jobId, payload: { items: DEFAULT_AMOUNT_ITEMS } })
+      setSaved()
+      successToast('Amount saved successfully')
+    } catch (err) {
+      resetSaveStatus()
+      toast.error('Failed to save amount')
+      throw err
+    }
+  }
+
   const handleNext = async () => {
     if (isSubmitting) return
 
@@ -409,15 +435,21 @@ export function WizardActionBar() {
       return
     }
 
-    // Final step (Rate Master): finalise and return to the dashboard.
+    // Step 10 (Rate Master): no wizard-level persistence — rows are saved
+    // independently in the table. Just advance to the Amount step.
+    if (currentStep === 10) {
+      goStep(11)
+      return
+    }
+
+    // Final step (Amount): upsert the canonical 36 items then finalise.
     if (isLast) {
       try {
-        successToast('Quotation finalised & saved')
+        await submitAmount()
         resetQuotation()
         navigate('/')
       } catch {
-        // No persistence is performed at this step; this block is here for
-        // symmetry and future extension.
+        // Error toast already shown; stay on Step 11.
       }
       return
     }
@@ -448,6 +480,8 @@ export function WizardActionBar() {
       try { await submitJoint() } catch { /* error toast already shown */ }
     } else if (currentStep === 9) {
       try { await submitSpec() } catch { /* error toast already shown */ }
+    } else if (currentStep === 11) {
+      try { await submitAmount() } catch { /* error toast already shown */ }
     } else {
       successToast('Draft saved')
     }

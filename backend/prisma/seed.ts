@@ -38,6 +38,7 @@ import {
   MezzanineJointId,
   FoundationBoltJointId,
   QuantityUnit,
+  AmountUnit,
 } from '../generated/prisma/client.js'
 
 async function main() {
@@ -1092,6 +1093,29 @@ async function main() {
     await prisma.quantity.create({ data: { jobId, ...nested } })
   }
   console.log('✓ Quantities seeded')
+
+  // ── Amounts (cost summary per job) ──────────────────────────
+  const amounts = [
+    {
+      jobId: 'seed_job_1',
+      items: [
+        { description: 'PEB Roof Structure', unit: AmountUnit.KG, quantity: 8500, rateFabrication: 85, rateErection: 12, rateLoading: 3, amountFabrication: 722500, amountErection: 102000, amountLoading: 25500 },
+        { description: 'Roof Cladding Sheet', unit: AmountUnit.SQM, quantity: 460, rateFabrication: 0, rateErection: 45, rateLoading: 5, amountFabrication: 0, amountErection: 20700, amountLoading: 2300 },
+        { description: 'Mezzanine Structure', unit: AmountUnit.KG, quantity: 3200, rateFabrication: 88, rateErection: 14, rateLoading: 3, amountFabrication: 281600, amountErection: 44800, amountLoading: 9600 },
+      ],
+    },
+    {
+      jobId: 'seed_job_3',
+      items: [
+        { description: 'PEB Roof Structure', unit: AmountUnit.KG, quantity: 5200, rateFabrication: 85, rateErection: 12, rateLoading: 3, amountFabrication: 442000, amountErection: 62400, amountLoading: 15600 },
+      ],
+    },
+  ]
+  for (const { jobId, items } of amounts) {
+    await prisma.amount.deleteMany({ where: { jobId } })
+    await prisma.amount.create({ data: { jobId, items: { createMany: { data: items } } } })
+  }
+  console.log('✓ Amounts seeded')
 
   // ── Rates ───────────────────────────────────────────────────
   // Global master/lookup table keyed by unique `item` — not job-scoped.
