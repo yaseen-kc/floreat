@@ -543,3 +543,29 @@ export function makeQuantity(overrides = {}) {
     ...overrides,
   }
 }
+
+export function makeAmountItem(overrides = {}) {
+  return {
+    description: 'Fabrication',
+    unit: 'KG' as const,
+    quantity: 1000,
+    rateFabrication: 85,
+    rateErection: 12,
+    rateLoading: 3,
+    amountFabrication: 85000,
+    amountErection: 12000,
+    amountLoading: 3000,
+    ...overrides,
+  }
+}
+
+export function makeAmount(overrides = {}) {
+  return {
+    id: faker.string.uuid(),
+    jobId: faker.string.uuid(),
+    items: [],
+    createdAt: new Date(),
+    updatedAt: new Date(),
+    ...overrides,
+  }
+}
