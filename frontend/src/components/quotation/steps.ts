@@ -21,6 +21,7 @@ export const STEPS: WizardStep[] = [
   { label: 'Joint', sub: 'JOINT' },
   { label: 'Spec', sub: 'SPEC' },
   { label: 'Rate Master', sub: 'RATE' },
+  { label: 'Amount', sub: 'AMOUNT' },
 ]
 
 /** Total number of wizard steps. */

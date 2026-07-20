@@ -20,6 +20,7 @@ import { jointRoutes } from './joint.routes.js'
 import { specRoutes } from './spec.routes.js'
 import { rateRoutes } from './rate.routes.js'
 import { quantityRoutes } from './quantity.routes.js'
+import { amountRoutes } from './amount.routes.js'
 
 export async function registerRoutes(app: FastifyInstance) {
   await app.register(healthRoutes, { prefix: '/api' })
@@ -35,4 +36,5 @@ export async function registerRoutes(app: FastifyInstance) {
   await app.register(specRoutes, { prefix: '/api' })
   await app.register(rateRoutes, { prefix: '/api' })
   await app.register(quantityRoutes, { prefix: '/api' })
+  await app.register(amountRoutes, { prefix: '/api' })
 }
