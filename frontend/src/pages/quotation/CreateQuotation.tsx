@@ -15,12 +15,13 @@ import { Step8Joint } from '@/components/quotation/steps/Step8Joint'
 import { Step9Spec } from '@/components/quotation/steps/Step9Spec'
 import { Step10Rate } from '@/components/quotation/steps/Step10Rate'
 import { Step11Amount } from '@/components/quotation/steps/Step11Amount'
+import { Step12Quantity } from '@/components/quotation/steps/Step12Quantity'
 
 
 export default function CreateQuotation() {
   const currentStep = useQuotationStore((s) => s.currentStep)
   const scrollRef = useRef<HTMLDivElement>(null)
-  const isWideStep = currentStep === 10 || currentStep === 11
+  const isWideStep = currentStep === 10 || currentStep === 11 || currentStep === 12
 
   useEffect(() => {
     scrollRef.current?.scrollTo({ top: 0, behavior: 'smooth' })
@@ -54,6 +55,8 @@ export default function CreateQuotation() {
           {currentStep === 9 && <Step9Spec />}
           {currentStep === 10 && <Step10Rate />}
           {currentStep === 11 && <Step11Amount />}
+          {currentStep === 12 && <Step12Quantity />}
+
         </div>
       </div>
       <WizardActionBar />
