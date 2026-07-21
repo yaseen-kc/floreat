@@ -19,7 +19,7 @@
 export const BOLT_DIAMETER_SOURCE = 'A'
 
 /** Roof joints with a fixed, non-editable `numberOfBolts`. */
-export const FIXED_ROOF_BOLT_COUNTS: Record<string, number> = { F: 4, J: 8 }
+export const FIXED_ROOF_BOLT_COUNTS: Record<string, number> = { F: 4, J: 8, N: 8, R: 8 }
 
 /** Roof joints whose `numberOfBolts` mirrors another roof joint's (dependent → source). */
 export const ROOF_COUNT_MIRRORS: Record<string, string> = { E: 'D' }

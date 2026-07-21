@@ -35,7 +35,13 @@ import {
   mezzanineJointIdEnum,
   foundationBoltJointIdEnum,
 } from '@/schemas/joint.schema'
-import { deriveSideColumnsWidthHeight, deriveJointBolts } from '@floreat/shared/calc'
+import {
+  deriveSideColumnsWidthHeight,
+  deriveJointBolts,
+  deriveWindBracingBaySpacing,
+  deriveRoofWindBracingLength,
+  deriveColumnWindBracingLength,
+} from '@floreat/shared/calc'
 import { STEP_COUNT } from '@/components/quotation/steps'
 
 /** Step 1 project info — the canonical job contract (see job.schema.ts). */
@@ -473,6 +479,11 @@ export const useQuotationStore = create<QuotationState>()(
           roof.sideColumnsWidthHeight = deriveSideColumnsWidthHeight(roof)
           roof.sideColumnsMidFrameCount = roof.claddingExtensionMidFrameCount
           roof.sideColumnsEndFrameCount = roof.claddingExtensionEndFrameCount
+          const baySpacing = deriveWindBracingBaySpacing(roof)
+          roof.roofWindBracingBaySpacing = baySpacing
+          roof.columnWindBracingBaySpacing = baySpacing
+          roof.roofWindBracingLength = deriveRoofWindBracingLength(roof)
+          roof.columnWindBracingLength = deriveColumnWindBracingLength(roof)
           return { roof }
         }),
 

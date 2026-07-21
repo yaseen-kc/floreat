@@ -8,7 +8,6 @@ import { Wind } from 'lucide-react'
 import { isRequired, getFieldErrors } from '@/schemas/roof.schema'
 import { ROOF_SECTION_FIELDS } from '@/stores/quotation-store'
 
-/** Human-readable labels for the wind-bracing type enum. */
 const WIND_BRACING_TYPE_OPTIONS: SelectFieldOption[] = [
   { value: 'ROD', label: 'Rod' },
   { value: 'TUBE', label: 'Tube' },
@@ -21,10 +20,6 @@ type WindBracingNumberField =
   | 'columnWindBracingProvidedBays'
   | 'windBracingColumnHeight'
   | 'windBracingUnitWeight'
-  | 'roofWindBracingBaySpacing'
-  | 'columnWindBracingBaySpacing'
-  | 'roofWindBracingLength'
-  | 'columnWindBracingLength'
 
 const NUMBER_FIELDS: { name: WindBracingNumberField; label: string; unit: string; step?: number }[] = [
   { name: 'roofWindBracingSegmentsInOneHalf', label: 'Roof Wind Bracing Segments (One Half)', unit: 'count', step: 1 },
@@ -33,6 +28,11 @@ const NUMBER_FIELDS: { name: WindBracingNumberField; label: string; unit: string
   { name: 'columnWindBracingProvidedBays', label: 'Column Wind Bracing Provided Bays', unit: 'count', step: 1 },
   { name: 'windBracingColumnHeight', label: 'Wind Bracing Column Height', unit: 'm' },
   { name: 'windBracingUnitWeight', label: 'Wind Bracing Unit Weight', unit: 'kg/m' },
+]
+
+type DerivedField = 'roofWindBracingBaySpacing' | 'columnWindBracingBaySpacing' | 'roofWindBracingLength' | 'columnWindBracingLength'
+
+const DERIVED_FIELDS: { name: DerivedField; label: string; unit: string }[] = [
   { name: 'roofWindBracingBaySpacing', label: 'Roof Wind Bracing Bay Spacing', unit: 'm' },
   { name: 'columnWindBracingBaySpacing', label: 'Column Wind Bracing Bay Spacing', unit: 'm' },
   { name: 'roofWindBracingLength', label: 'Roof Wind Bracing Length', unit: 'm' },
@@ -83,6 +83,18 @@ export function WindBracing() {
               patch[name] = v
               setRoof(patch)
             }}
+          />
+        ))}
+        {DERIVED_FIELDS.map(({ name, label, unit }) => (
+          <NumberField
+            key={name}
+            label={label}
+            unit={unit}
+            readOnly
+            required={false}
+            value={roof[name]}
+            error={false}
+            onChange={() => {}}
           />
         ))}
       </div>
