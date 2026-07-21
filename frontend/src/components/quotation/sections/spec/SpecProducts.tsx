@@ -5,6 +5,7 @@ import { SectionCard } from '@/components/quotation/shared/SectionCard'
 import { EmptyState } from '@/components/ui/empty-state'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
+import { Textarea } from '@/components/ui/textarea'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { FileText, Plus, Trash2 } from 'lucide-react'
 
@@ -66,10 +67,12 @@ export function SpecProducts() {
                     onChange={(e) => updateRow(index, { description: opt(e.target.value) })}
                   />
                 </TableCell>
-                <TableCell className="min-w-40">
-                  <Input
+                <TableCell className="min-w-56">
+                  <Textarea
                     aria-label={`Product ${index + 1} specification`}
                     value={row.specification ?? ''}
+                    rows={2}
+                    className="resize-y min-h-9"
                     onChange={(e) => updateRow(index, { specification: opt(e.target.value) })}
                   />
                 </TableCell>

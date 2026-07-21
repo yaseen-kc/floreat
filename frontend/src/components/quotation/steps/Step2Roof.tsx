@@ -24,20 +24,20 @@ export function Step2Roof() {
                 <p className="text-muted-foreground text-sm mt-1">Core building dimensions and roof frame configuration.</p>
             </div>
             <PebRoof />
-            <FrameMembers />
-            <Sidewalls />
-            <Coverings />
-            <Purlins />
-            <FlangeBrace />
-            <Polycarbonate />
-            <WindBracing />
-            <CladdingOpenings />
-            <SideExtension />
-            <FasciaBoard />
-            <BaseFixing />
             <MaterialConsumption />
             <SagRod />
             <MaterialGrade />
+            <FrameMembers />
+            <Purlins />
+            <WindBracing />
+            <Sidewalls />
+            <FlangeBrace />
+            <CladdingOpenings />
+            <FasciaBoard />
+            <Coverings />
+            <Polycarbonate />
+            <SideExtension />
+            <BaseFixing />
         </section>
     )
 }

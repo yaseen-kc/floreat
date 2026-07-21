@@ -7,6 +7,7 @@ import { EmptyState } from '@/components/ui/empty-state'
 import { Button } from '@/components/ui/button'
 import { Blinds, Plus } from 'lucide-react'
 import { ACCESSORY_OPENING_KIND_OPTIONS } from './accessoriesOptions'
+import { deriveLineItemQuantity } from '@floreat/shared/calc'
 
 const OPENING_GROUPS: RowGroup[] = [
   {
@@ -21,6 +22,22 @@ const OPENING_GROUPS: RowGroup[] = [
       { kind: 'number', name: 'length', label: 'Length', unit: 'm' },
       { kind: 'number', name: 'width', label: 'Width', unit: 'm' },
       { kind: 'number', name: 'nos', label: 'Nos', unit: 'count', step: 1 },
+    ],
+  },
+  {
+    title: 'Result',
+    fields: [
+      {
+        kind: 'computed',
+        name: 'unit',
+        label: 'Unit',
+        unit: 'm²',
+        compute: (v) => deriveLineItemQuantity(
+          v.length as number | undefined,
+          v.width as number | undefined,
+          v.nos as number | undefined,
+        ),
+      },
     ],
   },
 ]

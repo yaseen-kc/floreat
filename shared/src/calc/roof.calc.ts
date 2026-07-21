@@ -3,6 +3,60 @@
  * write; the frontend reuses them for live preview only (never trusted server-side).
  */
 
+export interface WindBracingBaySpacingInput {
+  buildingOverallLength?: number
+  mainRoofFrames?: number
+  endRoofFrames?: number
+}
+
+/** Both roof and column bay spacing share the same formula. */
+export function deriveWindBracingBaySpacing(input: WindBracingBaySpacingInput): number | undefined {
+  const { buildingOverallLength, mainRoofFrames, endRoofFrames } = input
+  if (buildingOverallLength === undefined || mainRoofFrames === undefined || endRoofFrames === undefined) return undefined
+  const denom = mainRoofFrames + endRoofFrames - 1
+  if (denom <= 0) return undefined
+  return Math.round((buildingOverallLength / denom) * 1000) / 1000
+}
+
+export interface RoofWindBracingLengthInput {
+  buildingOverallWidth?: number
+  roofSlope?: number
+  roofWindBracingSegmentsInOneHalf?: number
+  roofWindBracingBaySpacing?: number
+}
+
+export function deriveRoofWindBracingLength(input: RoofWindBracingLengthInput): number | undefined {
+  const { buildingOverallWidth, roofSlope, roofWindBracingSegmentsInOneHalf, roofWindBracingBaySpacing } = input
+  if (
+    buildingOverallWidth === undefined ||
+    roofSlope === undefined ||
+    roofWindBracingSegmentsInOneHalf === undefined ||
+    roofWindBracingBaySpacing === undefined
+  ) return undefined
+  if (roofWindBracingSegmentsInOneHalf <= 0) return undefined
+  const slopeRad = (roofSlope * Math.PI) / 180
+  const seg = (buildingOverallWidth / 2) / Math.cos(slopeRad) / roofWindBracingSegmentsInOneHalf
+  return Math.round(Math.sqrt(seg ** 2 + roofWindBracingBaySpacing ** 2) * 1000) / 1000
+}
+
+export interface ColumnWindBracingLengthInput {
+  windBracingColumnHeight?: number
+  columnWindBracingSegments?: number
+  columnWindBracingBaySpacing?: number
+}
+
+export function deriveColumnWindBracingLength(input: ColumnWindBracingLengthInput): number | undefined {
+  const { windBracingColumnHeight, columnWindBracingSegments, columnWindBracingBaySpacing } = input
+  if (
+    windBracingColumnHeight === undefined ||
+    columnWindBracingSegments === undefined ||
+    columnWindBracingBaySpacing === undefined
+  ) return undefined
+  if (columnWindBracingSegments <= 0) return undefined
+  const segH = windBracingColumnHeight / columnWindBracingSegments
+  return Math.round(Math.sqrt(segH ** 2 + columnWindBracingBaySpacing ** 2) * 1000) / 1000
+}
+
 /** Inputs the side-columns width/height derivation depends on. */
 export interface SideColumnsWidthHeightInput {
   eaveHeight?: number
