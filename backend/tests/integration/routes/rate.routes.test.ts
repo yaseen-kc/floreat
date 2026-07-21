@@ -86,6 +86,7 @@ describe('Rate routes integration', () => {
   describe('PUT /api/rates/:id', () => {
     it('updates a rate', async () => {
       const rate = makeRate()
+      prismaMock.rate.findUnique.mockResolvedValueOnce(rate as any)
       prismaMock.rate.update.mockResolvedValue(rate as any)
 
       const res = await app.inject({ method: 'PUT', url: `/api/rates/${rate.id}`, payload: { marginPercentage: 20 } })
@@ -94,7 +95,7 @@ describe('Rate routes integration', () => {
     })
 
     it('returns 404 when not found', async () => {
-      prismaMock.rate.update.mockRejectedValue(Object.assign(new Error('missing'), { code: 'P2025' }))
+      prismaMock.rate.findUnique.mockResolvedValueOnce(null)
       const res = await app.inject({ method: 'PUT', url: '/api/rates/nope', payload: { marginPercentage: 20 } })
       expect(res.statusCode).toBe(404)
     })

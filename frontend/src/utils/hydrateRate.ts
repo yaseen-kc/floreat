@@ -8,9 +8,17 @@ const num = (v: string | null): number | undefined => {
   return Number.isFinite(n) ? n : undefined
 }
 
-/** Maps a server `Rate` into an editable {@link RateRowDraft} (raw pricing only). */
+/** Maps a server `Rate` into an editable {@link RateRowDraft} (raw pricing + stored derived rates). */
 function toDraft(rate: Rate): RateRowDraft {
-  const row: RateRowDraft = { id: rate.id, item: rate.item, unit: rate.unit }
+  const row: RateRowDraft = {
+    id: rate.id,
+    item: rate.item,
+    unit: rate.unit,
+    fabricationRate: rate.fabricationRate,
+    erectionRate: rate.erectionRate,
+    loadingRate: rate.loadingRate,
+    totalRate: rate.totalRate,
+  }
   for (const field of PRICING_FIELDS) {
     const value = num(rate[field])
     if (value !== undefined) row[field] = value
