@@ -39,7 +39,7 @@ async function enrichItems(items: NonNullable<CreateAmountInput['items']>) {
 
 /** Creates or replaces the Amount for a job. Items are replaced wholesale. */
 export async function upsertAmount(jobId: string, data: CreateAmountInput) {
-  const items = await enrichItems(data.items ?? [])
+  const items = data.items ?? []
   return prisma.amount.upsert({
     where: { jobId },
     create: { jobId, ...(items.length ? { items: { createMany: { data: items } } } : {}) },
@@ -65,7 +65,7 @@ export function getAmountByJobId(jobId: string) {
 
 /** Updates an amount by job ID. Replaces items wholesale. Throws P2025 if not found. */
 export async function updateAmount(jobId: string, data: UpdateAmountInput) {
-  const items = await enrichItems(data.items ?? [])
+  const items = data.items ?? []
   return prisma.amount.update({
     where: { jobId },
     data: { items: { deleteMany: {}, createMany: { data: items } } },

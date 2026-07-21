@@ -15,6 +15,8 @@ import { useUpsertSpec } from '@/api/quotation/spec/postSpec'
 import { useUpsertAmount } from '@/api/quotation/amount/postAmount'
 import { DEFAULT_AMOUNT_ITEMS } from '@/schemas/amount.schema'
 import { useNavigate } from 'react-router-dom'
+import { useRates } from '@/api/quotation/rate/getRate'
+import { deriveAmountItemRates } from '@floreat/shared/calc'
 import { Button } from '@/components/ui/button'
 import { Spinner } from '@/components/ui/spinner'
 import { cn } from '@/lib/utils'
@@ -55,6 +57,9 @@ export function WizardActionBar() {
   const setSaving = useSaveStatusStore((s) => s.saving)
   const setSaved = useSaveStatusStore((s) => s.saved)
   const resetSaveStatus = useSaveStatusStore((s) => s.reset)
+  
+  const { data: ratesPage } = useRates(1, 100)
+
   const createJob = useCreateJob()
   const updateJob = useUpdateJob()
   const upsertRoof = useUpsertRoof()
@@ -315,7 +320,15 @@ export function WizardActionBar() {
     }
     try {
       setSaving()
-      await upsertAmount.mutateAsync({ jobId, payload: { items: DEFAULT_AMOUNT_ITEMS } })
+      const rateByItem = new Map((ratesPage?.data ?? []).map((r) => [r.item, r]))
+      const items = DEFAULT_AMOUNT_ITEMS.map((item) => {
+        const rates = deriveAmountItemRates(item.rateItem ? rateByItem.get(item.rateItem) : null)
+        return {
+          ...item,
+          ...rates,
+        }
+      })
+      await upsertAmount.mutateAsync({ jobId, payload: { items } })
       setSaved()
       successToast('Amount saved successfully')
     } catch (err) {
