@@ -101,3 +101,30 @@ export function qtyN5SteelStructures(input: SteelStructuresInput): number {
 
   return roofTerm + canopyTerm + mezzTerm + stairStringerTerm + stairStepTerm
 }
+
+/** Input shape for deriving AmountItem rate fields from a Rate master row. */
+export interface RateSource {
+  fabricationRate: number
+  erectionRate: number
+  loadingRate: number
+}
+
+/** Derived rate fields written to an AmountItem. */
+export interface AmountItemRates {
+  rateFabrication: number
+  rateErection: number
+  rateLoading: number
+}
+
+/**
+ * Derives the three AmountItem rate fields from the corresponding Rate master row.
+ * Returns zeros when no matching rate exists.
+ */
+export function deriveAmountItemRates(rate: RateSource | null | undefined): AmountItemRates {
+  if (!rate) return { rateFabrication: 0, rateErection: 0, rateLoading: 0 }
+  return {
+    rateFabrication: rate.fabricationRate,
+    rateErection: rate.erectionRate,
+    rateLoading: rate.loadingRate,
+  }
+}

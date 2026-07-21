@@ -6,21 +6,23 @@ import { createRate, getRates, getRateById, updateRate, deleteRate } from '../..
 
 describe('rate.service', () => {
   describe('createRate', () => {
-    it('creates a rate and attaches the derived breakdown', async () => {
-      const rate = makeRate({ item: 'STEEL STRUCTURE', unit: 'KG', material: 63, installation: 8, loadingUnloading: 3, marginPercentage: 15 })
+    it('creates a rate with stored derived breakdown', async () => {
+      const rate = makeRate({ item: 'STEEL STRUCTURE', unit: 'KG', material: 63, installation: 8, loadingUnloading: 3, marginPercentage: 15, fabricationRate: 73, erectionRate: 10, loadingRate: 3, totalRate: 86 })
       prismaMock.rate.create.mockResolvedValue(rate as any)
 
-      const data = { item: 'STEEL STRUCTURE', unit: 'KG' as const }
+      const data = { item: 'STEEL STRUCTURE', unit: 'KG' as const, material: 63, installation: 8, loadingUnloading: 3, marginPercentage: 15 }
       const result = await createRate(data)
 
-      expect(prismaMock.rate.create).toHaveBeenCalledWith({ data })
       // fabricationRate = ceil(63*1.15) = 73, erectionRate = ceil(8*1.15) = 10, loading = 3
+      expect(prismaMock.rate.create).toHaveBeenCalledWith({
+        data: { ...data, fabricationRate: 73, erectionRate: 10, loadingRate: 3, totalRate: 86 },
+      })
       expect(result).toMatchObject({ id: rate.id, fabricationRate: 73, erectionRate: 10, loadingRate: 3, totalRate: 86 })
     })
   })
 
   describe('getRates', () => {
-    it('returns paginated rates each with a derived breakdown', async () => {
+    it('returns paginated rates with stored derived breakdown', async () => {
       const rates = [makeRate(), makeRate()]
       prismaMock.rate.findMany.mockResolvedValue(rates as any)
       prismaMock.rate.count.mockResolvedValue(2)
@@ -37,7 +39,7 @@ describe('rate.service', () => {
   })
 
   describe('getRateById', () => {
-    it('returns the rate with breakdown when found', async () => {
+    it('returns the rate when found', async () => {
       const rate = makeRate()
       prismaMock.rate.findUnique.mockResolvedValue(rate as any)
 
@@ -54,15 +56,25 @@ describe('rate.service', () => {
   })
 
   describe('updateRate', () => {
-    it('updates a rate and attaches the breakdown', async () => {
-      const rate = makeRate({ marginPercentage: 0, material: 100, overheads: 5 })
+    it('fetches existing row, merges pricing, stores updated breakdown', async () => {
+      const rate = makeRate({ marginPercentage: 0, material: 100, overheads: 5, fabricationRate: 105, erectionRate: 0, loadingRate: 0, totalRate: 105 })
+      prismaMock.rate.findUnique.mockResolvedValue(rate as any)
       prismaMock.rate.update.mockResolvedValue(rate as any)
 
       const result = await updateRate(rate.id, { marginPercentage: 0 })
 
-      expect(prismaMock.rate.update).toHaveBeenCalledWith({ where: { id: rate.id }, data: { marginPercentage: 0 } })
+      expect(prismaMock.rate.findUnique).toHaveBeenCalledWith({ where: { id: rate.id } })
       // fabricationRate = ceil(100*1 + 5) = 105
+      expect(prismaMock.rate.update).toHaveBeenCalledWith({
+        where: { id: rate.id },
+        data: { marginPercentage: 0, fabricationRate: 105, erectionRate: 0, loadingRate: 0, totalRate: 105 },
+      })
       expect(result.fabricationRate).toBe(105)
+    })
+
+    it('throws P2025 when rate not found', async () => {
+      prismaMock.rate.findUnique.mockResolvedValue(null)
+      await expect(updateRate('nope', {})).rejects.toMatchObject({ code: 'P2025' })
     })
   })
 

@@ -6,7 +6,8 @@ import { Badge } from '@/components/ui/badge'
 import { Num } from '@/components/ui/num'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { Calculator } from 'lucide-react'
-import { qtyN5SteelStructures } from '@floreat/shared/calc'
+import { qtyN5SteelStructures, deriveAmountItemRates } from '@floreat/shared/calc'
+import { useRates } from '@/api/quotation/rate/getRate'
 
 /**
  * Read-only bill-of-quantities table for Step 11. Displays the 36 canonical
@@ -17,6 +18,9 @@ export function AmountTable() {
   const { roof, canopy, mezzanine, stair } = useQuotationStore(
     useShallow((s) => ({ roof: s.roof, canopy: s.canopy, mezzanine: s.mezzanine, stair: s.stair })),
   )
+
+  const { data: ratesPage } = useRates(1, 100)
+  const rateByItem = new Map((ratesPage?.data ?? []).map((r) => [r.item, r]))
 
   const steelQty = qtyN5SteelStructures({
     buildingOverallLength: roof.buildingOverallLength,
@@ -64,6 +68,9 @@ export function AmountTable() {
         <TableBody>
           {DEFAULT_AMOUNT_ITEMS.map((item, index) => {
             const qty = quantities[item.description] ?? 0
+            const { rateFabrication, rateErection, rateLoading } = deriveAmountItemRates(
+              item.rateItem ? rateByItem.get(item.rateItem) : null,
+            )
             return (
               <TableRow key={item.description}>
                 <TableCell className="text-right text-muted-foreground">
@@ -73,10 +80,10 @@ export function AmountTable() {
                 <TableCell>
                   <Badge variant="outline">{item.unit}</Badge>
                 </TableCell>
-                <TableCell className="text-right text-muted-foreground"><Num>{qty.toFixed(3)}</Num></TableCell>
-                <TableCell className="text-right text-muted-foreground"><Num>0</Num></TableCell>
-                <TableCell className="text-right text-muted-foreground"><Num>0</Num></TableCell>
-                <TableCell className="text-right text-muted-foreground"><Num>0</Num></TableCell>
+                <TableCell className="text-right text-muted-foreground"><Num>{qty.toFixed(0)}</Num></TableCell>
+                <TableCell className="text-right text-muted-foreground"><Num>{rateFabrication}</Num></TableCell>
+                <TableCell className="text-right text-muted-foreground"><Num>{rateErection}</Num></TableCell>
+                <TableCell className="text-right text-muted-foreground"><Num>{rateLoading}</Num></TableCell>
                 <TableCell className="text-right text-muted-foreground"><Num>0</Num></TableCell>
                 <TableCell className="text-right text-muted-foreground"><Num>0</Num></TableCell>
                 <TableCell className="text-right text-muted-foreground"><Num>0</Num></TableCell>

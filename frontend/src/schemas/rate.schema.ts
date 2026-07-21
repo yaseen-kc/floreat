@@ -38,6 +38,10 @@ export type RateRowDraft = {
   id?: string
   item: string
   unit: RateUnit
+  fabricationRate?: number
+  erectionRate?: number
+  loadingRate?: number
+  totalRate?: number
 } & Partial<Record<PricingField, number>>
 
 /**

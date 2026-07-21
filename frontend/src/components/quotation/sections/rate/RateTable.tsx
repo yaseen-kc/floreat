@@ -116,7 +116,7 @@ export function RateTable() {
       const saved: Rate = row.id
         ? await updateRate.mutateAsync({ id: row.id, payload: { unit: row.unit, ...pricingOf(row) } })
         : await createRate.mutateAsync({ item: row.item, unit: row.unit, ...pricingOf(row) })
-      setRows((prev) => prev.map((r) => (r.item === row.item ? { ...r, id: saved.id } : r)))
+      setRows((prev) => prev.map((r) => (r.item === row.item ? { ...r, id: saved.id, fabricationRate: saved.fabricationRate, erectionRate: saved.erectionRate, loadingRate: saved.loadingRate, totalRate: saved.totalRate } : r)))
       setBaseline((prev) => ({ ...prev, [row.item]: rowKey(row) }))
       toast.success(`${row.item} saved`)
       return saved
@@ -150,16 +150,18 @@ export function RateTable() {
               {PRICING_FIELDS.map((f) => (
                 <TableHead key={f} className="text-right">{PRICING_LABELS[f]}</TableHead>
               ))}
-              <TableHead className="text-right">Fab. Rate</TableHead>
-              <TableHead className="text-right">Erec. Rate</TableHead>
-              <TableHead className="text-right">Load. Rate</TableHead>
+              <TableHead className="text-right">Fabrication</TableHead>
+              <TableHead className="text-right">Erection</TableHead>
+              <TableHead className="text-right">Load/Unload</TableHead>
               <TableHead className="text-right">Total Rate</TableHead>
               <TableHead className="w-10" aria-label="Actions" />
             </TableRow>
           </TableHeader>
           <TableBody>
             {rows.map((row, index) => {
-              const derived = deriveRateBreakdown(pricingOf(row))
+              const derived = (row.id && !isDirty(row) && row.fabricationRate !== undefined)
+                ? { fabricationRate: row.fabricationRate, erectionRate: row.erectionRate!, loadingRate: row.loadingRate!, totalRate: row.totalRate! }
+                : deriveRateBreakdown(pricingOf(row))
               const priced = PRICING_FIELDS.some((f) => row[f] !== undefined)
               const dirty = isDirty(row)
               return (
