@@ -21,9 +21,9 @@ const mockedApiFetch = vi.mocked(apiFetch)
 
 const payload: CreateQuantityPayload = {
   pebRoof: {
-    materialWithPurlinUnit: 'KG',
-    materialWithPurlinQuantity: 120.5,
-    roofPurlinsPurlinsPerFrame: 4,
+    pebRoofValue: 120.5,
+    pebRoofQuantity: 120.5,
+    roofPurlins: 4,
   },
 }
 

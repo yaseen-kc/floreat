@@ -7,7 +7,7 @@ export const CLADDING_ROWS: RowDef[] = [
     "spec": "",
     "unit": "KG",
     "qtyField": "claddingStructureQuantity",
-    "unitField": "claddingStructureUnit",
+    "unitField": "",
     "subRows": [
       {
         "sl": "a",
@@ -16,7 +16,7 @@ export const CLADDING_ROWS: RowDef[] = [
         "unit": "M",
         "addlSpec": "ADDITIONAL=",
         "addlUnit": "KG",
-        "addlField": "roofFlangeBraceAdditionalQuantity"
+        "addlField": "claddingEaveHeightFrontAdditional"
       },
       {
         "sl": "b",
@@ -106,14 +106,14 @@ export const CLADDING_ROWS: RowDef[] = [
     "specValue": "_",
     "unit": "SQM",
     "qtyField": "claddingSheetQuantity",
-    "unitField": "claddingSheetUnit",
+    "unitField": "",
     "subRows": [
       {
         "sl": "",
         "desc": "",
         "spec": "PURCHASE QUANTITY",
         "unit": "SQM",
-        "purchField": ""
+        "purchField": "claddingSheetPurchase"
       }
     ],
     "isCalculated": true
@@ -124,8 +124,8 @@ export const CLADDING_ROWS: RowDef[] = [
     "spec": "ADDITIONAL=",
     "specValue": "_",
     "unit": "44",
-    "qtyField": "columnWindBracingsQuantity",
-    "unitField": "columnWindBracingsUnit",
+    "qtyField": "columnWindBracingsAdditional",
+    "unitField": "",
     "subRows": [],
     "isCalculated": true
   },
@@ -135,8 +135,8 @@ export const CLADDING_ROWS: RowDef[] = [
     "spec": "ADDITIONAL=",
     "specValue": "_",
     "unit": "54",
-    "qtyField": "claddingSagRodQuantity",
-    "unitField": "claddingSagRodUnit",
+    "qtyField": "claddingSagRodAdditional",
+    "unitField": "",
     "subRows": [],
     "isCalculated": true
   },
@@ -146,8 +146,8 @@ export const CLADDING_ROWS: RowDef[] = [
     "spec": "ADDITIONAL=",
     "specValue": "_",
     "unit": "65",
-    "qtyField": "claddingFlangeBraceQuantity",
-    "unitField": "claddingFlangeBraceUnit",
+    "qtyField": "claddingFlangeBraceAdditional",
+    "unitField": "",
     "subRows": [],
     "isCalculated": true
   },
@@ -157,8 +157,8 @@ export const CLADDING_ROWS: RowDef[] = [
     "spec": "ADDITIONAL=",
     "specValue": "_",
     "unit": "75",
-    "qtyField": "claddingPurlinBoltsQuantity",
-    "unitField": "claddingPurlinBoltsUnit",
+    "qtyField": "numberOfCladdingPurlinBoltsAdditional",
+    "unitField": "",
     "subRows": [],
     "isCalculated": true
   }

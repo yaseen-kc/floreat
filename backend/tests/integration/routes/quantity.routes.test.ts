@@ -48,10 +48,10 @@ describe('Quantity routes integration', () => {
       expect(res.statusCode).toBe(200)
     })
 
-    it('rejects an invalid unit enum', async () => {
+    it('rejects an invalid data type', async () => {
       const res = await app.inject({
         method: 'POST', url: '/api/jobs/job-1/quantity',
-        payload: { pebRoof: { materialWithPurlinUnit: 'TONNES' } },
+        payload: { pebRoof: { pebRoofValue: 'TONNES' } },
       })
       expect(res.statusCode).toBe(400)
     })
@@ -92,8 +92,7 @@ describe('Quantity routes integration', () => {
     it('updates a quantity', async () => {
       prismaMock.quantity.update.mockResolvedValue(makeQuantity({ jobId: 'job-1' }) as any)
       const res = await app.inject({
-        method: 'PUT', url: '/api/jobs/job-1/quantity',
-        payload: { stair: { stepsQuantity: 12 } },
+        payload: { stair: { totalWeightofStepsQuantity: 12 } },
       })
       expect(res.statusCode).toBe(200)
     })

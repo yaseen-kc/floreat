@@ -7,8 +7,8 @@ export const ACCESSORIES_ROWS: RowDef[] = [
     "spec": "10",
     "specValue": "NOS",
     "unit": "SQM",
-    "qtyField": "doorsCount",
-    "unitField": "doorsCountUnit",
+    "qtyField": "doorsQuantity",
+    "unitField": "",
     "defaultQty": "21",
     "subRows": [],
     "isCalculated": true
@@ -19,8 +19,8 @@ export const ACCESSORIES_ROWS: RowDef[] = [
     "spec": "10",
     "specValue": "NOS",
     "unit": "SQM",
-    "qtyField": "doorsCount",
-    "unitField": "doorsCountUnit",
+    "qtyField": "windowsQuantity",
+    "unitField": "",
     "defaultQty": "21",
     "subRows": [],
     "isCalculated": true
@@ -31,7 +31,7 @@ export const ACCESSORIES_ROWS: RowDef[] = [
     "spec": "",
     "unit": "",
     "qtyField": "fasciaStructureQuantity",
-    "unitField": "fasciaStructureUnit",
+    "unitField": "",
     "subRows": [],
     "isCalculated": true
   },
@@ -40,8 +40,8 @@ export const ACCESSORIES_ROWS: RowDef[] = [
     "label": "Fascia covering sheet",
     "spec": "",
     "unit": "",
-    "qtyField": "fasciaCoveringSheetQuantity",
-    "unitField": "fasciaCoveringSheetUnit",
+    "qtyField": "fasciaCoveringSheetBoardQuantity",
+    "unitField": "",
     "subRows": [],
     "isCalculated": true
   },
@@ -51,7 +51,7 @@ export const ACCESSORIES_ROWS: RowDef[] = [
     "spec": "",
     "unit": "",
     "qtyField": "internalPartitionsQuantity",
-    "unitField": "internalPartitionsUnit",
+    "unitField": "",
     "subRows": [],
     "isCalculated": true
   },
@@ -61,7 +61,7 @@ export const ACCESSORIES_ROWS: RowDef[] = [
     "spec": "",
     "unit": "",
     "qtyField": "ridgeQuantity",
-    "unitField": "ridgeUnit",
+    "unitField": "",
     "subRows": [],
     "isCalculated": true
   },
@@ -71,7 +71,7 @@ export const ACCESSORIES_ROWS: RowDef[] = [
     "spec": "",
     "unit": "",
     "qtyField": "gutterQuantity",
-    "unitField": "gutterUnit",
+    "unitField": "",
     "subRows": [],
     "isCalculated": true
   },
@@ -80,8 +80,8 @@ export const ACCESSORIES_ROWS: RowDef[] = [
     "label": "Down take",
     "spec": "",
     "unit": "",
-    "qtyField": "downTakeQuantity",
-    "unitField": "downTakeUnit",
+    "qtyField": "downtakeQuantity",
+    "unitField": "",
     "subRows": [],
     "isCalculated": true
   },
@@ -91,7 +91,7 @@ export const ACCESSORIES_ROWS: RowDef[] = [
     "spec": "",
     "unit": "",
     "qtyField": "dripTrimQuantity",
-    "unitField": "dripTrimUnit",
+    "unitField": "",
     "subRows": [],
     "isCalculated": true
   },
@@ -101,7 +101,7 @@ export const ACCESSORIES_ROWS: RowDef[] = [
     "spec": "",
     "unit": "",
     "qtyField": "gableEndFlashingQuantity",
-    "unitField": "gableEndFlashingUnit",
+    "unitField": "",
     "subRows": [],
     "isCalculated": true
   },
@@ -110,8 +110,8 @@ export const ACCESSORIES_ROWS: RowDef[] = [
     "label": "Corner flash",
     "spec": "",
     "unit": "SQM",
-    "qtyField": "cornerFlashCount",
-    "unitField": "cornerFlashCountUnit",
+    "qtyField": "cornerFlashQuantity",
+    "unitField": "",
     "subRows": [],
     "isCalculated": true
   },
@@ -121,8 +121,8 @@ export const ACCESSORIES_ROWS: RowDef[] = [
     "spec": "10",
     "specValue": "NOS",
     "unit": "SQM",
-    "qtyField": "rollingShutterCount",
-    "unitField": "rollingShutterCountUnit",
+    "qtyField": "rollingShutterQuantity",
+    "unitField": "",
     "defaultQty": "21",
     "subRows": [],
     "isCalculated": true
@@ -133,8 +133,8 @@ export const ACCESSORIES_ROWS: RowDef[] = [
     "spec": "10",
     "specValue": "NOS",
     "unit": "SQM",
-    "qtyField": "louversCount",
-    "unitField": "louversCountUnit",
+    "qtyField": "louversQuantity",
+    "unitField": "",
     "defaultQty": "21",
     "subRows": [],
     "isCalculated": true
@@ -145,8 +145,8 @@ export const ACCESSORIES_ROWS: RowDef[] = [
     "spec": "10",
     "specValue": "NOS",
     "unit": "SQM",
-    "qtyField": "skyLightCount",
-    "unitField": "skyLightCountUnit",
+    "qtyField": "skyLightQuantity",
+    "unitField": "",
     "defaultQty": "21",
     "subRows": [],
     "isCalculated": true
@@ -157,8 +157,8 @@ export const ACCESSORIES_ROWS: RowDef[] = [
     "spec": "10",
     "specValue": "NOS",
     "unit": "SQM",
-    "qtyField": "wallLightCount",
-    "unitField": "wallLightCountUnit",
+    "qtyField": "wallLightQuantity",
+    "unitField": "",
     "defaultQty": "21",
     "subRows": [],
     "isCalculated": true
@@ -169,7 +169,7 @@ export const ACCESSORIES_ROWS: RowDef[] = [
     "spec": "XLPE",
     "unit": "",
     "qtyField": "roofInsulationQuantity",
-    "unitField": "roofInsulationUnit",
+    "unitField": "",
     "subRows": [],
     "isCalculated": true
   },
@@ -179,7 +179,7 @@ export const ACCESSORIES_ROWS: RowDef[] = [
     "spec": "",
     "unit": "",
     "qtyField": "wallInsulationQuantity",
-    "unitField": "wallInsulationUnit",
+    "unitField": "",
     "subRows": [],
     "isCalculated": true
   },
@@ -189,7 +189,7 @@ export const ACCESSORIES_ROWS: RowDef[] = [
     "spec": "",
     "unit": "",
     "qtyField": "turboVentilatorsQuantity",
-    "unitField": "turboVentilatorsUnit",
+    "unitField": "",
     "subRows": [],
     "isCalculated": true
   },
@@ -199,7 +199,7 @@ export const ACCESSORIES_ROWS: RowDef[] = [
     "spec": "",
     "unit": "",
     "qtyField": "handrailQuantity",
-    "unitField": "handrailUnit",
+    "unitField": "",
     "subRows": [],
     "isCalculated": true
   }

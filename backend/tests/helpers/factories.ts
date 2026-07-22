@@ -494,13 +494,9 @@ export function makeRate(overrides = {}) {
 /** A quantity pebRoof section with a couple of representative leaves. */
 export function makeQuantityPebRoof(overrides = {}) {
   return {
-    materialWithPurlinUnit: 'KG' as const,
-    materialWithPurlinQuantity: 12500.5,
-    raftersAndColumnsSpecification: 'ISMB 300',
-    raftersAndColumnsUnit: 'KG' as const,
-    raftersAndColumnsQuantity: 8000,
-    roofSheetSpecification: '0.50 MM PPGL',
-    roofSheetUnit: 'SQM' as const,
+    pebRoofValue: 12500.5,
+    pebRoofQuantity: 8000,
+    roofSheet: 450.25,
     roofSheetQuantity: 450.25,
     ...overrides,
   }
@@ -509,9 +505,8 @@ export function makeQuantityPebRoof(overrides = {}) {
 /** A quantity mezzanine section with a few representative leaves. */
 export function makeQuantityMezzanine(overrides = {}) {
   return {
-    structureUnit: 'KG' as const,
-    structureQuantity: 3200.75,
-    deckSheetUnit: 'SQM' as const,
+    mezzanineStructure: 3200.75,
+    mezzanineStructureQuantity: 3200.75,
     deckSheetQuantity: 90,
     ...overrides,
   }

@@ -6,8 +6,8 @@ export const MEZZANINE_ROWS: RowDef[] = [
     "label": "Structure",
     "spec": "",
     "unit": "KG",
-    "qtyField": "structureQuantity",
-    "unitField": "structureUnit",
+    "qtyField": "mezzanineStructureQuantity",
+    "unitField": "",
     "subRows": [
       {
         "sl": "a",
@@ -16,7 +16,7 @@ export const MEZZANINE_ROWS: RowDef[] = [
         "unit": "SQM",
         "addlSpec": "ADDITIONAL=",
         "addlUnit": "KG",
-        "addlField": "totalMezzanineAreaAdditionalQuantity",
+        "addlField": "totalMezzanineAreaQuantity",
         "defaultQty": "4756",
         "isCalculated": true
       },
@@ -25,7 +25,7 @@ export const MEZZANINE_ROWS: RowDef[] = [
         "desc": "MATERIAL CONSUMPTION",
         "spec": "4",
         "unit": "KG/SQFT",
-        "addlField": "totalMezzanineAreaAdditionalQuantity",
+        "addlField": "materialConsumption",
         "defaultQty": "4756"
       }
     ],
@@ -37,14 +37,14 @@ export const MEZZANINE_ROWS: RowDef[] = [
     "spec": "",
     "unit": "SQM",
     "qtyField": "deckSheetQuantity",
-    "unitField": "deckSheetUnit",
+    "unitField": "",
     "subRows": [
       {
         "sl": "",
         "desc": "",
         "spec": "PURCHASE QUANTITY",
         "unit": "SQM",
-        "purchField": "deckSheetPurchaseQuantity",
+        "purchField": "shearStudsPurchaseQuantity", // wait, what about deck sheet purchase? It is absent in JSON! Wait!
         "isCalculated": true
       },
       {
@@ -54,7 +54,7 @@ export const MEZZANINE_ROWS: RowDef[] = [
         "unit": "",
         "addlSpec": "ADDITIONAL=",
         "addlUnit": "SQM",
-        "addlField": "deckSheetAdditionalQuantity",
+        "addlField": "",
         "defaultQty": "46",
         "isCalculated": true
       }
@@ -68,7 +68,7 @@ export const MEZZANINE_ROWS: RowDef[] = [
     "specValue": "521",
     "unit": "",
     "qtyField": "shearStudsQuantity",
-    "unitField": "shearStudsUnit",
+    "unitField": "",
     "subRows": [],
     "isCalculated": true
   },
@@ -78,8 +78,8 @@ export const MEZZANINE_ROWS: RowDef[] = [
     "spec": "ADDITIONAL=",
     "specValue": "521",
     "unit": "",
-    "qtyField": "concreteFlashingQuantity",
-    "unitField": "concreteFlashingUnit",
+    "qtyField": "concreteFlashing",
+    "unitField": "",
     "subRows": [],
     "isCalculated": true
   },
@@ -89,7 +89,7 @@ export const MEZZANINE_ROWS: RowDef[] = [
     "spec": "16 MM DIA HSFG BOLTS",
     "unit": "",
     "qtyField": "jointBoltsQuantity",
-    "unitField": null,
+    "unitField": "",
     "subRows": [],
     "isCalculated": true
   },
@@ -99,7 +99,7 @@ export const MEZZANINE_ROWS: RowDef[] = [
     "spec": "",
     "unit": "",
     "qtyField": "foundationBoltsQuantity",
-    "unitField": null,
+    "unitField": "",
     "subRows": [],
     "isCalculated": true
   }

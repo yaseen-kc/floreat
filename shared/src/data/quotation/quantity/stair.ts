@@ -6,8 +6,8 @@ export const STAIR_ROWS: RowDef[] = [
     "label": "Total area",
     "spec": "",
     "unit": "SQM",
-    "qtyField": "totalAreaQuantity",
-    "unitField": "totalAreaUnit",
+    "qtyField": "totalAreaOfStairQuantity",
+    "unitField": "",
     "subRows": [],
     "isCalculated": true
   },
@@ -16,8 +16,8 @@ export const STAIR_ROWS: RowDef[] = [
     "label": "Stringer beams",
     "spec": "HR SECTION",
     "unit": "KG",
-    "qtyField": "stringerBeamsQuantity",
-    "unitField": "stringerBeamsUnit",
+    "qtyField": "totalWeightofStringerBeamsQuantity",
+    "unitField": "",
     "subRows": [
       {
         "sl": "",
@@ -26,7 +26,7 @@ export const STAIR_ROWS: RowDef[] = [
         "unit": "",
         "addlSpec": "ADDITIONAL=",
         "addlUnit": "KG",
-        "addlField": "stringerBeamsAdditionalQuantity"
+        "addlField": "totalWeightofStringerBeamsAdditional"
       }
     ],
     "isCalculated": true
@@ -36,8 +36,8 @@ export const STAIR_ROWS: RowDef[] = [
     "label": "Steps",
     "spec": "6MM CHQ PLATE",
     "unit": "KG",
-    "qtyField": "stepsQuantity",
-    "unitField": "stepsUnit",
+    "qtyField": "totalWeightofStepsQuantity",
+    "unitField": "",
     "subRows": [
       {
         "sl": "",
@@ -46,7 +46,7 @@ export const STAIR_ROWS: RowDef[] = [
         "unit": "",
         "addlSpec": "ADDITIONAL=",
         "addlUnit": "KG",
-        "addlField": "stringerBeamsAdditionalQuantity"
+        "addlField": "totalWeightofStepsAdditional"
       }
     ],
     "isCalculated": true

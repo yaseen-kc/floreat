@@ -3,38 +3,38 @@ import type { RowDef } from './types.js';
 export const ADDITIONAL_BOLTS_ROWS: RowDef[] = [
   {
     "sl": "7.1",
-    "label": "Joint bolt 24mm HSFG",
+    "label": "Joint bolt",
     "spec": "24 MM DIA HSFG BOLTS",
     "unit": "NOS",
-    "qtyField": "jointBolt24mmHsfgQuantity",
-    "unitField": "jointBolt24mmHsfgUnit",
+    "qtyField": "jointBolt1Quantity",
+    "unitField": "",
     "subRows": []
   },
   {
     "sl": "7.2",
-    "label": "Joint bolt 20mm HSFG",
+    "label": "Joint bolt",
     "spec": "20 MM DIA HSFG BOLTS",
     "unit": "NOS",
-    "qtyField": "jointBolt20mmHsfgQuantity",
-    "unitField": "jointBolt20mmHsfgUnit",
+    "qtyField": "jointBolt2Quantity",
+    "unitField": "",
     "subRows": []
   },
   {
     "sl": "7.3",
-    "label": "Joint bolt 16mm HSFG",
+    "label": "Joint bolt",
     "spec": "16 MM DIA HSFG BOLTS",
     "unit": "NOS",
-    "qtyField": "jointBolt16mmHsfgQuantity",
-    "unitField": "jointBolt16mmHsfgUnit",
+    "qtyField": "jointBolt3Quantity",
+    "unitField": "",
     "subRows": []
   },
   {
     "sl": "7.4",
-    "label": "Purlin bolt 12mm ordinary",
+    "label": "Purlin bolt",
     "spec": "12 MM DIA ORDINARY BOLTS",
     "unit": "NOS",
-    "qtyField": "purlinBolt12mmOrdinaryQuantity",
-    "unitField": "purlinBolt12mmOrdinaryUnit",
+    "qtyField": "purlinBoltQuantity",
+    "unitField": "",
     "subRows": []
   },
   {
@@ -43,7 +43,7 @@ export const ADDITIONAL_BOLTS_ROWS: RowDef[] = [
     "spec": "",
     "unit": "NOS",
     "qtyField": "anchorBoltQuantity",
-    "unitField": "anchorBoltUnit",
+    "unitField": "",
     "subRows": []
   },
   {
@@ -52,7 +52,7 @@ export const ADDITIONAL_BOLTS_ROWS: RowDef[] = [
     "spec": "",
     "unit": "NOS",
     "qtyField": "foundationBoltQuantity",
-    "unitField": "foundationBoltUnit",
+    "unitField": "",
     "subRows": []
   }
 ];

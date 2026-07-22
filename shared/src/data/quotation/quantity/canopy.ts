@@ -6,14 +6,15 @@ export const CANOPY_ROWS: RowDef[] = [
     "label": "Canopy Structure",
     "spec": "",
     "unit": "KG",
-    "qtyField": "structureQuantity",
-    "unitField": "structureUnit",
+    "qtyField": "canopyStructureQuantity",
+    "unitField": "",
     "subRows": [
       {
         "sl": "",
         "desc": "CANOPY AREA",
         "spec": "322.80",
-        "unit": "SQFT"
+        "unit": "SQFT",
+        "addlField": "canopyArea"
       }
     ],
     "isCalculated": true
@@ -23,8 +24,8 @@ export const CANOPY_ROWS: RowDef[] = [
     "label": "Canopy Purlin",
     "spec": "",
     "unit": "KG",
-    "qtyField": "purlinQuantity",
-    "unitField": "purlinUnit",
+    "qtyField": "canopyPurlinQuantity",
+    "unitField": "",
     "subRows": [],
     "isCalculated": true
   },
@@ -33,15 +34,15 @@ export const CANOPY_ROWS: RowDef[] = [
     "label": "Canopy Sheet",
     "spec": "",
     "unit": "SQM",
-    "qtyField": "sheetQuantity",
-    "unitField": "sheetUnit",
+    "qtyField": "canopySheetQuantity",
+    "unitField": "",
     "subRows": [
       {
         "sl": "",
         "desc": "",
         "spec": "PURCHASE QUANTITY",
         "unit": "SQM",
-        "purchField": "sheetPurchaseQuantity",
+        "purchField": "canopySheetPurchaseQuantity",
         "isCalculated": true
       }
     ],
@@ -52,8 +53,8 @@ export const CANOPY_ROWS: RowDef[] = [
     "label": "Canopy Gutter",
     "spec": "",
     "unit": "M",
-    "qtyField": "gutterQuantity",
-    "unitField": "gutterUnit",
+    "qtyField": "canopyGutterQuantity",
+    "unitField": "",
     "subRows": [],
     "isCalculated": true
   },
@@ -62,8 +63,8 @@ export const CANOPY_ROWS: RowDef[] = [
     "label": "Canopy Down take",
     "spec": "",
     "unit": "M",
-    "qtyField": "downTakeQuantity",
-    "unitField": "downTakeUnit",
+    "qtyField": "canopyDownTakeQuantity",
+    "unitField": "",
     "subRows": [],
     "isCalculated": true
   },
@@ -72,8 +73,8 @@ export const CANOPY_ROWS: RowDef[] = [
     "label": "Canopy Side covering",
     "spec": "",
     "unit": "SQM",
-    "qtyField": "sideCoveringQuantity",
-    "unitField": "sideCoveringUnit",
+    "qtyField": "canopySideCoveringQuantity",
+    "unitField": "",
     "subRows": [],
     "isCalculated": true
   },
@@ -82,8 +83,8 @@ export const CANOPY_ROWS: RowDef[] = [
     "label": "Canopy Flashing",
     "spec": "",
     "unit": "M",
-    "qtyField": "flashingQuantity",
-    "unitField": "flashingUnit",
+    "qtyField": "canopyFlashingQuantity",
+    "unitField": "",
     "subRows": [],
     "isCalculated": true
   },
@@ -92,8 +93,8 @@ export const CANOPY_ROWS: RowDef[] = [
     "label": "Canopy Purlin bolts",
     "spec": "",
     "unit": "NOS",
-    "qtyField": "purlinBoltsQuantity",
-    "unitField": "purlinBoltsUnit",
+    "qtyField": "canopyPurlinBoltsQuantity",
+    "unitField": "",
     "subRows": [],
     "isCalculated": true
   },
@@ -102,8 +103,8 @@ export const CANOPY_ROWS: RowDef[] = [
     "label": "Canopy Joint bolts",
     "spec": "",
     "unit": "NOS",
-    "qtyField": "jointBoltsQuantity",
-    "unitField": "jointBoltsUnit",
+    "qtyField": "canopyJointBoltsQuantity",
+    "unitField": "",
     "subRows": [],
     "isCalculated": true
   }

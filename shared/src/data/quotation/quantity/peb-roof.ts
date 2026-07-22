@@ -7,7 +7,7 @@ export const PEB_ROOF_ROWS: RowDef[] = [
     "label": "PEB ROOF",
     "spec": "MATERIAL WITH PURLIN",
     "unit": "KG/SQFT",
-    "qtyField": "",
+    "qtyField": "pebRoofQuantity",
     "unitField": "",
     "subRows": [],
     "isCalculated": true
@@ -17,8 +17,8 @@ export const PEB_ROOF_ROWS: RowDef[] = [
     "label": "Rafters & columns",
     "spec": "",
     "unit": "KG",
-    "qtyField": "_",
-    "unitField": "_",
+    "qtyField": "raftersAndColumnsQuantity",
+    "unitField": "",
     "subRows": [
       {
         "sl": "a",
@@ -27,7 +27,7 @@ export const PEB_ROOF_ROWS: RowDef[] = [
         "unit": "M",
         "addlSpec": "ADDITIONAL=",
         "addlUnit": "KG",
-        "addlField": "raftersAndColumnsAdditionalQuantity"
+        "addlField": "lengthOfBuildingQuantity"
       },
       {
         "sl": "b",
@@ -57,7 +57,7 @@ export const PEB_ROOF_ROWS: RowDef[] = [
     "spec": "",
     "unit": "KG",
     "qtyField": "roofPurlinsQuantity",
-    "unitField": "roofPurlinsUnit",
+    "unitField": "",
     "subRows": [
       {
         "sl": "a",
@@ -66,7 +66,7 @@ export const PEB_ROOF_ROWS: RowDef[] = [
         "unit": "M",
         "addlSpec": "ADDITIONAL=",
         "addlUnit": "KG",
-        "addlField": "roofPurlinsAdditionalQuantity"
+        "addlField": "lengthOfOnePurlinQuantity"
       },
       {
         "sl": "b",
@@ -107,7 +107,7 @@ export const PEB_ROOF_ROWS: RowDef[] = [
     "spec": "",
     "unit": "SQM",
     "qtyField": "roofSheetQuantity",
-    "unitField": "roofSheetUnit",
+    "unitField": "",
     "subRows": [
       {
         "sl": "",
@@ -124,7 +124,7 @@ export const PEB_ROOF_ROWS: RowDef[] = [
         "unit": "M",
         "addlSpec": "ADDITIONAL=",
         "addlUnit": "SQM",
-        "addlField": "roofSheetAdditionalQuantity"
+        "addlField": "extendedRoofWidth" 
       },
       {
         "sl": "b",
@@ -152,15 +152,15 @@ export const PEB_ROOF_ROWS: RowDef[] = [
     "label": "Polycarbonate sheet",
     "spec": "",
     "unit": "SQM",
-    "qtyField": "polycarbonateSheetQuantity",
-    "unitField": "polycarbonateSheetUnit",
+    "qtyField": "polyCarbonateSheetQuantity",
+    "unitField": "",
     "subRows": [
       {
         "sl": "",
         "desc": "",
         "spec": "PURCHASE QUANTITY",
         "unit": "SQM",
-        "purchField": "polycarbonateSheetPurchaseQuantity",
+        "purchField": "polyCarbonateSheetPurchaseQuantity",
         "isCalculated": true
       },
       {
@@ -170,7 +170,7 @@ export const PEB_ROOF_ROWS: RowDef[] = [
         "unit": "M",
         "addlSpec": "ADDITIONAL=",
         "addlUnit": "SQM",
-        "addlField": "polycarbonateSheetAdditionalQuantity"
+        "addlField": "lengthOfpolyCarbonateSheetAdditional"
       },
       {
         "sl": "b",
@@ -192,8 +192,8 @@ export const PEB_ROOF_ROWS: RowDef[] = [
     "label": "Roof wind bracings",
     "spec": "",
     "unit": "KG",
-    "qtyField": "roofWindBracingsQuantity",
-    "unitField": "roofWindBracingsUnit",
+    "qtyField": "roofWindBracing",
+    "unitField": "",
     "subRows": [
       {
         "sl": "a",
@@ -202,7 +202,7 @@ export const PEB_ROOF_ROWS: RowDef[] = [
         "unit": "M",
         "addlSpec": "ADDITIONAL=",
         "addlUnit": "KG",
-        "addlField": "roofWindBracingsAdditionalQuantity"
+        "addlField": "lengthOfSinlgeWindBracingAdditional"
       },
       {
         "sl": "b",
@@ -225,8 +225,8 @@ export const PEB_ROOF_ROWS: RowDef[] = [
     "labelSuffix": "8.95456465",
     "spec": "",
     "unit": "",
-    "qtyField": "roofSagRodQuantity",
-    "unitField": "roofSagRodUnit",
+    "qtyField": "roofSagRoadQuantity",
+    "unitField": "",
     "subRows": [
       {
         "sl": "a",
@@ -235,7 +235,7 @@ export const PEB_ROOF_ROWS: RowDef[] = [
         "unit": "M",
         "addlSpec": "ADDITIONAL=",
         "addlUnit": "KG",
-        "addlField": "roofSagRodAdditionalQuantity"
+        "addlField": "roofSagRoadQuantityAdditional"
       },
       {
         "sl": "b",
@@ -276,7 +276,7 @@ export const PEB_ROOF_ROWS: RowDef[] = [
     "spec": "",
     "unit": "KG",
     "qtyField": "roofFlangeBraceQuantity",
-    "unitField": "roofFlangeBraceUnit",
+    "unitField": "",
     "subRows": [
       {
         "sl": "a",
@@ -285,7 +285,7 @@ export const PEB_ROOF_ROWS: RowDef[] = [
         "unit": "M",
         "addlSpec": "ADDITIONAL=",
         "addlUnit": "KG",
-        "addlField": "roofFlangeBraceAdditionalQuantity"
+        "addlField": "lengthOfMidFrameFlangeBraceAdditional"
       },
       {
         "sl": "b",
@@ -349,8 +349,8 @@ export const PEB_ROOF_ROWS: RowDef[] = [
     "label": "Purlin bolts",
     "spec": "",
     "unit": "NOS",
-    "qtyField": "purlinBoltsQuantity",
-    "unitField": "purlinBoltsUnit",
+    "qtyField": "numberOfPurlinBoltsQuantity",
+    "unitField": "",
     "subRows": [
       {
         "sl": "a",
@@ -390,8 +390,8 @@ export const PEB_ROOF_ROWS: RowDef[] = [
     "label": "NUMBER OF ROOF JOINT BOLTS",
     "spec": "",
     "unit": "NOS",
-    "qtyField": "roofJointBoltsQuantity",
-    "unitField": "roofJointBoltsUnit",
+    "qtyField": "numberOfRoofJointBolts",
+    "unitField": "",
     "subRows": [],
     "isCalculated": true
   },
@@ -400,8 +400,8 @@ export const PEB_ROOF_ROWS: RowDef[] = [
     "label": "NUMBER OF Foundation bolts",
     "spec": "",
     "unit": "",
-    "qtyField": "foundationBoltsQuantity",
-    "unitField": "foundationBoltsUnit",
+    "qtyField": "numberOfFoundationBolts",
+    "unitField": "",
     "subRows": [],
     "isCalculated": true
   },
@@ -410,8 +410,8 @@ export const PEB_ROOF_ROWS: RowDef[] = [
     "label": "Anchor bolts",
     "spec": "",
     "unit": "",
-    "qtyField": "anchorBoltsQuantity",
-    "unitField": "anchorBoltsUnit",
+    "qtyField": "numberOfAnchorBolts",
+    "unitField": "",
     "subRows": [],
     "isCalculated": true
   }
