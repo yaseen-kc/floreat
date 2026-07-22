@@ -34,7 +34,6 @@ interface SectionTableProps {
   onEdit: (field: string, value: string) => void
   onSave: () => void
   saving: boolean
-  sectionIndex: number
 }
 
 const getEditableFields = (rows: RowDef[]): string[] => {
@@ -50,7 +49,7 @@ const getEditableFields = (rows: RowDef[]): string[] => {
   });
 }
 
-function SectionTable({ icon, title, rows, sectionData, draft, onEdit, onSave, saving, sectionIndex }: SectionTableProps) {
+function SectionTable({ icon, title, rows, sectionData, draft, onEdit, onSave, saving }: SectionTableProps) {
   const isDirty = getEditableFields(rows).some((f) => (draft[f] ?? '') !== String(sectionData?.[f] ?? ''))
 
   return (
@@ -76,16 +75,40 @@ function SectionTable({ icon, title, rows, sectionData, draft, onEdit, onSave, s
         </TableHeader>
         <TableBody>
           {rows.map((row, i) => {
-            const unitVal = row.unitField ? sectionData?.[row.unitField] : null;
+            const unitVal = (row.unitField && sectionData?.[row.unitField]) || row.unit;
             const unitDisplay = unitVal ? <Badge variant="outline">{String(unitVal)}</Badge> : <span className="text-muted-foreground">—</span>;
             
             return (
               <Fragment key={row.qtyField}>
                 <TableRow className="border-b">
-                  <TableCell className="border-r font-medium text-muted-foreground">{sectionIndex}.{i + 1}</TableCell>
-                  <TableCell colSpan={2} className="border-r font-semibold">{row.label.toUpperCase()}</TableCell>
-                  <TableCell colSpan={3} className="border-r font-mono text-xs">{row.spec || '—'}</TableCell>
-                  <TableCell className="border-r text-center">{unitDisplay}</TableCell>
+                  <TableCell className="border-r font-medium text-muted-foreground">{row.sl}</TableCell>
+                  {row.labelPrefix ? (
+                    <Fragment>
+                      <TableCell className="border-r font-semibold text-center">{row.labelPrefix}</TableCell>
+                      <TableCell className="border-r font-semibold">{row.label.toUpperCase()}</TableCell>
+                    </Fragment>
+                  ) : row.labelSuffix ? (
+                    <Fragment>
+                      <TableCell className="border-r font-semibold">{row.label.toUpperCase()}</TableCell>
+                      <TableCell className="border-r font-semibold text-center">{row.labelSuffix}</TableCell>
+                    </Fragment>
+                  ) : (
+                    <TableCell colSpan={2} className="border-r font-semibold">{row.label.toUpperCase()}</TableCell>
+                  )}
+                  {row.addlSpec ? (
+                    <Fragment>
+                      <TableCell className="border-r font-mono text-xs">{row.spec}</TableCell>
+                      <TableCell className="border-r text-center">{row.unit}</TableCell>
+                      <TableCell className="border-r text-center font-medium text-muted-foreground whitespace-nowrap">{row.addlSpec}</TableCell>
+                      <TableCell className="border-r text-center">{row.addlUnit}</TableCell>
+                    </Fragment>
+                  ) : (
+                    <Fragment>
+                      <TableCell colSpan={row.specValue ? 2 : 3} className="border-r font-mono text-xs">{row.spec || '—'}</TableCell>
+                      {row.specValue && <TableCell className="border-r text-center font-medium text-muted-foreground whitespace-nowrap">{row.specValue}</TableCell>}
+                      <TableCell className="border-r text-center">{unitDisplay}</TableCell>
+                    </Fragment>
+                  )}
                   <TableCell className="text-right p-1 align-middle">
                     <Input
                       type="number"
@@ -104,8 +127,8 @@ function SectionTable({ icon, title, rows, sectionData, draft, onEdit, onSave, s
                     <TableCell colSpan={2} className="border-r">{sub.desc}</TableCell>
                     {sub.addlSpec ? (
                       <Fragment>
-                        <TableCell className="border-r font-mono text-xs">{sub.spec}</TableCell>
-                        <TableCell className="border-r text-center">{sub.unit}</TableCell>
+                        <TableCell colSpan={sub.unit ? 1 : 2} className="border-r font-mono text-xs">{sub.spec}</TableCell>
+                        {sub.unit && <TableCell className="border-r text-center">{sub.unit}</TableCell>}
                         <TableCell className="border-r text-center font-medium text-muted-foreground whitespace-nowrap">{sub.addlSpec}</TableCell>
                         <TableCell className="border-r text-center">{sub.addlUnit}</TableCell>
                         <TableCell className="text-right p-1 align-middle">
@@ -183,8 +206,24 @@ export function QuantityTable() {
   useEffect(() => {
     if (!quantity || seeded.current) return
     seeded.current = true
-    const seed = (obj: Record<string, unknown> | null | undefined, rows: RowDef[]) =>
-      Object.fromEntries(getEditableFields(rows).map((f) => [f, toStr(obj?.[f])]))
+
+    const getDefaults = (rows: RowDef[]) => {
+      const defs: Record<string, string | number> = {}
+      rows.forEach(r => {
+        if (r.qtyField && r.defaultQty !== undefined) defs[r.qtyField] = r.defaultQty
+        r.subRows?.forEach(sub => {
+          if (sub.addlField && sub.defaultQty !== undefined) defs[sub.addlField] = sub.defaultQty
+          if (sub.purchField && sub.defaultQty !== undefined) defs[sub.purchField] = sub.defaultQty
+        })
+      })
+      return defs
+    }
+
+    const seed = (obj: Record<string, unknown> | null | undefined, rows: RowDef[]) => {
+      const defs = getDefaults(rows)
+      return Object.fromEntries(getEditableFields(rows).map((f) => [f, toStr(obj?.[f] ?? defs[f])]))
+    }
+    
     setDrafts({
       pebRoof: seed(quantity.pebRoof as unknown as Record<string, unknown>, PEB_ROOF_ROWS),
       cladding: seed(quantity.cladding as unknown as Record<string, unknown>, CLADDING_ROWS),
@@ -235,13 +274,13 @@ export function QuantityTable() {
 
   return (
     <div className="space-y-6">
-      <SectionTable icon={<Layers />} title="PEB Roof" rows={PEB_ROOF_ROWS} sectionData={sd(quantity?.pebRoof)} draft={drafts.pebRoof} onEdit={editSection('pebRoof')} onSave={() => saveSection('pebRoof')} saving={saving.pebRoof} sectionIndex={1} />
-      <SectionTable icon={<LayoutGrid />} title="Cladding" rows={CLADDING_ROWS} sectionData={sd(quantity?.cladding)} draft={drafts.cladding} onEdit={editSection('cladding')} onSave={() => saveSection('cladding')} saving={saving.cladding} sectionIndex={2} />
-      <SectionTable icon={<Umbrella />} title="Canopy" rows={CANOPY_ROWS} sectionData={sd(quantity?.canopy)} draft={drafts.canopy} onEdit={editSection('canopy')} onSave={() => saveSection('canopy')} saving={saving.canopy} sectionIndex={3} />
-      <SectionTable icon={<Wrench />} title="Accessories" rows={ACCESSORIES_ROWS} sectionData={sd(quantity?.accessories)} draft={drafts.accessories} onEdit={editSection('accessories')} onSave={() => saveSection('accessories')} saving={saving.accessories} sectionIndex={4} />
-      <SectionTable icon={<Layers2 />} title="Mezzanine" rows={MEZZANINE_ROWS} sectionData={sd(quantity?.mezzanine)} draft={drafts.mezzanine} onEdit={editSection('mezzanine')} onSave={() => saveSection('mezzanine')} saving={saving.mezzanine} sectionIndex={5} />
-      <SectionTable icon={<MoveUpRight />} title="Stair" rows={STAIR_ROWS} sectionData={sd(quantity?.stair)} draft={drafts.stair} onEdit={editSection('stair')} onSave={() => saveSection('stair')} saving={saving.stair} sectionIndex={6} />
-      <SectionTable icon={<Nut />} title="Additional Bolts" rows={ADDITIONAL_BOLTS_ROWS} sectionData={sd(quantity?.additionalBolts)} draft={drafts.additionalBolts} onEdit={editSection('additionalBolts')} onSave={() => saveSection('additionalBolts')} saving={saving.additionalBolts} sectionIndex={7} />
+      <SectionTable icon={<Layers />} title="PEB Roof" rows={PEB_ROOF_ROWS} sectionData={sd(quantity?.pebRoof)} draft={drafts.pebRoof} onEdit={editSection('pebRoof')} onSave={() => saveSection('pebRoof')} saving={saving.pebRoof} />
+      <SectionTable icon={<LayoutGrid />} title="Cladding" rows={CLADDING_ROWS} sectionData={sd(quantity?.cladding)} draft={drafts.cladding} onEdit={editSection('cladding')} onSave={() => saveSection('cladding')} saving={saving.cladding} />
+      <SectionTable icon={<Umbrella />} title="Canopy" rows={CANOPY_ROWS} sectionData={sd(quantity?.canopy)} draft={drafts.canopy} onEdit={editSection('canopy')} onSave={() => saveSection('canopy')} saving={saving.canopy} />
+      <SectionTable icon={<Wrench />} title="Accessories" rows={ACCESSORIES_ROWS} sectionData={sd(quantity?.accessories)} draft={drafts.accessories} onEdit={editSection('accessories')} onSave={() => saveSection('accessories')} saving={saving.accessories} />
+      <SectionTable icon={<Layers2 />} title="Mezzanine" rows={MEZZANINE_ROWS} sectionData={sd(quantity?.mezzanine)} draft={drafts.mezzanine} onEdit={editSection('mezzanine')} onSave={() => saveSection('mezzanine')} saving={saving.mezzanine} />
+      <SectionTable icon={<MoveUpRight />} title="Stair" rows={STAIR_ROWS} sectionData={sd(quantity?.stair)} draft={drafts.stair} onEdit={editSection('stair')} onSave={() => saveSection('stair')} saving={saving.stair} />
+      <SectionTable icon={<Nut />} title="Additional Bolts" rows={ADDITIONAL_BOLTS_ROWS} sectionData={sd(quantity?.additionalBolts)} draft={drafts.additionalBolts} onEdit={editSection('additionalBolts')} onSave={() => saveSection('additionalBolts')} saving={saving.additionalBolts} />
     </div>
   )
 }

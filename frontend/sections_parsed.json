@@ -49,7 +49,7 @@
       "sl": "1.2",
       "label": "ROOF PURLINS",
       "spec": "((ROOF!AU19+ROOF!AR19)-1)",
-      "unit": "ROOF!S13 &amp; &quot;PURLIN &quot; &amp; ROOF!U13 &amp; &quot; MM DEPTH&quot;",
+      "unit": "",
       "qtyFormula": "KG",
       "subRows": [
         {

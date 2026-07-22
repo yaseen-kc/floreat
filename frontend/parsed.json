@@ -72,7 +72,7 @@
     "1.2",
     "ROOF PURLINS",
     "((ROOF!AU19+ROOF!AR19)-1)",
-    "ROOF!S13 &amp; &quot;PURLIN &quot; &amp; ROOF!U13 &amp; &quot; MM DEPTH&quot;",
+    "",
     "KG",
     "(((ROOF!I5 / (ROOF!J9 + ROOF!J10 − 1)) + 0.4) × ((((((ROOF!I6 / (COS(ROOF!J8 × PI() / 180))) / 2) + 0.14) / ROOF!J11) + 1) × 2) × (ROOF!J9 + ROOF!J10 − 1) × ROOF!W13) + (((ROOF!I5 / (ROOF!J9 + ROOF!J10 − 1)) + 0.4) × ROOF!W13 × 0 × 0)"
   ],
