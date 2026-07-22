@@ -3,7 +3,7 @@ import type { RowDef } from './QuantityTableTypes';
 export const PEB_ROOF_ROWS: RowDef[] = [
   {
     "sl": "1",
-    "labelPrefix": "TRUE",
+    "labelPrefix": "_",
     "label": "PEB ROOF",
     "spec": "MATERIAL WITH PURLIN",
     "unit": "KG/SQFT",
@@ -24,7 +24,7 @@ export const PEB_ROOF_ROWS: RowDef[] = [
         "desc": "LENGTH OF BUILDING",
         "spec": "_",
         "unit": "M",
-        "addlSpec": "ADDITIONAL =",
+        "addlSpec": "ADDITIONAL=",
         "addlUnit": "KG",
         "addlField": "raftersAndColumnsAdditionalQuantity"
       },
@@ -51,49 +51,49 @@ export const PEB_ROOF_ROWS: RowDef[] = [
   {
     "sl": "1.2",
     "label": "Roof purlins",
-    "labelSuffix": "89",
-    "spec": "((ROOF!AU19+ROOF!AR19)-1)",
-    "unit": "",
+    "labelSuffix": "_",
+    "spec": "_",
+    "unit": "KG",
     "qtyField": "roofPurlinsQuantity",
     "unitField": "roofPurlinsUnit",
     "subRows": [
       {
         "sl": "a",
         "desc": "LENGTH OF ONE PURLIN",
-        "spec": "((ROOF!I5/(ROOF!J9+ROOF!J10-1))+0.4)",
+        "spec": "_",
         "unit": "M",
-        "addlSpec": "ADDITIONAL =",
+        "addlSpec": "ADDITIONAL=",
         "addlUnit": "KG",
         "addlField": "roofPurlinsAdditionalQuantity"
       },
       {
         "sl": "b",
         "desc": "NO.OF.PURLINS IN ONE FRAME",
-        "spec": "((((((ROOF!I6/(COS(ROOF!J8*PI()/180)))/2)+0.14)/ROOF!J11)+1)*2)",
+        "spec": "_",
         "unit": "NOS"
       },
       {
         "sl": "c",
         "desc": "TOTAL NO.OF PURLIN BAY",
-        "spec": "(ROOF!J9+ROOF!J10-1)",
+        "spec": "_",
         "unit": "NOS"
       },
       {
         "sl": "d",
         "desc": "UNIT WEIGHT OF PURLIN",
-        "spec": "ROOF!W13",
+        "spec": "_",
         "unit": "KG/M"
       },
       {
         "sl": "e",
         "desc": "NO.OF.PURLINS IN EXTENDED FRAME",
-        "spec": "(((ROOF!AQ19/COS(ROOF!J8*PI()/180))/ROOF!J11))",
+        "spec": "_",
         "unit": "NOS"
       },
       {
         "sl": "f",
         "desc": "NO.OF EXTENDED PURLIN BAY",
-        "spec": "IF(((ROOF!AU19+ROOF!AR19)-1)&lt;1,0,((ROOF!AU19+ROOF!AR19)-1))",
+        "spec": "_",
         "unit": "NOS"
       }
     ]
@@ -101,7 +101,7 @@ export const PEB_ROOF_ROWS: RowDef[] = [
   {
     "sl": "1.3",
     "label": "Roof sheet",
-    "spec": "(CONCATENATE(ROOF!AV5,\"MM THICK \",ROOF!AS5)))",
+    "spec": "_",
     "unit": "SQM",
     "qtyField": "roofSheetQuantity",
     "unitField": "roofSheetUnit",
@@ -116,28 +116,28 @@ export const PEB_ROOF_ROWS: RowDef[] = [
       {
         "sl": "a",
         "desc": "EXTENDED ROOF WIDTH",
-        "spec": "(ROOF!AQ19/COS(ROOF!J8*PI()/180))",
+        "spec": "_",
         "unit": "M",
-        "addlSpec": "ADDITIONAL =",
+        "addlSpec": "ADDITIONAL=",
         "addlUnit": "SQM",
         "addlField": "roofSheetAdditionalQuantity"
       },
       {
         "sl": "b",
         "desc": "EXTENDED ROOF LENGTH",
-        "spec": "((ROOF!I5/(ROOF!J9+ROOF!J10-1))*IF(((ROOF!AU19+ROOF!AR19)-1)&lt;1,0,((ROOF!AU19+ROOF!AR19)-1)))",
+        "spec": "_",
         "unit": "M"
       },
       {
         "sl": "c",
         "desc": "ROOF AREA DEDUCTIONS",
-        "spec": "ROOF!AS9",
+        "spec": "_",
         "unit": "SQM"
       },
       {
         "sl": "d",
         "desc": "POLY CARBONATE AREA DEDUCTION",
-        "spec": "ROOF!AX12 × ROOF!AX13 × ROOF!AX14",
+        "spec": "_",
         "unit": "SQM"
       }
     ]
@@ -145,7 +145,7 @@ export const PEB_ROOF_ROWS: RowDef[] = [
   {
     "sl": "1.4",
     "label": "Polycarbonate sheet",
-    "spec": "",
+    "spec": "_",
     "unit": "SQM",
     "qtyField": "polycarbonateSheetQuantity",
     "unitField": "polycarbonateSheetUnit",
@@ -160,22 +160,22 @@ export const PEB_ROOF_ROWS: RowDef[] = [
       {
         "sl": "a",
         "desc": "LENGTH OF POLYCARBONATE SHEET",
-        "spec": "ROOF!AX12",
+        "spec": "_",
         "unit": "M",
-        "addlSpec": "ADDITIONAL =",
+        "addlSpec": "ADDITIONAL=",
         "addlUnit": "SQM",
         "addlField": "polycarbonateSheetAdditionalQuantity"
       },
       {
         "sl": "b",
         "desc": "WIDTH OF POLYCARBONATE SHEET",
-        "spec": "ROOF!AX13",
+        "spec": "_",
         "unit": "M"
       },
       {
         "sl": "c",
         "desc": "NOS OF POLYCARBONATE SHEET",
-        "spec": "ROOF!AX14",
+        "spec": "_",
         "unit": "NOS"
       }
     ]
@@ -183,7 +183,7 @@ export const PEB_ROOF_ROWS: RowDef[] = [
   {
     "sl": "1.5",
     "label": "Roof wind bracings",
-    "spec": "",
+    "spec": "_",
     "unit": "KG",
     "qtyField": "roofWindBracingsQuantity",
     "unitField": "roofWindBracingsUnit",
@@ -191,22 +191,22 @@ export const PEB_ROOF_ROWS: RowDef[] = [
       {
         "sl": "a",
         "desc": "LENGTH OF ROOF SINGLE WIND BRACING",
-        "spec": "SQRT(((((ROOF!I6 / 2) / (COS(ROOF!J8 × PI() / 180))) / ROOF!AA17)^2) + ((ROOF!I5 / (ROOF!J9 + ROOF!J10 − 1)) × (ROOF!I5 / (ROOF!J9 + ROOF!J10 − 1))))",
+        "spec": "_",
         "unit": "M",
-        "addlSpec": "ADDITIONAL =",
+        "addlSpec": "ADDITIONAL=",
         "addlUnit": "KG",
         "addlField": "roofWindBracingsAdditionalQuantity"
       },
       {
         "sl": "b",
         "desc": "TOTAL NUMBER OF ROOF WIND BRACING",
-        "spec": "ROOF!AA17 × 2 × 2 × ROOF!AA19",
+        "spec": "_",
         "unit": "NOS"
       },
       {
         "sl": "c",
         "desc": "UNIT WEIGHT OF ROOF WIND BRACING",
-        "spec": "ROOF!AA22",
+        "spec": "_",
         "unit": "KG/M"
       }
     ]
@@ -215,7 +215,7 @@ export const PEB_ROOF_ROWS: RowDef[] = [
     "sl": "1.6",
     "label": "Roof sag rod",
     "labelSuffix": "8.95456465",
-    "spec": "(((ROOF!AQ19/COS(ROOF!J8*PI()/180))/ROOF!J11)-1))",
+    "spec": "_",
     "unit": "",
     "qtyField": "roofSagRodQuantity",
     "unitField": "roofSagRodUnit",
@@ -223,40 +223,40 @@ export const PEB_ROOF_ROWS: RowDef[] = [
       {
         "sl": "a",
         "desc": "LENGTH OF SINGLE SAG ROD",
-        "spec": "ROOF!J11 + 0.2",
+        "spec": "_",
         "unit": "M",
-        "addlSpec": "ADDITIONAL =",
+        "addlSpec": "ADDITIONAL=",
         "addlUnit": "KG",
         "addlField": "roofSagRodAdditionalQuantity"
       },
       {
         "sl": "b",
         "desc": "NO.OF SAG ROD IN A SINGLE FRAME",
-        "spec": "(() / ROOF!J11) × 2",
+        "spec": "_",
         "unit": ""
       },
       {
         "sl": "c",
         "desc": "NO.OF BAY IN SAG ROD PROVIDED",
-        "spec": "ROOF!J9 + ROOF!J10 − 1",
+        "spec": "_",
         "unit": ""
       },
       {
         "sl": "d",
         "desc": "NO.OF.SAG ROD IN EXTENDED FRAME",
-        "spec": "IF((((ROOF!AQ19/COS(ROOF!J8*PI()/180))/ROOF!J11)-1))&lt;1,0,(((ROOF!AQ19/COS(ROOF!J8*PI()/180))/ROOF!J11)-1)))",
+        "spec": "_",
         "unit": ""
       },
       {
         "sl": "e",
         "desc": "NO.OF EXTENDED SAG ROD BAY",
-        "spec": "(((ROOF!AU19+ROOF!AR19)-1)&lt;1,0,((ROOF!AU19+ROOF!AR19)-1))",
+        "spec": "_",
         "unit": ""
       },
       {
         "sl": "f",
         "desc": "UNIT WEIGHT OF SAG ROD",
-        "spec": "(ROOF!J22 × ROOF!J22) / 162",
+        "spec": "_",
         "unit": "KG/M"
       }
     ]
@@ -264,7 +264,7 @@ export const PEB_ROOF_ROWS: RowDef[] = [
   {
     "sl": "1.7",
     "label": "Roof flange brace",
-    "spec": "",
+    "spec": "_",
     "unit": "KG",
     "qtyField": "roofFlangeBraceQuantity",
     "unitField": "roofFlangeBraceUnit",
@@ -272,64 +272,64 @@ export const PEB_ROOF_ROWS: RowDef[] = [
       {
         "sl": "a",
         "desc": "",
-        "spec": "ROOF!AN12",
+        "spec": "_",
         "unit": "M",
-        "addlSpec": "ADDITIONAL =",
+        "addlSpec": "ADDITIONAL=",
         "addlUnit": "KG",
         "addlField": "roofFlangeBraceAdditionalQuantity"
       },
       {
         "sl": "b",
         "desc": "NO.OF FLANGE BRACE IN MID FRAME",
-        "spec": "((() / ROOF!J11) + 1) × 4",
+        "spec": "_",
         "unit": ""
       },
       {
         "sl": "c",
         "desc": "NO.OF FLANGE BRACE IN END FRAME",
-        "spec": "((() / ROOF!J11) + 1) × 2",
+        "spec": "_",
         "unit": ""
       },
       {
         "sl": "d",
         "desc": "NO.OF MID FRAME",
-        "spec": "ROOF!J9",
+        "spec": "_",
         "unit": ""
       },
       {
         "sl": "e",
         "desc": "NO.OF END FRAME",
-        "spec": "ROOF!J10",
+        "spec": "_",
         "unit": ""
       },
       {
         "sl": "f",
         "desc": "NO.OF FLNG BRACE IN EXTENDED FRAME",
-        "spec": "((0 / COS(ROOF!J8 × PI() / 180)) / ROOF!J11) × 2",
+        "spec": "_",
         "unit": ""
       },
       {
         "sl": "g",
         "desc": "NO.OF FLNG BRACE IN EXTENDED FRAME",
-        "spec": "((((ROOF!AQ19/COS(ROOF!J8*PI()/180))/ROOF!J11)))",
+        "spec": "_",
         "unit": ""
       },
       {
         "sl": "h",
         "desc": "NO.OF EXTENDED MID FRAME",
-        "spec": "ROOF!AR19",
+        "spec": "_",
         "unit": ""
       },
       {
         "sl": "i",
         "desc": "NO.OF EXTENDED END FRAME",
-        "spec": "ROOF!AU19",
+        "spec": "_",
         "unit": ""
       },
       {
         "sl": "j",
         "desc": "LENGTH OF END FRAME FLANGE BRACE",
-        "spec": "ROOF!AU19",
+        "spec": "_",
         "unit": ""
       }
     ]
@@ -337,7 +337,7 @@ export const PEB_ROOF_ROWS: RowDef[] = [
   {
     "sl": "1.8",
     "label": "Purlin bolts",
-    "spec": "(CONCATENATE(JOINTS!AS21,\" MM DIA ORDINARY BOLTS\"))",
+    "spec": "_",
     "unit": "NOS",
     "qtyField": "purlinBoltsQuantity",
     "unitField": "purlinBoltsUnit",
@@ -345,31 +345,31 @@ export const PEB_ROOF_ROWS: RowDef[] = [
       {
         "sl": "a",
         "desc": "NO.OF PURLIN JOINT IN SINGLE FRAME",
-        "spec": "((() / ROOF!J11) + 1) × 2",
+        "spec": "_",
         "unit": ""
       },
       {
         "sl": "b",
         "desc": "TOTAL NO.OF FRAMES",
-        "spec": "ROOF!J9 + ROOF!J10",
+        "spec": "_",
         "unit": ""
       },
       {
         "sl": "c",
         "desc": "NO.OF PURLIN NODE IN EXTENDED FRAME",
-        "spec": "(((ROOF!AQ19/COS(ROOF!J8*PI()/180))/ROOF!J11))",
+        "spec": "_",
         "unit": ""
       },
       {
         "sl": "d",
         "desc": "NO.OF EXTENDED FRAMES",
-        "spec": "(((ROOF!AR19+ROOF!AU19)))",
+        "spec": "_",
         "unit": ""
       },
       {
         "sl": "e",
         "desc": "NO.OF BOLTS IN SINGLE PURLIN JOINT",
-        "spec": "JOINTS!AV21",
+        "spec": "_",
         "unit": ""
       }
     ]
@@ -377,7 +377,7 @@ export const PEB_ROOF_ROWS: RowDef[] = [
   {
     "sl": "1.9",
     "label": "NUMBER OF ROOF JOINT BOLTS",
-    "spec": "(CONCATENATE(JOINTS!AI6,\" MM DIA HSFG BOLTS\"))",
+    "spec": "_",
     "unit": "NOS",
     "qtyField": "roofJointBoltsQuantity",
     "unitField": "roofJointBoltsUnit",
@@ -386,7 +386,7 @@ export const PEB_ROOF_ROWS: RowDef[] = [
   {
     "sl": "1.9.1",
     "label": "NUMBER OF Foundation bolts",
-    "spec": "",
+    "spec": "_",
     "unit": "",
     "qtyField": "foundationBoltsQuantity",
     "unitField": "foundationBoltsUnit",
@@ -395,7 +395,7 @@ export const PEB_ROOF_ROWS: RowDef[] = [
   {
     "sl": "1.9.2",
     "label": "Anchor bolts",
-    "spec": "",
+    "spec": "_",
     "unit": "",
     "qtyField": "anchorBoltsQuantity",
     "unitField": "anchorBoltsUnit",
@@ -407,95 +407,95 @@ export const CLADDING_ROWS: RowDef[] = [
   {
     "sl": "2.1",
     "label": "Cladding structure",
-    "spec": "",
+    "spec": "_",
     "unit": "KG",
     "qtyField": "claddingStructureQuantity",
     "unitField": "claddingStructureUnit",
     "subRows": [{
       "sl": "a",
       "desc": "CLADDING EAVE HEIGHT FRONT",
-      "spec": "ROOF!AN12",
+      "spec": "_",
       "unit": "M",
-      "addlSpec": "ADDITIONAL =",
+      "addlSpec": "ADDITIONAL=",
       "addlUnit": "KG",
       "addlField": "roofFlangeBraceAdditionalQuantity"
     }, {
       "sl": "b",
       "desc": "CLADDING EAVE HEIGHT BACK",
-      "spec": "ROOF!AN12",
+      "spec": "_",
       "unit": "M",
 
     }, {
       "sl": "c",
       "desc": "CLADDING EAVE HEIGHT RIGHT",
-      "spec": "ROOF!AN12",
+      "spec": "_",
       "unit": "M",
 
     }, {
       "sl": "d",
       "desc": "CLADDING EAVE HEIGHT LEFT",
-      "spec": "ROOF!AN12",
+      "spec": "_",
       "unit": "M",
 
     }, {
       "sl": "e",
       "desc": "EXTENDED COLUMN HEIGHT",
-      "spec": "ROOF!AN12",
+      "spec": "_",
       "unit": "M",
 
     }, {
       "sl": "f",
       "desc": "WIDTH OF EXTENDED FRAME",
-      "spec": "ROOF!AN12",
+      "spec": "_",
       "unit": "M",
 
     }, {
       "sl": "g",
       "desc": "NO.OF SIDE CLADDING PURLIN",
-      "spec": "ROOF!AN12",
+      "spec": "_",
       "unit": "M",
 
     }, {
       "sl": "h",
       "desc": "NO.OF FACE CLADDING PURLIN",
-      "spec": "ROOF!AN12",
+      "spec": "_",
       "unit": "M",
 
     }, {
       "sl": "i",
       "desc": "TOTAL LENGTH OF CLADDING PURLIN",
-      "spec": "ROOF!AN12",
+      "spec": "_",
       "unit": "M",
 
     }, {
       "sl": "j",
       "desc": "TOTAL WEIGHT OF CLADDING PURLIN",
-      "spec": "ROOF!AN12",
+      "spec": "_",
       "unit": "M",
 
     }, {
       "sl": "k",
       "desc": "CLADDING AREA WITHOUT ANY DEDUCTIONS",
-      "spec": "ROOF!AN12",
+      "spec": "_",
       "unit": "M",
 
     }, {
       "sl": "l",
       "desc": "AVERAGE MATERIAL CONSUMPTION",
-      "spec": "ROOF!AN12",
+      "spec": "_",
       "unit": "M",
 
     },
     {
       "sl": "m",
       "desc": "TOTAL CLADDING OPENINGS",
-      "spec": "ROOF!AN12",
+      "spec": "_",
       "unit": "M",
 
     }, {
       "sl": "n",
       "desc": "FASCIA OPENING",
-      "spec": "ROOF!AN12",
+      "spec": "_",
       "unit": "M",
 
     },]
@@ -562,7 +562,7 @@ export const CANOPY_ROWS: RowDef[] = [
   {
     "sl": "3.1",
     "label": "Canopy Structure",
-    "spec": "",
+    "spec": "_",
     "unit": "KG",
     "qtyField": "structureQuantity",
     "unitField": "structureUnit",
@@ -578,7 +578,7 @@ export const CANOPY_ROWS: RowDef[] = [
   {
     "sl": "3.2",
     "label": "Canopy Purlin",
-    "spec": "",
+    "spec": "_",
     "unit": "KG",
     "qtyField": "purlinQuantity",
     "unitField": "purlinUnit",
@@ -587,7 +587,7 @@ export const CANOPY_ROWS: RowDef[] = [
   {
     "sl": "3.3",
     "label": "Canopy Sheet",
-    "spec": "",
+    "spec": "_",
     "unit": "SQM",
     "qtyField": "sheetQuantity",
     "unitField": "sheetUnit",
@@ -604,7 +604,7 @@ export const CANOPY_ROWS: RowDef[] = [
   {
     "sl": "3.4",
     "label": "Canopy Gutter",
-    "spec": "",
+    "spec": "_",
     "unit": "M",
     "qtyField": "gutterQuantity",
     "unitField": "gutterUnit",
@@ -613,7 +613,7 @@ export const CANOPY_ROWS: RowDef[] = [
   {
     "sl": "3.5",
     "label": "Canopy Down take",
-    "spec": "",
+    "spec": "_",
     "unit": "M",
     "qtyField": "downTakeQuantity",
     "unitField": "downTakeUnit",
@@ -622,7 +622,7 @@ export const CANOPY_ROWS: RowDef[] = [
   {
     "sl": "3.6",
     "label": "Canopy Side covering",
-    "spec": "",
+    "spec": "_",
     "unit": "SQM",
     "qtyField": "sideCoveringQuantity",
     "unitField": "sideCoveringUnit",
@@ -631,7 +631,7 @@ export const CANOPY_ROWS: RowDef[] = [
   {
     "sl": "3.7",
     "label": "Canopy Flashing",
-    "spec": "",
+    "spec": "_",
     "unit": "M",
     "qtyField": "flashingQuantity",
     "unitField": "flashingUnit",
@@ -640,7 +640,7 @@ export const CANOPY_ROWS: RowDef[] = [
   {
     "sl": "3.8",
     "label": "Canopy Purlin bolts",
-    "spec": "",
+    "spec": "_",
     "unit": "NOS",
     "qtyField": "purlinBoltsQuantity",
     "unitField": "purlinBoltsUnit",
@@ -649,7 +649,7 @@ export const CANOPY_ROWS: RowDef[] = [
   {
     "sl": "3.9",
     "label": "Canopy Joint bolts",
-    "spec": "",
+    "spec": "_",
     "unit": "NOS",
     "qtyField": "jointBoltsQuantity",
     "unitField": "jointBoltsUnit",
@@ -683,7 +683,7 @@ export const ACCESSORIES_ROWS: RowDef[] = [
   {
     "sl": "4.3",
     "label": "Fascia structure",
-    "spec": "",
+    "spec": "_",
     "unit": "",
     "qtyField": "fasciaStructureQuantity",
     "unitField": "fasciaStructureUnit",
@@ -692,7 +692,7 @@ export const ACCESSORIES_ROWS: RowDef[] = [
   {
     "sl": "4.4",
     "label": "Fascia covering sheet",
-    "spec": "",
+    "spec": "_",
     "unit": "",
     "qtyField": "fasciaCoveringSheetQuantity",
     "unitField": "fasciaCoveringSheetUnit",
@@ -701,7 +701,7 @@ export const ACCESSORIES_ROWS: RowDef[] = [
   {
     "sl": "4.5",
     "label": "Internal partitions",
-    "spec": "",
+    "spec": "_",
     "unit": "",
     "qtyField": "internalPartitionsQuantity",
     "unitField": "internalPartitionsUnit",
@@ -710,7 +710,7 @@ export const ACCESSORIES_ROWS: RowDef[] = [
   {
     "sl": "4.6",
     "label": "Ridge",
-    "spec": "",
+    "spec": "_",
     "unit": "",
     "qtyField": "ridgeQuantity",
     "unitField": "ridgeUnit",
@@ -719,7 +719,7 @@ export const ACCESSORIES_ROWS: RowDef[] = [
   {
     "sl": "4.7",
     "label": "Gutter",
-    "spec": "",
+    "spec": "_",
     "unit": "",
     "qtyField": "gutterQuantity",
     "unitField": "gutterUnit",
@@ -728,7 +728,7 @@ export const ACCESSORIES_ROWS: RowDef[] = [
   {
     "sl": "4.8",
     "label": "Down take",
-    "spec": "",
+    "spec": "_",
     "unit": "",
     "qtyField": "downTakeQuantity",
     "unitField": "downTakeUnit",
@@ -737,7 +737,7 @@ export const ACCESSORIES_ROWS: RowDef[] = [
   {
     "sl": "4.9",
     "label": "Drip trim",
-    "spec": "",
+    "spec": "_",
     "unit": "",
     "qtyField": "dripTrimQuantity",
     "unitField": "dripTrimUnit",
@@ -746,7 +746,7 @@ export const ACCESSORIES_ROWS: RowDef[] = [
   {
     "sl": "4.10",
     "label": "Gable end flashing",
-    "spec": "",
+    "spec": "_",
     "unit": "",
     "qtyField": "gableEndFlashingQuantity",
     "unitField": "gableEndFlashingUnit",
@@ -755,7 +755,7 @@ export const ACCESSORIES_ROWS: RowDef[] = [
   {
     "sl": "4.11",
     "label": "Corner flash",
-    "spec": "",
+    "spec": "_",
     "unit": "SQM",
     "qtyField": "cornerFlashCount",
     "unitField": "cornerFlashCountUnit",
@@ -817,7 +817,7 @@ export const ACCESSORIES_ROWS: RowDef[] = [
   {
     "sl": "4.17",
     "label": "Wall insulation",
-    "spec": "",
+    "spec": "_",
     "unit": "",
     "qtyField": "wallInsulationQuantity",
     "unitField": "wallInsulationUnit",
@@ -826,7 +826,7 @@ export const ACCESSORIES_ROWS: RowDef[] = [
   {
     "sl": "4.18",
     "label": "Turbo ventilators",
-    "spec": "",
+    "spec": "_",
     "unit": "",
     "qtyField": "turboVentilatorsQuantity",
     "unitField": "turboVentilatorsUnit",
@@ -835,7 +835,7 @@ export const ACCESSORIES_ROWS: RowDef[] = [
   {
     "sl": "4.19",
     "label": "Handrail",
-    "spec": "",
+    "spec": "_",
     "unit": "",
     "qtyField": "handrailQuantity",
     "unitField": "handrailUnit",
@@ -847,7 +847,7 @@ export const MEZZANINE_ROWS: RowDef[] = [
   {
     "sl": "5.1",
     "label": "Structure",
-    "spec": "",
+    "spec": "_",
     "unit": "KG",
     "qtyField": "structureQuantity",
     "unitField": "structureUnit",
@@ -857,7 +857,7 @@ export const MEZZANINE_ROWS: RowDef[] = [
         "desc": "TOTAL MEZZANINE AREA",
         "spec": "171",
         "unit": "SQM",
-        "addlSpec": "ADDITIONAL =",
+        "addlSpec": "ADDITIONAL=",
         "addlUnit": "KG",
         "addlField": "totalMezzanineAreaAdditionalQuantity",
         "defaultQty": "4756"
@@ -875,7 +875,7 @@ export const MEZZANINE_ROWS: RowDef[] = [
   {
     "sl": "5.2",
     "label": "Deck sheet",
-    "spec": "",
+    "spec": "_",
     "unit": "SQM",
     "qtyField": "deckSheetQuantity",
     "unitField": "deckSheetUnit",
@@ -890,9 +890,9 @@ export const MEZZANINE_ROWS: RowDef[] = [
       {
         "sl": "",
         "desc": "",
-        "spec": "",
+        "spec": "_",
         "unit": "",
-        "addlSpec": "ADDITIONAL =",
+        "addlSpec": "ADDITIONAL=",
         "addlUnit": "SQM",
         "addlField": "deckSheetAdditionalQuantity",
         "defaultQty": "46"
@@ -931,7 +931,7 @@ export const MEZZANINE_ROWS: RowDef[] = [
   {
     "sl": "5.6",
     "label": "Foundation bolts",
-    "spec": "",
+    "spec": "_",
     "unit": "",
     "qtyField": "foundationBoltsQuantity",
     "unitField": null,
@@ -943,7 +943,7 @@ export const STAIR_ROWS: RowDef[] = [
   {
     "sl": "6.1",
     "label": "Total area",
-    "spec": "",
+    "spec": "_",
     "unit": "SQM",
     "qtyField": "totalAreaQuantity",
     "unitField": "totalAreaUnit",
@@ -959,9 +959,9 @@ export const STAIR_ROWS: RowDef[] = [
     "subRows": [{
       "sl": "",
       "desc": "",
-      "spec": "",
+      "spec": "_",
       "unit": "",
-      "addlSpec": "ADDITIONAL =",
+      "addlSpec": "ADDITIONAL=",
       "addlUnit": "KG",
       "addlField": "stringerBeamsAdditionalQuantity"
     }]
@@ -976,9 +976,9 @@ export const STAIR_ROWS: RowDef[] = [
     "subRows": [{
       "sl": "",
       "desc": "",
-      "spec": "",
+      "spec": "_",
       "unit": "",
-      "addlSpec": "ADDITIONAL =",
+      "addlSpec": "ADDITIONAL=",
       "addlUnit": "KG",
       "addlField": "stringerBeamsAdditionalQuantity"
     }]
@@ -1025,7 +1025,7 @@ export const ADDITIONAL_BOLTS_ROWS: RowDef[] = [
   {
     "sl": "7.5",
     "label": "Anchor bolt",
-    "spec": "",
+    "spec": "_",
     "unit": "NOS",
     "qtyField": "anchorBoltQuantity",
     "unitField": "anchorBoltUnit",
@@ -1034,7 +1034,7 @@ export const ADDITIONAL_BOLTS_ROWS: RowDef[] = [
   {
     "sl": "7.6",
     "label": "Foundation bolt",
-    "spec": "",
+    "spec": "_",
     "unit": "NOS",
     "qtyField": "foundationBoltQuantity",
     "unitField": "foundationBoltUnit",
