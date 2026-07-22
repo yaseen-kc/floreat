@@ -13,8 +13,8 @@ import { Input } from '@/components/ui/input'
 import { Spinner } from '@/components/ui/spinner'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { Layers, LayoutGrid, Umbrella, Wrench, Layers2, MoveUpRight, Nut, Save } from 'lucide-react'
-import type { RowDef } from './QuantityTableTypes'
-import { PEB_ROOF_ROWS, CLADDING_ROWS, CANOPY_ROWS, ACCESSORIES_ROWS, MEZZANINE_ROWS, STAIR_ROWS, ADDITIONAL_BOLTS_ROWS } from './quantity-data'
+import type { RowDef } from '@floreat/shared/data'
+import { PEB_ROOF_ROWS, CLADDING_ROWS, CANOPY_ROWS, ACCESSORIES_ROWS, MEZZANINE_ROWS, STAIR_ROWS, ADDITIONAL_BOLTS_ROWS } from '@floreat/shared/data'
 
 type SectionKey =
   | 'pebRoof'
