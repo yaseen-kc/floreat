@@ -8,6 +8,7 @@ export interface SubRowDef {
   addlField?: string;
   purchField?: string;
   defaultQty?: string | number;
+  isCalculated?: boolean;
 }
 
 export interface RowDef {
@@ -23,5 +24,6 @@ export interface RowDef {
   qtyField: string;
   unitField: string | null;
   defaultQty?: string | number;
+  isCalculated?: boolean;
   subRows: SubRowDef[];
 }

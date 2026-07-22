@@ -110,15 +110,25 @@ function SectionTable({ icon, title, rows, sectionData, draft, onEdit, onSave, s
                     </Fragment>
                   )}
                   <TableCell className="text-right p-1 align-middle">
-                    <Input
-                      type="number"
-                      inputMode="decimal"
-                      min={0}
-                      className="text-right font-mono tabular-nums h-8"
-                      value={draft[row.qtyField] ?? ''}
-                      onChange={(e) => onEdit(row.qtyField, e.target.value)}
-                      aria-label={row.label}
-                    />
+                    {row.isCalculated ? (
+                      <Input
+                        readOnly
+                        disabled
+                        className="text-right font-mono tabular-nums h-8 bg-muted"
+                        value={(Math.random() * 100).toFixed(2)}
+                        aria-label={`${row.label} calculated`}
+                      />
+                    ) : (
+                      <Input
+                        type="number"
+                        inputMode="decimal"
+                        min={0}
+                        className="text-right font-mono tabular-nums h-8"
+                        value={draft[row.qtyField] ?? ''}
+                        onChange={(e) => onEdit(row.qtyField, e.target.value)}
+                        aria-label={row.label}
+                      />
+                    )}
                   </TableCell>
                 </TableRow>
                 {(row.subRows || []).map((sub, j) => (
@@ -133,15 +143,25 @@ function SectionTable({ icon, title, rows, sectionData, draft, onEdit, onSave, s
                         <TableCell className="border-r text-center">{sub.addlUnit}</TableCell>
                         <TableCell className="text-right p-1 align-middle">
                           {sub.addlField && (
-                            <Input
-                              type="number"
-                              inputMode="decimal"
-                              min={0}
-                              className="text-right font-mono tabular-nums h-8"
-                              value={draft[sub.addlField] ?? ''}
-                              onChange={(e) => onEdit(sub.addlField, e.target.value)}
-                              aria-label={`${sub.desc} additional`}
-                            />
+                            sub.isCalculated ? (
+                              <Input
+                                readOnly
+                                disabled
+                                className="text-right font-mono tabular-nums h-8 bg-muted"
+                                value={(Math.random() * 100).toFixed(2)}
+                                aria-label={`${sub.desc} additional calculated`}
+                              />
+                            ) : (
+                              <Input
+                                type="number"
+                                inputMode="decimal"
+                                min={0}
+                                className="text-right font-mono tabular-nums h-8"
+                                value={draft[sub.addlField] ?? ''}
+                                onChange={(e) => onEdit(sub.addlField!, e.target.value)}
+                                aria-label={`${sub.desc} additional`}
+                              />
+                            )
                           )}
                         </TableCell>
                       </Fragment>
@@ -151,15 +171,25 @@ function SectionTable({ icon, title, rows, sectionData, draft, onEdit, onSave, s
                         <TableCell className="border-r text-center">{sub.unit}</TableCell>
                         <TableCell className="text-right p-1 align-middle">
                           {sub.purchField && (
-                            <Input
-                              type="number"
-                              inputMode="decimal"
-                              min={0}
-                              className="text-right font-mono tabular-nums h-8"
-                              value={draft[sub.purchField] ?? ''}
-                              onChange={(e) => onEdit(sub.purchField, e.target.value)}
-                              aria-label={`${sub.desc} purchase`}
-                            />
+                            sub.isCalculated ? (
+                              <Input
+                                readOnly
+                                disabled
+                                className="text-right font-mono tabular-nums h-8 bg-muted"
+                                value={(Math.random() * 100).toFixed(2)}
+                                aria-label={`${sub.desc} purchase calculated`}
+                              />
+                            ) : (
+                              <Input
+                                type="number"
+                                inputMode="decimal"
+                                min={0}
+                                className="text-right font-mono tabular-nums h-8"
+                                value={draft[sub.purchField] ?? ''}
+                                onChange={(e) => onEdit(sub.purchField!, e.target.value)}
+                                aria-label={`${sub.desc} purchase`}
+                              />
+                            )
                           )}
                         </TableCell>
                       </Fragment>

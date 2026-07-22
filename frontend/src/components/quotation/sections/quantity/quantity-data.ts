@@ -9,7 +9,8 @@ export const PEB_ROOF_ROWS: RowDef[] = [
     "unit": "KG/SQFT",
     "qtyField": "",
     "unitField": "",
-    "subRows": []
+    "subRows": [],
+    "isCalculated": true
   },
   {
     "sl": "1.1",
@@ -46,7 +47,8 @@ export const PEB_ROOF_ROWS: RowDef[] = [
         "spec": "_",
         "unit": "KG/SQFT"
       }
-    ]
+    ],
+    "isCalculated": true
   },
   {
     "sl": "1.2",
@@ -96,7 +98,8 @@ export const PEB_ROOF_ROWS: RowDef[] = [
         "spec": "_",
         "unit": "NOS"
       }
-    ]
+    ],
+    "isCalculated": true
   },
   {
     "sl": "1.3",
@@ -111,7 +114,8 @@ export const PEB_ROOF_ROWS: RowDef[] = [
         "desc": "",
         "spec": "PURCHASE QUANTITY",
         "unit": "SQM",
-        "purchField": "roofSheetPurchaseQuantity"
+        "purchField": "roofSheetPurchaseQuantity",
+        "isCalculated": true
       },
       {
         "sl": "a",
@@ -140,7 +144,8 @@ export const PEB_ROOF_ROWS: RowDef[] = [
         "spec": "_",
         "unit": "SQM"
       }
-    ]
+    ],
+    "isCalculated": true
   },
   {
     "sl": "1.4",
@@ -155,7 +160,8 @@ export const PEB_ROOF_ROWS: RowDef[] = [
         "desc": "",
         "spec": "PURCHASE QUANTITY",
         "unit": "SQM",
-        "purchField": "polycarbonateSheetPurchaseQuantity"
+        "purchField": "polycarbonateSheetPurchaseQuantity",
+        "isCalculated": true
       },
       {
         "sl": "a",
@@ -178,7 +184,8 @@ export const PEB_ROOF_ROWS: RowDef[] = [
         "spec": "_",
         "unit": "NOS"
       }
-    ]
+    ],
+    "isCalculated": true
   },
   {
     "sl": "1.5",
@@ -209,7 +216,8 @@ export const PEB_ROOF_ROWS: RowDef[] = [
         "spec": "_",
         "unit": "KG/M"
       }
-    ]
+    ],
+    "isCalculated": true
   },
   {
     "sl": "1.6",
@@ -259,7 +267,8 @@ export const PEB_ROOF_ROWS: RowDef[] = [
         "spec": "_",
         "unit": "KG/M"
       }
-    ]
+    ],
+    "isCalculated": true
   },
   {
     "sl": "1.7",
@@ -332,7 +341,8 @@ export const PEB_ROOF_ROWS: RowDef[] = [
         "spec": "_",
         "unit": ""
       }
-    ]
+    ],
+    "isCalculated": true
   },
   {
     "sl": "1.8",
@@ -372,7 +382,8 @@ export const PEB_ROOF_ROWS: RowDef[] = [
         "spec": "_",
         "unit": ""
       }
-    ]
+    ],
+    "isCalculated": true
   },
   {
     "sl": "1.9",
@@ -381,7 +392,8 @@ export const PEB_ROOF_ROWS: RowDef[] = [
     "unit": "NOS",
     "qtyField": "roofJointBoltsQuantity",
     "unitField": "roofJointBoltsUnit",
-    "subRows": []
+    "subRows": [],
+    "isCalculated": true
   },
   {
     "sl": "1.9.1",
@@ -390,7 +402,8 @@ export const PEB_ROOF_ROWS: RowDef[] = [
     "unit": "",
     "qtyField": "foundationBoltsQuantity",
     "unitField": "foundationBoltsUnit",
-    "subRows": []
+    "subRows": [],
+    "isCalculated": true
   },
   {
     "sl": "1.9.2",
@@ -399,7 +412,8 @@ export const PEB_ROOF_ROWS: RowDef[] = [
     "unit": "",
     "qtyField": "anchorBoltsQuantity",
     "unitField": "anchorBoltsUnit",
-    "subRows": []
+    "subRows": [],
+    "isCalculated": true
   }
 ];
 
@@ -411,94 +425,96 @@ export const CLADDING_ROWS: RowDef[] = [
     "unit": "KG",
     "qtyField": "claddingStructureQuantity",
     "unitField": "claddingStructureUnit",
-    "subRows": [{
-      "sl": "a",
-      "desc": "CLADDING EAVE HEIGHT FRONT",
-      "spec": "_",
-      "unit": "M",
-      "addlSpec": "ADDITIONAL=",
-      "addlUnit": "KG",
-      "addlField": "roofFlangeBraceAdditionalQuantity"
-    }, {
-      "sl": "b",
-      "desc": "CLADDING EAVE HEIGHT BACK",
-      "spec": "_",
-      "unit": "M",
-
-    }, {
-      "sl": "c",
-      "desc": "CLADDING EAVE HEIGHT RIGHT",
-      "spec": "_",
-      "unit": "M",
-
-    }, {
-      "sl": "d",
-      "desc": "CLADDING EAVE HEIGHT LEFT",
-      "spec": "_",
-      "unit": "M",
-
-    }, {
-      "sl": "e",
-      "desc": "EXTENDED COLUMN HEIGHT",
-      "spec": "_",
-      "unit": "M",
-
-    }, {
-      "sl": "f",
-      "desc": "WIDTH OF EXTENDED FRAME",
-      "spec": "_",
-      "unit": "M",
-
-    }, {
-      "sl": "g",
-      "desc": "NO.OF SIDE CLADDING PURLIN",
-      "spec": "_",
-      "unit": "M",
-
-    }, {
-      "sl": "h",
-      "desc": "NO.OF FACE CLADDING PURLIN",
-      "spec": "_",
-      "unit": "M",
-
-    }, {
-      "sl": "i",
-      "desc": "TOTAL LENGTH OF CLADDING PURLIN",
-      "spec": "_",
-      "unit": "M",
-
-    }, {
-      "sl": "j",
-      "desc": "TOTAL WEIGHT OF CLADDING PURLIN",
-      "spec": "_",
-      "unit": "M",
-
-    }, {
-      "sl": "k",
-      "desc": "CLADDING AREA WITHOUT ANY DEDUCTIONS",
-      "spec": "_",
-      "unit": "M",
-
-    }, {
-      "sl": "l",
-      "desc": "AVERAGE MATERIAL CONSUMPTION",
-      "spec": "_",
-      "unit": "M",
-
-    },
-    {
-      "sl": "m",
-      "desc": "TOTAL CLADDING OPENINGS",
-      "spec": "_",
-      "unit": "M",
-
-    }, {
-      "sl": "n",
-      "desc": "FASCIA OPENING",
-      "spec": "_",
-      "unit": "M",
-
-    },]
+    "subRows": [
+      {
+        "sl": "a",
+        "desc": "CLADDING EAVE HEIGHT FRONT",
+        "spec": "_",
+        "unit": "M",
+        "addlSpec": "ADDITIONAL=",
+        "addlUnit": "KG",
+        "addlField": "roofFlangeBraceAdditionalQuantity"
+      },
+      {
+        "sl": "b",
+        "desc": "CLADDING EAVE HEIGHT BACK",
+        "spec": "_",
+        "unit": "M"
+      },
+      {
+        "sl": "c",
+        "desc": "CLADDING EAVE HEIGHT RIGHT",
+        "spec": "_",
+        "unit": "M"
+      },
+      {
+        "sl": "d",
+        "desc": "CLADDING EAVE HEIGHT LEFT",
+        "spec": "_",
+        "unit": "M"
+      },
+      {
+        "sl": "e",
+        "desc": "EXTENDED COLUMN HEIGHT",
+        "spec": "_",
+        "unit": "M"
+      },
+      {
+        "sl": "f",
+        "desc": "WIDTH OF EXTENDED FRAME",
+        "spec": "_",
+        "unit": "M"
+      },
+      {
+        "sl": "g",
+        "desc": "NO.OF SIDE CLADDING PURLIN",
+        "spec": "_",
+        "unit": "M"
+      },
+      {
+        "sl": "h",
+        "desc": "NO.OF FACE CLADDING PURLIN",
+        "spec": "_",
+        "unit": "M"
+      },
+      {
+        "sl": "i",
+        "desc": "TOTAL LENGTH OF CLADDING PURLIN",
+        "spec": "_",
+        "unit": "M"
+      },
+      {
+        "sl": "j",
+        "desc": "TOTAL WEIGHT OF CLADDING PURLIN",
+        "spec": "_",
+        "unit": "M"
+      },
+      {
+        "sl": "k",
+        "desc": "CLADDING AREA WITHOUT ANY DEDUCTIONS",
+        "spec": "_",
+        "unit": "M"
+      },
+      {
+        "sl": "l",
+        "desc": "AVERAGE MATERIAL CONSUMPTION",
+        "spec": "_",
+        "unit": "M"
+      },
+      {
+        "sl": "m",
+        "desc": "TOTAL CLADDING OPENINGS",
+        "spec": "_",
+        "unit": "M"
+      },
+      {
+        "sl": "n",
+        "desc": "FASCIA OPENING",
+        "spec": "_",
+        "unit": "M"
+      }
+    ],
+    "isCalculated": true
   },
   {
     "sl": "2.2",
@@ -508,13 +524,16 @@ export const CLADDING_ROWS: RowDef[] = [
     "unit": "SQM",
     "qtyField": "claddingSheetQuantity",
     "unitField": "claddingSheetUnit",
-    "subRows": [{
-      "sl": "",
-      "desc": "",
-      "spec": "PURCHASE QUANTITY",
-      "unit": "SQM",
-      "purchField": ""
-    }]
+    "subRows": [
+      {
+        "sl": "",
+        "desc": "",
+        "spec": "PURCHASE QUANTITY",
+        "unit": "SQM",
+        "purchField": ""
+      }
+    ],
+    "isCalculated": true
   },
   {
     "sl": "2.3",
@@ -524,7 +543,8 @@ export const CLADDING_ROWS: RowDef[] = [
     "unit": "44",
     "qtyField": "columnWindBracingsQuantity",
     "unitField": "columnWindBracingsUnit",
-    "subRows": []
+    "subRows": [],
+    "isCalculated": true
   },
   {
     "sl": "2.4",
@@ -534,7 +554,8 @@ export const CLADDING_ROWS: RowDef[] = [
     "unit": "54",
     "qtyField": "claddingSagRodQuantity",
     "unitField": "claddingSagRodUnit",
-    "subRows": []
+    "subRows": [],
+    "isCalculated": true
   },
   {
     "sl": "2.5",
@@ -544,7 +565,8 @@ export const CLADDING_ROWS: RowDef[] = [
     "unit": "65",
     "qtyField": "claddingFlangeBraceQuantity",
     "unitField": "claddingFlangeBraceUnit",
-    "subRows": []
+    "subRows": [],
+    "isCalculated": true
   },
   {
     "sl": "2.6",
@@ -554,7 +576,8 @@ export const CLADDING_ROWS: RowDef[] = [
     "unit": "75",
     "qtyField": "claddingPurlinBoltsQuantity",
     "unitField": "claddingPurlinBoltsUnit",
-    "subRows": []
+    "subRows": [],
+    "isCalculated": true
   }
 ];
 
@@ -573,7 +596,8 @@ export const CANOPY_ROWS: RowDef[] = [
         "spec": "322.80",
         "unit": "SQFT"
       }
-    ]
+    ],
+    "isCalculated": true
   },
   {
     "sl": "3.2",
@@ -582,7 +606,8 @@ export const CANOPY_ROWS: RowDef[] = [
     "unit": "KG",
     "qtyField": "purlinQuantity",
     "unitField": "purlinUnit",
-    "subRows": []
+    "subRows": [],
+    "isCalculated": true
   },
   {
     "sl": "3.3",
@@ -597,9 +622,11 @@ export const CANOPY_ROWS: RowDef[] = [
         "desc": "",
         "spec": "PURCHASE QUANTITY",
         "unit": "SQM",
-        "purchField": "sheetPurchaseQuantity"
+        "purchField": "sheetPurchaseQuantity",
+        "isCalculated": true
       }
-    ]
+    ],
+    "isCalculated": true
   },
   {
     "sl": "3.4",
@@ -608,7 +635,8 @@ export const CANOPY_ROWS: RowDef[] = [
     "unit": "M",
     "qtyField": "gutterQuantity",
     "unitField": "gutterUnit",
-    "subRows": []
+    "subRows": [],
+    "isCalculated": true
   },
   {
     "sl": "3.5",
@@ -617,7 +645,8 @@ export const CANOPY_ROWS: RowDef[] = [
     "unit": "M",
     "qtyField": "downTakeQuantity",
     "unitField": "downTakeUnit",
-    "subRows": []
+    "subRows": [],
+    "isCalculated": true
   },
   {
     "sl": "3.6",
@@ -626,7 +655,8 @@ export const CANOPY_ROWS: RowDef[] = [
     "unit": "SQM",
     "qtyField": "sideCoveringQuantity",
     "unitField": "sideCoveringUnit",
-    "subRows": []
+    "subRows": [],
+    "isCalculated": true
   },
   {
     "sl": "3.7",
@@ -635,7 +665,8 @@ export const CANOPY_ROWS: RowDef[] = [
     "unit": "M",
     "qtyField": "flashingQuantity",
     "unitField": "flashingUnit",
-    "subRows": []
+    "subRows": [],
+    "isCalculated": true
   },
   {
     "sl": "3.8",
@@ -644,7 +675,8 @@ export const CANOPY_ROWS: RowDef[] = [
     "unit": "NOS",
     "qtyField": "purlinBoltsQuantity",
     "unitField": "purlinBoltsUnit",
-    "subRows": []
+    "subRows": [],
+    "isCalculated": true
   },
   {
     "sl": "3.9",
@@ -653,7 +685,8 @@ export const CANOPY_ROWS: RowDef[] = [
     "unit": "NOS",
     "qtyField": "jointBoltsQuantity",
     "unitField": "jointBoltsUnit",
-    "subRows": []
+    "subRows": [],
+    "isCalculated": true
   }
 ];
 
@@ -667,7 +700,8 @@ export const ACCESSORIES_ROWS: RowDef[] = [
     "qtyField": "doorsCount",
     "unitField": "doorsCountUnit",
     "defaultQty": "21",
-    "subRows": []
+    "subRows": [],
+    "isCalculated": true
   },
   {
     "sl": "4.2",
@@ -678,7 +712,8 @@ export const ACCESSORIES_ROWS: RowDef[] = [
     "qtyField": "doorsCount",
     "unitField": "doorsCountUnit",
     "defaultQty": "21",
-    "subRows": []
+    "subRows": [],
+    "isCalculated": true
   },
   {
     "sl": "4.3",
@@ -687,7 +722,8 @@ export const ACCESSORIES_ROWS: RowDef[] = [
     "unit": "",
     "qtyField": "fasciaStructureQuantity",
     "unitField": "fasciaStructureUnit",
-    "subRows": []
+    "subRows": [],
+    "isCalculated": true
   },
   {
     "sl": "4.4",
@@ -696,7 +732,8 @@ export const ACCESSORIES_ROWS: RowDef[] = [
     "unit": "",
     "qtyField": "fasciaCoveringSheetQuantity",
     "unitField": "fasciaCoveringSheetUnit",
-    "subRows": []
+    "subRows": [],
+    "isCalculated": true
   },
   {
     "sl": "4.5",
@@ -705,7 +742,8 @@ export const ACCESSORIES_ROWS: RowDef[] = [
     "unit": "",
     "qtyField": "internalPartitionsQuantity",
     "unitField": "internalPartitionsUnit",
-    "subRows": []
+    "subRows": [],
+    "isCalculated": true
   },
   {
     "sl": "4.6",
@@ -714,7 +752,8 @@ export const ACCESSORIES_ROWS: RowDef[] = [
     "unit": "",
     "qtyField": "ridgeQuantity",
     "unitField": "ridgeUnit",
-    "subRows": []
+    "subRows": [],
+    "isCalculated": true
   },
   {
     "sl": "4.7",
@@ -723,7 +762,8 @@ export const ACCESSORIES_ROWS: RowDef[] = [
     "unit": "",
     "qtyField": "gutterQuantity",
     "unitField": "gutterUnit",
-    "subRows": []
+    "subRows": [],
+    "isCalculated": true
   },
   {
     "sl": "4.8",
@@ -732,7 +772,8 @@ export const ACCESSORIES_ROWS: RowDef[] = [
     "unit": "",
     "qtyField": "downTakeQuantity",
     "unitField": "downTakeUnit",
-    "subRows": []
+    "subRows": [],
+    "isCalculated": true
   },
   {
     "sl": "4.9",
@@ -741,7 +782,8 @@ export const ACCESSORIES_ROWS: RowDef[] = [
     "unit": "",
     "qtyField": "dripTrimQuantity",
     "unitField": "dripTrimUnit",
-    "subRows": []
+    "subRows": [],
+    "isCalculated": true
   },
   {
     "sl": "4.10",
@@ -750,7 +792,8 @@ export const ACCESSORIES_ROWS: RowDef[] = [
     "unit": "",
     "qtyField": "gableEndFlashingQuantity",
     "unitField": "gableEndFlashingUnit",
-    "subRows": []
+    "subRows": [],
+    "isCalculated": true
   },
   {
     "sl": "4.11",
@@ -759,7 +802,8 @@ export const ACCESSORIES_ROWS: RowDef[] = [
     "unit": "SQM",
     "qtyField": "cornerFlashCount",
     "unitField": "cornerFlashCountUnit",
-    "subRows": []
+    "subRows": [],
+    "isCalculated": true
   },
   {
     "sl": "4.12",
@@ -770,7 +814,8 @@ export const ACCESSORIES_ROWS: RowDef[] = [
     "qtyField": "rollingShutterCount",
     "unitField": "rollingShutterCountUnit",
     "defaultQty": "21",
-    "subRows": []
+    "subRows": [],
+    "isCalculated": true
   },
   {
     "sl": "4.13",
@@ -781,7 +826,8 @@ export const ACCESSORIES_ROWS: RowDef[] = [
     "qtyField": "louversCount",
     "unitField": "louversCountUnit",
     "defaultQty": "21",
-    "subRows": []
+    "subRows": [],
+    "isCalculated": true
   },
   {
     "sl": "4.14",
@@ -792,7 +838,8 @@ export const ACCESSORIES_ROWS: RowDef[] = [
     "qtyField": "skyLightCount",
     "unitField": "skyLightCountUnit",
     "defaultQty": "21",
-    "subRows": []
+    "subRows": [],
+    "isCalculated": true
   },
   {
     "sl": "4.15",
@@ -803,7 +850,8 @@ export const ACCESSORIES_ROWS: RowDef[] = [
     "qtyField": "wallLightCount",
     "unitField": "wallLightCountUnit",
     "defaultQty": "21",
-    "subRows": []
+    "subRows": [],
+    "isCalculated": true
   },
   {
     "sl": "4.16",
@@ -812,7 +860,8 @@ export const ACCESSORIES_ROWS: RowDef[] = [
     "unit": "",
     "qtyField": "roofInsulationQuantity",
     "unitField": "roofInsulationUnit",
-    "subRows": []
+    "subRows": [],
+    "isCalculated": true
   },
   {
     "sl": "4.17",
@@ -821,7 +870,8 @@ export const ACCESSORIES_ROWS: RowDef[] = [
     "unit": "",
     "qtyField": "wallInsulationQuantity",
     "unitField": "wallInsulationUnit",
-    "subRows": []
+    "subRows": [],
+    "isCalculated": true
   },
   {
     "sl": "4.18",
@@ -830,7 +880,8 @@ export const ACCESSORIES_ROWS: RowDef[] = [
     "unit": "",
     "qtyField": "turboVentilatorsQuantity",
     "unitField": "turboVentilatorsUnit",
-    "subRows": []
+    "subRows": [],
+    "isCalculated": true
   },
   {
     "sl": "4.19",
@@ -839,7 +890,8 @@ export const ACCESSORIES_ROWS: RowDef[] = [
     "unit": "",
     "qtyField": "handrailQuantity",
     "unitField": "handrailUnit",
-    "subRows": []
+    "subRows": [],
+    "isCalculated": true
   }
 ];
 
@@ -860,7 +912,8 @@ export const MEZZANINE_ROWS: RowDef[] = [
         "addlSpec": "ADDITIONAL=",
         "addlUnit": "KG",
         "addlField": "totalMezzanineAreaAdditionalQuantity",
-        "defaultQty": "4756"
+        "defaultQty": "4756",
+        "isCalculated": true
       },
       {
         "sl": "b",
@@ -870,7 +923,8 @@ export const MEZZANINE_ROWS: RowDef[] = [
         "addlField": "totalMezzanineAreaAdditionalQuantity",
         "defaultQty": "4756"
       }
-    ]
+    ],
+    "isCalculated": true
   },
   {
     "sl": "5.2",
@@ -885,7 +939,8 @@ export const MEZZANINE_ROWS: RowDef[] = [
         "desc": "",
         "spec": "PURCHASE QUANTITY",
         "unit": "SQM",
-        "purchField": "deckSheetPurchaseQuantity"
+        "purchField": "deckSheetPurchaseQuantity",
+        "isCalculated": true
       },
       {
         "sl": "",
@@ -895,9 +950,11 @@ export const MEZZANINE_ROWS: RowDef[] = [
         "addlSpec": "ADDITIONAL=",
         "addlUnit": "SQM",
         "addlField": "deckSheetAdditionalQuantity",
-        "defaultQty": "46"
-      },
-    ]
+        "defaultQty": "46",
+        "isCalculated": true
+      }
+    ],
+    "isCalculated": true
   },
   {
     "sl": "5.3",
@@ -907,7 +964,8 @@ export const MEZZANINE_ROWS: RowDef[] = [
     "unit": "",
     "qtyField": "shearStudsQuantity",
     "unitField": "shearStudsUnit",
-    "subRows": []
+    "subRows": [],
+    "isCalculated": true
   },
   {
     "sl": "5.4",
@@ -917,7 +975,8 @@ export const MEZZANINE_ROWS: RowDef[] = [
     "unit": "",
     "qtyField": "concreteFlashingQuantity",
     "unitField": "concreteFlashingUnit",
-    "subRows": []
+    "subRows": [],
+    "isCalculated": true
   },
   {
     "sl": "5.5",
@@ -926,7 +985,8 @@ export const MEZZANINE_ROWS: RowDef[] = [
     "unit": "",
     "qtyField": "jointBoltsQuantity",
     "unitField": null,
-    "subRows": []
+    "subRows": [],
+    "isCalculated": true
   },
   {
     "sl": "5.6",
@@ -935,7 +995,8 @@ export const MEZZANINE_ROWS: RowDef[] = [
     "unit": "",
     "qtyField": "foundationBoltsQuantity",
     "unitField": null,
-    "subRows": []
+    "subRows": [],
+    "isCalculated": true
   }
 ];
 
@@ -947,7 +1008,8 @@ export const STAIR_ROWS: RowDef[] = [
     "unit": "SQM",
     "qtyField": "totalAreaQuantity",
     "unitField": "totalAreaUnit",
-    "subRows": []
+    "subRows": [],
+    "isCalculated": true
   },
   {
     "sl": "6.2",
@@ -956,15 +1018,18 @@ export const STAIR_ROWS: RowDef[] = [
     "unit": "KG",
     "qtyField": "stringerBeamsQuantity",
     "unitField": "stringerBeamsUnit",
-    "subRows": [{
-      "sl": "",
-      "desc": "",
-      "spec": "_",
-      "unit": "",
-      "addlSpec": "ADDITIONAL=",
-      "addlUnit": "KG",
-      "addlField": "stringerBeamsAdditionalQuantity"
-    }]
+    "subRows": [
+      {
+        "sl": "",
+        "desc": "",
+        "spec": "_",
+        "unit": "",
+        "addlSpec": "ADDITIONAL=",
+        "addlUnit": "KG",
+        "addlField": "stringerBeamsAdditionalQuantity"
+      }
+    ],
+    "isCalculated": true
   },
   {
     "sl": "6.3",
@@ -973,15 +1038,18 @@ export const STAIR_ROWS: RowDef[] = [
     "unit": "KG",
     "qtyField": "stepsQuantity",
     "unitField": "stepsUnit",
-    "subRows": [{
-      "sl": "",
-      "desc": "",
-      "spec": "_",
-      "unit": "",
-      "addlSpec": "ADDITIONAL=",
-      "addlUnit": "KG",
-      "addlField": "stringerBeamsAdditionalQuantity"
-    }]
+    "subRows": [
+      {
+        "sl": "",
+        "desc": "",
+        "spec": "_",
+        "unit": "",
+        "addlSpec": "ADDITIONAL=",
+        "addlUnit": "KG",
+        "addlField": "stringerBeamsAdditionalQuantity"
+      }
+    ],
+    "isCalculated": true
   }
 ];
 
