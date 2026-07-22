@@ -16,6 +16,7 @@ const mocks = vi.hoisted(() => ({
   upsertAccessoriesMutateAsync: vi.fn(),
   upsertJointMutateAsync: vi.fn(),
   upsertSpecMutateAsync: vi.fn(),
+  upsertAmountMutateAsync: vi.fn(),
   createPending: false,
   updatePending: false,
   upsertRoofPending: false,
@@ -67,6 +68,10 @@ vi.mock('@/api/quotation/joint/postJoint', () => ({
 
 vi.mock('@/api/quotation/spec/postSpec', () => ({
   useUpsertSpec: () => ({ mutateAsync: mocks.upsertSpecMutateAsync, isPending: false }),
+}))
+
+vi.mock('@/api/quotation/amount/postAmount', () => ({
+  useUpsertAmount: () => ({ mutateAsync: mocks.upsertAmountMutateAsync, isPending: false }),
 }))
 
 import { WizardActionBar, successToast } from '@/components/quotation/WizardActionBar'
@@ -526,7 +531,7 @@ describe('WizardActionBar Step 9 spec advance', () => {
 })
 
 
-describe('WizardActionBar Step 10 finalise', () => {
+describe('WizardActionBar Step 12 finalise', () => {
   beforeEach(() => {
     localStorage.clear()
     useQuotationStore.getState().resetQuotation()
@@ -534,7 +539,7 @@ describe('WizardActionBar Step 10 finalise', () => {
     mocks.toastSuccess.mockReset()
     mocks.toastError.mockReset()
     useQuotationStore.getState().setJobId('job-1')
-    useQuotationStore.setState({ currentStep: 10 })
+    useQuotationStore.setState({ currentStep: 12 })
   })
 
   it('finalises and navigates home on Finish & save', async () => {

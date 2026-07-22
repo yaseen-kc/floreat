@@ -455,15 +455,22 @@ export function WizardActionBar() {
       return
     }
 
-    // Final step (Amount): upsert the canonical 36 items then finalise.
-    if (isLast) {
+    // Step 11 (Amount): upsert the canonical 36 items then advance to Quantity.
+    if (currentStep === 11) {
       try {
         await submitAmount()
-        resetQuotation()
-        navigate('/')
+        goStep(12)
       } catch {
         // Error toast already shown; stay on Step 11.
       }
+      return
+    }
+
+    // Final step (Quantity): no wizard-level persistence — rows are saved
+    // independently in the table. Just finalise.
+    if (isLast) {
+      resetQuotation()
+      navigate('/')
       return
     }
 
