@@ -1,0 +1,508 @@
+{
+  "P.E.B ROOF": [
+    {
+      "sl": "1.1",
+      "label": "RAFTERS AND COLUMNS",
+      "spec": "Roof.gradeOfPlateMaterial",
+      "unit": "KG",
+      "qtyFormula": "ROOF!I5 × (((ROOF!I6 / (COS(ROOF!J8 × PI() / 180))) / 2) + 0.14) × 2 × 10.76",
+      "subRows": [
+        {
+          "sl": "a",
+          "desc": "LENGTH OF BUILDING",
+          "spec": "Roof.buildingOverallLength",
+          "unit": "M",
+          "addlSpec": "ADDITIONAL =",
+          "addlUnit": "KG",
+          "addlQty": "456"
+        },
+        {
+          "sl": "b",
+          "desc": "INCLINED LENGTH IN ONE HALF",
+          "spec": "((ROOF!I6 / (COS(ROOF!J8 × PI() / 180))) / 2) + 0.14",
+          "unit": "M",
+          "addlSpec": "",
+          "addlUnit": "",
+          "addlQty": ""
+        },
+        {
+          "sl": "c",
+          "desc": "ROOF AREA",
+          "spec": "ROOF!I5 × (((ROOF!I6 / (COS(ROOF!J8 × PI() / 180))) / 2) + 0.14) × 2 × 10.76",
+          "unit": "SQFT",
+          "addlSpec": "",
+          "addlUnit": "",
+          "addlQty": ""
+        },
+        {
+          "sl": "d",
+          "desc": "MATERIAL CONSUMPTION",
+          "spec": "Roof.materialConsumptionExcludingPurlin",
+          "unit": "KG/SQFT",
+          "addlSpec": "",
+          "addlUnit": "",
+          "addlQty": ""
+        }
+      ]
+    },
+    {
+      "sl": "1.2",
+      "label": "ROOF PURLINS",
+      "spec": "((ROOF!AU19+ROOF!AR19)-1)",
+      "unit": "ROOF!S13 &amp; &quot;PURLIN &quot; &amp; ROOF!U13 &amp; &quot; MM DEPTH&quot;",
+      "qtyFormula": "KG",
+      "subRows": [
+        {
+          "sl": "a",
+          "desc": "LENGTH OF ONE PURLIN",
+          "spec": "((ROOF!I5/(ROOF!J9+ROOF!J10-1))+0.4)",
+          "unit": "M",
+          "addlSpec": "ADDITIONAL =",
+          "addlUnit": "KG",
+          "addlQty": "565"
+        },
+        {
+          "sl": "b",
+          "desc": "NO.OF.PURLINS IN ONE FRAME",
+          "spec": "((((((ROOF!I6/(COS(ROOF!J8*PI()/180)))/2)+0.14)/ROOF!J11)+1)*2)",
+          "unit": "NOS",
+          "addlSpec": "",
+          "addlUnit": "",
+          "addlQty": ""
+        },
+        {
+          "sl": "c",
+          "desc": "TOTAL NO.OF PURLIN BAY",
+          "spec": "(ROOF!J9+ROOF!J10-1)",
+          "unit": "NOS",
+          "addlSpec": "",
+          "addlUnit": "",
+          "addlQty": ""
+        },
+        {
+          "sl": "d",
+          "desc": "UNIT WEIGHT OF PURLIN",
+          "spec": "ROOF!W13",
+          "unit": "KG/M",
+          "addlSpec": "",
+          "addlUnit": "",
+          "addlQty": ""
+        },
+        {
+          "sl": "e",
+          "desc": "NO.OF.PURLINS IN EXTENDED FRAME",
+          "spec": "(((ROOF!AQ19/COS(ROOF!J8*PI()/180))/ROOF!J11))",
+          "unit": "NOS",
+          "addlSpec": "",
+          "addlUnit": "",
+          "addlQty": ""
+        },
+        {
+          "sl": "f",
+          "desc": "NO.OF EXTENDED PURLIN BAY",
+          "spec": "IF(((ROOF!AU19+ROOF!AR19)-1)&lt;1,0,((ROOF!AU19+ROOF!AR19)-1))",
+          "unit": "NOS",
+          "addlSpec": "",
+          "addlUnit": "",
+          "addlQty": ""
+        }
+      ]
+    },
+    {
+      "sl": "1.3",
+      "label": "ROOF SHEET",
+      "spec": "(CONCATENATE(ROOF!AV5,&quot;MM THICK &quot;,ROOF!AS5)))",
+      "unit": "SQM",
+      "qtyFormula": "(ROOF!I5 × (((ROOF!I6 / (COS(ROOF!J8 × PI() / 180))) / 2) + 0.14) × 2) + ((ROOF!AQ19 / COS(ROOF!J8 × PI() / 180)) × ((ROOF!I5 / (ROOF!J9 + ROOF!J10 - 1)) × ((ROOF!AU19 + ROOF!AR19) - 1))) - ROOF!AS9 - (ROOF!AX12 × ROOF!AX13 × ROOF!AX14)",
+      "subRows": [
+        {
+          "sl": "",
+          "desc": "",
+          "spec": "PURCHASE QUANTITY",
+          "unit": "SQM",
+          "qtyFormula": "((ROOF!I5 × (((ROOF!I6 / (COS(ROOF!J8 × PI() / 180))) / 2) + 0.14) × 2) + ((ROOF!AQ19 / COS(ROOF!J8 × PI() / 180)) × ((ROOF!I5 / (ROOF!J9 + ROOF!J10 - 1)) × ((ROOF!AU19 + ROOF!AR19) - 1))) - ROOF!AS9 - (ROOF!AX12 × ROOF!AX13 × ROOF!AX14)) × 1.1"
+        },
+        {
+          "sl": "a",
+          "desc": "EXTENDED ROOF WIDTH",
+          "spec": "(ROOF!AQ19/COS(ROOF!J8*PI()/180))",
+          "unit": "M",
+          "addlSpec": "ADDITIONAL =",
+          "addlUnit": "SQM",
+          "addlQty": "456"
+        },
+        {
+          "sl": "b",
+          "desc": "EXTENDED ROOF LENGTH",
+          "spec": "((ROOF!I5/(ROOF!J9+ROOF!J10-1))*IF(((ROOF!AU19+ROOF!AR19)-1)&lt;1,0,((ROOF!AU19+ROOF!AR19)-1)))",
+          "unit": "M",
+          "addlSpec": "",
+          "addlUnit": "",
+          "addlQty": ""
+        },
+        {
+          "sl": "c",
+          "desc": "ROOF AREA DEDUCTIONS",
+          "spec": "ROOF!AS9",
+          "unit": "SQM",
+          "addlSpec": "",
+          "addlUnit": "",
+          "addlQty": ""
+        },
+        {
+          "sl": "d",
+          "desc": "POLY CARBONATE AREA DEDUCTION",
+          "spec": "ROOF!AX12 × ROOF!AX13 × ROOF!AX14",
+          "unit": "SQM",
+          "addlSpec": "",
+          "addlUnit": "",
+          "addlQty": ""
+        }
+      ]
+    },
+    {
+      "sl": "1.4",
+      "label": "POLY CARBONATE SHEET",
+      "spec": "",
+      "unit": "SQM",
+      "qtyFormula": "ROOF!AX12 × ROOF!AX13 × ROOF!AX14",
+      "subRows": [
+        {
+          "sl": "",
+          "desc": "",
+          "spec": "PURCHASE QUANTITY",
+          "unit": "SQM",
+          "qtyFormula": "(ROOF!AX12 × ROOF!AX13 × ROOF!AX14) × T1"
+        },
+        {
+          "sl": "a",
+          "desc": "LENGTH OF POLYCARBONATE SHEET",
+          "spec": "ROOF!AX12",
+          "unit": "M",
+          "addlSpec": "ADDITIONAL =",
+          "addlUnit": "SQM",
+          "addlQty": "4564"
+        },
+        {
+          "sl": "b",
+          "desc": "WIDTH OF POLYCARBONATE SHEET",
+          "spec": "ROOF!AX13",
+          "unit": "M",
+          "addlSpec": "",
+          "addlUnit": "",
+          "addlQty": ""
+        },
+        {
+          "sl": "c",
+          "desc": "NOS OF POLYCARBONATE SHEET",
+          "spec": "ROOF!AX14",
+          "unit": "NOS",
+          "addlSpec": "",
+          "addlUnit": "",
+          "addlQty": ""
+        }
+      ]
+    },
+    {
+      "sl": "1.5",
+      "label": "ROOF WIND BRACINGS",
+      "spec": "",
+      "unit": "KG",
+      "qtyFormula": "(SQRT(((((ROOF!I6 / 2) / (COS(ROOF!J8 × PI() / 180))) / ROOF!AA17) ^ 2) + ((ROOF!I5 / (ROOF!J9 + ROOF!J10 - 1)) × (ROOF!I5 / (ROOF!J9 + ROOF!J10 - 1))))) × (ROOF!AA17 × 2 × 2 × ROOF!AA19) × ROOF!AA22",
+      "subRows": [
+        {
+          "sl": "a",
+          "desc": "LENGTH OF ROOF SINGLE WIND BRACING",
+          "spec": "SQRT(((((ROOF!I6 / 2) / (COS(ROOF!J8 × PI() / 180))) / ROOF!AA17)^2) + ((ROOF!I5 / (ROOF!J9 + ROOF!J10 − 1)) × (ROOF!I5 / (ROOF!J9 + ROOF!J10 − 1))))",
+          "unit": "M",
+          "addlSpec": "ADDITIONAL =",
+          "addlUnit": "KG",
+          "addlQty": "5432"
+        },
+        {
+          "sl": "b",
+          "desc": "TOTAL NUMBER OF ROOF WIND BRACING",
+          "spec": "ROOF!AA17 × 2 × 2 × ROOF!AA19",
+          "unit": "NOS",
+          "addlSpec": "",
+          "addlUnit": "",
+          "addlQty": ""
+        },
+        {
+          "sl": "c",
+          "desc": "UNIT WEIGHT OF ROOF WIND BRACING",
+          "spec": "ROOF!AA22",
+          "unit": "KG/M",
+          "addlSpec": "",
+          "addlUnit": "",
+          "addlQty": ""
+        }
+      ]
+    },
+    {
+      "sl": "1.6",
+      "label": "ROOF SAG ROD",
+      "spec": "(((ROOF!AQ19/COS(ROOF!J8*PI()/180))/ROOF!J11)-1))",
+      "unit": "",
+      "qtyFormula": "KG",
+      "subRows": [
+        {
+          "sl": "a",
+          "desc": "LENGTH OF SINGLE SAG ROD",
+          "spec": "ROOF!J11 + 0.2",
+          "unit": "M",
+          "addlSpec": "ADDITIONAL =",
+          "addlUnit": "KG",
+          "addlQty": "6756"
+        },
+        {
+          "sl": "b",
+          "desc": "NO.OF SAG ROD IN A SINGLE FRAME",
+          "spec": "((((ROOF!I6 / (COS(ROOF!J8 × PI() / 180))) / 2) + 0.14) / ROOF!J11) × 2",
+          "unit": "",
+          "addlSpec": "",
+          "addlUnit": "",
+          "addlQty": ""
+        },
+        {
+          "sl": "c",
+          "desc": "NO.OF BAY IN SAG ROD PROVIDED",
+          "spec": "ROOF!J9 + ROOF!J10 − 1",
+          "unit": "",
+          "addlSpec": "",
+          "addlUnit": "",
+          "addlQty": ""
+        },
+        {
+          "sl": "d",
+          "desc": "NO.OF.SAG ROD IN EXTENDED FRAME",
+          "spec": "IF((((ROOF!AQ19/COS(ROOF!J8*PI()/180))/ROOF!J11)-1))&lt;1,0,(((ROOF!AQ19/COS(ROOF!J8*PI()/180))/ROOF!J11)-1)))",
+          "unit": "",
+          "addlSpec": "",
+          "addlUnit": "",
+          "addlQty": ""
+        },
+        {
+          "sl": "e",
+          "desc": "NO.OF EXTENDED SAG ROD BAY",
+          "spec": "(((ROOF!AU19+ROOF!AR19)-1)&lt;1,0,((ROOF!AU19+ROOF!AR19)-1))",
+          "unit": "",
+          "addlSpec": "",
+          "addlUnit": "",
+          "addlQty": ""
+        },
+        {
+          "sl": "f",
+          "desc": "UNIT WEIGHT OF SAG ROD",
+          "spec": "(ROOF!J22 × ROOF!J22) / 162",
+          "unit": "KG/M",
+          "addlSpec": "",
+          "addlUnit": "",
+          "addlQty": ""
+        }
+      ]
+    },
+    {
+      "sl": "1.7",
+      "label": "ROOF FLANGE BRACE",
+      "spec": "",
+      "unit": "KG",
+      "qtyFormula": "((ROOF!AN12 × ((((((ROOF!I6 / (COS(ROOF!J8 × PI() / 180))) / 2) + 0.14) / ROOF!J11) + 1) × 4) × ROOF!J9) + (ROOF!AN14 × ((((((ROOF!I6 / (COS(ROOF!J8 × PI() / 180))) / 2) + 0.14) / ROOF!J11) + 1) × 2) × ROOF!J10) + (ROOF!AN12 × (((ROOF!AQ19 / COS(ROOF!J8 × PI() / 180)) / ROOF!J11) × 2) × ROOF!AR19) + (ROOF!AN12 × ((ROOF!AQ19 / COS(ROOF!J8 × PI() / 180)) / ROOF!J11) × ROOF!AU19)) × 1.57",
+      "subRows": [
+        {
+          "sl": "a",
+          "desc": "LENGTH OF MID FRAME FLANGE BRACE",
+          "spec": "ROOF!AN12",
+          "unit": "M",
+          "addlSpec": "ADDITIONAL =",
+          "addlUnit": "KG",
+          "addlQty": "767"
+        },
+        {
+          "sl": "b",
+          "desc": "NO.OF FLANGE BRACE IN MID FRAME",
+          "spec": "(((((ROOF!I6 / (COS(ROOF!J8 × PI() / 180))) / 2) + 0.14) / ROOF!J11) + 1) × 4",
+          "unit": "",
+          "addlSpec": "",
+          "addlUnit": "",
+          "addlQty": ""
+        },
+        {
+          "sl": "c",
+          "desc": "NO.OF FLANGE BRACE IN END FRAME",
+          "spec": "(((((ROOF!I6 / (COS(ROOF!J8 × PI() / 180))) / 2) + 0.14) / ROOF!J11) + 1) × 2",
+          "unit": "",
+          "addlSpec": "",
+          "addlUnit": "",
+          "addlQty": ""
+        },
+        {
+          "sl": "d",
+          "desc": "NO.OF MID FRAME",
+          "spec": "ROOF!J9",
+          "unit": "",
+          "addlSpec": "",
+          "addlUnit": "",
+          "addlQty": ""
+        },
+        {
+          "sl": "e",
+          "desc": "NO.OF END FRAME",
+          "spec": "ROOF!J10",
+          "unit": "",
+          "addlSpec": "",
+          "addlUnit": "",
+          "addlQty": ""
+        },
+        {
+          "sl": "f",
+          "desc": "NO.OF FLNG BRACE IN EXTENDED FRAME",
+          "spec": "((0 / COS(ROOF!J8 × PI() / 180)) / ROOF!J11) × 2",
+          "unit": "",
+          "addlSpec": "",
+          "addlUnit": "",
+          "addlQty": ""
+        },
+        {
+          "sl": "g",
+          "desc": "NO.OF FLNG BRACE IN EXTENDED FRAME",
+          "spec": "((((ROOF!AQ19/COS(ROOF!J8*PI()/180))/ROOF!J11)))",
+          "unit": "",
+          "addlSpec": "",
+          "addlUnit": "",
+          "addlQty": ""
+        },
+        {
+          "sl": "h",
+          "desc": "NO.OF EXTENDED MID FRAME",
+          "spec": "ROOF!AR19",
+          "unit": "",
+          "addlSpec": "",
+          "addlUnit": "",
+          "addlQty": ""
+        },
+        {
+          "sl": "i",
+          "desc": "NO.OF EXTENDED END FRAME",
+          "spec": "ROOF!AU19",
+          "unit": "",
+          "addlSpec": "",
+          "addlUnit": "",
+          "addlQty": ""
+        }
+      ]
+    },
+    {
+      "sl": "1.8",
+      "label": "NUMBER OF PURLIN BOLTS",
+      "spec": "(CONCATENATE(JOINTS!AS21,&quot; MM DIA ORDINARY BOLTS&quot;))",
+      "unit": "NOS",
+      "qtyFormula": "(((((((ROOF!I6 / (COS(ROOF!J8 × PI() / 180))) / 2) + 0.14) / ROOF!J11) + 1) × 2) × (ROOF!J9 + ROOF!J10) × JOINTS!AV21) + (((ROOF!AQ19 / COS(ROOF!J8 × PI() / 180)) / ROOF!J11) × (ROOF!AR19 + ROOF!AU19) × JOINTS!AV21)",
+      "subRows": [
+        {
+          "sl": "a",
+          "desc": "NO.OF PURLIN JOINT IN SINGLE FRAME",
+          "spec": "(((((ROOF!I6 / (COS(ROOF!J8 × PI() / 180))) / 2) + 0.14) / ROOF!J11) + 1) × 2",
+          "unit": "",
+          "addlSpec": "",
+          "addlUnit": "",
+          "addlQty": ""
+        },
+        {
+          "sl": "b",
+          "desc": "TOTAL NO.OF FRAMES",
+          "spec": "ROOF!J9 + ROOF!J10",
+          "unit": "",
+          "addlSpec": "",
+          "addlUnit": "",
+          "addlQty": ""
+        },
+        {
+          "sl": "c",
+          "desc": "NO.OF PURLIN NODE IN EXTENDED FRAME",
+          "spec": "(((ROOF!AQ19/COS(ROOF!J8*PI()/180))/ROOF!J11))",
+          "unit": "",
+          "addlSpec": "",
+          "addlUnit": "",
+          "addlQty": ""
+        },
+        {
+          "sl": "d",
+          "desc": "NO.OF EXTENDED FRAMES",
+          "spec": "(((ROOF!AR19+ROOF!AU19)))",
+          "unit": "",
+          "addlSpec": "",
+          "addlUnit": "",
+          "addlQty": ""
+        },
+        {
+          "sl": "e",
+          "desc": "NO.OF BOLTS IN SINGLE PURLIN JOINT",
+          "spec": "JOINTS!AV21",
+          "unit": "",
+          "addlSpec": "",
+          "addlUnit": "",
+          "addlQty": ""
+        }
+      ]
+    },
+    {
+      "sl": "1.9",
+      "label": "NUMBER OF ROOF JOINT BOLTS",
+      "spec": "(CONCATENATE(JOINTS!AI6,&quot; MM DIA HSFG BOLTS&quot;))",
+      "unit": "NOS",
+      "qtyFormula": "SUM((JOINTS!AL9 × ROOF!J9 × AD62 × 0), (JOINTS!AL15 × ROOF!J9 × ROOF!J14 × 0), (JOINTS!AL9 × ROOF!J10 × AD64 × 0), (JOINTS!AL15 × ROOF!J10 × ROOF!J16 × 0), (JOINTS!AL11 × ROOF!AR19 × AD66 × 0), (JOINTS!AL11 × ROOF!AU19 × AD67 × 0), (JOINTS!AL9 × ROOF!J9 × ((ROOF!Y5 - 1) × 2) × 1), (JOINTS!AL16 × ROOF!J9 × ((ROOF!Y5 - 1) × ROOF!J14) × 1), (JOINTS!AL12 × ROOF!AR19 × (ROOF!Y5 - 1) × 1), (JOINTS!AL13 × ROOF!AR19 × AD71 × 1), (JOINTS!AL22 × ROOF!J10 × (ROOF!Y7 - 1) × 1), (JOINTS!AL17 × ROOF!J9 × ROOF!J14 × 1), (JOINTS!AL23 × ROOF!AU19 × (ROOF!Y7 - 1) × 1), (JOINTS!AL24 × ROOF!AU19 × AD75 × 1), (JOINTS!AL26 × ROOF!J10 × ((ROOF!Y7 - 1) × ROOF!J16) × 1), (JOINTS!AL27 × ROOF!J10 × ((ROOF!Y7 - 1) × ROOF!J16) × 1), (JOINTS!AL14 × ROOF!AR19 × AD78 × 1), (JOINTS!AL25 × ROOF!AU19 × AD79 × 1), (JOINTS!AL7 × ROOF!J9 × ((ROOF!Y6 - 1) × 2) × 1), (JOINTS!AL18 × ROOF!J9 × ((ROOF!Y6 - 1) × 2) × 1), (JOINTS!AL20 × ROOF!J10 × ((ROOF!Y8 - 1) × 2) × 1), (JOINTS!AL6 × ROOF!J9 × AD84 × 1), (JOINTS!AL19 × ROOF!J10 × AD85 × 1), (JOINTS!AL8 × ROOF!J9 × AD86 × 1), (JOINTS!AL21 × ROOF!J10 × AD87 × 1))",
+      "subRows": []
+    }
+  ],
+  "": [
+    {
+      "sl": "7.1",
+      "label": "JOINT BOLT",
+      "spec": "24 MM DIA HSFG BOLTS",
+      "unit": "NOS",
+      "qtyFormula": "10",
+      "subRows": []
+    },
+    {
+      "sl": "7.2",
+      "label": "JOINT BOLT",
+      "spec": "20 MM DIA HSFG BOLTS",
+      "unit": "NOS",
+      "qtyFormula": "11",
+      "subRows": []
+    },
+    {
+      "sl": "7.3",
+      "label": "JOINT BOLT",
+      "spec": "16 MM DIA HSFG BOLTS",
+      "unit": "NOS",
+      "qtyFormula": "12",
+      "subRows": []
+    },
+    {
+      "sl": "7.4",
+      "label": "PURLIN BOLT",
+      "spec": "12 MM DIA ORDINARY BOLTS",
+      "unit": "NOS",
+      "qtyFormula": "13",
+      "subRows": []
+    },
+    {
+      "sl": "7.5",
+      "label": "ANCHOR BOLT",
+      "spec": "",
+      "unit": "NOS",
+      "qtyFormula": "14",
+      "subRows": []
+    },
+    {
+      "sl": "7.6",
+      "label": "FOUNDATION BOLT",
+      "spec": "",
+      "unit": "NOS",
+      "qtyFormula": "15",
+      "subRows": []
+    }
+  ]
+}

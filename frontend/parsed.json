@@ -1,0 +1,1141 @@
+[
+  [
+    "PROJECT",
+    "20-212 Offer for Supply and Installation of Pre Engineered Steel Hypermarket Building at Wandoor"
+  ],
+  [
+    "DATE",
+    "21 December",
+    "Prepared By",
+    "ROHITH E"
+  ],
+  [
+    ""
+  ],
+  [
+    "SL No.",
+    "DESCRIPTION",
+    "SPECIFICATION",
+    "UNIT",
+    "QUANTITY"
+  ],
+  [
+    "1",
+    "TRUE",
+    "P.E.B ROOF",
+    "MATERIAL WITH PURLIN",
+    "KG/SQFT",
+    "(((ROOF!I5 × (((ROOF!I6 / (COS(ROOF!J8 × PI() / 180))) / 2) + 0.14) × 2 × 10.76) × ROOF!J19) + ((((ROOF!I5 / (ROOF!J9 + ROOF!J10 − 1)) + 0.4) × ((((((ROOF!I6 / (COS(ROOF!J8 × PI() / 180))) / 2) + 0.14) / ROOF!J11) + 1) × 2) × (ROOF!J9 + ROOF!J10 − 1) × ROOF!W13) + (((ROOF!I5 / (ROOF!J9 + ROOF!J10 − 1)) + 0.4) × ROOF!W13 × 0 × 0))) / (((ROOF!I5 × (((ROOF!I6 / (COS(ROOF!J8 × PI() / 180))) / 2) + 0.14) × 2) + (0 × 0)) × 10.76)"
+  ],
+  [
+    "1.1",
+    "RAFTERS AND COLUMNS",
+    "Roof.gradeOfPlateMaterial",
+    "KG",
+    "ROOF!I5 × (((ROOF!I6 / (COS(ROOF!J8 × PI() / 180))) / 2) + 0.14) × 2 × 10.76"
+  ],
+  [
+    "a",
+    "LENGTH OF BUILDING",
+    "Roof.buildingOverallLength",
+    "M",
+    "ADDITIONAL =",
+    "KG",
+    "456"
+  ],
+  [
+    "b",
+    "INCLINED LENGTH IN ONE HALF",
+    "((ROOF!I6 / (COS(ROOF!J8 × PI() / 180))) / 2) + 0.14",
+    "M",
+    "",
+    ""
+  ],
+  [
+    "c",
+    "ROOF AREA",
+    "ROOF!I5 × (((ROOF!I6 / (COS(ROOF!J8 × PI() / 180))) / 2) + 0.14) × 2 × 10.76",
+    "SQFT",
+    "",
+    ""
+  ],
+  [
+    "d",
+    "MATERIAL CONSUMPTION",
+    "Roof.materialConsumptionExcludingPurlin",
+    "KG/SQFT",
+    "",
+    "",
+    ""
+  ],
+  [
+    "1.2",
+    "ROOF PURLINS",
+    "((ROOF!AU19+ROOF!AR19)-1)",
+    "ROOF!S13 &amp; &quot;PURLIN &quot; &amp; ROOF!U13 &amp; &quot; MM DEPTH&quot;",
+    "KG",
+    "(((ROOF!I5 / (ROOF!J9 + ROOF!J10 − 1)) + 0.4) × ((((((ROOF!I6 / (COS(ROOF!J8 × PI() / 180))) / 2) + 0.14) / ROOF!J11) + 1) × 2) × (ROOF!J9 + ROOF!J10 − 1) × ROOF!W13) + (((ROOF!I5 / (ROOF!J9 + ROOF!J10 − 1)) + 0.4) × ROOF!W13 × 0 × 0)"
+  ],
+  [
+    "a",
+    "LENGTH OF ONE PURLIN",
+    "((ROOF!I5/(ROOF!J9+ROOF!J10-1))+0.4)",
+    "M",
+    "ADDITIONAL =",
+    "KG",
+    "565"
+  ],
+  [
+    "b",
+    "NO.OF.PURLINS IN ONE FRAME",
+    "((((((ROOF!I6/(COS(ROOF!J8*PI()/180)))/2)+0.14)/ROOF!J11)+1)*2)",
+    "NOS",
+    "",
+    ""
+  ],
+  [
+    "c",
+    "TOTAL NO.OF PURLIN BAY",
+    "(ROOF!J9+ROOF!J10-1)",
+    "NOS",
+    "",
+    ""
+  ],
+  [
+    "d",
+    "UNIT WEIGHT OF PURLIN",
+    "ROOF!W13",
+    "KG/M",
+    "",
+    ""
+  ],
+  [
+    "e",
+    "NO.OF.PURLINS IN EXTENDED FRAME",
+    "(((ROOF!AQ19/COS(ROOF!J8*PI()/180))/ROOF!J11))",
+    "NOS",
+    "",
+    ""
+  ],
+  [
+    "f",
+    "NO.OF EXTENDED PURLIN BAY",
+    "IF(((ROOF!AU19+ROOF!AR19)-1)&lt;1,0,((ROOF!AU19+ROOF!AR19)-1))",
+    "NOS",
+    "",
+    ""
+  ],
+  [
+    "1.3",
+    "ROOF SHEET",
+    "(CONCATENATE(ROOF!AV5,&quot;MM THICK &quot;,ROOF!AS5)))",
+    "SQM",
+    "(ROOF!I5 × (((ROOF!I6 / (COS(ROOF!J8 × PI() / 180))) / 2) + 0.14) × 2) + ((ROOF!AQ19 / COS(ROOF!J8 × PI() / 180)) × ((ROOF!I5 / (ROOF!J9 + ROOF!J10 - 1)) × ((ROOF!AU19 + ROOF!AR19) - 1))) - ROOF!AS9 - (ROOF!AX12 × ROOF!AX13 × ROOF!AX14)"
+  ],
+  [
+    "",
+    "",
+    "PURCHASE QUANTITY",
+    "SQM",
+    "((ROOF!I5 × (((ROOF!I6 / (COS(ROOF!J8 × PI() / 180))) / 2) + 0.14) × 2) + ((ROOF!AQ19 / COS(ROOF!J8 × PI() / 180)) × ((ROOF!I5 / (ROOF!J9 + ROOF!J10 - 1)) × ((ROOF!AU19 + ROOF!AR19) - 1))) - ROOF!AS9 - (ROOF!AX12 × ROOF!AX13 × ROOF!AX14)) × 1.1"
+  ],
+  [
+    "a",
+    "EXTENDED ROOF WIDTH",
+    "(ROOF!AQ19/COS(ROOF!J8*PI()/180))",
+    "M",
+    "ADDITIONAL =",
+    "SQM",
+    "456"
+  ],
+  [
+    "b",
+    "EXTENDED ROOF LENGTH",
+    "((ROOF!I5/(ROOF!J9+ROOF!J10-1))*IF(((ROOF!AU19+ROOF!AR19)-1)&lt;1,0,((ROOF!AU19+ROOF!AR19)-1)))",
+    "M",
+    "",
+    ""
+  ],
+  [
+    "c",
+    "ROOF AREA DEDUCTIONS",
+    "ROOF!AS9",
+    "SQM",
+    "",
+    ""
+  ],
+  [
+    "d",
+    "POLY CARBONATE AREA DEDUCTION",
+    "ROOF!AX12 × ROOF!AX13 × ROOF!AX14",
+    "SQM",
+    "",
+    ""
+  ],
+  [
+    "1.4",
+    "POLY CARBONATE SHEET",
+    "",
+    "SQM",
+    "ROOF!AX12 × ROOF!AX13 × ROOF!AX14"
+  ],
+  [
+    "",
+    "",
+    "PURCHASE QUANTITY",
+    "SQM",
+    "(ROOF!AX12 × ROOF!AX13 × ROOF!AX14) × T1"
+  ],
+  [
+    "a",
+    "LENGTH OF POLYCARBONATE SHEET",
+    "ROOF!AX12",
+    "M",
+    "ADDITIONAL =",
+    "SQM",
+    "4564"
+  ],
+  [
+    "b",
+    "WIDTH OF POLYCARBONATE SHEET",
+    "ROOF!AX13",
+    "M",
+    "",
+    ""
+  ],
+  [
+    "c",
+    "NOS OF POLYCARBONATE SHEET",
+    "ROOF!AX14",
+    "NOS",
+    "",
+    ""
+  ],
+  [
+    "1.5",
+    "ROOF WIND BRACINGS",
+    "",
+    "KG",
+    "(SQRT(((((ROOF!I6 / 2) / (COS(ROOF!J8 × PI() / 180))) / ROOF!AA17) ^ 2) + ((ROOF!I5 / (ROOF!J9 + ROOF!J10 - 1)) × (ROOF!I5 / (ROOF!J9 + ROOF!J10 - 1))))) × (ROOF!AA17 × 2 × 2 × ROOF!AA19) × ROOF!AA22"
+  ],
+  [
+    "a",
+    "LENGTH OF ROOF SINGLE WIND BRACING",
+    "SQRT(((((ROOF!I6 / 2) / (COS(ROOF!J8 × PI() / 180))) / ROOF!AA17)^2) + ((ROOF!I5 / (ROOF!J9 + ROOF!J10 − 1)) × (ROOF!I5 / (ROOF!J9 + ROOF!J10 − 1))))",
+    "M",
+    "ADDITIONAL =",
+    "KG",
+    "5432"
+  ],
+  [
+    "b",
+    "TOTAL NUMBER OF ROOF WIND BRACING",
+    "ROOF!AA17 × 2 × 2 × ROOF!AA19",
+    "NOS",
+    "",
+    ""
+  ],
+  [
+    "c",
+    "UNIT WEIGHT OF ROOF WIND BRACING",
+    "ROOF!AA22",
+    "KG/M",
+    "",
+    ""
+  ],
+  [
+    "1.6",
+    "ROOF SAG ROD",
+    "(((ROOF!AQ19/COS(ROOF!J8*PI()/180))/ROOF!J11)-1))",
+    "",
+    "KG",
+    "(((((((ROOF!I6 / (COS(ROOF!J8 × PI() / 180))) / 2) + 0.14) / ROOF!J11) × 2) × (ROOF!J9 + ROOF!J10 - 1)) + ((((ROOF!AQ19 / COS(ROOF!J8 × PI() / 180)) / ROOF!J11) - 1) × ((ROOF!AU19 + ROOF!AR19) - 1))) × ((ROOF!J22 × ROOF!J22) / 162)"
+  ],
+  [
+    "a",
+    "LENGTH OF SINGLE SAG ROD",
+    "ROOF!J11 + 0.2",
+    "M",
+    "ADDITIONAL =",
+    "KG",
+    "6756"
+  ],
+  [
+    "b",
+    "NO.OF SAG ROD IN A SINGLE FRAME",
+    "((((ROOF!I6 / (COS(ROOF!J8 × PI() / 180))) / 2) + 0.14) / ROOF!J11) × 2",
+    "",
+    "",
+    ""
+  ],
+  [
+    "c",
+    "NO.OF BAY IN SAG ROD PROVIDED",
+    "ROOF!J9 + ROOF!J10 − 1",
+    "",
+    "",
+    ""
+  ],
+  [
+    "d",
+    "NO.OF.SAG ROD IN EXTENDED FRAME",
+    "IF((((ROOF!AQ19/COS(ROOF!J8*PI()/180))/ROOF!J11)-1))&lt;1,0,(((ROOF!AQ19/COS(ROOF!J8*PI()/180))/ROOF!J11)-1)))",
+    "",
+    "",
+    ""
+  ],
+  [
+    "e",
+    "NO.OF EXTENDED SAG ROD BAY",
+    "(((ROOF!AU19+ROOF!AR19)-1)&lt;1,0,((ROOF!AU19+ROOF!AR19)-1))",
+    "",
+    "",
+    ""
+  ],
+  [
+    "f",
+    "UNIT WEIGHT OF SAG ROD",
+    "(ROOF!J22 × ROOF!J22) / 162",
+    "KG/M",
+    "",
+    ""
+  ],
+  [
+    "1.7",
+    "ROOF FLANGE BRACE",
+    "",
+    "KG",
+    "((ROOF!AN12 × ((((((ROOF!I6 / (COS(ROOF!J8 × PI() / 180))) / 2) + 0.14) / ROOF!J11) + 1) × 4) × ROOF!J9) + (ROOF!AN14 × ((((((ROOF!I6 / (COS(ROOF!J8 × PI() / 180))) / 2) + 0.14) / ROOF!J11) + 1) × 2) × ROOF!J10) + (ROOF!AN12 × (((ROOF!AQ19 / COS(ROOF!J8 × PI() / 180)) / ROOF!J11) × 2) × ROOF!AR19) + (ROOF!AN12 × ((ROOF!AQ19 / COS(ROOF!J8 × PI() / 180)) / ROOF!J11) × ROOF!AU19)) × 1.57"
+  ],
+  [
+    "a",
+    "LENGTH OF MID FRAME FLANGE BRACE",
+    "ROOF!AN12",
+    "M",
+    "ADDITIONAL =",
+    "KG",
+    "767"
+  ],
+  [
+    "b",
+    "NO.OF FLANGE BRACE IN MID FRAME",
+    "(((((ROOF!I6 / (COS(ROOF!J8 × PI() / 180))) / 2) + 0.14) / ROOF!J11) + 1) × 4",
+    "",
+    "",
+    ""
+  ],
+  [
+    "c",
+    "NO.OF FLANGE BRACE IN END FRAME",
+    "(((((ROOF!I6 / (COS(ROOF!J8 × PI() / 180))) / 2) + 0.14) / ROOF!J11) + 1) × 2",
+    "",
+    "",
+    ""
+  ],
+  [
+    "d",
+    "NO.OF MID FRAME",
+    "ROOF!J9",
+    "",
+    "",
+    ""
+  ],
+  [
+    "e",
+    "NO.OF END FRAME",
+    "ROOF!J10",
+    "",
+    "",
+    ""
+  ],
+  [
+    "f",
+    "NO.OF FLNG BRACE IN EXTENDED FRAME",
+    "((0 / COS(ROOF!J8 × PI() / 180)) / ROOF!J11) × 2",
+    "",
+    "",
+    ""
+  ],
+  [
+    "g",
+    "NO.OF FLNG BRACE IN EXTENDED FRAME",
+    "((((ROOF!AQ19/COS(ROOF!J8*PI()/180))/ROOF!J11)))",
+    "",
+    "",
+    ""
+  ],
+  [
+    "h",
+    "NO.OF EXTENDED MID FRAME",
+    "ROOF!AR19",
+    "",
+    "",
+    ""
+  ],
+  [
+    "i",
+    "NO.OF EXTENDED END FRAME",
+    "ROOF!AU19",
+    "",
+    "",
+    ""
+  ],
+  [
+    "J",
+    "LENGTH OF END FRAME FLANGE BRACE",
+    "ROOF!AN14",
+    "M",
+    "",
+    ""
+  ],
+  [
+    ""
+  ],
+  [
+    "1.8",
+    "NUMBER OF PURLIN BOLTS",
+    "(CONCATENATE(JOINTS!AS21,&quot; MM DIA ORDINARY BOLTS&quot;))",
+    "NOS",
+    "(((((((ROOF!I6 / (COS(ROOF!J8 × PI() / 180))) / 2) + 0.14) / ROOF!J11) + 1) × 2) × (ROOF!J9 + ROOF!J10) × JOINTS!AV21) + (((ROOF!AQ19 / COS(ROOF!J8 × PI() / 180)) / ROOF!J11) × (ROOF!AR19 + ROOF!AU19) × JOINTS!AV21)"
+  ],
+  [
+    "a",
+    "NO.OF PURLIN JOINT IN SINGLE FRAME",
+    "(((((ROOF!I6 / (COS(ROOF!J8 × PI() / 180))) / 2) + 0.14) / ROOF!J11) + 1) × 2",
+    "",
+    "",
+    ""
+  ],
+  [
+    "b",
+    "TOTAL NO.OF FRAMES",
+    "ROOF!J9 + ROOF!J10",
+    "",
+    "",
+    ""
+  ],
+  [
+    "c",
+    "NO.OF PURLIN NODE IN EXTENDED FRAME",
+    "(((ROOF!AQ19/COS(ROOF!J8*PI()/180))/ROOF!J11))",
+    "",
+    "",
+    ""
+  ],
+  [
+    "d",
+    "NO.OF EXTENDED FRAMES",
+    "(((ROOF!AR19+ROOF!AU19)))",
+    "",
+    "",
+    ""
+  ],
+  [
+    "e",
+    "NO.OF BOLTS IN SINGLE PURLIN JOINT",
+    "JOINTS!AV21",
+    "",
+    "",
+    ""
+  ],
+  [
+    "1.9",
+    "NUMBER OF ROOF JOINT BOLTS",
+    "(CONCATENATE(JOINTS!AI6,&quot; MM DIA HSFG BOLTS&quot;))",
+    "NOS",
+    "SUM((JOINTS!AL9 × ROOF!J9 × AD62 × 0), (JOINTS!AL15 × ROOF!J9 × ROOF!J14 × 0), (JOINTS!AL9 × ROOF!J10 × AD64 × 0), (JOINTS!AL15 × ROOF!J10 × ROOF!J16 × 0), (JOINTS!AL11 × ROOF!AR19 × AD66 × 0), (JOINTS!AL11 × ROOF!AU19 × AD67 × 0), (JOINTS!AL9 × ROOF!J9 × ((ROOF!Y5 - 1) × 2) × 1), (JOINTS!AL16 × ROOF!J9 × ((ROOF!Y5 - 1) × ROOF!J14) × 1), (JOINTS!AL12 × ROOF!AR19 × (ROOF!Y5 - 1) × 1), (JOINTS!AL13 × ROOF!AR19 × AD71 × 1), (JOINTS!AL22 × ROOF!J10 × (ROOF!Y7 - 1) × 1), (JOINTS!AL17 × ROOF!J9 × ROOF!J14 × 1), (JOINTS!AL23 × ROOF!AU19 × (ROOF!Y7 - 1) × 1), (JOINTS!AL24 × ROOF!AU19 × AD75 × 1), (JOINTS!AL26 × ROOF!J10 × ((ROOF!Y7 - 1) × ROOF!J16) × 1), (JOINTS!AL27 × ROOF!J10 × ((ROOF!Y7 - 1) × ROOF!J16) × 1), (JOINTS!AL14 × ROOF!AR19 × AD78 × 1), (JOINTS!AL25 × ROOF!AU19 × AD79 × 1), (JOINTS!AL7 × ROOF!J9 × ((ROOF!Y6 - 1) × 2) × 1), (JOINTS!AL18 × ROOF!J9 × ((ROOF!Y6 - 1) × 2) × 1), (JOINTS!AL20 × ROOF!J10 × ((ROOF!Y8 - 1) × 2) × 1), (JOINTS!AL6 × ROOF!J9 × AD84 × 1), (JOINTS!AL19 × ROOF!J10 × AD85 × 1), (JOINTS!AL8 × ROOF!J9 × AD86 × 1), (JOINTS!AL21 × ROOF!J10 × AD87 × 1))"
+  ],
+  [
+    "1.9.1",
+    "NUMBER OF FOUNDATION BOLTS",
+    "(CONCATENATE(JOINTS!AS11,&quot; MM DIA FOUNDATION BOLTS&quot;))",
+    "NOS",
+    "SUM((JOINTS!AV11 × ROOF!J9 × AD89 × 1), (JOINTS!AV11 × ROOF!J10 × AD90 × 1), (JOINTS!AV12 × (ROOF!AR19 + ROOF!AU19) × AD91 × 1), (JOINTS!AV13 × ROOF!J9 × ROOF!J14 × 1), (JOINTS!AV13 × ROOF!J10 × ROOF!J16 × 1))`"
+  ],
+  [
+    "1.9.2",
+    "NUMBER OF ANCHOR BOLTS",
+    "(CONCATENATE(JOINTS!AS11,&quot; MM DIA ANCHOR BOLTS&quot;))",
+    "NOS",
+    "SUM((JOINTS!AV11 × ROOF!J9 × AD89 × 0), (JOINTS!AV11 × ROOF!J10 × AD90 × 0), (JOINTS!AV12 × (ROOF!AR19 + ROOF!AU19) × AD91 × 0), (JOINTS!AV13 × ROOF!J9 × ROOF!J14 × 0), (JOINTS!AV13 × ROOF!J10 × ROOF!J16 × 0))"
+  ],
+  [
+    ""
+  ],
+  [
+    "2",
+    "CLADDING",
+    "",
+    "",
+    ""
+  ],
+  [
+    "2.1",
+    "CLADDING STRUCTURE",
+    "",
+    "KG",
+    "((((((ROOF!J7 - ROOF!AI6) + ((((ROOF!I6 / 2) × TAN(ROOF!J8 × PI() / 180)) + ROOF!J7) - ROOF!AI6)) / 2) × ROOF!I6) + ((((ROOF!J7 - ROOF!AI9) + ((ROOF!J7 - (ROOF!AQ20 × TAN(ROOF!J8 × PI() / 180))) - ROOF!AI9)) / 2) × ROOF!AQ20) + ((((ROOF!J7 - ROOF!AI7) + ((((ROOF!I6 / 2) × TAN(ROOF!J8 × PI() / 180)) + ROOF!J7) - ROOF!AI7)) / 2) × ROOF!I6) + ((((ROOF!J7 - ROOF!AI9) + ((ROOF!J7 - (ROOF!AQ20 × TAN(ROOF!J8 × PI() / 180))) - ROOF!AI9)) / 2) × ROOF!AQ20) + ((ROOF!J7 - ROOF!AI9) × ROOF!I5) + ((ROOF!J7 - ROOF!AI8) × ROOF!I5)) - (ROOF!AH18 + ROOF!AH19 + ROOF!AH20 + ROOF!AH21) - ROOF!AK24) × 10.76 × ((((ROOF!I5 × ROOF!J12 × 2) + ((ROOF!J12 × ROOF!I6 × 2) + (ROOF!AQ20 × ROOF!J12 × 2) + (2 × ROOF!I6 × 0.45))) × ROOF!W14) / ((((((ROOF!J7 - ROOF!AI6) + ((((ROOF!I6 / 2) × TAN(ROOF!J8 × PI() / 180)) + ROOF!J7) - ROOF!AI6)) / 2) × ROOF!I6) + ((((ROOF!J7 - ROOF!AI9) + ((ROOF!J7 - (ROOF!AQ20 × TAN(ROOF!J8 × PI() / 180))) - ROOF!AI9)) / 2) × ROOF!AQ20) + ((((ROOF!J7 - ROOF!AI7) + ((((ROOF!I6 / 2) × TAN(ROOF!J8 × PI() / 180)) + ROOF!J7) - ROOF!AI7)) / 2) × ROOF!I6) + ((((ROOF!J7 - ROOF!AI9) + ((ROOF!J7 - (ROOF!AQ20 × TAN(ROOF!J8 × PI() / 180))) - ROOF!AI9)) / 2) × ROOF!AQ20) + ((ROOF!J7 - ROOF!AI9) × ROOF!I5) + ((ROOF!J7 - ROOF!AI8) × ROOF!I5)) × 10.76))"
+  ],
+  [
+    "",
+    "CLADDING EAVE HEIGHT FRONT",
+    "ROOF!J7 - ROOF!AI6",
+    "M",
+    "ADDITIONAL =",
+    "KG",
+    "3677"
+  ],
+  [
+    "",
+    "CLADDING EAVE HEIGHT BACK",
+    "ROOF!J7 - ROOF!AI7",
+    "M",
+    "",
+    ""
+  ],
+  [
+    "",
+    "CLADDING EAVE HEIGHT RIGHT",
+    "ROOF!J7 - ROOF!AI8",
+    "M",
+    "",
+    ""
+  ],
+  [
+    "",
+    "CLADDING EAVE HEIGHT LEFT",
+    "ROOF!J7 - ROOF!AI9",
+    "M",
+    "",
+    ""
+  ],
+  [
+    "",
+    "EXTENDED COLUMN HEIGHT",
+    "(ROOF!J7 - (ROOF!AQ20 × TAN(ROOF!J8 × PI() / 180))) - ROOF!AI9",
+    "M",
+    "",
+    ""
+  ],
+  [
+    "",
+    "WIDTH OF EXTENDED FRAME",
+    "ROOF!AQ20",
+    "M",
+    "",
+    ""
+  ],
+  [
+    "",
+    "NO.OF SIDE CLADDING PURLIN",
+    "ROOF!J12",
+    "",
+    "",
+    ""
+  ],
+  [
+    "",
+    "NO.OF FACE CLADDING PURLIN",
+    "ROOF!J12 + 2",
+    "",
+    "",
+    ""
+  ],
+  [
+    "",
+    "TOTAL LENGTH OF CLADDING PURLIN",
+    "(ROOF!I5 × ROOF!J12 × 2) + ((ROOF!J12 × ROOF!I6 × 2) + (ROOF!AQ20 × ROOF!J12 × 2) + (2 × ROOF!I6 × 0.45))",
+    "M",
+    "",
+    ""
+  ],
+  [
+    "",
+    "TOTAL WEIGHT OF CLADDING PURLIN",
+    "((ROOF!I5 × ROOF!J12 × 2) + ((ROOF!J12 × ROOF!I6 × 2) + (ROOF!AQ20 × ROOF!J12 × 2) + (2 × ROOF!I6 × 0.45))) × ROOF!W14",
+    "KG",
+    "",
+    ""
+  ],
+  [
+    "",
+    "CLADDING AREA WITHOUT ANY DEDUCTIONS",
+    "((((ROOF!J7 - ROOF!AI6) + ((((ROOF!I6 / 2) × TAN(ROOF!J8 × PI() / 180)) + ROOF!J7) - ROOF!AI6)) / 2) × ROOF!I6) + ((((ROOF!J7 - ROOF!AI9) + ((ROOF!J7 - (ROOF!AQ20 × TAN(ROOF!J8 × PI() / 180))) - ROOF!AI9)) / 2) × ROOF!AQ20) + ((((ROOF!J7 - ROOF!AI7) + ((((ROOF!I6 / 2) × TAN(ROOF!J8 × PI() / 180)) + ROOF!J7) - ROOF!AI7)) / 2) × ROOF!I6) + ((((ROOF!J7 - ROOF!AI9) + ((ROOF!J7 - (ROOF!AQ20 × TAN(ROOF!J8 × PI() / 180))) - ROOF!AI9)) / 2) × ROOF!AQ20) + ((ROOF!J7 - ROOF!AI9) × ROOF!I5) + ((ROOF!J7 - ROOF!AI8) × ROOF!I5)",
+    "SQM",
+    "",
+    ""
+  ],
+  [
+    "",
+    "AVERAGE MATERIAL CONSUMPTION",
+    "(((ROOF!I5 × ROOF!J12 × 2) + ((ROOF!J12 × ROOF!I6 × 2) + (ROOF!AQ20 × ROOF!J12 × 2) + (2 × ROOF!I6 × 0.45))) × ROOF!W14) / ((((((ROOF!J7 - ROOF!AI6) + ((((ROOF!I6 / 2) × TAN(ROOF!J8 × PI() / 180)) + ROOF!J7) - ROOF!AI6)) / 2) × ROOF!I6) + ((((ROOF!J7 - ROOF!AI9) + ((ROOF!J7 - (ROOF!AQ20 × TAN(ROOF!J8 × PI() / 180))) - ROOF!AI9)) / 2) × ROOF!AQ20) + ((((ROOF!J7 - ROOF!AI7) + ((((ROOF!I6 / 2) × TAN(ROOF!J8 × PI() / 180)) + ROOF!J7) - ROOF!AI7)) / 2) × ROOF!I6) + ((((ROOF!J7 - ROOF!AI9) + ((ROOF!J7 - (ROOF!AQ20 × TAN(ROOF!J8 × PI() / 180))) - ROOF!AI9)) / 2) × ROOF!AQ20) + ((ROOF!J7 - ROOF!AI9) × ROOF!I5) + ((ROOF!J7 - ROOF!AI8) × ROOF!I5)) × 10.76)",
+    "KG/SQM",
+    "",
+    ""
+  ],
+  [
+    "",
+    "TOTAL CLADDING OPENINGS",
+    "ROOF!AH18 + ROOF!AH19 + ROOF!AH20 + ROOF!AH21",
+    "SQM",
+    "",
+    ""
+  ],
+  [
+    "",
+    "FASCIA OPENING",
+    "ROOF!AK24",
+    "SQM",
+    "",
+    ""
+  ],
+  [
+    "",
+    "",
+    "",
+    "",
+    "",
+    ""
+  ],
+  [
+    "",
+    "",
+    "",
+    "",
+    "",
+    ""
+  ],
+  [
+    "2.2",
+    "CLADDING SHEET",
+    "ADDITIONAL=",
+    "53",
+    "SQM",
+    "(((((ROOF!J7 - ROOF!AI6) + ((((ROOF!I6 / 2) × TAN(ROOF!J8 × PI() / 180)) + ROOF!J7) - ROOF!AI6)) / 2) × ROOF!I6) + ((((ROOF!J7 - ROOF!AI9) + ((ROOF!J7 - (ROOF!AQ20 × TAN(ROOF!J8 × PI() / 180))) - ROOF!AI9)) / 2) × ROOF!AQ20) + ((((ROOF!J7 - ROOF!AI7) + ((((ROOF!I6 / 2) × TAN(ROOF!J8 × PI() / 180)) + ROOF!J7) - ROOF!AI7)) / 2) × ROOF!I6) + ((((ROOF!J7 - ROOF!AI9) + ((ROOF!J7 - (ROOF!AQ20 × TAN(ROOF!J8 × PI() / 180))) - ROOF!AI9)) / 2) × ROOF!AQ20) + ((ROOF!J7 - ROOF!AI9) × ROOF!I5) + ((ROOF!J7 - ROOF!AI8) × ROOF!I5)) - (ROOF!AH18 + ROOF!AH19 + ROOF!AH20 + ROOF!AH21) - ROOF!AK24"
+  ],
+  [
+    "",
+    "",
+    "PURCHASE QUANTITY",
+    "SQM",
+    "((((((ROOF!J7 - ROOF!AI6) + ((((ROOF!I6 / 2) × TAN(ROOF!J8 × PI() / 180)) + ROOF!J7) - ROOF!AI6)) / 2) × ROOF!I6) + ((((ROOF!J7 - ROOF!AI9) + ((ROOF!J7 - (ROOF!AQ20 × TAN(ROOF!J8 × PI() / 180))) - ROOF!AI9)) / 2) × ROOF!AQ20) + ((((ROOF!J7 - ROOF!AI7) + ((((ROOF!I6 / 2) × TAN(ROOF!J8 × PI() / 180)) + ROOF!J7) - ROOF!AI7)) / 2) × ROOF!I6) + ((((ROOF!J7 - ROOF!AI9) + ((ROOF!J7 - (ROOF!AQ20 × TAN(ROOF!J8 × PI() / 180))) - ROOF!AI9)) / 2) × ROOF!AQ20) + ((ROOF!J7 - ROOF!AI9) × ROOF!I5) + ((ROOF!J7 - ROOF!AI8) × ROOF!I5)) - (ROOF!AH18 + ROOF!AH19 + ROOF!AH20 + ROOF!AH21) - ROOF!AK24) × 1.1"
+  ],
+  [
+    "2.3",
+    "COLUMN WIND BRACINGS",
+    "ADDITIONAL=",
+    "44",
+    "KG",
+    "(ROOF!AA18 × 2 × 2 × ROOF!AA20) × (SQRT(((ROOF!AA21 / ROOF!AA18) ^ 2) + ((ROOF!I5 / (ROOF!J9 + ROOF!J10 - 1)) × (ROOF!I5 / (ROOF!J9 + ROOF!J10 - 1))))) × ROOF!AA22"
+  ],
+  [
+    "2.4",
+    "CLADDING SAG ROD",
+    "ADDITIONAL=",
+    "54",
+    "KG",
+    "((((((ROOF!J7 - ROOF!AI6) + ((((ROOF!I6 / 2) × TAN(ROOF!J8 × PI() / 180)) + ROOF!J7) - ROOF!AI6)) / 2) × ROOF!I6) + ((((ROOF!J7 - ROOF!AI9) + ((ROOF!J7 - (ROOF!AQ20 × TAN(ROOF!J8 × PI() / 180))) - ROOF!AI9)) / 2) × ROOF!AQ20) + ((((ROOF!J7 - ROOF!AI7) + ((((ROOF!I6 / 2) × TAN(ROOF!J8 × PI() / 180)) + ROOF!J7) - ROOF!AI7)) / 2) × ROOF!I6) + ((((ROOF!J7 - ROOF!AI9) + ((ROOF!J7 - (ROOF!AQ20 × TAN(ROOF!J8 × PI() / 180))) - ROOF!AI9)) / 2) × ROOF!AQ20) + ((ROOF!J7 - ROOF!AI9) × ROOF!I5) + ((ROOF!J7 - ROOF!AI8) × ROOF!I5)) - (ROOF!AH18 + ROOF!AH19 + ROOF!AH20 + ROOF!AH21) - ROOF!AK24) × 10.76 × ((((ROOF!J12 × (ROOF!J9 + ROOF!J10 - 1) × 2) + ((ROOF!J12 + 1) × (ROOF!J16 + 1) × 2) + ((ROOF!J12 + 1) × 1 × 2)) × 1.7 × ((ROOF!J23 × ROOF!J23) / 162)) / ((((((ROOF!J7 - ROOF!AI6) + ((((ROOF!I6 / 2) × TAN(ROOF!J8 × PI() / 180)) + ROOF!J7) - ROOF!AI6)) / 2) × ROOF!I6) + ((((ROOF!J7 - ROOF!AI9) + ((ROOF!J7 - (ROOF!AQ20 × TAN(ROOF!J8 × PI() / 180))) - ROOF!AI9)) / 2) × ROOF!AQ20) + ((((ROOF!J7 - ROOF!AI7) + ((((ROOF!I6 / 2) × TAN(ROOF!J8 × PI() / 180)) + ROOF!J7) - ROOF!AI7)) / 2) × ROOF!I6) + ((((ROOF!J7 - ROOF!AI9) + ((ROOF!J7 - (ROOF!AQ20 × TAN(ROOF!J8 × PI() / 180))) - ROOF!AI9)) / 2) × ROOF!AQ20) + ((ROOF!J7 - ROOF!AI9) × ROOF!I5) + ((ROOF!J7 - ROOF!AI8) × ROOF!I5)) × 10.76))"
+  ],
+  [
+    "2.5",
+    "CLADDING FLANGE BRACE",
+    "ADDITIONAL=",
+    "65",
+    "KG",
+    "(((ROOF!J9 + ROOF!J10) × ROOF!J12 × 2) + (((ROOF!J16 + 2) × (ROOF!J12 + 1)) × 2) + (ROOF!J12 × 1 × 2)) × ROOF!AN13 × 1.57 × 2"
+  ],
+  [
+    "2.6",
+    "NUMBER OF CLADDING PURLIN BOLTS",
+    "ADDITIONAL=",
+    "75",
+    "NOS",
+    "(((ROOF!J9 + ROOF!J10) × ROOF!J12 × 2) + (((ROOF!J16 + 2) × (ROOF!J12 + 1)) × 2) + (ROOF!J12 × 1 × 2)) × 4"
+  ],
+  [
+    ""
+  ],
+  [
+    "3",
+    "CANOPY",
+    "",
+    "",
+    ""
+  ],
+  [
+    "3.1",
+    "CANOPY STRUCTURE",
+    "",
+    "KG",
+    "SUM((CANOPY!G9 × CANOPY!J9 × CANOPY!S9 × 10.76), (0 × 0 × CANOPY!S9 × 10.76), (0 × 0 × CANOPY!S9 × 10.76), (0 × 0 × CANOPY!S9 × 10.76), (0 × 0 × CANOPY!S9 × 10.76), (0 × 0 × CANOPY!S9 × 10.76), (0 × 0 × CANOPY!S9 × 10.76), (0 × 0 × CANOPY!S9 × 10.76), (0 × 0 × CANOPY!S9 × 10.76), (0 × 0 × CANOPY!S9 × 10.76))"
+  ],
+  [
+    "",
+    "CANOPY AREA",
+    "(SUM((CANOPY!G9 × CANOPY!J9), (0 × 0), (0 × 0), (0 × 0), (0 × 0), (0 × 0), (0 × 0), (0 × 0), (0 × 0), (0 × 0))) × 10.76",
+    "SQFT",
+    "",
+    ""
+  ],
+  [
+    "3.2",
+    "CANOPY PURLIN",
+    "",
+    "KG",
+    "SUM((CANOPY!Y9 × CANOPY!AD9 × (CANOPY!V9 - 1) × ((CANOPY!G9 / (CANOPY!V9 - 1)) + 0.4)), (0 × 0 × 0 × ((0 / (0 - 1)) + 0.4)), (0 × 0 × 0 × ((0 / (0 - 1)) + 0.4)), (0 × 0 × 0 × ((0 / (0 - 1)) + 0.4)), (0 × 0 × 0 × ((0 / (0 - 1)) + 0.4)), (0 × 0 × 0 × ((0 / (0 - 1)) + 0.4)), (0 × 0 × 0 × ((0 / (0 - 1)) + 0.4)), (0 × 0 × 0 × ((0 / (0 - 1)) + 0.4)), (0 × 0 × 0 × ((0 / (0 - 1)) + 0.4)), (0 × 0 × 0 × ((0 / (0 - 1)) + 0.4)))"
+  ],
+  [
+    "3.3",
+    "CANOPY SHEET",
+    "",
+    "SQM",
+    "SUM((CANOPY!G9 × CANOPY!J9), (0 × 0), (0 × 0), (0 × 0), (0 × 0), (0 × 0), (0 × 0), (0 × 0), (0 × 0), (0 × 0))"
+  ],
+  [
+    "",
+    "",
+    "PURCHASE QUANTITY",
+    "SQM",
+    "(SUM((CANOPY!G9 × CANOPY!J9), (0 × 0), (0 × 0), (0 × 0), (0 × 0), (0 × 0), (0 × 0), (0 × 0), (0 × 0), (0 × 0))) × 1.1"
+  ],
+  [
+    "3.4",
+    "CANOPY GUTTER",
+    "",
+    "M",
+    "SUM(CANOPY!G9, 0, 0, 0, 0, 0, 0, 0, 0, 0)"
+  ],
+  [
+    "3.5",
+    "CANOPY DOWN TAKE",
+    "",
+    "M",
+    "SUM((CANOPY!V9 × CANOPY!M9), 0, 0, 0, 0, 0, 0, 0, 0, 0)"
+  ],
+  [
+    "3.6",
+    "CANOPY SIDE COVERING",
+    "",
+    "SQM",
+    "SUM((((CANOPY!J9 × 2) + CANOPY!G9) × CANOPY!AO9), (((0 × 2) + 0) × 0), (((0 × 2) + 0) × 0), (((0 × 2) + 0) × 0), (((0 × 2) + 0) × 0), (((0 × 2) + 0) × 0), (((0 × 2) + 0) × 0), (((0 × 2) + 0) × 0), (((0 × 2) + 0) × 0), (((0 × 2) + 0) × 0))"
+  ],
+  [
+    "3.7",
+    "CANOPY FLASHING",
+    "",
+    "M",
+    "SUM(((CANOPY!J9 × 2) + CANOPY!G9), 0, 0, 0, 0, 0, 0, 0, 0, 0)"
+  ],
+  [
+    "3.8",
+    "CANOPY PURLIN BOLTS",
+    "",
+    "NOS",
+    "SUM((CANOPY!Y9 × CANOPY!V9 × JOINTS!AV25), (0 × 0 × JOINTS!AV25), (0 × 0 × JOINTS!AV25), (0 × 0 × JOINTS!AV25), (0 × 0 × JOINTS!AV25), (0 × 0 × JOINTS!AV25), (0 × 0 × JOINTS!AV25), (0 × 0 × JOINTS!AV25), (0 × 0 × JOINTS!AV25), (0 × 0 × JOINTS!AV25))"
+  ],
+  [
+    "3.9",
+    "CANOPY JOINT BOLTS",
+    "",
+    "NOS",
+    "SUM((CANOPY!V9 × JOINTS!AV29), (0 × JOINTS!AV29), (0 × JOINTS!AV29), (0 × JOINTS!AV29), (0 × JOINTS!AV29), (0 × JOINTS!AV29), (0 × JOINTS!AV29), (0 × JOINTS!AV29), (0 × JOINTS!AV29), (0 × JOINTS!AV29))"
+  ],
+  [
+    "",
+    "",
+    "",
+    "",
+    ""
+  ],
+  [
+    "",
+    "",
+    "",
+    "",
+    ""
+  ],
+  [
+    "",
+    "",
+    "",
+    "",
+    ""
+  ],
+  [
+    "",
+    "",
+    "",
+    "",
+    ""
+  ],
+  [
+    "",
+    "",
+    "",
+    "",
+    ""
+  ],
+  [
+    "",
+    "",
+    "",
+    "",
+    ""
+  ],
+  [
+    ""
+  ],
+  [
+    "4",
+    "ACCESSORIES",
+    ""
+  ],
+  [
+    "4.1",
+    "DOORS",
+    "ACCESSORIES!AR5",
+    "NOS",
+    "",
+    "SQM",
+    "21"
+  ],
+  [
+    "4.2",
+    "WINDOWS",
+    "10",
+    "NOS",
+    "",
+    "SQM",
+    "18"
+  ],
+  [
+    "4.3",
+    "FASCIA STRUCTURE",
+    "",
+    "",
+    "",
+    "KG",
+    "556.5072"
+  ],
+  [
+    "4.4",
+    "FASCIA COVERING SHEET/ BOARD",
+    "",
+    "",
+    "",
+    "SQM",
+    "51.72"
+  ],
+  [
+    "4.5",
+    "INTERNAL PARTITIONS",
+    "",
+    "",
+    "",
+    "SQM",
+    "900"
+  ],
+  [
+    "4.6",
+    "RIDGE",
+    "",
+    "",
+    "",
+    "M",
+    "442"
+  ],
+  [
+    "4.7",
+    "GUTTER",
+    "",
+    "",
+    "",
+    "M",
+    "306"
+  ],
+  [
+    "4.8",
+    "DOWNTAKE",
+    "",
+    "",
+    "",
+    "M",
+    "262.87"
+  ],
+  [
+    "4.8.1",
+    "DRIP TRIM",
+    "",
+    "",
+    "",
+    "M",
+    "546"
+  ],
+  [
+    "4.8.2",
+    "GABLE END FLASHING",
+    "",
+    "",
+    "",
+    "M",
+    "101"
+  ],
+  [
+    "4.8.3",
+    "CORNER FLASH",
+    "",
+    "NOS",
+    "",
+    "M",
+    "33"
+  ],
+  [
+    "4.8.4",
+    "ROLLING SHUTTER",
+    "1",
+    "NOS",
+    "",
+    "SQM",
+    "100"
+  ],
+  [
+    "4.8.5",
+    "LOUVERS",
+    "1",
+    "NOS",
+    "",
+    "SQM",
+    "100"
+  ],
+  [
+    "4.8.6",
+    "SKY LIGHT",
+    "1",
+    "NOS",
+    "",
+    "SQM",
+    "100"
+  ],
+  [
+    "4.8.7",
+    "WALL LIGHT",
+    "1",
+    "NOS",
+    "",
+    "SQM",
+    "100"
+  ],
+  [
+    "4.8.8",
+    "ROOF INSULATION",
+    "XLPE",
+    "SQM",
+    "6563"
+  ],
+  [
+    "4.8.8.1",
+    "WALL INSULATION",
+    "XLPE",
+    "SQM",
+    "105"
+  ],
+  [
+    "4.8.8.2",
+    "TURBO VENTILATORS",
+    "",
+    "NOS",
+    "10"
+  ],
+  [
+    "4.8.8.3",
+    "HANDRAIL",
+    "",
+    "KG",
+    "250"
+  ],
+  [
+    ""
+  ],
+  [
+    "5",
+    "MEZZANINE",
+    "",
+    "",
+    ""
+  ],
+  [
+    "5.1",
+    "MEZZANINE STRUCTURE",
+    "",
+    "KG",
+    "6455"
+  ],
+  [
+    "",
+    "TOTAL MEZZANINE AREA",
+    "171",
+    "SQM",
+    "ADDITIONAL =",
+    "KG",
+    "4756"
+  ],
+  [
+    "",
+    "MATERIAL CONSUMPTION",
+    "4",
+    "KG/SQFT",
+    "",
+    "",
+    ""
+  ],
+  [
+    "5.2",
+    "DECK SHEET",
+    "",
+    "SQM",
+    "171"
+  ],
+  [
+    "",
+    "",
+    "PURCHASE QUANTITY",
+    "SQM",
+    "189"
+  ],
+  [
+    "",
+    "",
+    "",
+    "ADDITIONAL =",
+    "SQM",
+    "46"
+  ],
+  [
+    "5.3",
+    "SHEAR STUDS",
+    "ADDITIONAL=",
+    "5580",
+    "NOS",
+    "900"
+  ],
+  [
+    "5.4",
+    "CONCRETE FLASHING",
+    "ADDITIONAL=",
+    "6565",
+    "M",
+    "84"
+  ],
+  [
+    "5.5",
+    "JOINT BOLTS",
+    "16 MM DIA HSFG BOLTS",
+    "",
+    "392"
+  ],
+  [
+    "5.6",
+    "FOUNDATION BOLTS",
+    "",
+    "",
+    "NA"
+  ],
+  [
+    ""
+  ],
+  [
+    "6",
+    "STAIR",
+    "",
+    "",
+    ""
+  ],
+  [
+    "6.1",
+    "TOTAL AREA OF STAIR",
+    "",
+    "SQM",
+    "5"
+  ],
+  [
+    "6.2",
+    "TOTAL WEIGHTOF STRINGER BEAMS",
+    "HR SECTION",
+    "KG",
+    "484"
+  ],
+  [
+    "",
+    "",
+    "ADDITIONAL =",
+    "KG",
+    "456"
+  ],
+  [
+    "6.3",
+    "TOTAL WEIGHTOF STEPS",
+    "6MM CHQ PLATE",
+    "KG",
+    "243"
+  ],
+  [
+    "",
+    "",
+    "",
+    "ADDITIONAL =",
+    "KG",
+    "457"
+  ],
+  [
+    ""
+  ],
+  [
+    "7",
+    "ADDITIONAL BOLTS",
+    "",
+    "",
+    ""
+  ],
+  [
+    "7.1",
+    "JOINT BOLT",
+    "24 MM DIA HSFG BOLTS",
+    "NOS",
+    "10"
+  ],
+  [
+    "7.2",
+    "JOINT BOLT",
+    "20 MM DIA HSFG BOLTS",
+    "NOS",
+    "11"
+  ],
+  [
+    "7.3",
+    "JOINT BOLT",
+    "16 MM DIA HSFG BOLTS",
+    "NOS",
+    "12"
+  ],
+  [
+    "7.4",
+    "PURLIN BOLT",
+    "12 MM DIA ORDINARY BOLTS",
+    "NOS",
+    "13"
+  ],
+  [
+    "7.5",
+    "ANCHOR BOLT",
+    "",
+    "NOS",
+    "14"
+  ],
+  [
+    "7.6",
+    "FOUNDATION BOLT",
+    "",
+    "NOS",
+    "15"
+  ]
+]
