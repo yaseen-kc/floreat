@@ -1,4 +1,10 @@
-import type { RowDef } from './types.js';
+import { useEffect, useRef, useState } from 'react'
+import { toast } from 'sonner'
+import { Layers2 } from 'lucide-react'
+import { useUpsertQuantity } from '@/api/quotation/quantity/postQuantity'
+import type { CreateQuantityPayload } from '@/api/quotation/quantity/postQuantity'
+import { SectionTable, seedDrafts } from '@/components/quotation/shared/SectionTable'
+import type { RowDef } from '@/components/quotation/shared/SectionTable'
 
 export const MEZZANINE_ROWS: RowDef[] = [
   {
@@ -104,3 +110,55 @@ export const MEZZANINE_ROWS: RowDef[] = [
     "isCalculated": true
   }
 ];
+
+export interface MezzanineQuantityTableProps {
+  jobId: string
+  initialData: Record<string, string | number | boolean | null | undefined> | null
+  calculatedData?: Record<string, string | number | boolean | null | undefined> | null
+}
+
+export function MezzanineQuantityTable({ jobId, initialData, calculatedData }: MezzanineQuantityTableProps) {
+  const [draft, setDraft] = useState<Record<string, string>>({})
+  const [saving, setSaving] = useState(false)
+  const upsertQuantity = useUpsertQuantity()
+  const seeded = useRef(false)
+
+  useEffect(() => {
+    if (seeded.current) return
+    if (initialData !== undefined) {
+      seeded.current = true
+      setDraft(seedDrafts(initialData as Record<string, unknown> | null, MEZZANINE_ROWS))
+    }
+  }, [initialData])
+
+  const onEdit = (field: string, value: string) => setDraft((prev) => ({ ...prev, [field]: value }))
+
+  const onSave = async () => {
+    if (!jobId) return
+    setSaving(true)
+    const parseVal = (v: string) => (v === '' ? null : Number(v))
+    const sectionPayload = Object.fromEntries(Object.entries(draft).map(([k, v]) => [k, parseVal(v)]))
+    try {
+      await upsertQuantity.mutateAsync({ jobId, payload: { mezzanine: sectionPayload } as CreateQuantityPayload })
+      toast.success('Mezzanine saved')
+    } catch {
+      toast.error('Failed to save Mezzanine')
+    } finally {
+      setSaving(false)
+    }
+  }
+
+  return (
+    <SectionTable
+      icon={<Layers2 />}
+      title="Mezzanine"
+      rows={MEZZANINE_ROWS}
+      sectionData={initialData}
+      draft={draft}
+      onEdit={onEdit}
+      onSave={onSave}
+      saving={saving}
+      calculatedData={calculatedData}
+    />
+  )
+}

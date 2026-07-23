@@ -1,4 +1,10 @@
-import type { RowDef } from './types.js';
+import { useEffect, useRef, useState } from 'react'
+import { toast } from 'sonner'
+import { Layers } from 'lucide-react'
+import { useUpsertQuantity } from '@/api/quotation/quantity/postQuantity'
+import type { CreateQuantityPayload } from '@/api/quotation/quantity/postQuantity'
+import { SectionTable, seedDrafts } from '@/components/quotation/shared/SectionTable'
+import type { RowDef } from '@/components/quotation/shared/SectionTable'
 
 export const PEB_ROOF_ROWS: RowDef[] = [
   {
@@ -416,3 +422,55 @@ export const PEB_ROOF_ROWS: RowDef[] = [
     "isCalculated": true
   }
 ];
+
+export interface PebRoofQuantityTableProps {
+  jobId: string
+  initialData: Record<string, string | number | boolean | null | undefined> | null
+  calculatedData?: Record<string, string | number | boolean | null | undefined> | null
+}
+
+export function PebRoofQuantityTable({ jobId, initialData, calculatedData }: PebRoofQuantityTableProps) {
+  const [draft, setDraft] = useState<Record<string, string>>({})
+  const [saving, setSaving] = useState(false)
+  const upsertQuantity = useUpsertQuantity()
+  const seeded = useRef(false)
+
+  useEffect(() => {
+    if (seeded.current) return
+    if (initialData !== undefined) {
+      seeded.current = true
+      setDraft(seedDrafts(initialData as Record<string, unknown> | null, PEB_ROOF_ROWS))
+    }
+  }, [initialData])
+
+  const onEdit = (field: string, value: string) => setDraft((prev) => ({ ...prev, [field]: value }))
+
+  const onSave = async () => {
+    if (!jobId) return
+    setSaving(true)
+    const parseVal = (v: string) => (v === '' ? null : Number(v))
+    const sectionPayload = Object.fromEntries(Object.entries(draft).map(([k, v]) => [k, parseVal(v)]))
+    try {
+      await upsertQuantity.mutateAsync({ jobId, payload: { pebRoof: sectionPayload } as CreateQuantityPayload })
+      toast.success('PEB Roof saved')
+    } catch {
+      toast.error('Failed to save PEB Roof')
+    } finally {
+      setSaving(false)
+    }
+  }
+
+  return (
+    <SectionTable
+      icon={<Layers />}
+      title="PEB Roof"
+      rows={PEB_ROOF_ROWS}
+      sectionData={initialData}
+      draft={draft}
+      onEdit={onEdit}
+      onSave={onSave}
+      saving={saving}
+      calculatedData={calculatedData}
+    />
+  )
+}
