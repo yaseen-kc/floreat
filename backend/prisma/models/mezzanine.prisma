@@ -1,18 +1,18 @@
 // ── Mezzanine Enums ───────────────────────────────
 
 enum MezzanineFloorCode {
-  MEZ_1
-  MEZ_2
-  MEZ_3
-  MEZ_4
-  MEZ_5
-  MEZ_6
-  MEZ_7
-  MEZ_8
-  MEZ_9
-  MEZ_10
-  MEZ_11
-  MEZ_12
+  MEZ_1 @map("MEZ-1")
+  MEZ_2 @map("MEZ-2")
+  MEZ_3 @map("MEZ-3")
+  MEZ_4 @map("MEZ-4")
+  MEZ_5 @map("MEZ-5")
+  MEZ_6 @map("MEZ-6")
+  MEZ_7 @map("MEZ-7")
+  MEZ_8 @map("MEZ-8")
+  MEZ_9 @map("MEZ-9")
+  MEZ_10 @map("MEZ-10")
+  MEZ_11 @map("MEZ-11")
+  MEZ_12 @map("MEZ-12")
 }
 
 enum MezzanineType {
@@ -24,9 +24,9 @@ enum MezzanineType {
 }
 
 enum MezzanineFloorCodeExt {
-  EXT_1
-  EXT_2
-  EXT_3
+  EXT_1 @map("EXT-1")
+  EXT_2 @map("EXT-2")
+  EXT_3 @map("EXT-3")
 }
 
 enum MezzanineFloorLevel {

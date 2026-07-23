@@ -2,10 +2,12 @@ import { useEffect, useRef, useState, Fragment } from 'react'
 import type { ReactNode } from 'react'
 import { toast } from 'sonner'
 import { useQuotationStore } from '@/stores/quotation-store'
+import { useShallow } from 'zustand/react/shallow'
 import { ApiError } from '@/lib/api'
 import { useQuantity } from '@/api/quotation/quantity/getQuantity'
 import { useUpsertQuantity } from '@/api/quotation/quantity/postQuantity'
 import type { CreateQuantityPayload } from '@/api/quotation/quantity/postQuantity'
+import { calculateQuantityPebRoof } from '@floreat/shared/calc'
 import { SectionCard } from '@/components/quotation/shared/SectionCard'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -34,6 +36,7 @@ interface SectionTableProps {
   onEdit: (field: string, value: string) => void
   onSave: () => void
   saving: boolean
+  calculatedData?: Record<string, string | number | boolean | null | undefined> | null
 }
 
 const getEditableFields = (rows: RowDef[]): string[] => {
@@ -49,7 +52,7 @@ const getEditableFields = (rows: RowDef[]): string[] => {
   });
 }
 
-function SectionTable({ icon, title, rows, sectionData, draft, onEdit, onSave, saving }: SectionTableProps) {
+function SectionTable({ icon, title, rows, sectionData, draft, onEdit, onSave, saving, calculatedData }: SectionTableProps) {
   const isDirty = getEditableFields(rows).some((f) => (draft[f] ?? '') !== String(sectionData?.[f] ?? ''))
 
   return (
@@ -115,7 +118,7 @@ function SectionTable({ icon, title, rows, sectionData, draft, onEdit, onSave, s
                         readOnly
                         disabled
                         className="text-right font-mono tabular-nums h-8 bg-muted"
-                        value={(Math.random() * 100).toFixed(2)}
+                        value={calculatedData?.[row.qtyField] !== undefined ? (typeof calculatedData[row.qtyField] === 'number' ? (calculatedData[row.qtyField] as number).toFixed(2) : String(calculatedData[row.qtyField])) : '—'}
                         aria-label={`${row.label} calculated`}
                       />
                     ) : (
@@ -148,7 +151,7 @@ function SectionTable({ icon, title, rows, sectionData, draft, onEdit, onSave, s
                                 readOnly
                                 disabled
                                 className="text-right font-mono tabular-nums h-8 bg-muted"
-                                value={(Math.random() * 100).toFixed(2)}
+                                value={calculatedData?.[sub.addlField] !== undefined ? (typeof calculatedData[sub.addlField] === 'number' ? (calculatedData[sub.addlField] as number).toFixed(2) : String(calculatedData[sub.addlField])) : '—'}
                                 aria-label={`${sub.desc} additional calculated`}
                               />
                             ) : (
@@ -176,7 +179,7 @@ function SectionTable({ icon, title, rows, sectionData, draft, onEdit, onSave, s
                                 readOnly
                                 disabled
                                 className="text-right font-mono tabular-nums h-8 bg-muted"
-                                value={(Math.random() * 100).toFixed(2)}
+                                value={calculatedData?.[sub.purchField] !== undefined ? (typeof calculatedData[sub.purchField] === 'number' ? (calculatedData[sub.purchField] as number).toFixed(2) : String(calculatedData[sub.purchField])) : '—'}
                                 aria-label={`${sub.desc} purchase calculated`}
                               />
                             ) : (
@@ -225,13 +228,59 @@ const EMPTY_SAVING: Record<SectionKey, boolean> = {
 const toStr = (v: unknown): string => (v == null ? '' : String(v))
 
 export function QuantityTable() {
-  const jobId = useQuotationStore((s) => s.jobId)
+  const { jobId, roof, joint } = useQuotationStore(useShallow((s) => ({
+    jobId: s.jobId,
+    roof: s.roof,
+    joint: s.joint
+  })))
   const { data: quantity, isLoading, isError, error } = useQuantity(jobId ?? '')
   const notFound = error instanceof ApiError && error.status === 404
   const upsertQuantity = useUpsertQuantity()
   const [drafts, setDrafts] = useState<SectionDrafts>(EMPTY_DRAFTS)
   const [saving, setSaving] = useState<Record<SectionKey, boolean>>(EMPTY_SAVING)
   const seeded = useRef(false)
+
+  const pebRoofCalc = calculateQuantityPebRoof({
+    roof: {
+      buildingOverallLength: roof.buildingOverallLength ?? 0,
+      buildingOverallWidth: roof.buildingOverallWidth ?? 0,
+      roofSlope: roof.roofSlope ?? 0,
+      materialConsumptionExcludingPurlin: roof.materialConsumptionExcludingPurlin ?? 0,
+      mainRoofFrames: roof.mainRoofFrames ?? 0,
+      endRoofFrames: roof.endRoofFrames ?? 0,
+      roofPurlinSpacing: roof.roofPurlinSpacing ?? 0,
+      roofPurlinUnitWeight: roof.roofPurlinUnitWeight ?? 0,
+      roofExtensionWidthHeight: roof.roofExtensionWidthHeight ?? 0,
+      roofExtensionEndFrameCount: roof.roofExtensionEndFrameCount ?? 0,
+      roofExtensionMidFrameCount: roof.roofExtensionMidFrameCount ?? 0,
+      roofAreaDeduction: roof.roofAreaDeduction ?? 0,
+      polycarbonateRoofLength: roof.polycarbonateRoofLength ?? 0,
+      polycarbonateRoofWidth: roof.polycarbonateRoofWidth ?? 0,
+      polycarbonateRoofCount: roof.polycarbonateRoofCount ?? 0,
+      gradeOfPlateMaterial: roof.gradeOfPlateMaterial ?? '',
+      roofPurlinType: roof.roofPurlinType ?? '',
+      roofPurlinDepth: roof.roofPurlinDepth ?? 0,
+      roofCoveringThickness: roof.roofCoveringThickness ?? 0,
+      roofCoveringType: roof.roofCoveringType ?? '',
+      roofWindBracingSegmentsInOneHalf: roof.roofWindBracingSegmentsInOneHalf ?? 0,
+      roofWindBracingProvidedBays: roof.roofWindBracingProvidedBays ?? 0,
+      roofWindBracingLength: roof.roofWindBracingLength ?? 0,
+      windBracingUnitWeight: roof.windBracingUnitWeight ?? 0,
+      diaOfRoofSagRod: roof.diaOfRoofSagRod ?? 0,
+      roofFlangeBraceAverageLength: roof.roofFlangeBraceAverageLength ?? 0,
+      endFrameFlangeBraceAverageLength: roof.endFrameFlangeBraceAverageLength ?? 0,
+    },
+    joint: {
+      purlinFlangeBraceBoltDiameter: joint.purlinFlangeBraceBoltDiameter ?? 0,
+      purlinFlangeBraceNumberOfBolts: joint.purlinFlangeBraceNumberOfBolts ?? 0,
+    },
+    jointBoltRoof: {
+      A: { numberOfBolts: joint.jointBoltRoof.find((j) => j.roofJointId === 'A')?.numberOfBolts ?? 0 }
+    },
+    foundationBoltRoof: {
+      boltDiameter11: joint.foundationBoltRoof[0]?.boltDiameter ?? 0
+    }
+  })
 
   useEffect(() => {
     if (!quantity || seeded.current) return
@@ -304,7 +353,7 @@ export function QuantityTable() {
 
   return (
     <div className="space-y-6">
-      <SectionTable icon={<Layers />} title="PEB Roof" rows={PEB_ROOF_ROWS} sectionData={sd(quantity?.pebRoof)} draft={drafts.pebRoof} onEdit={editSection('pebRoof')} onSave={() => saveSection('pebRoof')} saving={saving.pebRoof} />
+      <SectionTable icon={<Layers />} title="PEB Roof" rows={PEB_ROOF_ROWS} sectionData={sd(quantity?.pebRoof)} draft={drafts.pebRoof} onEdit={editSection('pebRoof')} onSave={() => saveSection('pebRoof')} saving={saving.pebRoof} calculatedData={pebRoofCalc as unknown as Record<string, string | number>} />
       <SectionTable icon={<LayoutGrid />} title="Cladding" rows={CLADDING_ROWS} sectionData={sd(quantity?.cladding)} draft={drafts.cladding} onEdit={editSection('cladding')} onSave={() => saveSection('cladding')} saving={saving.cladding} />
       <SectionTable icon={<Umbrella />} title="Canopy" rows={CANOPY_ROWS} sectionData={sd(quantity?.canopy)} draft={drafts.canopy} onEdit={editSection('canopy')} onSave={() => saveSection('canopy')} saving={saving.canopy} />
       <SectionTable icon={<Wrench />} title="Accessories" rows={ACCESSORIES_ROWS} sectionData={sd(quantity?.accessories)} draft={drafts.accessories} onEdit={editSection('accessories')} onSave={() => saveSection('accessories')} saving={saving.accessories} />

@@ -59,13 +59,13 @@ export function calculateQuantityPebRoof(input: QuantityPebRoofInput): z.infer<t
   const polyCarbonateAreaDeductions = roof.polycarbonateRoofLength * roof.polycarbonateRoofWidth * roof.polycarbonateRoofCount
   const extendedRoofWidth = roof.roofExtensionWidthHeight / cosSlope
   const extendedRoofLength = (roof.buildingOverallLength / totalNoOfPurlinBay) * noOfExtendedPurlinBay
-  
+
   // Section: raftersAndColumns
   const raftersAndColumnsQuantity = roofArea * roof.materialConsumptionExcludingPurlin
 
   // Section: roofPurlins
-  const roofPurlinsQuantity = 
-    lengthOfOnePurlin * noOfPurlinsInOneFrame * totalNoOfPurlinBay * roof.roofPurlinUnitWeight + 
+  const roofPurlinsQuantity =
+    lengthOfOnePurlin * noOfPurlinsInOneFrame * totalNoOfPurlinBay * roof.roofPurlinUnitWeight +
     lengthOfOnePurlin * roof.roofPurlinUnitWeight * noOfExtendedFrame * noOfExtendedPurlinBay
 
   // Section: roofSheet
@@ -109,7 +109,7 @@ export function calculateQuantityPebRoof(input: QuantityPebRoofInput): z.infer<t
   )
 
   return {
-    pebRoofValue: "ROOF!AY28",
+    pebRoofValue: "TRUE",
     pebRoofQuantity,
     raftersAndColumns: roof.gradeOfPlateMaterial,
     raftersAndColumnsQuantity,
@@ -118,7 +118,7 @@ export function calculateQuantityPebRoof(input: QuantityPebRoofInput): z.infer<t
     inclinedLengthInOneHalf,
     roofArea,
     materialConsumption: roof.materialConsumptionExcludingPurlin,
-    
+
     roofPurlinsValue: noOfExtendedPurlinBay,
     roofPurlins: `${roof.roofPurlinType} PURLIN ${roof.roofPurlinDepth} MM DEPTH`,
     roofPurlinsQuantity,
@@ -129,7 +129,7 @@ export function calculateQuantityPebRoof(input: QuantityPebRoofInput): z.infer<t
     unitWeightOfPurlin: roof.roofPurlinUnitWeight,
     noOfExtendedFrame,
     noOfExtendedPurlinBay,
-    
+
     roofSheet: `${roof.roofCoveringThickness}MM THICK ${roof.roofCoveringType}`,
     roofSheetQuantity,
     roofSheetPurchaseQuantity,
@@ -137,20 +137,20 @@ export function calculateQuantityPebRoof(input: QuantityPebRoofInput): z.infer<t
     extendedRoofLength,
     roofAreaDeductions: roof.roofAreaDeduction,
     polyCarbonateAreaDeductions,
-    
+
     polyCarbonateSheetQuantity: polyCarbonateAreaDeductions,
     polyCarbonateSheetPurchaseQuantity: 0,
     lengthOfpolyCarbonateSheet: roof.polycarbonateRoofLength,
     lengthOfpolyCarbonateSheetAdditional: "User Input",
     widthOfpolyCarbonateSheet: roof.polycarbonateRoofWidth,
     NosOfpolyCarbonateSheet: roof.polycarbonateRoofCount,
-    
+
     roofWindBracing,
     lengthOfSinlgeWindBracing: roof.roofWindBracingLength,
     lengthOfSinlgeWindBracingAdditional: "User Input",
     totalNumberOfWindBracing,
     unitWeightOfRoofWindBracing: roof.windBracingUnitWeight,
-    
+
     roofSagRoadValue: noOfSagRodInExtendedFrame,
     roofSagRoadQuantity,
     lengthOfSingleSagRoad: roof.roofPurlinSpacing + 0.2,
@@ -160,7 +160,7 @@ export function calculateQuantityPebRoof(input: QuantityPebRoofInput): z.infer<t
     noOfSagRodInExtendedFrame,
     noOfExtendedSagRodBay,
     unitWeightOfSagRod,
-    
+
     roofFlangeBraceQuantity,
     lengthOfMidFrameFlangeBrace: roof.roofFlangeBraceAverageLength,
     lengthOfMidFrameFlangeBraceAdditional: "User Input",
@@ -172,7 +172,7 @@ export function calculateQuantityPebRoof(input: QuantityPebRoofInput): z.infer<t
     noOfExtendedMidFrame: roof.roofExtensionMidFrameCount,
     noOfExtendedEndFrame: roof.roofExtensionEndFrameCount,
     lengthOfEndFrameFlangeBrace: roof.endFrameFlangeBraceAverageLength,
-    
+
     numberOfPurlinBolts: `${joint.purlinFlangeBraceBoltDiameter} MM DIA ORDINARY BOLTS`,
     numberOfPurlinBoltsQuantity,
     noOfPurlinJointInSingleFrame,
@@ -180,7 +180,7 @@ export function calculateQuantityPebRoof(input: QuantityPebRoofInput): z.infer<t
     noOfPurlinnodeInExtendedFrame,
     noOfExtendedFrames,
     noOfBoltsInSinglePurlinJoint: joint.purlinFlangeBraceNumberOfBolts,
-    
+
     numberOfRoofJointBolts: `${jointBoltRoof.A?.numberOfBolts ?? 0} MM DIA HSFG BOLTS`,
     numberOfFoundationBolts: `${foundationBoltRoof.boltDiameter11} MM DIA FOUNDATION BOLTS`,
     numberOfAnchorBolts: `${foundationBoltRoof.boltDiameter11} MM DIA ANCHOR BOLTS`,

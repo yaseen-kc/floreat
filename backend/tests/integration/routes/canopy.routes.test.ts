@@ -33,7 +33,6 @@ describe('Canopy routes integration', () => {
         method: 'POST', url: '/api/jobs/job-1/canopy',
         payload: { canopies },
       })
-
       expect(res.statusCode).toBe(200)
       expect(res.json().id).toBe(canopy.id)
       expect(res.json().canopies).toEqual(canopies)

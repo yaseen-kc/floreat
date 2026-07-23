@@ -251,7 +251,7 @@ export function makeLoad(overrides = {}) {
 
 export function makeCanopyItem(overrides = {}) {
   return {
-    code: 'CANOPY-1',
+    code: 'CANOPY_1',
     heightFrom: 'GROUND' as const,
     length: 6,
     width: 3,

@@ -28,10 +28,12 @@ await fastify.register(cors, {
 })
 
 // Global request throttling; tighter per-route limits are set on auth-adjacent routes
-await fastify.register(rateLimit, {
-  max: config.rateLimit.max,
-  timeWindow: config.rateLimit.timeWindow,
-})
+if (config.rateLimit.enabled) {
+  await fastify.register(rateLimit, {
+    max: config.rateLimit.max,
+    timeWindow: config.rateLimit.timeWindow,
+  })
+}
 
 await fastify.register(clerkPlugin)
 if (config.docs.enabled) await registerDevelopmentDocs(fastify)
