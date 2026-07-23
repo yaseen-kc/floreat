@@ -136,7 +136,6 @@ describe('accessories.service', () => {
       expect(prismaMock.accessories.update).toHaveBeenCalledWith({
         where: { jobId: 'job-1' },
         data: expect.objectContaining(EXPECTED),
-        include: { doors: true, windows: true, foldedPlates: true },
       })
     })
 
@@ -154,23 +153,19 @@ describe('accessories.service', () => {
           gutterQuantity: 60, // derived
           cornerFlashQuantity: 8.58,
         }),
-        include: { doors: true, windows: true, foldedPlates: true },
       })
     })
 
-    it('replaces line-item arrays when provided, deriving each item quantity', async () => {
+    it('updates scalar fields for doors, deriving quantity', async () => {
       prismaMock.roof.findUnique.mockResolvedValue(null)
       prismaMock.accessories.update.mockResolvedValue(makeAccessories({ jobId: 'job-1' }) as any)
 
-      const doors = [{ height: 2.1, width: 1.2, nos: 2, quantity: 999 }]
-      await updateAccessories('job-1', { doors })
+      await updateAccessories('job-1', { doorHeight: 2.1, doorWidth: 1.2, doorNos: 2, doorQuantity: 999 })
 
       expect(prismaMock.accessories.update).toHaveBeenCalledWith(
         expect.objectContaining({
           // client quantity 999 replaced by derived 2.1 × 1.2 × 2 = 5.04
-          data: expect.objectContaining({
-            doors: { deleteMany: {}, createMany: { data: [{ height: 2.1, width: 1.2, nos: 2, quantity: 5.04 }] } },
-          }),
+          data: expect.objectContaining({ doorHeight: 2.1, doorWidth: 1.2, doorNos: 2, doorQuantity: 5.04 }),
         }),
       )
     })
@@ -182,9 +177,9 @@ describe('accessories.service', () => {
       prismaMock.accessories.upsert.mockResolvedValue(makeAccessories({ jobId: 'job-1' }) as any)
 
       await upsertAccessories('job-1', {
-        doors: [{ height: 2, width: 1, nos: 2, quantity: 999 }], // → 4
-        windows: [{ height: 1.2, width: 1.5, nos: 4, quantity: 999 }], // → 7.2
-        foldedPlates: [{ length: 6, width: 1.2, nos: 3, quantity: 999 }], // → 21.6
+        doorHeight: 2, doorWidth: 1, doorNos: 2, doorQuantity: 999, // → 4
+        windowHeight: 1.2, windowWidth: 1.5, windowNos: 4, windowQuantity: 999, // → 7.2
+        foldedPlateLength: 6, foldedPlateWidth: 1.2, foldedPlateNos: 3, foldedPlateQuantity: 999, // → 21.6
         rollingShutterLength: 3,
         rollingShutterWidth: 3,
         rollingShutterNos: 1,
@@ -196,10 +191,9 @@ describe('accessories.service', () => {
             // scalar quantities
             ...EXPECTED,
             rollingShutterQuantity: 9,
-            // line-item quantities
-            doors: { createMany: { data: [{ height: 2, width: 1, nos: 2, quantity: 4 }] } },
-            windows: { createMany: { data: [{ height: 1.2, width: 1.5, nos: 4, quantity: 7.2 }] } },
-            foldedPlates: { createMany: { data: [{ length: 6, width: 1.2, nos: 3, quantity: 21.6 }] } },
+            doorHeight: 2, doorWidth: 1, doorNos: 2, doorQuantity: 4,
+            windowHeight: 1.2, windowWidth: 1.5, windowNos: 4, windowQuantity: 7.2,
+            foldedPlateLength: 6, foldedPlateWidth: 1.2, foldedPlateNos: 3, foldedPlateQuantity: 21.6,
           }),
         }),
       )
@@ -209,12 +203,12 @@ describe('accessories.service', () => {
       prismaMock.roof.findUnique.mockResolvedValue(null)
       prismaMock.accessories.upsert.mockResolvedValue(makeAccessories({ jobId: 'job-1' }) as any)
 
-      await upsertAccessories('job-1', { doors: [{ width: 1.2, nos: 2 }] })
+      await upsertAccessories('job-1', { doorWidth: 1.2, doorNos: 2 })
 
       expect(prismaMock.accessories.upsert).toHaveBeenCalledWith(
         expect.objectContaining({
           create: expect.objectContaining({
-            doors: { createMany: { data: [{ width: 1.2, nos: 2, quantity: null }] } },
+            doorWidth: 1.2, doorNos: 2, doorQuantity: null,
           }),
         }),
       )
@@ -279,7 +273,7 @@ describe('accessories.service', () => {
   })
 
   describe('reads and delete', () => {
-    it('getAccessoriesByJobId includes line-item arrays', async () => {
+    it('getAccessoriesByJobId returns the flat fields', async () => {
       const accessories = makeAccessories({ jobId: 'job-1' })
       prismaMock.accessories.findUnique.mockResolvedValue(accessories as any)
 
@@ -288,7 +282,6 @@ describe('accessories.service', () => {
       expect(result).toEqual(accessories)
       expect(prismaMock.accessories.findUnique).toHaveBeenCalledWith({
         where: { jobId: 'job-1' },
-        include: { doors: true, windows: true, foldedPlates: true },
       })
     })
 

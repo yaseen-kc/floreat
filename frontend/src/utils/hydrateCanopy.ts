@@ -12,8 +12,8 @@ export type HydratedCanopy = CanopyDraft
  */
 export function mapCanopyResponseToDraft(c: Canopy): HydratedCanopy {
   const canopies: CanopyItemDraft[] = c.canopies.map((it) => ({
-    code: it.code ?? undefined,
-    heightFrom: it.heightFrom ?? undefined,
+    code: (it.code as CanopyItemDraft['code']) ?? undefined,
+    heightFrom: (it.heightFrom as CanopyItemDraft['heightFrom']) ?? undefined,
     length: num(it.length),
     width: num(it.width),
     height: num(it.height),

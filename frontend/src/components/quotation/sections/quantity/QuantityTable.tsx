@@ -74,7 +74,7 @@ function SectionTable({ icon, title, rows, sectionData, draft, onEdit, onSave, s
           </TableRow>
         </TableHeader>
         <TableBody>
-          {rows.map((row, i) => {
+          {rows.map((row) => {
             const unitVal = (row.unitField && sectionData?.[row.unitField]) || row.unit;
             const unitDisplay = unitVal ? <Badge variant="outline">{String(unitVal)}</Badge> : <span className="text-muted-foreground">—</span>;
             

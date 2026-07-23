@@ -11,6 +11,7 @@ interface InputUnitProps {
   /** When true the input is non-editable (e.g. a derived/computed value). */
   readOnly?: boolean
   className?: string
+  id?: string
 }
 
 /**
@@ -22,10 +23,11 @@ interface InputUnitProps {
  * Pass `readOnly` for derived values: the input is non-editable and emits
  * nothing.
  */
-export function InputUnit({ value, onChange, unit, step = 1, readOnly = false, className }: InputUnitProps) {
+export function InputUnit({ value, onChange, unit, step = 1, readOnly = false, className, id }: InputUnitProps) {
   return (
     <div className={cn('flex', className)}>
       <Input
+        id={id}
         type="number"
         value={value ?? ''}
         step={step}

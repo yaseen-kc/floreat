@@ -59,36 +59,6 @@ export type FoundationBoltFinish = 'BLACK_UNPAINTED'
  * string.
  * ────────────────────────────────────────────────────────────────────────── */
 
-/** A door line item attached to an accessories container. */
-export interface AccessoryDoor {
-  id: string
-  accessoriesId: string
-  height: string | null
-  width: string | null
-  nos: number | null
-  quantity: string | null
-}
-
-/** A window line item attached to an accessories container. */
-export interface AccessoryWindow {
-  id: string
-  accessoriesId: string
-  height: string | null
-  width: string | null
-  nos: number | null
-  quantity: string | null
-}
-
-/** A folded-plate line item attached to an accessories container. */
-export interface AccessoryFoldedPlate {
-  id: string
-  accessoriesId: string
-  length: string | null
-  width: string | null
-  nos: number | null
-  quantity: string | null
-}
-
 
 /** Shape of a single Accessories returned by the backend (with inline arrays). */
 export interface Accessories {
@@ -189,10 +159,21 @@ export interface Accessories {
   // ── Paint & Primer: Foundation Bolt ──
   foundationBoltFinish: FoundationBoltFinish | null
 
-  // ── Inline line-item arrays ──
-  doors: AccessoryDoor[]
-  windows: AccessoryWindow[]
-  foldedPlates: AccessoryFoldedPlate[]
+  // ── Doors, Windows, Folded Plates ──
+  doorHeight: string | null
+  doorWidth: string | null
+  doorNos: number | null
+  doorQuantity: string | null
+
+  windowHeight: string | null
+  windowWidth: string | null
+  windowNos: number | null
+  windowQuantity: string | null
+
+  foldedPlateLength: string | null
+  foldedPlateWidth: string | null
+  foldedPlateNos: number | null
+  foldedPlateQuantity: string | null
 }
 
 /** Paginated response shape from GET /api/accessories. */

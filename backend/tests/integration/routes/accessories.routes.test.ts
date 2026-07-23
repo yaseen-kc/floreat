@@ -42,47 +42,56 @@ describe('Accessories routes integration', () => {
     })
 
     it('derives each line-item quantity and passes it through to the create payload', async () => {
-      const doors = [makeAccessoryDoor({ height: 2.1, width: 1.2, nos: 3, quantity: 999 })]
-      const accessories = makeAccessories({ jobId: 'job-1', doors })
-      prismaMock.roof.findUnique.mockResolvedValue(null)
-      prismaMock.accessories.upsert.mockResolvedValue(accessories as any)
+      const job = makeJob()
+      prismaMock.job.findFirst.mockResolvedValue(job as any)
+      const payload = {
+        doorHeight: 2.1,
+        doorWidth: 1.2,
+        doorNos: 3,
+      }
 
       const res = await app.inject({
-        method: 'POST', url: '/api/jobs/job-1/accessories',
-        payload: { doors },
+        method: 'POST',
+        url: `/api/jobs/${job.id}/accessories`,
+        payload,
       })
 
       expect(res.statusCode).toBe(200)
       expect(prismaMock.accessories.upsert).toHaveBeenCalledWith(
         expect.objectContaining({
           create: expect.objectContaining({
-            // client quantity 999 replaced by derived values (2.1×1.2×3=7.56)
-            doors: { createMany: { data: [{ height: 2.1, width: 1.2, nos: 3, quantity: 7.56 }] } },
+            doorHeight: 2.1,
+            doorWidth: 1.2,
+            doorNos: 3,
+            doorQuantity: 7.56,
           }),
-        }),
+        })
       )
     })
 
     it('returns the derived item quantity as a Decimal string', async () => {
       // The response mirrors Prisma: the Decimal quantity column serialises as a string.
-      const doors = [makeAccessoryDoor({ height: 2.1, width: 1.2, nos: 2, quantity: '5.04' })]
+      const accessories = makeAccessories({ jobId: 'job-1', doorQuantity: '5.04' })
       prismaMock.roof.findUnique.mockResolvedValue(null)
-      prismaMock.accessories.upsert.mockResolvedValue(makeAccessories({ jobId: 'job-1', doors }) as any)
+      prismaMock.accessories.upsert.mockResolvedValue(accessories as any)
 
       const res = await app.inject({
         method: 'POST', url: '/api/jobs/job-1/accessories',
-        payload: { doors: [{ height: 2.1, width: 1.2, nos: 2, quantity: 999 }] },
+        payload: { doorHeight: 2.1, doorWidth: 1.2, doorNos: 2 },
       })
 
       expect(res.statusCode).toBe(200)
-      expect(res.json().doors[0].quantity).toBe('5.04')
+      expect(res.json().doorQuantity).toBe('5.04')
     })
 
 
     it('rejects a door with a negative count', async () => {
+      const job = makeJob()
+      prismaMock.job.findFirst.mockResolvedValue(job as any)
       const res = await app.inject({
-        method: 'POST', url: '/api/jobs/job-1/accessories',
-        payload: { doors: [makeAccessoryDoor({ nos: -1 })] },
+        method: 'POST',
+        url: `/api/jobs/${job.id}/accessories`,
+        payload: { doorNos: -1 },
       })
       expect(res.statusCode).toBe(400)
     })

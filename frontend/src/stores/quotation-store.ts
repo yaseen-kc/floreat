@@ -21,9 +21,6 @@ import { type CreateLoadInput } from '@/schemas/load.schema'
 import { type CreateSpecInput, specProductItemSchema } from '@/schemas/spec.schema'
 import {
   type CreateAccessoriesInput,
-  accessoryDoorSchema,
-  accessoryWindowSchema,
-  accessoryFoldedPlateSchema,
 } from '@/schemas/accessories.schema'
 import {
   type CreateJointInput,
@@ -222,16 +219,6 @@ export interface CanopyDraft {
  */
 export type LoadDraft = CreateLoadInput
 
-/**
- * Step 6 accessory line-item draft rows. Each comes straight from the Zod item
- * schema minus the server-derived `quantity` (recomputed on write), so the
- * draft holds only user-entered fields. Opening `kind` is optional in the draft
- * (a freshly-added row has no kind yet) even though the wire schema requires it.
- */
-export type AccessoryDoorDraft = Omit<z.infer<typeof accessoryDoorSchema>, 'quantity'>
-export type AccessoryWindowDraft = Omit<z.infer<typeof accessoryWindowSchema>, 'quantity'>
-export type AccessoryFoldedPlateDraft = Omit<z.infer<typeof accessoryFoldedPlateSchema>, 'quantity'>
-
 
 /**
  * The Step 6 accessories draft. Accessories is a flat, always-on 1:1-per-job
@@ -242,12 +229,8 @@ export type AccessoryFoldedPlateDraft = Omit<z.infer<typeof accessoryFoldedPlate
  */
 export type AccessoriesDraft = Omit<
   CreateAccessoriesInput,
-  'doors' | 'windows' | 'foldedPlates'
-> & {
-  doors: AccessoryDoorDraft[]
-  windows: AccessoryWindowDraft[]
-  foldedPlates: AccessoryFoldedPlateDraft[]
-}
+  'doorQuantity' | 'windowQuantity' | 'foldedPlateQuantity'
+>
 
 /**
  * Step 8 joint bolt-spec draft rows. Each item type comes straight from the
@@ -388,11 +371,8 @@ const createDefaultCanopy = (): CanopyDraft => ({ canopies: [] })
 /** Factory for a fresh load draft — every field blank (the schema is all-optional). */
 const createDefaultLoad = (): LoadDraft => ({})
 
-/** Factory for a fresh accessories draft — every scalar blank, all four arrays empty. */
+/** Factory for a fresh accessories draft — every scalar blank. */
 const createDefaultAccessories = (): AccessoriesDraft => ({
-  doors: [],
-  windows: [],
-  foldedPlates: [],
 })
 
 /**
@@ -705,7 +685,7 @@ const ACCESSORY_QUANTITY_FIELDS = [
  * never part of the draft. An entirely blank draft yields `{}`.
  */
 export function buildAccessoriesPayload(accessories: AccessoriesDraft): CreateAccessoriesInput {
-  const { doors, windows, foldedPlates, ...scalars } = accessories
+  const { ...scalars } = accessories
 
   const scalarsClean = { ...scalars } as Record<string, unknown>
   for (const field of ACCESSORY_QUANTITY_FIELDS) {
@@ -713,15 +693,6 @@ export function buildAccessoriesPayload(accessories: AccessoriesDraft): CreateAc
   }
 
   const payload = compactRow(scalarsClean) as CreateAccessoriesInput
-
-  const cleanDoors = doors.map(compactRow).filter((r) => Object.keys(r).length > 0)
-  const cleanWindows = windows.map(compactRow).filter((r) => Object.keys(r).length > 0)
-  const cleanFoldedPlates = foldedPlates.map(compactRow).filter((r) => Object.keys(r).length > 0)
-
-
-  if (cleanDoors.length > 0) payload.doors = cleanDoors
-  if (cleanWindows.length > 0) payload.windows = cleanWindows
-  if (cleanFoldedPlates.length > 0) payload.foldedPlates = cleanFoldedPlates
 
   return payload
 }

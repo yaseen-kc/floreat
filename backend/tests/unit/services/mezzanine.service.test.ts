@@ -19,12 +19,12 @@ describe('mezzanine.service', () => {
         where: { jobId: 'job-1' },
         create: {
           jobId: 'job-1',
-          floors: { createMany: { data: floors } },
-          extensions: { createMany: { data: extensions } },
+          floors: { createMany: { data: floors.map(f => ({ ...f, code: f.code ? (f.code as string).replace('-', '_') : f.code })) } },
+          extensions: { createMany: { data: extensions.map(e => ({ ...e, code: e.code ? (e.code as string).replace('-', '_') : e.code })) } },
         },
         update: {
-          floors: { deleteMany: {}, createMany: { data: floors } },
-          extensions: { deleteMany: {}, createMany: { data: extensions } },
+          floors: { deleteMany: {}, createMany: { data: floors.map(f => ({ ...f, code: f.code ? (f.code as string).replace('-', '_') : f.code })) } },
+          extensions: { deleteMany: {}, createMany: { data: extensions.map(e => ({ ...e, code: e.code ? (e.code as string).replace('-', '_') : e.code })) } },
         },
         include: { floors: true, extensions: true },
       })
@@ -102,8 +102,8 @@ describe('mezzanine.service', () => {
       expect(prismaMock.mezzanine.update).toHaveBeenCalledWith({
         where: { jobId: 'job-1' },
         data: {
-          floors: { deleteMany: {}, createMany: { data: floors } },
-          extensions: { deleteMany: {}, createMany: { data: extensions } },
+          floors: { deleteMany: {}, createMany: { data: floors.map(f => ({ ...f, code: f.code ? (f.code as string).replace('-', '_') : f.code })) } },
+          extensions: { deleteMany: {}, createMany: { data: extensions.map(e => ({ ...e, code: e.code ? (e.code as string).replace('-', '_') : e.code })) } },
         },
         include: { floors: true, extensions: true },
       })

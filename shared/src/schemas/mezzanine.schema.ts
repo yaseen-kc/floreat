@@ -24,6 +24,9 @@ export const mezzanineFloorCodeEnum = z.enum([
 ])
 export const mezzanineCode = mezzanineFloorCodeEnum
 
+/** Business code identifier for a floor extension, e.g. "EXT-1". */
+export const mezzanineFloorCodeExtEnum = z.enum(['EXT-1', 'EXT-2', 'EXT-3'])
+
 /** Schema for an individual mezzanine floor — all fields optional. */
 export const mezzanineFloorSchema = z.object({
   code: mezzanineCode.optional(),
@@ -54,6 +57,7 @@ export const mezzanineFloorSchema = z.object({
 
 /** Schema for a mezzanine floor extension — all fields optional. */
 export const mezzanineFloorExtensionSchema = z.object({
+  code: mezzanineFloorCodeExtEnum.optional(),
   type: mezzanineTypeEnum.optional(),
   heightFrom: mezzanineHeightFromEnum.optional(),
   typicalTo: mezzanineFloorLevelEnum.optional(),

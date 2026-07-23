@@ -16,10 +16,10 @@ export type HydratedMezzanine = MezzanineDraft
  */
 export function mapMezzanineResponseToDraft(m: Mezzanine): HydratedMezzanine {
   const floors: MezzanineFloorDraft[] = m.floors.map((f) => ({
-    code: f.code ?? undefined,
-    floor: f.floor ?? undefined,
-    type: f.type ?? undefined,
-    heightFrom: f.heightFrom ?? undefined,
+    code: (f.code as MezzanineFloorDraft['code']) ?? undefined,
+    floor: (f.floor as MezzanineFloorDraft['floor']) ?? undefined,
+    type: (f.type as MezzanineFloorDraft['type']) ?? undefined,
+    heightFrom: (f.heightFrom as MezzanineFloorDraft['heightFrom']) ?? undefined,
     thicknessMm: num(f.thicknessMm),
     lengthM: num(f.lengthM),
     widthM: num(f.widthM),
@@ -33,11 +33,10 @@ export function mapMezzanineResponseToDraft(m: Mezzanine): HydratedMezzanine {
     internalColumnsMidPrimary: int(f.internalColumnsMidPrimary),
     internalColumnsEndPrimary: int(f.internalColumnsEndPrimary),
   }))
-
   const extensions: MezzanineExtensionDraft[] = m.extensions.map((e) => ({
-    type: e.type ?? undefined,
-    heightFrom: e.heightFrom ?? undefined,
-    typicalTo: e.typicalTo ?? undefined,
+    type: (e.type as MezzanineExtensionDraft['type']) ?? undefined,
+    heightFrom: (e.heightFrom as MezzanineExtensionDraft['heightFrom']) ?? undefined,
+    typicalTo: (e.typicalTo as MezzanineExtensionDraft['typicalTo']) ?? undefined,
     thicknessMm: num(e.thicknessMm),
     lengthM: num(e.lengthM),
     widthM: num(e.widthM),

@@ -1,15 +1,13 @@
 import { useQuery } from '@tanstack/react-query'
 import { useAuth } from '@clerk/react'
 import { apiFetch } from '@/lib/api'
-import type { CreateQuantityInput } from '@floreat/shared/schemas'
+import { quantityUnitEnum } from '@floreat/shared/schemas'
 import type { DecimalString, Nullable } from '@floreat/shared/types'
 import { quantityKeys } from './queryKeys'
+import { z } from 'zod'
 
 /** Units a quantity leaf can be measured in, derived from the shared quantity schema. */
-export type QuantityUnit = Exclude<
-  NonNullable<CreateQuantityInput['pebRoof']>['materialWithPurlinUnit'],
-  null | undefined
->
+export type QuantityUnit = z.infer<typeof quantityUnitEnum>
 
 type DecimalField = Nullable<DecimalString>
 type CountField = Nullable<number>

@@ -23,6 +23,12 @@ enum MezzanineType {
   RCC_SLAB     @map("RCC SLAB")
 }
 
+enum MezzanineFloorCodeExt {
+  EXT_1 @map("EXT-1")
+  EXT_2 @map("EXT-2")
+  EXT_3 @map("EXT-3")
+}
+
 enum MezzanineFloorLevel {
   FLOOR_1  @map("1st Floor")
   FLOOR_2  @map("2nd Floor")
@@ -101,7 +107,7 @@ model MezzanineFloorExtension {
   mezzanineId String
   mezzanine   Mezzanine @relation(fields: [mezzanineId], references: [id], onDelete: Cascade)
 
-  floor      MezzanineFloorLevel?
+  code       MezzanineFloorCodeExt?
   type       MezzanineType?
   heightFrom MezzanineHeightFrom?
   typicalTo  MezzanineFloorLevel?

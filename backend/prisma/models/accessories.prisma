@@ -204,64 +204,23 @@ model Accessories {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  // ── Line items ──
-  doors        AccessoryDoor[]
-  windows      AccessoryWindow[]
-  foldedPlates AccessoryFoldedPlate[]
+  // ── Doors, Windows, Folded Plates ──
+  doorHeight   Decimal? @db.Decimal(10, 3)
+  doorWidth    Decimal? @db.Decimal(10, 3)
+  doorNos      Int?
+  doorQuantity Decimal? @db.Decimal(10, 3)
+
+  windowHeight   Decimal? @db.Decimal(10, 3)
+  windowWidth    Decimal? @db.Decimal(10, 3)
+  windowNos      Int?
+  windowQuantity Decimal? @db.Decimal(10, 3)
+
+  foldedPlateLength   Decimal? @db.Decimal(10, 3)
+  foldedPlateWidth    Decimal? @db.Decimal(10, 3)
+  foldedPlateNos      Int?
+  foldedPlateQuantity Decimal? @db.Decimal(10, 3)
 
   @@index([createdAt])
 }
 
-model AccessoryDoor {
-  id            String      @id @default(cuid())
-  accessoriesId String
-  accessories   Accessories @relation(fields: [accessoriesId], references: [id], onDelete: Cascade)
 
-  // ── Dimensions ──
-  height Decimal? @db.Decimal(10, 3)
-  width  Decimal? @db.Decimal(10, 3)
-
-  nos      Int?
-  // Server-derived per item (dimA × dimB × nos via @floreat/shared/calc
-  // deriveLineItemQuantity); any client value is ignored. Decimal preserves the
-  // fractional area × count result.
-  quantity Decimal? @db.Decimal(10, 3)
-
-  @@index([accessoriesId])
-}
-
-model AccessoryWindow {
-  id            String      @id @default(cuid())
-  accessoriesId String
-  accessories   Accessories @relation(fields: [accessoriesId], references: [id], onDelete: Cascade)
-
-  // ── Dimensions ──
-  height Decimal? @db.Decimal(10, 3)
-  width  Decimal? @db.Decimal(10, 3)
-
-  nos      Int?
-  // Server-derived per item (dimA × dimB × nos via @floreat/shared/calc
-  // deriveLineItemQuantity); any client value is ignored. Decimal preserves the
-  // fractional area × count result.
-  quantity Decimal? @db.Decimal(10, 3)
-
-  @@index([accessoriesId])
-}
-
-model AccessoryFoldedPlate {
-  id            String      @id @default(cuid())
-  accessoriesId String
-  accessories   Accessories @relation(fields: [accessoriesId], references: [id], onDelete: Cascade)
-
-  // ── Dimensions ──
-  length Decimal? @db.Decimal(10, 3)
-  width  Decimal? @db.Decimal(10, 3)
-
-  nos      Int?
-  // Server-derived per item (dimA × dimB × nos via @floreat/shared/calc
-  // deriveLineItemQuantity); any client value is ignored. Decimal preserves the
-  // fractional area × count result.
-  quantity Decimal? @db.Decimal(10, 3)
-
-  @@index([accessoriesId])
-}

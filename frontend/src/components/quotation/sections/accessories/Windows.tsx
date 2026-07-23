@@ -1,60 +1,61 @@
 import { useQuotationStore } from '@/stores/quotation-store'
-import type { AccessoryWindowDraft } from '@/stores/quotation-store'
+import type { AccessoriesDraft } from '@/stores/quotation-store'
 import { useShallow } from 'zustand/react/shallow'
 import { SectionCard } from '@/components/quotation/shared/SectionCard'
-import { RowCard, type RowGroup } from '@/components/quotation/shared/RowCard'
-import { EmptyState } from '@/components/ui/empty-state'
-import { Button } from '@/components/ui/button'
-import { AppWindow, Plus } from 'lucide-react'
+import { NumberField } from '@/components/quotation/shared/NumberField'
+import { AppWindow } from 'lucide-react'
+import { deriveLineItemQuantity } from '@floreat/shared/calc'
 
-const WINDOW_GROUPS: RowGroup[] = [
-  {
-    title: 'Dimensions',
-    fields: [
-      { kind: 'number', name: 'height', label: 'Height', unit: 'm' },
-      { kind: 'number', name: 'width', label: 'Width', unit: 'm' },
-      { kind: 'number', name: 'nos', label: 'Nos', unit: 'count', step: 1 },
-    ],
-  },
-]
-
-/** Repeating window line items for Step 6. `quantity` is server-derived (not shown). */
+/** Flat window fields for Step 6. */
 export function Windows() {
-  const { windows, setAccessories } = useQuotationStore(
-    useShallow((s) => ({ windows: s.accessories.windows, setAccessories: s.setAccessories })),
+  const { height, width, nos, setAccessories } = useQuotationStore(
+    useShallow((s) => ({
+      height: s.accessories.windowHeight as number | undefined,
+      width: s.accessories.windowWidth as number | undefined,
+      nos: s.accessories.windowNos as number | undefined,
+      setAccessories: s.setAccessories,
+    })),
   )
 
-  const addRow = () => setAccessories({ windows: [...windows, {}] })
-  const removeRow = (index: number) => setAccessories({ windows: windows.filter((_, i) => i !== index) })
-  const updateRow = (index: number, patch: Partial<AccessoryWindowDraft>) =>
-    setAccessories({ windows: windows.map((row, i) => (i === index ? { ...row, ...patch } : row)) })
+  const quantity = deriveLineItemQuantity(height, width, nos)
 
   return (
     <SectionCard icon={<AppWindow className="w-3.5 h-3.5" />} title="Windows">
-      <div className="flex flex-col gap-[18px] desktop:gap-6">
-        {windows.length === 0 && (
-          <EmptyState
-            icon={<AppWindow />}
-            title="No windows added yet."
-            description="Add a window to include it in this quotation."
+      <div className="flex flex-col gap-3 p-4 border rounded-md bg-zinc-50 dark:bg-zinc-900/50">
+        <div className="flex items-center justify-between">
+          <h4 className="text-sm font-medium">Window</h4>
+          {quantity !== undefined && (
+            <span className="text-xs font-mono px-2 py-0.5 rounded bg-zinc-200 dark:bg-zinc-800">
+              Total: {quantity} m²
+            </span>
+          )}
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <NumberField
+            label="Height"
+            value={height}
+            unit="m"
+            required={false}
+            error={false}
+            onChange={(v) => setAccessories({ windowHeight: v } as unknown as Partial<AccessoriesDraft>)}
           />
-        )}
-
-        {windows.map((row, index) => (
-          <RowCard
-            key={index}
-            title={`Window ${index + 1}`}
-            groups={WINDOW_GROUPS}
-            values={row as Record<string, number | string | boolean | undefined>}
-            onChange={(patch) => updateRow(index, patch as Partial<AccessoryWindowDraft>)}
-            onRemove={() => removeRow(index)}
+          <NumberField
+            label="Width"
+            value={width}
+            unit="m"
+            required={false}
+            error={false}
+            onChange={(v) => setAccessories({ windowWidth: v } as unknown as Partial<AccessoriesDraft>)}
           />
-        ))}
-
-        <div>
-          <Button type="button" variant="outline" size="sm" onClick={addRow}>
-            <Plus /> Add window
-          </Button>
+          <NumberField
+            label="Nos"
+            value={nos}
+            unit="count"
+            step={1}
+            required={false}
+            error={false}
+            onChange={(v) => setAccessories({ windowNos: v } as unknown as Partial<AccessoriesDraft>)}
+          />
         </div>
       </div>
     </SectionCard>

@@ -1248,7 +1248,20 @@
               "properties": {
                 "code": {
                   "type": "string",
-                  "pattern": "^MEZ-[1-9][0-9]*$"
+                  "enum": [
+                    "MEZ-1",
+                    "MEZ-2",
+                    "MEZ-3",
+                    "MEZ-4",
+                    "MEZ-5",
+                    "MEZ-6",
+                    "MEZ-7",
+                    "MEZ-8",
+                    "MEZ-9",
+                    "MEZ-10",
+                    "MEZ-11",
+                    "MEZ-12"
+                  ]
                 },
                 "floor": {
                   "type": "string",
@@ -1347,6 +1360,14 @@
             "items": {
               "type": "object",
               "properties": {
+                "code": {
+                  "type": "string",
+                  "enum": [
+                    "EXT-1",
+                    "EXT-2",
+                    "EXT-3"
+                  ]
+                },
                 "type": {
                   "type": "string",
                   "enum": [
@@ -1446,7 +1467,20 @@
               "properties": {
                 "code": {
                   "type": "string",
-                  "pattern": "^MEZ-[1-9][0-9]*$"
+                  "enum": [
+                    "MEZ-1",
+                    "MEZ-2",
+                    "MEZ-3",
+                    "MEZ-4",
+                    "MEZ-5",
+                    "MEZ-6",
+                    "MEZ-7",
+                    "MEZ-8",
+                    "MEZ-9",
+                    "MEZ-10",
+                    "MEZ-11",
+                    "MEZ-12"
+                  ]
                 },
                 "floor": {
                   "type": "string",
@@ -1545,6 +1579,14 @@
             "items": {
               "type": "object",
               "properties": {
+                "code": {
+                  "type": "string",
+                  "enum": [
+                    "EXT-1",
+                    "EXT-2",
+                    "EXT-3"
+                  ]
+                },
                 "type": {
                   "type": "string",
                   "enum": [
@@ -1962,7 +2004,18 @@
               "properties": {
                 "code": {
                   "type": "string",
-                  "pattern": "^CANOPY-[1-9][0-9]*$"
+                  "enum": [
+                    "CANOPY-1",
+                    "CANOPY-2",
+                    "CANOPY-3",
+                    "CANOPY-4",
+                    "CANOPY-5",
+                    "CANOPY-6",
+                    "CANOPY-7",
+                    "CANOPY-8",
+                    "CANOPY-9",
+                    "CANOPY-10"
+                  ]
                 },
                 "heightFrom": {
                   "type": "string",
@@ -2056,7 +2109,18 @@
               "properties": {
                 "code": {
                   "type": "string",
-                  "pattern": "^CANOPY-[1-9][0-9]*$"
+                  "enum": [
+                    "CANOPY-1",
+                    "CANOPY-2",
+                    "CANOPY-3",
+                    "CANOPY-4",
+                    "CANOPY-5",
+                    "CANOPY-6",
+                    "CANOPY-7",
+                    "CANOPY-8",
+                    "CANOPY-9",
+                    "CANOPY-10"
+                  ]
                 },
                 "heightFrom": {
                   "type": "string",
@@ -2618,6 +2682,78 @@
             "type": "integer",
             "minimum": 0
           },
+          "rollingShutterLength": {
+            "type": "number",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          },
+          "rollingShutterWidth": {
+            "type": "number",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          },
+          "rollingShutterNos": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "rollingShutterQuantity": {
+            "type": "number",
+            "minimum": 0
+          },
+          "louverLength": {
+            "type": "number",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          },
+          "louverWidth": {
+            "type": "number",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          },
+          "louverNos": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "louverQuantity": {
+            "type": "number",
+            "minimum": 0
+          },
+          "skyLightLength": {
+            "type": "number",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          },
+          "skyLightWidth": {
+            "type": "number",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          },
+          "skyLightNos": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "skyLightQuantity": {
+            "type": "number",
+            "minimum": 0
+          },
+          "wallLightLength": {
+            "type": "number",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          },
+          "wallLightWidth": {
+            "type": "number",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          },
+          "wallLightNos": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "wallLightQuantity": {
+            "type": "number",
+            "minimum": 0
+          },
           "roofInsulationType": {
             "type": "string",
             "enum": [
@@ -2710,121 +2846,59 @@
               "BLACK_UNPAINTED"
             ]
           },
-          "doors": {
-            "type": "array",
-            "items": {
-              "type": "object",
-              "properties": {
-                "height": {
-                  "type": "number",
-                  "minimum": 0,
-                  "exclusiveMinimum": true
-                },
-                "width": {
-                  "type": "number",
-                  "minimum": 0,
-                  "exclusiveMinimum": true
-                },
-                "nos": {
-                  "type": "integer",
-                  "minimum": 0
-                },
-                "quantity": {
-                  "type": "number",
-                  "minimum": 0
-                }
-              }
-            }
+          "doorHeight": {
+            "type": "number",
+            "minimum": 0,
+            "exclusiveMinimum": true
           },
-          "windows": {
-            "type": "array",
-            "items": {
-              "type": "object",
-              "properties": {
-                "height": {
-                  "type": "number",
-                  "minimum": 0,
-                  "exclusiveMinimum": true
-                },
-                "width": {
-                  "type": "number",
-                  "minimum": 0,
-                  "exclusiveMinimum": true
-                },
-                "nos": {
-                  "type": "integer",
-                  "minimum": 0
-                },
-                "quantity": {
-                  "type": "number",
-                  "minimum": 0
-                }
-              }
-            }
+          "doorWidth": {
+            "type": "number",
+            "minimum": 0,
+            "exclusiveMinimum": true
           },
-          "foldedPlates": {
-            "type": "array",
-            "items": {
-              "type": "object",
-              "properties": {
-                "length": {
-                  "type": "number",
-                  "minimum": 0,
-                  "exclusiveMinimum": true
-                },
-                "width": {
-                  "type": "number",
-                  "minimum": 0,
-                  "exclusiveMinimum": true
-                },
-                "nos": {
-                  "type": "integer",
-                  "minimum": 0
-                },
-                "quantity": {
-                  "type": "number",
-                  "minimum": 0
-                }
-              }
-            }
+          "doorNos": {
+            "type": "integer",
+            "minimum": 0
           },
-          "openings": {
-            "type": "array",
-            "items": {
-              "type": "object",
-              "properties": {
-                "kind": {
-                  "type": "string",
-                  "enum": [
-                    "ROLLING_SHUTTER",
-                    "LOUVER",
-                    "SKY_LIGHT",
-                    "WALL_LIGHT"
-                  ]
-                },
-                "length": {
-                  "type": "number",
-                  "minimum": 0,
-                  "exclusiveMinimum": true
-                },
-                "width": {
-                  "type": "number",
-                  "minimum": 0,
-                  "exclusiveMinimum": true
-                },
-                "nos": {
-                  "type": "integer",
-                  "minimum": 0
-                },
-                "quantity": {
-                  "type": "number",
-                  "minimum": 0
-                }
-              },
-              "required": [
-                "kind"
-              ]
-            }
+          "doorQuantity": {
+            "type": "number",
+            "minimum": 0
+          },
+          "windowHeight": {
+            "type": "number",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          },
+          "windowWidth": {
+            "type": "number",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          },
+          "windowNos": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "windowQuantity": {
+            "type": "number",
+            "minimum": 0
+          },
+          "foldedPlateLength": {
+            "type": "number",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          },
+          "foldedPlateWidth": {
+            "type": "number",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          },
+          "foldedPlateNos": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "foldedPlateQuantity": {
+            "type": "number",
+            "minimum": 0
           }
         }
       },
@@ -3054,6 +3128,78 @@
             "type": "integer",
             "minimum": 0
           },
+          "rollingShutterLength": {
+            "type": "number",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          },
+          "rollingShutterWidth": {
+            "type": "number",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          },
+          "rollingShutterNos": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "rollingShutterQuantity": {
+            "type": "number",
+            "minimum": 0
+          },
+          "louverLength": {
+            "type": "number",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          },
+          "louverWidth": {
+            "type": "number",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          },
+          "louverNos": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "louverQuantity": {
+            "type": "number",
+            "minimum": 0
+          },
+          "skyLightLength": {
+            "type": "number",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          },
+          "skyLightWidth": {
+            "type": "number",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          },
+          "skyLightNos": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "skyLightQuantity": {
+            "type": "number",
+            "minimum": 0
+          },
+          "wallLightLength": {
+            "type": "number",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          },
+          "wallLightWidth": {
+            "type": "number",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          },
+          "wallLightNos": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "wallLightQuantity": {
+            "type": "number",
+            "minimum": 0
+          },
           "roofInsulationType": {
             "type": "string",
             "enum": [
@@ -3146,121 +3292,59 @@
               "BLACK_UNPAINTED"
             ]
           },
-          "doors": {
-            "type": "array",
-            "items": {
-              "type": "object",
-              "properties": {
-                "height": {
-                  "type": "number",
-                  "minimum": 0,
-                  "exclusiveMinimum": true
-                },
-                "width": {
-                  "type": "number",
-                  "minimum": 0,
-                  "exclusiveMinimum": true
-                },
-                "nos": {
-                  "type": "integer",
-                  "minimum": 0
-                },
-                "quantity": {
-                  "type": "number",
-                  "minimum": 0
-                }
-              }
-            }
+          "doorHeight": {
+            "type": "number",
+            "minimum": 0,
+            "exclusiveMinimum": true
           },
-          "windows": {
-            "type": "array",
-            "items": {
-              "type": "object",
-              "properties": {
-                "height": {
-                  "type": "number",
-                  "minimum": 0,
-                  "exclusiveMinimum": true
-                },
-                "width": {
-                  "type": "number",
-                  "minimum": 0,
-                  "exclusiveMinimum": true
-                },
-                "nos": {
-                  "type": "integer",
-                  "minimum": 0
-                },
-                "quantity": {
-                  "type": "number",
-                  "minimum": 0
-                }
-              }
-            }
+          "doorWidth": {
+            "type": "number",
+            "minimum": 0,
+            "exclusiveMinimum": true
           },
-          "foldedPlates": {
-            "type": "array",
-            "items": {
-              "type": "object",
-              "properties": {
-                "length": {
-                  "type": "number",
-                  "minimum": 0,
-                  "exclusiveMinimum": true
-                },
-                "width": {
-                  "type": "number",
-                  "minimum": 0,
-                  "exclusiveMinimum": true
-                },
-                "nos": {
-                  "type": "integer",
-                  "minimum": 0
-                },
-                "quantity": {
-                  "type": "number",
-                  "minimum": 0
-                }
-              }
-            }
+          "doorNos": {
+            "type": "integer",
+            "minimum": 0
           },
-          "openings": {
-            "type": "array",
-            "items": {
-              "type": "object",
-              "properties": {
-                "kind": {
-                  "type": "string",
-                  "enum": [
-                    "ROLLING_SHUTTER",
-                    "LOUVER",
-                    "SKY_LIGHT",
-                    "WALL_LIGHT"
-                  ]
-                },
-                "length": {
-                  "type": "number",
-                  "minimum": 0,
-                  "exclusiveMinimum": true
-                },
-                "width": {
-                  "type": "number",
-                  "minimum": 0,
-                  "exclusiveMinimum": true
-                },
-                "nos": {
-                  "type": "integer",
-                  "minimum": 0
-                },
-                "quantity": {
-                  "type": "number",
-                  "minimum": 0
-                }
-              },
-              "required": [
-                "kind"
-              ]
-            }
+          "doorQuantity": {
+            "type": "number",
+            "minimum": 0
+          },
+          "windowHeight": {
+            "type": "number",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          },
+          "windowWidth": {
+            "type": "number",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          },
+          "windowNos": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "windowQuantity": {
+            "type": "number",
+            "minimum": 0
+          },
+          "foldedPlateLength": {
+            "type": "number",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          },
+          "foldedPlateWidth": {
+            "type": "number",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          },
+          "foldedPlateNos": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "foldedPlateQuantity": {
+            "type": "number",
+            "minimum": 0
           }
         }
       },

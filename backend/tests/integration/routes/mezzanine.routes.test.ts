@@ -55,7 +55,7 @@ describe('Mezzanine routes integration', () => {
       expect(prismaMock.mezzanine.upsert).toHaveBeenCalledWith(
         expect.objectContaining({
           create: expect.objectContaining({
-            floors: { createMany: { data: floors } },
+            floors: { createMany: { data: floors.map(f => ({ ...f, code: f.code ? (f.code as string).replace('-', '_') : f.code })) } },
           }),
         }),
       )

@@ -1,9 +1,6 @@
 import type { Accessories } from '@/api/quotation/accessories/getAccessories'
 import type {
   AccessoriesDraft,
-  AccessoryDoorDraft,
-  AccessoryWindowDraft,
-  AccessoryFoldedPlateDraft,
 } from '@/stores/quotation-store'
 
 import { num, int } from '@floreat/shared/units'
@@ -16,21 +13,6 @@ import { num, int } from '@floreat/shared/units'
  * flags are carried through so a manual override rehydrates as such.
  */
 export function mapAccessoriesResponseToDraft(a: Accessories): AccessoriesDraft {
-  const doors: AccessoryDoorDraft[] = a.doors.map((d) => ({
-    height: num(d.height),
-    width: num(d.width),
-    nos: int(d.nos),
-  }))
-  const windows: AccessoryWindowDraft[] = a.windows.map((w) => ({
-    height: num(w.height),
-    width: num(w.width),
-    nos: int(w.nos),
-  }))
-  const foldedPlates: AccessoryFoldedPlateDraft[] = a.foldedPlates.map((f) => ({
-    length: num(f.length),
-    width: num(f.width),
-    nos: int(f.nos),
-  }))
 
   return {
     // ── Gutter ──
@@ -125,9 +107,17 @@ export function mapAccessoriesResponseToDraft(a: Accessories): AccessoriesDraft 
     // ── Paint & Primer: Foundation Bolt ──
     foundationBoltFinish: a.foundationBoltFinish ?? undefined,
 
-    // ── Inline line-item arrays ──
-    doors,
-    windows,
-    foldedPlates,
+    // ── Doors, Windows, Folded Plates ──
+    doorHeight: num(a.doorHeight),
+    doorWidth: num(a.doorWidth),
+    doorNos: int(a.doorNos),
+
+    windowHeight: num(a.windowHeight),
+    windowWidth: num(a.windowWidth),
+    windowNos: int(a.windowNos),
+
+    foldedPlateLength: num(a.foldedPlateLength),
+    foldedPlateWidth: num(a.foldedPlateWidth),
+    foldedPlateNos: int(a.foldedPlateNos),
   }
 }

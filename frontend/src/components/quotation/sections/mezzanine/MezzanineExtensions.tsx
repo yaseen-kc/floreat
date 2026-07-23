@@ -10,6 +10,7 @@ import {
   MEZZANINE_TYPE_OPTIONS,
   MEZZANINE_FLOOR_LEVEL_OPTIONS,
   MEZZANINE_HEIGHT_FROM_OPTIONS,
+  MEZZANINE_FLOOR_CODE_EXT_OPTIONS,
 } from './mezzanineOptions'
 
 /** Grouped field layout for a mezzanine floor-extension row. */
@@ -17,6 +18,7 @@ const EXTENSION_GROUPS: RowGroup[] = [
   {
     title: 'Classification',
     fields: [
+      { kind: 'select', name: 'code', label: 'Ext Code', options: MEZZANINE_FLOOR_CODE_EXT_OPTIONS },
       { kind: 'select', name: 'type', label: 'Type', options: MEZZANINE_TYPE_OPTIONS },
       { kind: 'select', name: 'heightFrom', label: 'Height From', options: MEZZANINE_HEIGHT_FROM_OPTIONS },
       { kind: 'select', name: 'typicalTo', label: 'Typical To', options: MEZZANINE_FLOOR_LEVEL_OPTIONS },

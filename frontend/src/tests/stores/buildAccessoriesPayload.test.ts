@@ -34,30 +34,23 @@ describe('buildAccessoriesPayload', () => {
     expect(payload.gutterQuantityManual).toBe(true)
   })
 
-  it('omits empty line-item arrays and compacts rows', () => {
+  it('preserves line-item scalar fields', () => {
     useQuotationStore.getState().setAccessories({
-      doors: [{ height: 2.1, width: 0.9, nos: 3 }, {}],
-      windows: [],
+      doorHeight: 2.1, doorWidth: 0.9, doorNos: 3,
     })
     const payload = buildAccessoriesPayload(useQuotationStore.getState().accessories)
-    expect(payload.doors).toEqual([{ height: 2.1, width: 0.9, nos: 3 }])
-    expect(payload).not.toHaveProperty('windows')
+    expect(payload.doorHeight).toEqual(2.1)
+    expect(payload.doorWidth).toEqual(0.9)
+    expect(payload.doorNos).toEqual(3)
   })
 
-  it('drops opening rows lacking a kind', () => {
-    useQuotationStore.getState().setAccessories({
-      openings: [{ length: 2, width: 2 }, { kind: 'LOUVER', length: 1, width: 1 }],
-    })
-    const payload = buildAccessoriesPayload(useQuotationStore.getState().accessories)
-    expect(payload.openings).toEqual([{ kind: 'LOUVER', length: 1, width: 1 }])
-  })
 
   it('produces a payload that satisfies the create schema', () => {
     useQuotationStore.getState().setAccessories({
       gutterType: 'PPGL',
       partitionQuantity: 4,
-      doors: [{ height: 2.1, width: 0.9, nos: 3 }],
-      openings: [{ kind: 'ROLLING_SHUTTER', length: 3, width: 3, nos: 1 }],
+      doorHeight: 2.1, doorWidth: 0.9, doorNos: 3,
+      rollingShutterLength: 3, rollingShutterWidth: 3, rollingShutterNos: 1,
     })
     const payload = buildAccessoriesPayload(useQuotationStore.getState().accessories)
     expect(createAccessoriesSchema.safeParse(payload).success).toBe(true)

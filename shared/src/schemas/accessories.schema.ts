@@ -52,34 +52,6 @@ export const purlinsGirtsPaintEnum = z.enum(['UNPAINTED', 'PAINTED'])
 /** Foundation bolt finish. */
 export const foundationBoltFinishEnum = z.enum(['BLACK_UNPAINTED'])
 
-/** A door line item — dimensions and counts, all optional. */
-export const accessoryDoorSchema = z.object({
-  height: z.number().positive().optional(),
-  width: z.number().positive().optional(),
-  nos: z.number().int().nonnegative().optional(),
-  // `quantity` on every line item is SERVER-DERIVED (advisory only): the backend
-  // recomputes it per item as two dimensions × nos via `deriveLineItemQuantity`
-  // (@floreat/shared/calc) and ignores the client value. Accepts a `number`, but
-  // the HTTP response serialises the Decimal column as a `string`.
-  quantity: z.number().nonnegative().optional(),
-})
-
-/** A window line item — dimensions and counts, all optional. */
-export const accessoryWindowSchema = z.object({
-  height: z.number().positive().optional(),
-  width: z.number().positive().optional(),
-  nos: z.number().int().nonnegative().optional(),
-  quantity: z.number().nonnegative().optional(),
-})
-
-/** A folded-plate line item — dimensions and counts, all optional. */
-export const accessoryFoldedPlateSchema = z.object({
-  length: z.number().positive().optional(),
-  width: z.number().positive().optional(),
-  nos: z.number().int().nonnegative().optional(),
-  quantity: z.number().nonnegative().optional(),
-})
-
 
 /** Schema for creating/upserting accessories — all scalar/enum fields optional, plus inline arrays. */
 export const createAccessoriesSchema = z.object({
@@ -182,10 +154,21 @@ export const createAccessoriesSchema = z.object({
   // ── Paint & Primer: Foundation Bolt ──
   foundationBoltFinish: foundationBoltFinishEnum.optional(),
 
-  // ── Inline line-item arrays ──
-  doors: z.array(accessoryDoorSchema).optional(),
-  windows: z.array(accessoryWindowSchema).optional(),
-  foldedPlates: z.array(accessoryFoldedPlateSchema).optional(),
+  // ── Doors, Windows, Folded Plates ──
+  doorHeight: z.number().positive().optional(),
+  doorWidth: z.number().positive().optional(),
+  doorNos: z.number().int().nonnegative().optional(),
+  doorQuantity: z.number().nonnegative().optional(),
+
+  windowHeight: z.number().positive().optional(),
+  windowWidth: z.number().positive().optional(),
+  windowNos: z.number().int().nonnegative().optional(),
+  windowQuantity: z.number().nonnegative().optional(),
+
+  foldedPlateLength: z.number().positive().optional(),
+  foldedPlateWidth: z.number().positive().optional(),
+  foldedPlateNos: z.number().int().nonnegative().optional(),
+  foldedPlateQuantity: z.number().nonnegative().optional(),
 })
 
 /** Schema for updating accessories — all fields optional (partial update). */
