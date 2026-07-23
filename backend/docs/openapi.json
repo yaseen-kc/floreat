@@ -3295,6 +3295,156 @@
           "pageSize"
         ]
       },
+      "AmountResponse": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": {
+          "nullable": true
+        }
+      },
+      "CreateAmountRequest": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "description": {
+                  "type": "string",
+                  "nullable": true
+                },
+                "unit": {
+                  "type": "string",
+                  "nullable": true,
+                  "enum": [
+                    "KG",
+                    "RM",
+                    "SQM",
+                    "NOS",
+                    null
+                  ]
+                },
+                "quantity": {
+                  "type": "number",
+                  "nullable": true
+                },
+                "rateFabrication": {
+                  "type": "number",
+                  "nullable": true
+                },
+                "rateErection": {
+                  "type": "number",
+                  "nullable": true
+                },
+                "rateLoading": {
+                  "type": "number",
+                  "nullable": true
+                },
+                "amountFabrication": {
+                  "type": "number",
+                  "nullable": true
+                },
+                "amountErection": {
+                  "type": "number",
+                  "nullable": true
+                },
+                "amountLoading": {
+                  "type": "number",
+                  "nullable": true
+                }
+              }
+            }
+          }
+        }
+      },
+      "UpdateAmountRequest": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "description": {
+                  "type": "string",
+                  "nullable": true
+                },
+                "unit": {
+                  "type": "string",
+                  "nullable": true,
+                  "enum": [
+                    "KG",
+                    "RM",
+                    "SQM",
+                    "NOS",
+                    null
+                  ]
+                },
+                "quantity": {
+                  "type": "number",
+                  "nullable": true
+                },
+                "rateFabrication": {
+                  "type": "number",
+                  "nullable": true
+                },
+                "rateErection": {
+                  "type": "number",
+                  "nullable": true
+                },
+                "rateLoading": {
+                  "type": "number",
+                  "nullable": true
+                },
+                "amountFabrication": {
+                  "type": "number",
+                  "nullable": true
+                },
+                "amountErection": {
+                  "type": "number",
+                  "nullable": true
+                },
+                "amountLoading": {
+                  "type": "number",
+                  "nullable": true
+                }
+              }
+            }
+          }
+        }
+      },
+      "PaginatedAmountResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "nullable": true
+            }
+          },
+          "total": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "page": {
+            "type": "integer",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          },
+          "pageSize": {
+            "type": "integer",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          }
+        },
+        "required": [
+          "data",
+          "total",
+          "page",
+          "pageSize"
+        ]
+      },
       "JointResponse": {
         "type": "object",
         "properties": {},
@@ -3806,235 +3956,85 @@
           "pebRoof": {
             "type": "object",
             "properties": {
-              "quantityPebRoofValue": {
-                "type": "boolean",
-                "nullable": true
-              },
-              "materialWithPurlinUnit": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "KG",
-                  "M",
-                  "NOS",
-                  "SQFT",
-                  "SQM",
-                  "KG_PER_SQFT",
-                  "KG_PER_M",
-                  "KG_PER_SQM",
-                  null
-                ]
-              },
-              "materialWithPurlinQuantity": {
+              "pebRoofValue": {
                 "type": "number",
                 "nullable": true
               },
-              "raftersAndColumnsSpecification": {
-                "type": "string",
+              "pebRoofQuantity": {
+                "type": "number",
                 "nullable": true
               },
-              "raftersAndColumnsUnit": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "KG",
-                  "M",
-                  "NOS",
-                  "SQFT",
-                  "SQM",
-                  "KG_PER_SQFT",
-                  "KG_PER_M",
-                  "KG_PER_SQM",
-                  null
-                ]
+              "raftersAndColumns": {
+                "type": "number",
+                "nullable": true
               },
               "raftersAndColumnsQuantity": {
                 "type": "number",
                 "nullable": true
               },
-              "raftersAndColumnsAdditionalQuantity": {
+              "lengthOfBuilding": {
                 "type": "number",
                 "nullable": true
               },
-              "raftersAndColumnsBuildingLength": {
+              "lengthOfBuildingQuantity": {
                 "type": "number",
                 "nullable": true
               },
-              "raftersAndColumnsBuildingLengthUnit": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "KG",
-                  "M",
-                  "NOS",
-                  "SQFT",
-                  "SQM",
-                  "KG_PER_SQFT",
-                  "KG_PER_M",
-                  "KG_PER_SQM",
-                  null
-                ]
-              },
-              "raftersAndColumnsInclinedLengthOneHalf": {
+              "inclinedLengthInOneHalf": {
                 "type": "number",
                 "nullable": true
               },
-              "raftersAndColumnsInclinedLengthUnit": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "KG",
-                  "M",
-                  "NOS",
-                  "SQFT",
-                  "SQM",
-                  "KG_PER_SQFT",
-                  "KG_PER_M",
-                  "KG_PER_SQM",
-                  null
-                ]
-              },
-              "raftersAndColumnsRoofArea": {
+              "roofArea": {
                 "type": "number",
                 "nullable": true
               },
-              "raftersAndColumnsRoofAreaUnit": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "KG",
-                  "M",
-                  "NOS",
-                  "SQFT",
-                  "SQM",
-                  "KG_PER_SQFT",
-                  "KG_PER_M",
-                  "KG_PER_SQM",
-                  null
-                ]
-              },
-              "raftersAndColumnsMaterialConsumption": {
+              "materialConsumption": {
                 "type": "number",
                 "nullable": true
               },
-              "raftersAndColumnsMaterialConsumptionUnit": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "KG",
-                  "M",
-                  "NOS",
-                  "SQFT",
-                  "SQM",
-                  "KG_PER_SQFT",
-                  "KG_PER_M",
-                  "KG_PER_SQM",
-                  null
-                ]
-              },
-              "roofPurlinesValue": {
+              "roofPurlinsValue": {
                 "type": "number",
                 "nullable": true
               },
-              "roofPurlinsSpecification": {
-                "type": "string",
+              "roofPurlins": {
+                "type": "number",
                 "nullable": true
-              },
-              "roofPurlinsUnit": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "KG",
-                  "M",
-                  "NOS",
-                  "SQFT",
-                  "SQM",
-                  "KG_PER_SQFT",
-                  "KG_PER_M",
-                  "KG_PER_SQM",
-                  null
-                ]
               },
               "roofPurlinsQuantity": {
                 "type": "number",
                 "nullable": true
               },
-              "roofPurlinsAdditionalQuantity": {
+              "lengthOfOnePurlin": {
                 "type": "number",
                 "nullable": true
               },
-              "roofPurlinsSinglePurlinLength": {
+              "lengthOfOnePurlinQuantity": {
                 "type": "number",
                 "nullable": true
               },
-              "roofPurlinsSinglePurlinLengthUnit": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "KG",
-                  "M",
-                  "NOS",
-                  "SQFT",
-                  "SQM",
-                  "KG_PER_SQFT",
-                  "KG_PER_M",
-                  "KG_PER_SQM",
-                  null
-                ]
-              },
-              "roofPurlinsPurlinsPerFrame": {
+              "noOfPurlinsInOneFrame": {
                 "type": "integer",
                 "nullable": true
               },
-              "roofPurlinsTotalPurlinBays": {
+              "totalNoOfPurlinBay": {
                 "type": "integer",
                 "nullable": true
               },
-              "roofPurlinsPurlinUnitWeight": {
+              "unitWeightOfPurlin": {
                 "type": "number",
                 "nullable": true
               },
-              "roofPurlinsPurlinUnitWeightUnit": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "KG",
-                  "M",
-                  "NOS",
-                  "SQFT",
-                  "SQM",
-                  "KG_PER_SQFT",
-                  "KG_PER_M",
-                  "KG_PER_SQM",
-                  null
-                ]
-              },
-              "roofPurlinsExtendedFramePurlins": {
+              "noOfExtendedFrame": {
                 "type": "integer",
                 "nullable": true
               },
-              "roofPurlinsExtendedPurlinBays": {
+              "noOfExtendedPurlinBay": {
                 "type": "integer",
                 "nullable": true
               },
-              "roofSheetSpecification": {
-                "type": "string",
+              "roofSheet": {
+                "type": "number",
                 "nullable": true
-              },
-              "roofSheetUnit": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "KG",
-                  "M",
-                  "NOS",
-                  "SQFT",
-                  "SQM",
-                  "KG_PER_SQFT",
-                  "KG_PER_M",
-                  "KG_PER_SQM",
-                  null
-                ]
               },
               "roofSheetQuantity": {
                 "type": "number",
@@ -4044,503 +4044,183 @@
                 "type": "number",
                 "nullable": true
               },
-              "roofSheetAdditionalQuantity": {
+              "extendedRoofWidth": {
                 "type": "number",
                 "nullable": true
               },
-              "roofSheetExtendedRoofWidth": {
+              "extendedRoofLength": {
                 "type": "number",
                 "nullable": true
               },
-              "roofSheetExtendedRoofWidthUnit": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "KG",
-                  "M",
-                  "NOS",
-                  "SQFT",
-                  "SQM",
-                  "KG_PER_SQFT",
-                  "KG_PER_M",
-                  "KG_PER_SQM",
-                  null
-                ]
-              },
-              "roofSheetExtendedRoofLength": {
+              "roofAreaDeductions": {
                 "type": "number",
                 "nullable": true
               },
-              "roofSheetExtendedRoofLengthUnit": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "KG",
-                  "M",
-                  "NOS",
-                  "SQFT",
-                  "SQM",
-                  "KG_PER_SQFT",
-                  "KG_PER_M",
-                  "KG_PER_SQM",
-                  null
-                ]
-              },
-              "roofSheetRoofAreaDeductions": {
+              "polyCarbonateAreaDeductions": {
                 "type": "number",
                 "nullable": true
               },
-              "roofSheetRoofAreaDeductionsUnit": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "KG",
-                  "M",
-                  "NOS",
-                  "SQFT",
-                  "SQM",
-                  "KG_PER_SQFT",
-                  "KG_PER_M",
-                  "KG_PER_SQM",
-                  null
-                ]
-              },
-              "roofSheetPolycarbonateAreaDeduction": {
+              "polyCarbonateSheetQuantity": {
                 "type": "number",
                 "nullable": true
               },
-              "roofSheetPolycarbonateAreaDeductionUnit": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "KG",
-                  "M",
-                  "NOS",
-                  "SQFT",
-                  "SQM",
-                  "KG_PER_SQFT",
-                  "KG_PER_M",
-                  "KG_PER_SQM",
-                  null
-                ]
-              },
-              "polycarbonateSheetUnit": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "KG",
-                  "M",
-                  "NOS",
-                  "SQFT",
-                  "SQM",
-                  "KG_PER_SQFT",
-                  "KG_PER_M",
-                  "KG_PER_SQM",
-                  null
-                ]
-              },
-              "polycarbonateSheetQuantity": {
+              "polyCarbonateSheetPurchaseQuantity": {
                 "type": "number",
                 "nullable": true
               },
-              "polycarbonateSheetPurchaseQuantity": {
+              "lengthOfpolyCarbonateSheet": {
                 "type": "number",
                 "nullable": true
               },
-              "polycarbonateSheetAdditionalQuantity": {
+              "lengthOfpolyCarbonateSheetAdditional": {
                 "type": "number",
                 "nullable": true
               },
-              "polycarbonateSheetSheetLength": {
+              "widthOfpolyCarbonateSheet": {
                 "type": "number",
                 "nullable": true
               },
-              "polycarbonateSheetSheetLengthUnit": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "KG",
-                  "M",
-                  "NOS",
-                  "SQFT",
-                  "SQM",
-                  "KG_PER_SQFT",
-                  "KG_PER_M",
-                  "KG_PER_SQM",
-                  null
-                ]
-              },
-              "polycarbonateSheetSheetWidth": {
-                "type": "number",
-                "nullable": true
-              },
-              "polycarbonateSheetSheetWidthUnit": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "KG",
-                  "M",
-                  "NOS",
-                  "SQFT",
-                  "SQM",
-                  "KG_PER_SQFT",
-                  "KG_PER_M",
-                  "KG_PER_SQM",
-                  null
-                ]
-              },
-              "polycarbonateSheetNumberOfSheets": {
+              "NosOfpolyCarbonateSheet": {
                 "type": "integer",
                 "nullable": true
               },
-              "roofWindBracingsUnit": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "KG",
-                  "M",
-                  "NOS",
-                  "SQFT",
-                  "SQM",
-                  "KG_PER_SQFT",
-                  "KG_PER_M",
-                  "KG_PER_SQM",
-                  null
-                ]
-              },
-              "roofWindBracingsQuantity": {
+              "roofWindBracing": {
                 "type": "number",
                 "nullable": true
               },
-              "roofWindBracingsAdditionalQuantity": {
+              "lengthOfSinlgeWindBracing": {
                 "type": "number",
                 "nullable": true
               },
-              "roofWindBracingsSingleBracingLength": {
+              "lengthOfSinlgeWindBracingAdditional": {
                 "type": "number",
                 "nullable": true
               },
-              "roofWindBracingsSingleBracingLengthUnit": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "KG",
-                  "M",
-                  "NOS",
-                  "SQFT",
-                  "SQM",
-                  "KG_PER_SQFT",
-                  "KG_PER_M",
-                  "KG_PER_SQM",
-                  null
-                ]
-              },
-              "roofWindBracingsTotalBracings": {
+              "totalNumberOfWindBracing": {
                 "type": "integer",
                 "nullable": true
               },
-              "roofWindBracingsUnitWeight": {
+              "unitWeightOfRoofWindBracing": {
                 "type": "number",
                 "nullable": true
               },
-              "roofWindBracingsUnitWeightUnit": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "KG",
-                  "M",
-                  "NOS",
-                  "SQFT",
-                  "SQM",
-                  "KG_PER_SQFT",
-                  "KG_PER_M",
-                  "KG_PER_SQM",
-                  null
-                ]
-              },
-              "roofSagRodValue": {
+              "roofSagRoadValue": {
                 "type": "number",
                 "nullable": true
               },
-              "roofSagRodUnit": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "KG",
-                  "M",
-                  "NOS",
-                  "SQFT",
-                  "SQM",
-                  "KG_PER_SQFT",
-                  "KG_PER_M",
-                  "KG_PER_SQM",
-                  null
-                ]
-              },
-              "roofSagRodQuantity": {
+              "roofSagRoadQuantity": {
                 "type": "number",
                 "nullable": true
               },
-              "roofSagRodAdditionalQuantity": {
+              "roofSagRoadQuantityAdditional": {
                 "type": "number",
                 "nullable": true
               },
-              "roofSagRodSingleSagRodLength": {
+              "lengthOfSingleSagRoad": {
                 "type": "number",
                 "nullable": true
               },
-              "roofSagRodSingleSagRodLengthUnit": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "KG",
-                  "M",
-                  "NOS",
-                  "SQFT",
-                  "SQM",
-                  "KG_PER_SQFT",
-                  "KG_PER_M",
-                  "KG_PER_SQM",
-                  null
-                ]
-              },
-              "roofSagRodSagRodsPerFrame": {
+              "noOfSagRodInASingleFrame": {
                 "type": "integer",
                 "nullable": true
               },
-              "roofSagRodSagRodBays": {
+              "noOfBayInSagRodProvided": {
                 "type": "integer",
                 "nullable": true
               },
-              "roofSagRodExtendedFrameSagRods": {
+              "noOfSagRodInExtendedFrame": {
                 "type": "integer",
                 "nullable": true
               },
-              "roofSagRodExtendedSagRodBays": {
+              "noOfExtendedSagRodBay": {
                 "type": "integer",
                 "nullable": true
               },
-              "roofSagRodUnitWeight": {
+              "unitWeightOfSagRod": {
                 "type": "number",
                 "nullable": true
-              },
-              "roofSagRodUnitWeightUnit": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "KG",
-                  "M",
-                  "NOS",
-                  "SQFT",
-                  "SQM",
-                  "KG_PER_SQFT",
-                  "KG_PER_M",
-                  "KG_PER_SQM",
-                  null
-                ]
-              },
-              "roofFlangeBraceUnit": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "KG",
-                  "M",
-                  "NOS",
-                  "SQFT",
-                  "SQM",
-                  "KG_PER_SQFT",
-                  "KG_PER_M",
-                  "KG_PER_SQM",
-                  null
-                ]
               },
               "roofFlangeBraceQuantity": {
                 "type": "number",
                 "nullable": true
               },
-              "roofFlangeBraceAdditionalQuantity": {
+              "lengthOfMidFrameFlangeBrace": {
                 "type": "number",
                 "nullable": true
               },
-              "roofFlangeBraceMidFrameBraceLength": {
+              "lengthOfMidFrameFlangeBraceAdditional": {
                 "type": "number",
                 "nullable": true
               },
-              "roofFlangeBraceMidFrameBraceLengthUnit": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "KG",
-                  "M",
-                  "NOS",
-                  "SQFT",
-                  "SQM",
-                  "KG_PER_SQFT",
-                  "KG_PER_M",
-                  "KG_PER_SQM",
-                  null
-                ]
-              },
-              "roofFlangeBraceMidFrameBraces": {
+              "noOfFlangeBraceInMidFrame": {
                 "type": "integer",
                 "nullable": true
               },
-              "roofFlangeBraceEndFrameBraces": {
+              "noOfFlangeBraceInEndFrame": {
                 "type": "integer",
                 "nullable": true
               },
-              "roofFlangeBraceMidFrames": {
+              "noOfMidFrame": {
                 "type": "integer",
                 "nullable": true
               },
-              "roofFlangeBraceEndFrames": {
+              "noOfEndFrame": {
                 "type": "integer",
                 "nullable": true
               },
-              "roofFlangeBraceExtendedFrameMidBraces": {
+              "noOfFlngBraceInExtendedFrame": {
                 "type": "integer",
                 "nullable": true
               },
-              "roofFlangeBraceExtendedFrameEndBraces": {
+              "noOfExtendedMidFrame": {
                 "type": "integer",
                 "nullable": true
               },
-              "roofFlangeBraceExtendedMidFrames": {
+              "noOfExtendedEndFrame": {
                 "type": "integer",
                 "nullable": true
               },
-              "roofFlangeBraceExtendedEndFrames": {
-                "type": "integer",
-                "nullable": true
-              },
-              "roofFlangeBraceEndFrameBraceLength": {
+              "lengthOfEndFrameFlangeBrace": {
                 "type": "number",
                 "nullable": true
               },
-              "roofFlangeBraceEndFrameBraceLengthUnit": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "KG",
-                  "M",
-                  "NOS",
-                  "SQFT",
-                  "SQM",
-                  "KG_PER_SQFT",
-                  "KG_PER_M",
-                  "KG_PER_SQM",
-                  null
-                ]
-              },
-              "purlinBoltsSpecification": {
-                "type": "string",
-                "nullable": true
-              },
-              "purlinBoltsUnit": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "KG",
-                  "M",
-                  "NOS",
-                  "SQFT",
-                  "SQM",
-                  "KG_PER_SQFT",
-                  "KG_PER_M",
-                  "KG_PER_SQM",
-                  null
-                ]
-              },
-              "purlinBoltsQuantity": {
+              "numberOfPurlinBolts": {
                 "type": "number",
                 "nullable": true
               },
-              "purlinBoltsPurlinJointsPerFrame": {
-                "type": "integer",
-                "nullable": true
-              },
-              "purlinBoltsTotalFrames": {
-                "type": "integer",
-                "nullable": true
-              },
-              "purlinBoltsExtendedFramePurlinNodes": {
-                "type": "integer",
-                "nullable": true
-              },
-              "purlinBoltsExtendedFrames": {
-                "type": "integer",
-                "nullable": true
-              },
-              "purlinBoltsBoltsPerPurlinJoint": {
-                "type": "integer",
-                "nullable": true
-              },
-              "roofJointBoltsSpecification": {
-                "type": "string",
-                "nullable": true
-              },
-              "roofJointBoltsUnit": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "KG",
-                  "M",
-                  "NOS",
-                  "SQFT",
-                  "SQM",
-                  "KG_PER_SQFT",
-                  "KG_PER_M",
-                  "KG_PER_SQM",
-                  null
-                ]
-              },
-              "roofJointBoltsQuantity": {
+              "numberOfPurlinBoltsQuantity": {
                 "type": "number",
                 "nullable": true
               },
-              "foundationBoltsSpecification": {
-                "type": "string",
+              "noOfPurlinJointInSingleFrame": {
+                "type": "integer",
                 "nullable": true
               },
-              "foundationBoltsUnit": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "KG",
-                  "M",
-                  "NOS",
-                  "SQFT",
-                  "SQM",
-                  "KG_PER_SQFT",
-                  "KG_PER_M",
-                  "KG_PER_SQM",
-                  null
-                ]
+              "totalnoOfFrames": {
+                "type": "integer",
+                "nullable": true
               },
-              "foundationBoltsQuantity": {
+              "noOfPurlinnodeInExtendedFrame": {
+                "type": "integer",
+                "nullable": true
+              },
+              "noOfExtendedFrames": {
+                "type": "integer",
+                "nullable": true
+              },
+              "noOfBoltsInSinglePurlinJoint": {
+                "type": "integer",
+                "nullable": true
+              },
+              "numberOfRoofJointBolts": {
                 "type": "number",
                 "nullable": true
               },
-              "anchorBoltsSpecification": {
-                "type": "string",
+              "numberOfFoundationBolts": {
+                "type": "number",
                 "nullable": true
               },
-              "anchorBoltsUnit": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "KG",
-                  "M",
-                  "NOS",
-                  "SQFT",
-                  "SQM",
-                  "KG_PER_SQFT",
-                  "KG_PER_M",
-                  "KG_PER_SQM",
-                  null
-                ]
-              },
-              "anchorBoltsQuantity": {
+              "numberOfAnchorBolts": {
                 "type": "number",
                 "nullable": true
               }
@@ -4549,316 +4229,95 @@
           "cladding": {
             "type": "object",
             "properties": {
-              "claddingStructureUnit": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "KG",
-                  "M",
-                  "NOS",
-                  "SQFT",
-                  "SQM",
-                  "KG_PER_SQFT",
-                  "KG_PER_M",
-                  "KG_PER_SQM",
-                  null
-                ]
-              },
               "claddingStructureQuantity": {
                 "type": "number",
                 "nullable": true
               },
-              "claddingStructureAdditionalQuantity": {
+              "claddingEaveHeightFront": {
                 "type": "number",
                 "nullable": true
               },
-              "claddingStructureFrontEaveHeight": {
+              "claddingEaveHeightFrontAdditional": {
                 "type": "number",
                 "nullable": true
               },
-              "claddingStructureBackEaveHeight": {
+              "claddingEaveHeightBack": {
                 "type": "number",
                 "nullable": true
               },
-              "claddingStructureRightEaveHeight": {
+              "claddingEaveHeightRight": {
                 "type": "number",
                 "nullable": true
               },
-              "claddingStructureLeftEaveHeight": {
+              "claddingEaveHeightLeft": {
                 "type": "number",
                 "nullable": true
               },
-              "claddingStructureEaveHeightUnit": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "KG",
-                  "M",
-                  "NOS",
-                  "SQFT",
-                  "SQM",
-                  "KG_PER_SQFT",
-                  "KG_PER_M",
-                  "KG_PER_SQM",
-                  null
-                ]
-              },
-              "claddingStructureExtendedColumnHeight": {
+              "extendedColumnHeight": {
                 "type": "number",
                 "nullable": true
               },
-              "claddingStructureExtendedColumnHeightUnit": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "KG",
-                  "M",
-                  "NOS",
-                  "SQFT",
-                  "SQM",
-                  "KG_PER_SQFT",
-                  "KG_PER_M",
-                  "KG_PER_SQM",
-                  null
-                ]
-              },
-              "claddingStructureExtendedFrameWidth": {
+              "widthOfExtendedFrame": {
                 "type": "number",
                 "nullable": true
               },
-              "claddingStructureExtendedFrameWidthUnit": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "KG",
-                  "M",
-                  "NOS",
-                  "SQFT",
-                  "SQM",
-                  "KG_PER_SQFT",
-                  "KG_PER_M",
-                  "KG_PER_SQM",
-                  null
-                ]
-              },
-              "claddingStructureSideCladdingPurlins": {
+              "noOfSideCladdingPurlin": {
                 "type": "integer",
                 "nullable": true
               },
-              "claddingStructureFaceCladdingPurlins": {
+              "noOfFaceCladdingPurlin": {
                 "type": "integer",
                 "nullable": true
               },
-              "claddingStructureTotalCladdingPurlinLength": {
+              "totalLengthOfCladdingPurlin": {
                 "type": "number",
                 "nullable": true
               },
-              "claddingStructureTotalCladdingPurlinLengthUnit": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "KG",
-                  "M",
-                  "NOS",
-                  "SQFT",
-                  "SQM",
-                  "KG_PER_SQFT",
-                  "KG_PER_M",
-                  "KG_PER_SQM",
-                  null
-                ]
-              },
-              "claddingStructureTotalCladdingPurlinWeight": {
+              "totalWeightofCladdingPurlin": {
                 "type": "number",
                 "nullable": true
               },
-              "claddingStructureTotalCladdingPurlinWeightUnit": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "KG",
-                  "M",
-                  "NOS",
-                  "SQFT",
-                  "SQM",
-                  "KG_PER_SQFT",
-                  "KG_PER_M",
-                  "KG_PER_SQM",
-                  null
-                ]
-              },
-              "claddingStructureCladdingArea": {
+              "claddingAreaWithoutAnyDeductions": {
                 "type": "number",
                 "nullable": true
               },
-              "claddingStructureCladdingAreaUnit": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "KG",
-                  "M",
-                  "NOS",
-                  "SQFT",
-                  "SQM",
-                  "KG_PER_SQFT",
-                  "KG_PER_M",
-                  "KG_PER_SQM",
-                  null
-                ]
-              },
-              "claddingStructureAverageMaterialConsumption": {
+              "averageMaterialConsumption": {
                 "type": "number",
                 "nullable": true
               },
-              "claddingStructureAverageMaterialConsumptionUnit": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "KG",
-                  "M",
-                  "NOS",
-                  "SQFT",
-                  "SQM",
-                  "KG_PER_SQFT",
-                  "KG_PER_M",
-                  "KG_PER_SQM",
-                  null
-                ]
-              },
-              "claddingStructureTotalOpenings": {
+              "totalCladdingOpenings": {
                 "type": "number",
                 "nullable": true
               },
-              "claddingStructureTotalOpeningsUnit": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "KG",
-                  "M",
-                  "NOS",
-                  "SQFT",
-                  "SQM",
-                  "KG_PER_SQFT",
-                  "KG_PER_M",
-                  "KG_PER_SQM",
-                  null
-                ]
-              },
-              "claddingStructureFasciaOpening": {
+              "fasciaOpening": {
                 "type": "number",
                 "nullable": true
-              },
-              "claddingStructureFasciaOpeningUnit": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "KG",
-                  "M",
-                  "NOS",
-                  "SQFT",
-                  "SQM",
-                  "KG_PER_SQFT",
-                  "KG_PER_M",
-                  "KG_PER_SQM",
-                  null
-                ]
-              },
-              "claddingSheetUnit": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "KG",
-                  "M",
-                  "NOS",
-                  "SQFT",
-                  "SQM",
-                  "KG_PER_SQFT",
-                  "KG_PER_M",
-                  "KG_PER_SQM",
-                  null
-                ]
               },
               "claddingSheetQuantity": {
                 "type": "number",
                 "nullable": true
               },
-              "claddingSheetPurchaseQuantity": {
+              "claddingSheetAdditional": {
                 "type": "number",
                 "nullable": true
               },
-              "columnWindBracingsUnit": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "KG",
-                  "M",
-                  "NOS",
-                  "SQFT",
-                  "SQM",
-                  "KG_PER_SQFT",
-                  "KG_PER_M",
-                  "KG_PER_SQM",
-                  null
-                ]
-              },
-              "columnWindBracingsQuantity": {
+              "claddingSheetPurchase": {
                 "type": "number",
                 "nullable": true
               },
-              "claddingSagRodUnit": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "KG",
-                  "M",
-                  "NOS",
-                  "SQFT",
-                  "SQM",
-                  "KG_PER_SQFT",
-                  "KG_PER_M",
-                  "KG_PER_SQM",
-                  null
-                ]
-              },
-              "claddingSagRodQuantity": {
+              "columnWindBracingsAdditional": {
                 "type": "number",
                 "nullable": true
               },
-              "claddingFlangeBraceUnit": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "KG",
-                  "M",
-                  "NOS",
-                  "SQFT",
-                  "SQM",
-                  "KG_PER_SQFT",
-                  "KG_PER_M",
-                  "KG_PER_SQM",
-                  null
-                ]
-              },
-              "claddingFlangeBraceQuantity": {
+              "claddingSagRodAdditional": {
                 "type": "number",
                 "nullable": true
               },
-              "claddingPurlinBoltsUnit": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "KG",
-                  "M",
-                  "NOS",
-                  "SQFT",
-                  "SQM",
-                  "KG_PER_SQFT",
-                  "KG_PER_M",
-                  "KG_PER_SQM",
-                  null
-                ]
+              "claddingFlangeBraceAdditional": {
+                "type": "number",
+                "nullable": true
               },
-              "claddingPurlinBoltsQuantity": {
+              "numberOfCladdingPurlinBoltsAdditional": {
                 "type": "number",
                 "nullable": true
               }
@@ -4867,197 +4326,47 @@
           "canopy": {
             "type": "object",
             "properties": {
-              "structureUnit": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "KG",
-                  "M",
-                  "NOS",
-                  "SQFT",
-                  "SQM",
-                  "KG_PER_SQFT",
-                  "KG_PER_M",
-                  "KG_PER_SQM",
-                  null
-                ]
-              },
-              "structureQuantity": {
+              "canopyStructureQuantity": {
                 "type": "number",
                 "nullable": true
               },
-              "structureCanopyArea": {
+              "canopyArea": {
                 "type": "number",
                 "nullable": true
               },
-              "structureCanopyAreaUnit": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "KG",
-                  "M",
-                  "NOS",
-                  "SQFT",
-                  "SQM",
-                  "KG_PER_SQFT",
-                  "KG_PER_M",
-                  "KG_PER_SQM",
-                  null
-                ]
-              },
-              "purlinUnit": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "KG",
-                  "M",
-                  "NOS",
-                  "SQFT",
-                  "SQM",
-                  "KG_PER_SQFT",
-                  "KG_PER_M",
-                  "KG_PER_SQM",
-                  null
-                ]
-              },
-              "purlinQuantity": {
+              "canopyPurlinQuantity": {
                 "type": "number",
                 "nullable": true
               },
-              "sheetUnit": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "KG",
-                  "M",
-                  "NOS",
-                  "SQFT",
-                  "SQM",
-                  "KG_PER_SQFT",
-                  "KG_PER_M",
-                  "KG_PER_SQM",
-                  null
-                ]
-              },
-              "sheetQuantity": {
+              "canopySheetQuantity": {
                 "type": "number",
                 "nullable": true
               },
-              "sheetPurchaseQuantity": {
+              "canopySheetPurchaseQuantity": {
                 "type": "number",
                 "nullable": true
               },
-              "gutterUnit": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "KG",
-                  "M",
-                  "NOS",
-                  "SQFT",
-                  "SQM",
-                  "KG_PER_SQFT",
-                  "KG_PER_M",
-                  "KG_PER_SQM",
-                  null
-                ]
-              },
-              "gutterQuantity": {
+              "canopyGutterQuantity": {
                 "type": "number",
                 "nullable": true
               },
-              "downTakeUnit": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "KG",
-                  "M",
-                  "NOS",
-                  "SQFT",
-                  "SQM",
-                  "KG_PER_SQFT",
-                  "KG_PER_M",
-                  "KG_PER_SQM",
-                  null
-                ]
-              },
-              "downTakeQuantity": {
+              "canopyDownTakeQuantity": {
                 "type": "number",
                 "nullable": true
               },
-              "sideCoveringUnit": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "KG",
-                  "M",
-                  "NOS",
-                  "SQFT",
-                  "SQM",
-                  "KG_PER_SQFT",
-                  "KG_PER_M",
-                  "KG_PER_SQM",
-                  null
-                ]
-              },
-              "sideCoveringQuantity": {
+              "canopySideCoveringQuantity": {
                 "type": "number",
                 "nullable": true
               },
-              "flashingUnit": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "KG",
-                  "M",
-                  "NOS",
-                  "SQFT",
-                  "SQM",
-                  "KG_PER_SQFT",
-                  "KG_PER_M",
-                  "KG_PER_SQM",
-                  null
-                ]
-              },
-              "flashingQuantity": {
+              "canopyFlashingQuantity": {
                 "type": "number",
                 "nullable": true
               },
-              "purlinBoltsUnit": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "KG",
-                  "M",
-                  "NOS",
-                  "SQFT",
-                  "SQM",
-                  "KG_PER_SQFT",
-                  "KG_PER_M",
-                  "KG_PER_SQM",
-                  null
-                ]
-              },
-              "purlinBoltsQuantity": {
+              "canopyPurlinBoltsQuantity": {
                 "type": "number",
                 "nullable": true
               },
-              "jointBoltsUnit": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "KG",
-                  "M",
-                  "NOS",
-                  "SQFT",
-                  "SQM",
-                  "KG_PER_SQFT",
-                  "KG_PER_M",
-                  "KG_PER_SQM",
-                  null
-                ]
-              },
-              "jointBoltsQuantity": {
+              "canopyJointBoltsQuantity": {
                 "type": "number",
                 "nullable": true
               }
@@ -5066,503 +4375,117 @@
           "accessories": {
             "type": "object",
             "properties": {
-              "doorsCount": {
-                "type": "integer",
-                "nullable": true
-              },
-              "doorsCountUnit": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "KG",
-                  "M",
-                  "NOS",
-                  "SQFT",
-                  "SQM",
-                  "KG_PER_SQFT",
-                  "KG_PER_M",
-                  "KG_PER_SQM",
-                  null
-                ]
-              },
-              "doorsArea": {
+              "doors": {
                 "type": "number",
                 "nullable": true
               },
-              "doorsAreaUnit": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "KG",
-                  "M",
-                  "NOS",
-                  "SQFT",
-                  "SQM",
-                  "KG_PER_SQFT",
-                  "KG_PER_M",
-                  "KG_PER_SQM",
-                  null
-                ]
-              },
-              "windowsCount": {
-                "type": "integer",
-                "nullable": true
-              },
-              "windowsCountUnit": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "KG",
-                  "M",
-                  "NOS",
-                  "SQFT",
-                  "SQM",
-                  "KG_PER_SQFT",
-                  "KG_PER_M",
-                  "KG_PER_SQM",
-                  null
-                ]
-              },
-              "windowsArea": {
+              "doorsQuantity": {
                 "type": "number",
                 "nullable": true
               },
-              "windowsAreaUnit": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "KG",
-                  "M",
-                  "NOS",
-                  "SQFT",
-                  "SQM",
-                  "KG_PER_SQFT",
-                  "KG_PER_M",
-                  "KG_PER_SQM",
-                  null
-                ]
+              "windows": {
+                "type": "number",
+                "nullable": true
               },
-              "fasciaStructureUnit": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "KG",
-                  "M",
-                  "NOS",
-                  "SQFT",
-                  "SQM",
-                  "KG_PER_SQFT",
-                  "KG_PER_M",
-                  "KG_PER_SQM",
-                  null
-                ]
+              "windowsQuantity": {
+                "type": "number",
+                "nullable": true
               },
               "fasciaStructureQuantity": {
                 "type": "number",
                 "nullable": true
               },
-              "fasciaCoveringSheetUnit": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "KG",
-                  "M",
-                  "NOS",
-                  "SQFT",
-                  "SQM",
-                  "KG_PER_SQFT",
-                  "KG_PER_M",
-                  "KG_PER_SQM",
-                  null
-                ]
-              },
-              "fasciaCoveringSheetQuantity": {
+              "fasciaCoveringSheetBoardQuantity": {
                 "type": "number",
                 "nullable": true
-              },
-              "internalPartitionsUnit": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "KG",
-                  "M",
-                  "NOS",
-                  "SQFT",
-                  "SQM",
-                  "KG_PER_SQFT",
-                  "KG_PER_M",
-                  "KG_PER_SQM",
-                  null
-                ]
               },
               "internalPartitionsQuantity": {
                 "type": "number",
                 "nullable": true
               },
-              "ridgeUnit": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "KG",
-                  "M",
-                  "NOS",
-                  "SQFT",
-                  "SQM",
-                  "KG_PER_SQFT",
-                  "KG_PER_M",
-                  "KG_PER_SQM",
-                  null
-                ]
-              },
               "ridgeQuantity": {
                 "type": "number",
                 "nullable": true
-              },
-              "gutterUnit": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "KG",
-                  "M",
-                  "NOS",
-                  "SQFT",
-                  "SQM",
-                  "KG_PER_SQFT",
-                  "KG_PER_M",
-                  "KG_PER_SQM",
-                  null
-                ]
               },
               "gutterQuantity": {
                 "type": "number",
                 "nullable": true
               },
-              "downTakeUnit": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "KG",
-                  "M",
-                  "NOS",
-                  "SQFT",
-                  "SQM",
-                  "KG_PER_SQFT",
-                  "KG_PER_M",
-                  "KG_PER_SQM",
-                  null
-                ]
-              },
-              "downTakeQuantity": {
+              "downtakeQuantity": {
                 "type": "number",
                 "nullable": true
-              },
-              "dripTrimUnit": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "KG",
-                  "M",
-                  "NOS",
-                  "SQFT",
-                  "SQM",
-                  "KG_PER_SQFT",
-                  "KG_PER_M",
-                  "KG_PER_SQM",
-                  null
-                ]
               },
               "dripTrimQuantity": {
                 "type": "number",
                 "nullable": true
               },
-              "gableEndFlashingUnit": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "KG",
-                  "M",
-                  "NOS",
-                  "SQFT",
-                  "SQM",
-                  "KG_PER_SQFT",
-                  "KG_PER_M",
-                  "KG_PER_SQM",
-                  null
-                ]
-              },
               "gableEndFlashingQuantity": {
                 "type": "number",
                 "nullable": true
               },
-              "cornerFlashCount": {
-                "type": "integer",
-                "nullable": true
-              },
-              "cornerFlashCountUnit": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "KG",
-                  "M",
-                  "NOS",
-                  "SQFT",
-                  "SQM",
-                  "KG_PER_SQFT",
-                  "KG_PER_M",
-                  "KG_PER_SQM",
-                  null
-                ]
-              },
-              "cornerFlashLength": {
+              "cornerFlashQuantity": {
                 "type": "number",
                 "nullable": true
               },
-              "cornerFlashLengthUnit": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "KG",
-                  "M",
-                  "NOS",
-                  "SQFT",
-                  "SQM",
-                  "KG_PER_SQFT",
-                  "KG_PER_M",
-                  "KG_PER_SQM",
-                  null
-                ]
-              },
-              "rollingShutterCount": {
-                "type": "integer",
-                "nullable": true
-              },
-              "rollingShutterCountUnit": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "KG",
-                  "M",
-                  "NOS",
-                  "SQFT",
-                  "SQM",
-                  "KG_PER_SQFT",
-                  "KG_PER_M",
-                  "KG_PER_SQM",
-                  null
-                ]
-              },
-              "rollingShutterArea": {
+              "rollingShutter": {
                 "type": "number",
                 "nullable": true
               },
-              "rollingShutterAreaUnit": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "KG",
-                  "M",
-                  "NOS",
-                  "SQFT",
-                  "SQM",
-                  "KG_PER_SQFT",
-                  "KG_PER_M",
-                  "KG_PER_SQM",
-                  null
-                ]
-              },
-              "louversCount": {
-                "type": "integer",
-                "nullable": true
-              },
-              "louversCountUnit": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "KG",
-                  "M",
-                  "NOS",
-                  "SQFT",
-                  "SQM",
-                  "KG_PER_SQFT",
-                  "KG_PER_M",
-                  "KG_PER_SQM",
-                  null
-                ]
-              },
-              "louversArea": {
+              "rollingShutterQuantity": {
                 "type": "number",
                 "nullable": true
               },
-              "louversAreaUnit": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "KG",
-                  "M",
-                  "NOS",
-                  "SQFT",
-                  "SQM",
-                  "KG_PER_SQFT",
-                  "KG_PER_M",
-                  "KG_PER_SQM",
-                  null
-                ]
-              },
-              "skyLightCount": {
-                "type": "integer",
-                "nullable": true
-              },
-              "skyLightCountUnit": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "KG",
-                  "M",
-                  "NOS",
-                  "SQFT",
-                  "SQM",
-                  "KG_PER_SQFT",
-                  "KG_PER_M",
-                  "KG_PER_SQM",
-                  null
-                ]
-              },
-              "skyLightArea": {
+              "louvers": {
                 "type": "number",
                 "nullable": true
               },
-              "skyLightAreaUnit": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "KG",
-                  "M",
-                  "NOS",
-                  "SQFT",
-                  "SQM",
-                  "KG_PER_SQFT",
-                  "KG_PER_M",
-                  "KG_PER_SQM",
-                  null
-                ]
-              },
-              "wallLightCount": {
-                "type": "integer",
-                "nullable": true
-              },
-              "wallLightCountUnit": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "KG",
-                  "M",
-                  "NOS",
-                  "SQFT",
-                  "SQM",
-                  "KG_PER_SQFT",
-                  "KG_PER_M",
-                  "KG_PER_SQM",
-                  null
-                ]
-              },
-              "wallLightArea": {
+              "louversQuantity": {
                 "type": "number",
                 "nullable": true
               },
-              "wallLightAreaUnit": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "KG",
-                  "M",
-                  "NOS",
-                  "SQFT",
-                  "SQM",
-                  "KG_PER_SQFT",
-                  "KG_PER_M",
-                  "KG_PER_SQM",
-                  null
-                ]
-              },
-              "roofInsulationType": {
-                "type": "string",
+              "skyLight": {
+                "type": "number",
                 "nullable": true
               },
-              "roofInsulationUnit": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "KG",
-                  "M",
-                  "NOS",
-                  "SQFT",
-                  "SQM",
-                  "KG_PER_SQFT",
-                  "KG_PER_M",
-                  "KG_PER_SQM",
-                  null
-                ]
+              "skyLightQuantity": {
+                "type": "number",
+                "nullable": true
+              },
+              "wallLight": {
+                "type": "number",
+                "nullable": true
+              },
+              "wallLightQuantity": {
+                "type": "number",
+                "nullable": true
+              },
+              "roofInsulation": {
+                "type": "number",
+                "nullable": true
               },
               "roofInsulationQuantity": {
                 "type": "number",
                 "nullable": true
               },
-              "wallInsulationType": {
-                "type": "string",
+              "wallInsulation": {
+                "type": "number",
                 "nullable": true
-              },
-              "wallInsulationUnit": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "KG",
-                  "M",
-                  "NOS",
-                  "SQFT",
-                  "SQM",
-                  "KG_PER_SQFT",
-                  "KG_PER_M",
-                  "KG_PER_SQM",
-                  null
-                ]
               },
               "wallInsulationQuantity": {
                 "type": "number",
                 "nullable": true
               },
-              "turboVentilatorsUnit": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "KG",
-                  "M",
-                  "NOS",
-                  "SQFT",
-                  "SQM",
-                  "KG_PER_SQFT",
-                  "KG_PER_M",
-                  "KG_PER_SQM",
-                  null
-                ]
+              "turboVentilators": {
+                "type": "number",
+                "nullable": true
               },
               "turboVentilatorsQuantity": {
                 "type": "number",
                 "nullable": true
               },
-              "handrailUnit": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "KG",
-                  "M",
-                  "NOS",
-                  "SQFT",
-                  "SQM",
-                  "KG_PER_SQFT",
-                  "KG_PER_M",
-                  "KG_PER_SQM",
-                  null
-                ]
+              "handrail": {
+                "type": "number",
+                "nullable": true
               },
               "handrailQuantity": {
                 "type": "number",
@@ -5573,134 +4496,48 @@
           "mezzanine": {
             "type": "object",
             "properties": {
-              "structureUnit": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "KG",
-                  "M",
-                  "NOS",
-                  "SQFT",
-                  "SQM",
-                  "KG_PER_SQFT",
-                  "KG_PER_M",
-                  "KG_PER_SQM",
-                  null
-                ]
-              },
-              "structureQuantity": {
+              "mezzanineStructure": {
                 "type": "number",
                 "nullable": true
               },
-              "structureAdditionalQuantity": {
+              "mezzanineStructureQuantity": {
                 "type": "number",
                 "nullable": true
               },
-              "structureTotalArea": {
+              "totalMezzanineArea": {
                 "type": "number",
                 "nullable": true
               },
-              "structureTotalAreaUnit": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "KG",
-                  "M",
-                  "NOS",
-                  "SQFT",
-                  "SQM",
-                  "KG_PER_SQFT",
-                  "KG_PER_M",
-                  "KG_PER_SQM",
-                  null
-                ]
-              },
-              "structureMaterialConsumption": {
+              "totalMezzanineAreaQuantity": {
                 "type": "number",
                 "nullable": true
               },
-              "structureMaterialConsumptionUnit": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "KG",
-                  "M",
-                  "NOS",
-                  "SQFT",
-                  "SQM",
-                  "KG_PER_SQFT",
-                  "KG_PER_M",
-                  "KG_PER_SQM",
-                  null
-                ]
-              },
-              "deckSheetUnit": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "KG",
-                  "M",
-                  "NOS",
-                  "SQFT",
-                  "SQM",
-                  "KG_PER_SQFT",
-                  "KG_PER_M",
-                  "KG_PER_SQM",
-                  null
-                ]
+              "materialConsumption": {
+                "type": "number",
+                "nullable": true
               },
               "deckSheetQuantity": {
                 "type": "number",
                 "nullable": true
               },
-              "deckSheetPurchaseQuantity": {
-                "type": "number",
-                "nullable": true
-              },
-              "deckSheetAdditionalQuantity": {
-                "type": "number",
-                "nullable": true
-              },
-              "shearStudsUnit": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "KG",
-                  "M",
-                  "NOS",
-                  "SQFT",
-                  "SQM",
-                  "KG_PER_SQFT",
-                  "KG_PER_M",
-                  "KG_PER_SQM",
-                  null
-                ]
-              },
               "shearStudsQuantity": {
                 "type": "number",
                 "nullable": true
               },
-              "concreteFlashingUnit": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "KG",
-                  "M",
-                  "NOS",
-                  "SQFT",
-                  "SQM",
-                  "KG_PER_SQFT",
-                  "KG_PER_M",
-                  "KG_PER_SQM",
-                  null
-                ]
-              },
-              "concreteFlashingQuantity": {
+              "shearStudsPurchaseQuantity": {
                 "type": "number",
                 "nullable": true
               },
-              "jointBoltsSpecification": {
-                "type": "string",
+              "shearStudsQuantityAdditional": {
+                "type": "number",
+                "nullable": true
+              },
+              "concreteFlashing": {
+                "type": "number",
+                "nullable": true
+              },
+              "jointBolts": {
+                "type": "number",
                 "nullable": true
               },
               "jointBoltsQuantity": {
@@ -5716,76 +4553,27 @@
           "stair": {
             "type": "object",
             "properties": {
-              "totalAreaUnit": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "KG",
-                  "M",
-                  "NOS",
-                  "SQFT",
-                  "SQM",
-                  "KG_PER_SQFT",
-                  "KG_PER_M",
-                  "KG_PER_SQM",
-                  null
-                ]
-              },
-              "totalAreaQuantity": {
+              "totalAreaOfStairQuantity": {
                 "type": "number",
                 "nullable": true
               },
-              "stringerBeamsSection": {
-                "type": "string",
-                "nullable": true
-              },
-              "stringerBeamsUnit": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "KG",
-                  "M",
-                  "NOS",
-                  "SQFT",
-                  "SQM",
-                  "KG_PER_SQFT",
-                  "KG_PER_M",
-                  "KG_PER_SQM",
-                  null
-                ]
-              },
-              "stringerBeamsQuantity": {
+              "totalWeightofStringerBeamsQuantity": {
                 "type": "number",
                 "nullable": true
               },
-              "stringerBeamsAdditionalQuantity": {
+              "totalWeightofStringerBeamsAdditional": {
                 "type": "number",
                 "nullable": true
               },
-              "stepsSpecification": {
-                "type": "string",
-                "nullable": true
-              },
-              "stepsUnit": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "KG",
-                  "M",
-                  "NOS",
-                  "SQFT",
-                  "SQM",
-                  "KG_PER_SQFT",
-                  "KG_PER_M",
-                  "KG_PER_SQM",
-                  null
-                ]
-              },
-              "stepsQuantity": {
+              "totalWeightofSteps": {
                 "type": "number",
                 "nullable": true
               },
-              "stepsAdditionalQuantity": {
+              "totalWeightofStepsQuantity": {
+                "type": "number",
+                "nullable": true
+              },
+              "totalWeightofStepsAdditional": {
                 "type": "number",
                 "nullable": true
               }
@@ -5794,115 +4582,41 @@
           "additionalBolts": {
             "type": "object",
             "properties": {
-              "jointBolt24mmHsfgUnit": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "KG",
-                  "M",
-                  "NOS",
-                  "SQFT",
-                  "SQM",
-                  "KG_PER_SQFT",
-                  "KG_PER_M",
-                  "KG_PER_SQM",
-                  null
-                ]
-              },
-              "jointBolt24mmHsfgQuantity": {
+              "jointBolt1": {
                 "type": "number",
                 "nullable": true
               },
-              "jointBolt20mmHsfgUnit": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "KG",
-                  "M",
-                  "NOS",
-                  "SQFT",
-                  "SQM",
-                  "KG_PER_SQFT",
-                  "KG_PER_M",
-                  "KG_PER_SQM",
-                  null
-                ]
-              },
-              "jointBolt20mmHsfgQuantity": {
+              "jointBolt1Quantity": {
                 "type": "number",
                 "nullable": true
               },
-              "jointBolt16mmHsfgUnit": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "KG",
-                  "M",
-                  "NOS",
-                  "SQFT",
-                  "SQM",
-                  "KG_PER_SQFT",
-                  "KG_PER_M",
-                  "KG_PER_SQM",
-                  null
-                ]
-              },
-              "jointBolt16mmHsfgQuantity": {
+              "jointBolt2": {
                 "type": "number",
                 "nullable": true
               },
-              "purlinBolt12mmOrdinaryUnit": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "KG",
-                  "M",
-                  "NOS",
-                  "SQFT",
-                  "SQM",
-                  "KG_PER_SQFT",
-                  "KG_PER_M",
-                  "KG_PER_SQM",
-                  null
-                ]
-              },
-              "purlinBolt12mmOrdinaryQuantity": {
+              "jointBolt2Quantity": {
                 "type": "number",
                 "nullable": true
               },
-              "anchorBoltUnit": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "KG",
-                  "M",
-                  "NOS",
-                  "SQFT",
-                  "SQM",
-                  "KG_PER_SQFT",
-                  "KG_PER_M",
-                  "KG_PER_SQM",
-                  null
-                ]
+              "jointBolt3": {
+                "type": "number",
+                "nullable": true
+              },
+              "jointBolt3Quantity": {
+                "type": "number",
+                "nullable": true
+              },
+              "purlinBolt": {
+                "type": "number",
+                "nullable": true
+              },
+              "purlinBoltQuantity": {
+                "type": "number",
+                "nullable": true
               },
               "anchorBoltQuantity": {
                 "type": "number",
                 "nullable": true
-              },
-              "foundationBoltUnit": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "KG",
-                  "M",
-                  "NOS",
-                  "SQFT",
-                  "SQM",
-                  "KG_PER_SQFT",
-                  "KG_PER_M",
-                  "KG_PER_SQM",
-                  null
-                ]
               },
               "foundationBoltQuantity": {
                 "type": "number",
@@ -5918,235 +4632,85 @@
           "pebRoof": {
             "type": "object",
             "properties": {
-              "quantityPebRoofValue": {
-                "type": "boolean",
-                "nullable": true
-              },
-              "materialWithPurlinUnit": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "KG",
-                  "M",
-                  "NOS",
-                  "SQFT",
-                  "SQM",
-                  "KG_PER_SQFT",
-                  "KG_PER_M",
-                  "KG_PER_SQM",
-                  null
-                ]
-              },
-              "materialWithPurlinQuantity": {
+              "pebRoofValue": {
                 "type": "number",
                 "nullable": true
               },
-              "raftersAndColumnsSpecification": {
-                "type": "string",
+              "pebRoofQuantity": {
+                "type": "number",
                 "nullable": true
               },
-              "raftersAndColumnsUnit": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "KG",
-                  "M",
-                  "NOS",
-                  "SQFT",
-                  "SQM",
-                  "KG_PER_SQFT",
-                  "KG_PER_M",
-                  "KG_PER_SQM",
-                  null
-                ]
+              "raftersAndColumns": {
+                "type": "number",
+                "nullable": true
               },
               "raftersAndColumnsQuantity": {
                 "type": "number",
                 "nullable": true
               },
-              "raftersAndColumnsAdditionalQuantity": {
+              "lengthOfBuilding": {
                 "type": "number",
                 "nullable": true
               },
-              "raftersAndColumnsBuildingLength": {
+              "lengthOfBuildingQuantity": {
                 "type": "number",
                 "nullable": true
               },
-              "raftersAndColumnsBuildingLengthUnit": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "KG",
-                  "M",
-                  "NOS",
-                  "SQFT",
-                  "SQM",
-                  "KG_PER_SQFT",
-                  "KG_PER_M",
-                  "KG_PER_SQM",
-                  null
-                ]
-              },
-              "raftersAndColumnsInclinedLengthOneHalf": {
+              "inclinedLengthInOneHalf": {
                 "type": "number",
                 "nullable": true
               },
-              "raftersAndColumnsInclinedLengthUnit": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "KG",
-                  "M",
-                  "NOS",
-                  "SQFT",
-                  "SQM",
-                  "KG_PER_SQFT",
-                  "KG_PER_M",
-                  "KG_PER_SQM",
-                  null
-                ]
-              },
-              "raftersAndColumnsRoofArea": {
+              "roofArea": {
                 "type": "number",
                 "nullable": true
               },
-              "raftersAndColumnsRoofAreaUnit": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "KG",
-                  "M",
-                  "NOS",
-                  "SQFT",
-                  "SQM",
-                  "KG_PER_SQFT",
-                  "KG_PER_M",
-                  "KG_PER_SQM",
-                  null
-                ]
-              },
-              "raftersAndColumnsMaterialConsumption": {
+              "materialConsumption": {
                 "type": "number",
                 "nullable": true
               },
-              "raftersAndColumnsMaterialConsumptionUnit": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "KG",
-                  "M",
-                  "NOS",
-                  "SQFT",
-                  "SQM",
-                  "KG_PER_SQFT",
-                  "KG_PER_M",
-                  "KG_PER_SQM",
-                  null
-                ]
-              },
-              "roofPurlinesValue": {
+              "roofPurlinsValue": {
                 "type": "number",
                 "nullable": true
               },
-              "roofPurlinsSpecification": {
-                "type": "string",
+              "roofPurlins": {
+                "type": "number",
                 "nullable": true
-              },
-              "roofPurlinsUnit": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "KG",
-                  "M",
-                  "NOS",
-                  "SQFT",
-                  "SQM",
-                  "KG_PER_SQFT",
-                  "KG_PER_M",
-                  "KG_PER_SQM",
-                  null
-                ]
               },
               "roofPurlinsQuantity": {
                 "type": "number",
                 "nullable": true
               },
-              "roofPurlinsAdditionalQuantity": {
+              "lengthOfOnePurlin": {
                 "type": "number",
                 "nullable": true
               },
-              "roofPurlinsSinglePurlinLength": {
+              "lengthOfOnePurlinQuantity": {
                 "type": "number",
                 "nullable": true
               },
-              "roofPurlinsSinglePurlinLengthUnit": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "KG",
-                  "M",
-                  "NOS",
-                  "SQFT",
-                  "SQM",
-                  "KG_PER_SQFT",
-                  "KG_PER_M",
-                  "KG_PER_SQM",
-                  null
-                ]
-              },
-              "roofPurlinsPurlinsPerFrame": {
+              "noOfPurlinsInOneFrame": {
                 "type": "integer",
                 "nullable": true
               },
-              "roofPurlinsTotalPurlinBays": {
+              "totalNoOfPurlinBay": {
                 "type": "integer",
                 "nullable": true
               },
-              "roofPurlinsPurlinUnitWeight": {
+              "unitWeightOfPurlin": {
                 "type": "number",
                 "nullable": true
               },
-              "roofPurlinsPurlinUnitWeightUnit": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "KG",
-                  "M",
-                  "NOS",
-                  "SQFT",
-                  "SQM",
-                  "KG_PER_SQFT",
-                  "KG_PER_M",
-                  "KG_PER_SQM",
-                  null
-                ]
-              },
-              "roofPurlinsExtendedFramePurlins": {
+              "noOfExtendedFrame": {
                 "type": "integer",
                 "nullable": true
               },
-              "roofPurlinsExtendedPurlinBays": {
+              "noOfExtendedPurlinBay": {
                 "type": "integer",
                 "nullable": true
               },
-              "roofSheetSpecification": {
-                "type": "string",
+              "roofSheet": {
+                "type": "number",
                 "nullable": true
-              },
-              "roofSheetUnit": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "KG",
-                  "M",
-                  "NOS",
-                  "SQFT",
-                  "SQM",
-                  "KG_PER_SQFT",
-                  "KG_PER_M",
-                  "KG_PER_SQM",
-                  null
-                ]
               },
               "roofSheetQuantity": {
                 "type": "number",
@@ -6156,503 +4720,183 @@
                 "type": "number",
                 "nullable": true
               },
-              "roofSheetAdditionalQuantity": {
+              "extendedRoofWidth": {
                 "type": "number",
                 "nullable": true
               },
-              "roofSheetExtendedRoofWidth": {
+              "extendedRoofLength": {
                 "type": "number",
                 "nullable": true
               },
-              "roofSheetExtendedRoofWidthUnit": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "KG",
-                  "M",
-                  "NOS",
-                  "SQFT",
-                  "SQM",
-                  "KG_PER_SQFT",
-                  "KG_PER_M",
-                  "KG_PER_SQM",
-                  null
-                ]
-              },
-              "roofSheetExtendedRoofLength": {
+              "roofAreaDeductions": {
                 "type": "number",
                 "nullable": true
               },
-              "roofSheetExtendedRoofLengthUnit": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "KG",
-                  "M",
-                  "NOS",
-                  "SQFT",
-                  "SQM",
-                  "KG_PER_SQFT",
-                  "KG_PER_M",
-                  "KG_PER_SQM",
-                  null
-                ]
-              },
-              "roofSheetRoofAreaDeductions": {
+              "polyCarbonateAreaDeductions": {
                 "type": "number",
                 "nullable": true
               },
-              "roofSheetRoofAreaDeductionsUnit": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "KG",
-                  "M",
-                  "NOS",
-                  "SQFT",
-                  "SQM",
-                  "KG_PER_SQFT",
-                  "KG_PER_M",
-                  "KG_PER_SQM",
-                  null
-                ]
-              },
-              "roofSheetPolycarbonateAreaDeduction": {
+              "polyCarbonateSheetQuantity": {
                 "type": "number",
                 "nullable": true
               },
-              "roofSheetPolycarbonateAreaDeductionUnit": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "KG",
-                  "M",
-                  "NOS",
-                  "SQFT",
-                  "SQM",
-                  "KG_PER_SQFT",
-                  "KG_PER_M",
-                  "KG_PER_SQM",
-                  null
-                ]
-              },
-              "polycarbonateSheetUnit": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "KG",
-                  "M",
-                  "NOS",
-                  "SQFT",
-                  "SQM",
-                  "KG_PER_SQFT",
-                  "KG_PER_M",
-                  "KG_PER_SQM",
-                  null
-                ]
-              },
-              "polycarbonateSheetQuantity": {
+              "polyCarbonateSheetPurchaseQuantity": {
                 "type": "number",
                 "nullable": true
               },
-              "polycarbonateSheetPurchaseQuantity": {
+              "lengthOfpolyCarbonateSheet": {
                 "type": "number",
                 "nullable": true
               },
-              "polycarbonateSheetAdditionalQuantity": {
+              "lengthOfpolyCarbonateSheetAdditional": {
                 "type": "number",
                 "nullable": true
               },
-              "polycarbonateSheetSheetLength": {
+              "widthOfpolyCarbonateSheet": {
                 "type": "number",
                 "nullable": true
               },
-              "polycarbonateSheetSheetLengthUnit": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "KG",
-                  "M",
-                  "NOS",
-                  "SQFT",
-                  "SQM",
-                  "KG_PER_SQFT",
-                  "KG_PER_M",
-                  "KG_PER_SQM",
-                  null
-                ]
-              },
-              "polycarbonateSheetSheetWidth": {
-                "type": "number",
-                "nullable": true
-              },
-              "polycarbonateSheetSheetWidthUnit": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "KG",
-                  "M",
-                  "NOS",
-                  "SQFT",
-                  "SQM",
-                  "KG_PER_SQFT",
-                  "KG_PER_M",
-                  "KG_PER_SQM",
-                  null
-                ]
-              },
-              "polycarbonateSheetNumberOfSheets": {
+              "NosOfpolyCarbonateSheet": {
                 "type": "integer",
                 "nullable": true
               },
-              "roofWindBracingsUnit": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "KG",
-                  "M",
-                  "NOS",
-                  "SQFT",
-                  "SQM",
-                  "KG_PER_SQFT",
-                  "KG_PER_M",
-                  "KG_PER_SQM",
-                  null
-                ]
-              },
-              "roofWindBracingsQuantity": {
+              "roofWindBracing": {
                 "type": "number",
                 "nullable": true
               },
-              "roofWindBracingsAdditionalQuantity": {
+              "lengthOfSinlgeWindBracing": {
                 "type": "number",
                 "nullable": true
               },
-              "roofWindBracingsSingleBracingLength": {
+              "lengthOfSinlgeWindBracingAdditional": {
                 "type": "number",
                 "nullable": true
               },
-              "roofWindBracingsSingleBracingLengthUnit": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "KG",
-                  "M",
-                  "NOS",
-                  "SQFT",
-                  "SQM",
-                  "KG_PER_SQFT",
-                  "KG_PER_M",
-                  "KG_PER_SQM",
-                  null
-                ]
-              },
-              "roofWindBracingsTotalBracings": {
+              "totalNumberOfWindBracing": {
                 "type": "integer",
                 "nullable": true
               },
-              "roofWindBracingsUnitWeight": {
+              "unitWeightOfRoofWindBracing": {
                 "type": "number",
                 "nullable": true
               },
-              "roofWindBracingsUnitWeightUnit": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "KG",
-                  "M",
-                  "NOS",
-                  "SQFT",
-                  "SQM",
-                  "KG_PER_SQFT",
-                  "KG_PER_M",
-                  "KG_PER_SQM",
-                  null
-                ]
-              },
-              "roofSagRodValue": {
+              "roofSagRoadValue": {
                 "type": "number",
                 "nullable": true
               },
-              "roofSagRodUnit": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "KG",
-                  "M",
-                  "NOS",
-                  "SQFT",
-                  "SQM",
-                  "KG_PER_SQFT",
-                  "KG_PER_M",
-                  "KG_PER_SQM",
-                  null
-                ]
-              },
-              "roofSagRodQuantity": {
+              "roofSagRoadQuantity": {
                 "type": "number",
                 "nullable": true
               },
-              "roofSagRodAdditionalQuantity": {
+              "roofSagRoadQuantityAdditional": {
                 "type": "number",
                 "nullable": true
               },
-              "roofSagRodSingleSagRodLength": {
+              "lengthOfSingleSagRoad": {
                 "type": "number",
                 "nullable": true
               },
-              "roofSagRodSingleSagRodLengthUnit": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "KG",
-                  "M",
-                  "NOS",
-                  "SQFT",
-                  "SQM",
-                  "KG_PER_SQFT",
-                  "KG_PER_M",
-                  "KG_PER_SQM",
-                  null
-                ]
-              },
-              "roofSagRodSagRodsPerFrame": {
+              "noOfSagRodInASingleFrame": {
                 "type": "integer",
                 "nullable": true
               },
-              "roofSagRodSagRodBays": {
+              "noOfBayInSagRodProvided": {
                 "type": "integer",
                 "nullable": true
               },
-              "roofSagRodExtendedFrameSagRods": {
+              "noOfSagRodInExtendedFrame": {
                 "type": "integer",
                 "nullable": true
               },
-              "roofSagRodExtendedSagRodBays": {
+              "noOfExtendedSagRodBay": {
                 "type": "integer",
                 "nullable": true
               },
-              "roofSagRodUnitWeight": {
+              "unitWeightOfSagRod": {
                 "type": "number",
                 "nullable": true
-              },
-              "roofSagRodUnitWeightUnit": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "KG",
-                  "M",
-                  "NOS",
-                  "SQFT",
-                  "SQM",
-                  "KG_PER_SQFT",
-                  "KG_PER_M",
-                  "KG_PER_SQM",
-                  null
-                ]
-              },
-              "roofFlangeBraceUnit": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "KG",
-                  "M",
-                  "NOS",
-                  "SQFT",
-                  "SQM",
-                  "KG_PER_SQFT",
-                  "KG_PER_M",
-                  "KG_PER_SQM",
-                  null
-                ]
               },
               "roofFlangeBraceQuantity": {
                 "type": "number",
                 "nullable": true
               },
-              "roofFlangeBraceAdditionalQuantity": {
+              "lengthOfMidFrameFlangeBrace": {
                 "type": "number",
                 "nullable": true
               },
-              "roofFlangeBraceMidFrameBraceLength": {
+              "lengthOfMidFrameFlangeBraceAdditional": {
                 "type": "number",
                 "nullable": true
               },
-              "roofFlangeBraceMidFrameBraceLengthUnit": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "KG",
-                  "M",
-                  "NOS",
-                  "SQFT",
-                  "SQM",
-                  "KG_PER_SQFT",
-                  "KG_PER_M",
-                  "KG_PER_SQM",
-                  null
-                ]
-              },
-              "roofFlangeBraceMidFrameBraces": {
+              "noOfFlangeBraceInMidFrame": {
                 "type": "integer",
                 "nullable": true
               },
-              "roofFlangeBraceEndFrameBraces": {
+              "noOfFlangeBraceInEndFrame": {
                 "type": "integer",
                 "nullable": true
               },
-              "roofFlangeBraceMidFrames": {
+              "noOfMidFrame": {
                 "type": "integer",
                 "nullable": true
               },
-              "roofFlangeBraceEndFrames": {
+              "noOfEndFrame": {
                 "type": "integer",
                 "nullable": true
               },
-              "roofFlangeBraceExtendedFrameMidBraces": {
+              "noOfFlngBraceInExtendedFrame": {
                 "type": "integer",
                 "nullable": true
               },
-              "roofFlangeBraceExtendedFrameEndBraces": {
+              "noOfExtendedMidFrame": {
                 "type": "integer",
                 "nullable": true
               },
-              "roofFlangeBraceExtendedMidFrames": {
+              "noOfExtendedEndFrame": {
                 "type": "integer",
                 "nullable": true
               },
-              "roofFlangeBraceExtendedEndFrames": {
-                "type": "integer",
-                "nullable": true
-              },
-              "roofFlangeBraceEndFrameBraceLength": {
+              "lengthOfEndFrameFlangeBrace": {
                 "type": "number",
                 "nullable": true
               },
-              "roofFlangeBraceEndFrameBraceLengthUnit": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "KG",
-                  "M",
-                  "NOS",
-                  "SQFT",
-                  "SQM",
-                  "KG_PER_SQFT",
-                  "KG_PER_M",
-                  "KG_PER_SQM",
-                  null
-                ]
-              },
-              "purlinBoltsSpecification": {
-                "type": "string",
-                "nullable": true
-              },
-              "purlinBoltsUnit": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "KG",
-                  "M",
-                  "NOS",
-                  "SQFT",
-                  "SQM",
-                  "KG_PER_SQFT",
-                  "KG_PER_M",
-                  "KG_PER_SQM",
-                  null
-                ]
-              },
-              "purlinBoltsQuantity": {
+              "numberOfPurlinBolts": {
                 "type": "number",
                 "nullable": true
               },
-              "purlinBoltsPurlinJointsPerFrame": {
-                "type": "integer",
-                "nullable": true
-              },
-              "purlinBoltsTotalFrames": {
-                "type": "integer",
-                "nullable": true
-              },
-              "purlinBoltsExtendedFramePurlinNodes": {
-                "type": "integer",
-                "nullable": true
-              },
-              "purlinBoltsExtendedFrames": {
-                "type": "integer",
-                "nullable": true
-              },
-              "purlinBoltsBoltsPerPurlinJoint": {
-                "type": "integer",
-                "nullable": true
-              },
-              "roofJointBoltsSpecification": {
-                "type": "string",
-                "nullable": true
-              },
-              "roofJointBoltsUnit": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "KG",
-                  "M",
-                  "NOS",
-                  "SQFT",
-                  "SQM",
-                  "KG_PER_SQFT",
-                  "KG_PER_M",
-                  "KG_PER_SQM",
-                  null
-                ]
-              },
-              "roofJointBoltsQuantity": {
+              "numberOfPurlinBoltsQuantity": {
                 "type": "number",
                 "nullable": true
               },
-              "foundationBoltsSpecification": {
-                "type": "string",
+              "noOfPurlinJointInSingleFrame": {
+                "type": "integer",
                 "nullable": true
               },
-              "foundationBoltsUnit": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "KG",
-                  "M",
-                  "NOS",
-                  "SQFT",
-                  "SQM",
-                  "KG_PER_SQFT",
-                  "KG_PER_M",
-                  "KG_PER_SQM",
-                  null
-                ]
+              "totalnoOfFrames": {
+                "type": "integer",
+                "nullable": true
               },
-              "foundationBoltsQuantity": {
+              "noOfPurlinnodeInExtendedFrame": {
+                "type": "integer",
+                "nullable": true
+              },
+              "noOfExtendedFrames": {
+                "type": "integer",
+                "nullable": true
+              },
+              "noOfBoltsInSinglePurlinJoint": {
+                "type": "integer",
+                "nullable": true
+              },
+              "numberOfRoofJointBolts": {
                 "type": "number",
                 "nullable": true
               },
-              "anchorBoltsSpecification": {
-                "type": "string",
+              "numberOfFoundationBolts": {
+                "type": "number",
                 "nullable": true
               },
-              "anchorBoltsUnit": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "KG",
-                  "M",
-                  "NOS",
-                  "SQFT",
-                  "SQM",
-                  "KG_PER_SQFT",
-                  "KG_PER_M",
-                  "KG_PER_SQM",
-                  null
-                ]
-              },
-              "anchorBoltsQuantity": {
+              "numberOfAnchorBolts": {
                 "type": "number",
                 "nullable": true
               }
@@ -6661,316 +4905,95 @@
           "cladding": {
             "type": "object",
             "properties": {
-              "claddingStructureUnit": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "KG",
-                  "M",
-                  "NOS",
-                  "SQFT",
-                  "SQM",
-                  "KG_PER_SQFT",
-                  "KG_PER_M",
-                  "KG_PER_SQM",
-                  null
-                ]
-              },
               "claddingStructureQuantity": {
                 "type": "number",
                 "nullable": true
               },
-              "claddingStructureAdditionalQuantity": {
+              "claddingEaveHeightFront": {
                 "type": "number",
                 "nullable": true
               },
-              "claddingStructureFrontEaveHeight": {
+              "claddingEaveHeightFrontAdditional": {
                 "type": "number",
                 "nullable": true
               },
-              "claddingStructureBackEaveHeight": {
+              "claddingEaveHeightBack": {
                 "type": "number",
                 "nullable": true
               },
-              "claddingStructureRightEaveHeight": {
+              "claddingEaveHeightRight": {
                 "type": "number",
                 "nullable": true
               },
-              "claddingStructureLeftEaveHeight": {
+              "claddingEaveHeightLeft": {
                 "type": "number",
                 "nullable": true
               },
-              "claddingStructureEaveHeightUnit": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "KG",
-                  "M",
-                  "NOS",
-                  "SQFT",
-                  "SQM",
-                  "KG_PER_SQFT",
-                  "KG_PER_M",
-                  "KG_PER_SQM",
-                  null
-                ]
-              },
-              "claddingStructureExtendedColumnHeight": {
+              "extendedColumnHeight": {
                 "type": "number",
                 "nullable": true
               },
-              "claddingStructureExtendedColumnHeightUnit": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "KG",
-                  "M",
-                  "NOS",
-                  "SQFT",
-                  "SQM",
-                  "KG_PER_SQFT",
-                  "KG_PER_M",
-                  "KG_PER_SQM",
-                  null
-                ]
-              },
-              "claddingStructureExtendedFrameWidth": {
+              "widthOfExtendedFrame": {
                 "type": "number",
                 "nullable": true
               },
-              "claddingStructureExtendedFrameWidthUnit": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "KG",
-                  "M",
-                  "NOS",
-                  "SQFT",
-                  "SQM",
-                  "KG_PER_SQFT",
-                  "KG_PER_M",
-                  "KG_PER_SQM",
-                  null
-                ]
-              },
-              "claddingStructureSideCladdingPurlins": {
+              "noOfSideCladdingPurlin": {
                 "type": "integer",
                 "nullable": true
               },
-              "claddingStructureFaceCladdingPurlins": {
+              "noOfFaceCladdingPurlin": {
                 "type": "integer",
                 "nullable": true
               },
-              "claddingStructureTotalCladdingPurlinLength": {
+              "totalLengthOfCladdingPurlin": {
                 "type": "number",
                 "nullable": true
               },
-              "claddingStructureTotalCladdingPurlinLengthUnit": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "KG",
-                  "M",
-                  "NOS",
-                  "SQFT",
-                  "SQM",
-                  "KG_PER_SQFT",
-                  "KG_PER_M",
-                  "KG_PER_SQM",
-                  null
-                ]
-              },
-              "claddingStructureTotalCladdingPurlinWeight": {
+              "totalWeightofCladdingPurlin": {
                 "type": "number",
                 "nullable": true
               },
-              "claddingStructureTotalCladdingPurlinWeightUnit": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "KG",
-                  "M",
-                  "NOS",
-                  "SQFT",
-                  "SQM",
-                  "KG_PER_SQFT",
-                  "KG_PER_M",
-                  "KG_PER_SQM",
-                  null
-                ]
-              },
-              "claddingStructureCladdingArea": {
+              "claddingAreaWithoutAnyDeductions": {
                 "type": "number",
                 "nullable": true
               },
-              "claddingStructureCladdingAreaUnit": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "KG",
-                  "M",
-                  "NOS",
-                  "SQFT",
-                  "SQM",
-                  "KG_PER_SQFT",
-                  "KG_PER_M",
-                  "KG_PER_SQM",
-                  null
-                ]
-              },
-              "claddingStructureAverageMaterialConsumption": {
+              "averageMaterialConsumption": {
                 "type": "number",
                 "nullable": true
               },
-              "claddingStructureAverageMaterialConsumptionUnit": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "KG",
-                  "M",
-                  "NOS",
-                  "SQFT",
-                  "SQM",
-                  "KG_PER_SQFT",
-                  "KG_PER_M",
-                  "KG_PER_SQM",
-                  null
-                ]
-              },
-              "claddingStructureTotalOpenings": {
+              "totalCladdingOpenings": {
                 "type": "number",
                 "nullable": true
               },
-              "claddingStructureTotalOpeningsUnit": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "KG",
-                  "M",
-                  "NOS",
-                  "SQFT",
-                  "SQM",
-                  "KG_PER_SQFT",
-                  "KG_PER_M",
-                  "KG_PER_SQM",
-                  null
-                ]
-              },
-              "claddingStructureFasciaOpening": {
+              "fasciaOpening": {
                 "type": "number",
                 "nullable": true
-              },
-              "claddingStructureFasciaOpeningUnit": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "KG",
-                  "M",
-                  "NOS",
-                  "SQFT",
-                  "SQM",
-                  "KG_PER_SQFT",
-                  "KG_PER_M",
-                  "KG_PER_SQM",
-                  null
-                ]
-              },
-              "claddingSheetUnit": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "KG",
-                  "M",
-                  "NOS",
-                  "SQFT",
-                  "SQM",
-                  "KG_PER_SQFT",
-                  "KG_PER_M",
-                  "KG_PER_SQM",
-                  null
-                ]
               },
               "claddingSheetQuantity": {
                 "type": "number",
                 "nullable": true
               },
-              "claddingSheetPurchaseQuantity": {
+              "claddingSheetAdditional": {
                 "type": "number",
                 "nullable": true
               },
-              "columnWindBracingsUnit": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "KG",
-                  "M",
-                  "NOS",
-                  "SQFT",
-                  "SQM",
-                  "KG_PER_SQFT",
-                  "KG_PER_M",
-                  "KG_PER_SQM",
-                  null
-                ]
-              },
-              "columnWindBracingsQuantity": {
+              "claddingSheetPurchase": {
                 "type": "number",
                 "nullable": true
               },
-              "claddingSagRodUnit": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "KG",
-                  "M",
-                  "NOS",
-                  "SQFT",
-                  "SQM",
-                  "KG_PER_SQFT",
-                  "KG_PER_M",
-                  "KG_PER_SQM",
-                  null
-                ]
-              },
-              "claddingSagRodQuantity": {
+              "columnWindBracingsAdditional": {
                 "type": "number",
                 "nullable": true
               },
-              "claddingFlangeBraceUnit": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "KG",
-                  "M",
-                  "NOS",
-                  "SQFT",
-                  "SQM",
-                  "KG_PER_SQFT",
-                  "KG_PER_M",
-                  "KG_PER_SQM",
-                  null
-                ]
-              },
-              "claddingFlangeBraceQuantity": {
+              "claddingSagRodAdditional": {
                 "type": "number",
                 "nullable": true
               },
-              "claddingPurlinBoltsUnit": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "KG",
-                  "M",
-                  "NOS",
-                  "SQFT",
-                  "SQM",
-                  "KG_PER_SQFT",
-                  "KG_PER_M",
-                  "KG_PER_SQM",
-                  null
-                ]
+              "claddingFlangeBraceAdditional": {
+                "type": "number",
+                "nullable": true
               },
-              "claddingPurlinBoltsQuantity": {
+              "numberOfCladdingPurlinBoltsAdditional": {
                 "type": "number",
                 "nullable": true
               }
@@ -6979,197 +5002,47 @@
           "canopy": {
             "type": "object",
             "properties": {
-              "structureUnit": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "KG",
-                  "M",
-                  "NOS",
-                  "SQFT",
-                  "SQM",
-                  "KG_PER_SQFT",
-                  "KG_PER_M",
-                  "KG_PER_SQM",
-                  null
-                ]
-              },
-              "structureQuantity": {
+              "canopyStructureQuantity": {
                 "type": "number",
                 "nullable": true
               },
-              "structureCanopyArea": {
+              "canopyArea": {
                 "type": "number",
                 "nullable": true
               },
-              "structureCanopyAreaUnit": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "KG",
-                  "M",
-                  "NOS",
-                  "SQFT",
-                  "SQM",
-                  "KG_PER_SQFT",
-                  "KG_PER_M",
-                  "KG_PER_SQM",
-                  null
-                ]
-              },
-              "purlinUnit": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "KG",
-                  "M",
-                  "NOS",
-                  "SQFT",
-                  "SQM",
-                  "KG_PER_SQFT",
-                  "KG_PER_M",
-                  "KG_PER_SQM",
-                  null
-                ]
-              },
-              "purlinQuantity": {
+              "canopyPurlinQuantity": {
                 "type": "number",
                 "nullable": true
               },
-              "sheetUnit": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "KG",
-                  "M",
-                  "NOS",
-                  "SQFT",
-                  "SQM",
-                  "KG_PER_SQFT",
-                  "KG_PER_M",
-                  "KG_PER_SQM",
-                  null
-                ]
-              },
-              "sheetQuantity": {
+              "canopySheetQuantity": {
                 "type": "number",
                 "nullable": true
               },
-              "sheetPurchaseQuantity": {
+              "canopySheetPurchaseQuantity": {
                 "type": "number",
                 "nullable": true
               },
-              "gutterUnit": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "KG",
-                  "M",
-                  "NOS",
-                  "SQFT",
-                  "SQM",
-                  "KG_PER_SQFT",
-                  "KG_PER_M",
-                  "KG_PER_SQM",
-                  null
-                ]
-              },
-              "gutterQuantity": {
+              "canopyGutterQuantity": {
                 "type": "number",
                 "nullable": true
               },
-              "downTakeUnit": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "KG",
-                  "M",
-                  "NOS",
-                  "SQFT",
-                  "SQM",
-                  "KG_PER_SQFT",
-                  "KG_PER_M",
-                  "KG_PER_SQM",
-                  null
-                ]
-              },
-              "downTakeQuantity": {
+              "canopyDownTakeQuantity": {
                 "type": "number",
                 "nullable": true
               },
-              "sideCoveringUnit": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "KG",
-                  "M",
-                  "NOS",
-                  "SQFT",
-                  "SQM",
-                  "KG_PER_SQFT",
-                  "KG_PER_M",
-                  "KG_PER_SQM",
-                  null
-                ]
-              },
-              "sideCoveringQuantity": {
+              "canopySideCoveringQuantity": {
                 "type": "number",
                 "nullable": true
               },
-              "flashingUnit": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "KG",
-                  "M",
-                  "NOS",
-                  "SQFT",
-                  "SQM",
-                  "KG_PER_SQFT",
-                  "KG_PER_M",
-                  "KG_PER_SQM",
-                  null
-                ]
-              },
-              "flashingQuantity": {
+              "canopyFlashingQuantity": {
                 "type": "number",
                 "nullable": true
               },
-              "purlinBoltsUnit": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "KG",
-                  "M",
-                  "NOS",
-                  "SQFT",
-                  "SQM",
-                  "KG_PER_SQFT",
-                  "KG_PER_M",
-                  "KG_PER_SQM",
-                  null
-                ]
-              },
-              "purlinBoltsQuantity": {
+              "canopyPurlinBoltsQuantity": {
                 "type": "number",
                 "nullable": true
               },
-              "jointBoltsUnit": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "KG",
-                  "M",
-                  "NOS",
-                  "SQFT",
-                  "SQM",
-                  "KG_PER_SQFT",
-                  "KG_PER_M",
-                  "KG_PER_SQM",
-                  null
-                ]
-              },
-              "jointBoltsQuantity": {
+              "canopyJointBoltsQuantity": {
                 "type": "number",
                 "nullable": true
               }
@@ -7178,503 +5051,117 @@
           "accessories": {
             "type": "object",
             "properties": {
-              "doorsCount": {
-                "type": "integer",
-                "nullable": true
-              },
-              "doorsCountUnit": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "KG",
-                  "M",
-                  "NOS",
-                  "SQFT",
-                  "SQM",
-                  "KG_PER_SQFT",
-                  "KG_PER_M",
-                  "KG_PER_SQM",
-                  null
-                ]
-              },
-              "doorsArea": {
+              "doors": {
                 "type": "number",
                 "nullable": true
               },
-              "doorsAreaUnit": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "KG",
-                  "M",
-                  "NOS",
-                  "SQFT",
-                  "SQM",
-                  "KG_PER_SQFT",
-                  "KG_PER_M",
-                  "KG_PER_SQM",
-                  null
-                ]
-              },
-              "windowsCount": {
-                "type": "integer",
-                "nullable": true
-              },
-              "windowsCountUnit": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "KG",
-                  "M",
-                  "NOS",
-                  "SQFT",
-                  "SQM",
-                  "KG_PER_SQFT",
-                  "KG_PER_M",
-                  "KG_PER_SQM",
-                  null
-                ]
-              },
-              "windowsArea": {
+              "doorsQuantity": {
                 "type": "number",
                 "nullable": true
               },
-              "windowsAreaUnit": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "KG",
-                  "M",
-                  "NOS",
-                  "SQFT",
-                  "SQM",
-                  "KG_PER_SQFT",
-                  "KG_PER_M",
-                  "KG_PER_SQM",
-                  null
-                ]
+              "windows": {
+                "type": "number",
+                "nullable": true
               },
-              "fasciaStructureUnit": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "KG",
-                  "M",
-                  "NOS",
-                  "SQFT",
-                  "SQM",
-                  "KG_PER_SQFT",
-                  "KG_PER_M",
-                  "KG_PER_SQM",
-                  null
-                ]
+              "windowsQuantity": {
+                "type": "number",
+                "nullable": true
               },
               "fasciaStructureQuantity": {
                 "type": "number",
                 "nullable": true
               },
-              "fasciaCoveringSheetUnit": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "KG",
-                  "M",
-                  "NOS",
-                  "SQFT",
-                  "SQM",
-                  "KG_PER_SQFT",
-                  "KG_PER_M",
-                  "KG_PER_SQM",
-                  null
-                ]
-              },
-              "fasciaCoveringSheetQuantity": {
+              "fasciaCoveringSheetBoardQuantity": {
                 "type": "number",
                 "nullable": true
-              },
-              "internalPartitionsUnit": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "KG",
-                  "M",
-                  "NOS",
-                  "SQFT",
-                  "SQM",
-                  "KG_PER_SQFT",
-                  "KG_PER_M",
-                  "KG_PER_SQM",
-                  null
-                ]
               },
               "internalPartitionsQuantity": {
                 "type": "number",
                 "nullable": true
               },
-              "ridgeUnit": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "KG",
-                  "M",
-                  "NOS",
-                  "SQFT",
-                  "SQM",
-                  "KG_PER_SQFT",
-                  "KG_PER_M",
-                  "KG_PER_SQM",
-                  null
-                ]
-              },
               "ridgeQuantity": {
                 "type": "number",
                 "nullable": true
-              },
-              "gutterUnit": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "KG",
-                  "M",
-                  "NOS",
-                  "SQFT",
-                  "SQM",
-                  "KG_PER_SQFT",
-                  "KG_PER_M",
-                  "KG_PER_SQM",
-                  null
-                ]
               },
               "gutterQuantity": {
                 "type": "number",
                 "nullable": true
               },
-              "downTakeUnit": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "KG",
-                  "M",
-                  "NOS",
-                  "SQFT",
-                  "SQM",
-                  "KG_PER_SQFT",
-                  "KG_PER_M",
-                  "KG_PER_SQM",
-                  null
-                ]
-              },
-              "downTakeQuantity": {
+              "downtakeQuantity": {
                 "type": "number",
                 "nullable": true
-              },
-              "dripTrimUnit": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "KG",
-                  "M",
-                  "NOS",
-                  "SQFT",
-                  "SQM",
-                  "KG_PER_SQFT",
-                  "KG_PER_M",
-                  "KG_PER_SQM",
-                  null
-                ]
               },
               "dripTrimQuantity": {
                 "type": "number",
                 "nullable": true
               },
-              "gableEndFlashingUnit": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "KG",
-                  "M",
-                  "NOS",
-                  "SQFT",
-                  "SQM",
-                  "KG_PER_SQFT",
-                  "KG_PER_M",
-                  "KG_PER_SQM",
-                  null
-                ]
-              },
               "gableEndFlashingQuantity": {
                 "type": "number",
                 "nullable": true
               },
-              "cornerFlashCount": {
-                "type": "integer",
-                "nullable": true
-              },
-              "cornerFlashCountUnit": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "KG",
-                  "M",
-                  "NOS",
-                  "SQFT",
-                  "SQM",
-                  "KG_PER_SQFT",
-                  "KG_PER_M",
-                  "KG_PER_SQM",
-                  null
-                ]
-              },
-              "cornerFlashLength": {
+              "cornerFlashQuantity": {
                 "type": "number",
                 "nullable": true
               },
-              "cornerFlashLengthUnit": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "KG",
-                  "M",
-                  "NOS",
-                  "SQFT",
-                  "SQM",
-                  "KG_PER_SQFT",
-                  "KG_PER_M",
-                  "KG_PER_SQM",
-                  null
-                ]
-              },
-              "rollingShutterCount": {
-                "type": "integer",
-                "nullable": true
-              },
-              "rollingShutterCountUnit": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "KG",
-                  "M",
-                  "NOS",
-                  "SQFT",
-                  "SQM",
-                  "KG_PER_SQFT",
-                  "KG_PER_M",
-                  "KG_PER_SQM",
-                  null
-                ]
-              },
-              "rollingShutterArea": {
+              "rollingShutter": {
                 "type": "number",
                 "nullable": true
               },
-              "rollingShutterAreaUnit": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "KG",
-                  "M",
-                  "NOS",
-                  "SQFT",
-                  "SQM",
-                  "KG_PER_SQFT",
-                  "KG_PER_M",
-                  "KG_PER_SQM",
-                  null
-                ]
-              },
-              "louversCount": {
-                "type": "integer",
-                "nullable": true
-              },
-              "louversCountUnit": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "KG",
-                  "M",
-                  "NOS",
-                  "SQFT",
-                  "SQM",
-                  "KG_PER_SQFT",
-                  "KG_PER_M",
-                  "KG_PER_SQM",
-                  null
-                ]
-              },
-              "louversArea": {
+              "rollingShutterQuantity": {
                 "type": "number",
                 "nullable": true
               },
-              "louversAreaUnit": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "KG",
-                  "M",
-                  "NOS",
-                  "SQFT",
-                  "SQM",
-                  "KG_PER_SQFT",
-                  "KG_PER_M",
-                  "KG_PER_SQM",
-                  null
-                ]
-              },
-              "skyLightCount": {
-                "type": "integer",
-                "nullable": true
-              },
-              "skyLightCountUnit": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "KG",
-                  "M",
-                  "NOS",
-                  "SQFT",
-                  "SQM",
-                  "KG_PER_SQFT",
-                  "KG_PER_M",
-                  "KG_PER_SQM",
-                  null
-                ]
-              },
-              "skyLightArea": {
+              "louvers": {
                 "type": "number",
                 "nullable": true
               },
-              "skyLightAreaUnit": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "KG",
-                  "M",
-                  "NOS",
-                  "SQFT",
-                  "SQM",
-                  "KG_PER_SQFT",
-                  "KG_PER_M",
-                  "KG_PER_SQM",
-                  null
-                ]
-              },
-              "wallLightCount": {
-                "type": "integer",
-                "nullable": true
-              },
-              "wallLightCountUnit": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "KG",
-                  "M",
-                  "NOS",
-                  "SQFT",
-                  "SQM",
-                  "KG_PER_SQFT",
-                  "KG_PER_M",
-                  "KG_PER_SQM",
-                  null
-                ]
-              },
-              "wallLightArea": {
+              "louversQuantity": {
                 "type": "number",
                 "nullable": true
               },
-              "wallLightAreaUnit": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "KG",
-                  "M",
-                  "NOS",
-                  "SQFT",
-                  "SQM",
-                  "KG_PER_SQFT",
-                  "KG_PER_M",
-                  "KG_PER_SQM",
-                  null
-                ]
-              },
-              "roofInsulationType": {
-                "type": "string",
+              "skyLight": {
+                "type": "number",
                 "nullable": true
               },
-              "roofInsulationUnit": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "KG",
-                  "M",
-                  "NOS",
-                  "SQFT",
-                  "SQM",
-                  "KG_PER_SQFT",
-                  "KG_PER_M",
-                  "KG_PER_SQM",
-                  null
-                ]
+              "skyLightQuantity": {
+                "type": "number",
+                "nullable": true
+              },
+              "wallLight": {
+                "type": "number",
+                "nullable": true
+              },
+              "wallLightQuantity": {
+                "type": "number",
+                "nullable": true
+              },
+              "roofInsulation": {
+                "type": "number",
+                "nullable": true
               },
               "roofInsulationQuantity": {
                 "type": "number",
                 "nullable": true
               },
-              "wallInsulationType": {
-                "type": "string",
+              "wallInsulation": {
+                "type": "number",
                 "nullable": true
-              },
-              "wallInsulationUnit": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "KG",
-                  "M",
-                  "NOS",
-                  "SQFT",
-                  "SQM",
-                  "KG_PER_SQFT",
-                  "KG_PER_M",
-                  "KG_PER_SQM",
-                  null
-                ]
               },
               "wallInsulationQuantity": {
                 "type": "number",
                 "nullable": true
               },
-              "turboVentilatorsUnit": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "KG",
-                  "M",
-                  "NOS",
-                  "SQFT",
-                  "SQM",
-                  "KG_PER_SQFT",
-                  "KG_PER_M",
-                  "KG_PER_SQM",
-                  null
-                ]
+              "turboVentilators": {
+                "type": "number",
+                "nullable": true
               },
               "turboVentilatorsQuantity": {
                 "type": "number",
                 "nullable": true
               },
-              "handrailUnit": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "KG",
-                  "M",
-                  "NOS",
-                  "SQFT",
-                  "SQM",
-                  "KG_PER_SQFT",
-                  "KG_PER_M",
-                  "KG_PER_SQM",
-                  null
-                ]
+              "handrail": {
+                "type": "number",
+                "nullable": true
               },
               "handrailQuantity": {
                 "type": "number",
@@ -7685,134 +5172,48 @@
           "mezzanine": {
             "type": "object",
             "properties": {
-              "structureUnit": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "KG",
-                  "M",
-                  "NOS",
-                  "SQFT",
-                  "SQM",
-                  "KG_PER_SQFT",
-                  "KG_PER_M",
-                  "KG_PER_SQM",
-                  null
-                ]
-              },
-              "structureQuantity": {
+              "mezzanineStructure": {
                 "type": "number",
                 "nullable": true
               },
-              "structureAdditionalQuantity": {
+              "mezzanineStructureQuantity": {
                 "type": "number",
                 "nullable": true
               },
-              "structureTotalArea": {
+              "totalMezzanineArea": {
                 "type": "number",
                 "nullable": true
               },
-              "structureTotalAreaUnit": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "KG",
-                  "M",
-                  "NOS",
-                  "SQFT",
-                  "SQM",
-                  "KG_PER_SQFT",
-                  "KG_PER_M",
-                  "KG_PER_SQM",
-                  null
-                ]
-              },
-              "structureMaterialConsumption": {
+              "totalMezzanineAreaQuantity": {
                 "type": "number",
                 "nullable": true
               },
-              "structureMaterialConsumptionUnit": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "KG",
-                  "M",
-                  "NOS",
-                  "SQFT",
-                  "SQM",
-                  "KG_PER_SQFT",
-                  "KG_PER_M",
-                  "KG_PER_SQM",
-                  null
-                ]
-              },
-              "deckSheetUnit": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "KG",
-                  "M",
-                  "NOS",
-                  "SQFT",
-                  "SQM",
-                  "KG_PER_SQFT",
-                  "KG_PER_M",
-                  "KG_PER_SQM",
-                  null
-                ]
+              "materialConsumption": {
+                "type": "number",
+                "nullable": true
               },
               "deckSheetQuantity": {
                 "type": "number",
                 "nullable": true
               },
-              "deckSheetPurchaseQuantity": {
-                "type": "number",
-                "nullable": true
-              },
-              "deckSheetAdditionalQuantity": {
-                "type": "number",
-                "nullable": true
-              },
-              "shearStudsUnit": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "KG",
-                  "M",
-                  "NOS",
-                  "SQFT",
-                  "SQM",
-                  "KG_PER_SQFT",
-                  "KG_PER_M",
-                  "KG_PER_SQM",
-                  null
-                ]
-              },
               "shearStudsQuantity": {
                 "type": "number",
                 "nullable": true
               },
-              "concreteFlashingUnit": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "KG",
-                  "M",
-                  "NOS",
-                  "SQFT",
-                  "SQM",
-                  "KG_PER_SQFT",
-                  "KG_PER_M",
-                  "KG_PER_SQM",
-                  null
-                ]
-              },
-              "concreteFlashingQuantity": {
+              "shearStudsPurchaseQuantity": {
                 "type": "number",
                 "nullable": true
               },
-              "jointBoltsSpecification": {
-                "type": "string",
+              "shearStudsQuantityAdditional": {
+                "type": "number",
+                "nullable": true
+              },
+              "concreteFlashing": {
+                "type": "number",
+                "nullable": true
+              },
+              "jointBolts": {
+                "type": "number",
                 "nullable": true
               },
               "jointBoltsQuantity": {
@@ -7828,76 +5229,27 @@
           "stair": {
             "type": "object",
             "properties": {
-              "totalAreaUnit": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "KG",
-                  "M",
-                  "NOS",
-                  "SQFT",
-                  "SQM",
-                  "KG_PER_SQFT",
-                  "KG_PER_M",
-                  "KG_PER_SQM",
-                  null
-                ]
-              },
-              "totalAreaQuantity": {
+              "totalAreaOfStairQuantity": {
                 "type": "number",
                 "nullable": true
               },
-              "stringerBeamsSection": {
-                "type": "string",
-                "nullable": true
-              },
-              "stringerBeamsUnit": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "KG",
-                  "M",
-                  "NOS",
-                  "SQFT",
-                  "SQM",
-                  "KG_PER_SQFT",
-                  "KG_PER_M",
-                  "KG_PER_SQM",
-                  null
-                ]
-              },
-              "stringerBeamsQuantity": {
+              "totalWeightofStringerBeamsQuantity": {
                 "type": "number",
                 "nullable": true
               },
-              "stringerBeamsAdditionalQuantity": {
+              "totalWeightofStringerBeamsAdditional": {
                 "type": "number",
                 "nullable": true
               },
-              "stepsSpecification": {
-                "type": "string",
-                "nullable": true
-              },
-              "stepsUnit": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "KG",
-                  "M",
-                  "NOS",
-                  "SQFT",
-                  "SQM",
-                  "KG_PER_SQFT",
-                  "KG_PER_M",
-                  "KG_PER_SQM",
-                  null
-                ]
-              },
-              "stepsQuantity": {
+              "totalWeightofSteps": {
                 "type": "number",
                 "nullable": true
               },
-              "stepsAdditionalQuantity": {
+              "totalWeightofStepsQuantity": {
+                "type": "number",
+                "nullable": true
+              },
+              "totalWeightofStepsAdditional": {
                 "type": "number",
                 "nullable": true
               }
@@ -7906,115 +5258,41 @@
           "additionalBolts": {
             "type": "object",
             "properties": {
-              "jointBolt24mmHsfgUnit": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "KG",
-                  "M",
-                  "NOS",
-                  "SQFT",
-                  "SQM",
-                  "KG_PER_SQFT",
-                  "KG_PER_M",
-                  "KG_PER_SQM",
-                  null
-                ]
-              },
-              "jointBolt24mmHsfgQuantity": {
+              "jointBolt1": {
                 "type": "number",
                 "nullable": true
               },
-              "jointBolt20mmHsfgUnit": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "KG",
-                  "M",
-                  "NOS",
-                  "SQFT",
-                  "SQM",
-                  "KG_PER_SQFT",
-                  "KG_PER_M",
-                  "KG_PER_SQM",
-                  null
-                ]
-              },
-              "jointBolt20mmHsfgQuantity": {
+              "jointBolt1Quantity": {
                 "type": "number",
                 "nullable": true
               },
-              "jointBolt16mmHsfgUnit": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "KG",
-                  "M",
-                  "NOS",
-                  "SQFT",
-                  "SQM",
-                  "KG_PER_SQFT",
-                  "KG_PER_M",
-                  "KG_PER_SQM",
-                  null
-                ]
-              },
-              "jointBolt16mmHsfgQuantity": {
+              "jointBolt2": {
                 "type": "number",
                 "nullable": true
               },
-              "purlinBolt12mmOrdinaryUnit": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "KG",
-                  "M",
-                  "NOS",
-                  "SQFT",
-                  "SQM",
-                  "KG_PER_SQFT",
-                  "KG_PER_M",
-                  "KG_PER_SQM",
-                  null
-                ]
-              },
-              "purlinBolt12mmOrdinaryQuantity": {
+              "jointBolt2Quantity": {
                 "type": "number",
                 "nullable": true
               },
-              "anchorBoltUnit": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "KG",
-                  "M",
-                  "NOS",
-                  "SQFT",
-                  "SQM",
-                  "KG_PER_SQFT",
-                  "KG_PER_M",
-                  "KG_PER_SQM",
-                  null
-                ]
+              "jointBolt3": {
+                "type": "number",
+                "nullable": true
+              },
+              "jointBolt3Quantity": {
+                "type": "number",
+                "nullable": true
+              },
+              "purlinBolt": {
+                "type": "number",
+                "nullable": true
+              },
+              "purlinBoltQuantity": {
+                "type": "number",
+                "nullable": true
               },
               "anchorBoltQuantity": {
                 "type": "number",
                 "nullable": true
-              },
-              "foundationBoltUnit": {
-                "type": "string",
-                "nullable": true,
-                "enum": [
-                  "KG",
-                  "M",
-                  "NOS",
-                  "SQFT",
-                  "SQM",
-                  "KG_PER_SQFT",
-                  "KG_PER_M",
-                  "KG_PER_SQM",
-                  null
-                ]
               },
               "foundationBoltQuantity": {
                 "type": "number",
@@ -11078,6 +8356,343 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/PaginatedAccessoriesResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/jobs/{jobId}/amount": {
+      "post": {
+        "operationId": "upsertAmount",
+        "tags": [
+          "Amount"
+        ],
+        "summary": "Create or replace a job's amount",
+        "description": "Creates or replaces the amount configuration for the specified job.",
+        "security": [
+          {
+            "LocalDevUserId": []
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "example": "job_cuid_123"
+            },
+            "required": true,
+            "name": "jobId",
+            "in": "path"
+          }
+        ],
+        "requestBody": {
+          "description": "Validated amount payload.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateAmountRequest"
+              },
+              "example": {
+                "pebRoof": {
+                  "materialWithPurlinRate": 15,
+                  "materialWithPurlinAmount": 187500,
+                  "roofSheetSpecification": "0.50 MM PPGL",
+                  "roofSheetRate": 12,
+                  "roofSheetAmount": 5403
+                },
+                "mezzanine": {
+                  "structureRate": 16.5,
+                  "structureAmount": 52812.375
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Resource saved.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AmountResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "operationId": "getAmountByJob",
+        "tags": [
+          "Amount"
+        ],
+        "summary": "Get a job's amount",
+        "description": "Returns the amount configuration belonging to the specified job.",
+        "security": [
+          {
+            "LocalDevUserId": []
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "example": "job_cuid_123"
+            },
+            "required": true,
+            "name": "jobId",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Resource returned.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AmountResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "operationId": "updateAmount",
+        "tags": [
+          "Amount"
+        ],
+        "summary": "Update a job's amount",
+        "description": "Partially updates the amount configuration for the specified job.",
+        "security": [
+          {
+            "LocalDevUserId": []
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "example": "job_cuid_123"
+            },
+            "required": true,
+            "name": "jobId",
+            "in": "path"
+          }
+        ],
+        "requestBody": {
+          "description": "Partial amount payload.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateAmountRequest"
+              },
+              "example": {
+                "pebRoof": {
+                  "materialWithPurlinRate": 15,
+                  "materialWithPurlinAmount": 187500,
+                  "roofSheetSpecification": "0.50 MM PPGL",
+                  "roofSheetRate": 12,
+                  "roofSheetAmount": 5403
+                },
+                "mezzanine": {
+                  "structureRate": 16.5,
+                  "structureAmount": 52812.375
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Resource updated.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AmountResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "operationId": "deleteAmount",
+        "tags": [
+          "Amount"
+        ],
+        "summary": "Delete a job's amount",
+        "description": "Deletes the amount configuration for the specified job.",
+        "security": [
+          {
+            "LocalDevUserId": []
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "example": "job_cuid_123"
+            },
+            "required": true,
+            "name": "jobId",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Resource deleted. No response body is returned."
+          },
+          "400": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/amounts": {
+      "get": {
+        "operationId": "listAmounts",
+        "tags": [
+          "Amount"
+        ],
+        "summary": "List amounts",
+        "description": "Returns a paginated list of amounts.",
+        "security": [
+          {
+            "LocalDevUserId": []
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "exclusiveMinimum": true,
+              "default": 1
+            },
+            "required": false,
+            "name": "page",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "exclusiveMinimum": true,
+              "maximum": 100,
+              "default": 10
+            },
+            "required": false,
+            "name": "pageSize",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Paginated resource list returned.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedAmountResponse"
                 }
               }
             }

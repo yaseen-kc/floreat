@@ -28,7 +28,6 @@ import {
   PartitionThickness,
   InsulationType,
   TurboVentilatorDiameter,
-  AccessoryOpeningKind,
   PaintType,
   PurlinsGirtsFinish,
   PurlinsGirtsPaint,
@@ -37,8 +36,9 @@ import {
   RoofJointId,
   MezzanineJointId,
   FoundationBoltJointId,
-  QuantityUnit,
   AmountUnit,
+  MezzanineFloorCode,
+  CanopyCode,
 } from '../generated/prisma/client.js'
 
 async function main() {
@@ -286,7 +286,7 @@ async function main() {
       // Full: multiple floors + extensions
       floors: [
         {
-          code: 'MZ-1', floor: MezzanineFloorLevel.FLOOR_1, type: MezzanineType.DECK_SHEET,
+          code: MezzanineFloorCode.MEZ_1, floor: MezzanineFloorLevel.FLOOR_1, type: MezzanineType.DECK_SHEET,
           heightFrom: MezzanineHeightFrom.GROUND,
           thicknessMm: 150.0, lengthM: 36.0, widthM: 18.0, heightM: 4.5, materialConsumptionKgPerSqft: 12.5,
           beamsMidPrimary: 6, beamsEndPrimary: 2, beamsSecondary: 14,
@@ -294,7 +294,7 @@ async function main() {
           internalColumnsMidPrimary: 3, internalColumnsEndPrimary: 1,
         },
         {
-          code: 'MZ-2', floor: MezzanineFloorLevel.FLOOR_2, type: MezzanineType.RCC_SLAB,
+          code: MezzanineFloorCode.MEZ_2, floor: MezzanineFloorLevel.FLOOR_2, type: MezzanineType.RCC_SLAB,
           heightFrom: MezzanineHeightFrom.FIRST_FLOOR,
           thicknessMm: 175.0, lengthM: 36.0, widthM: 18.0, heightM: 4.0, materialConsumptionKgPerSqft: 14.0,
           beamsMidPrimary: 6, beamsEndPrimary: 2, beamsSecondary: 16,
@@ -318,7 +318,7 @@ async function main() {
       // Floors only, no extensions
       floors: [
         {
-          code: 'MZ-1', floor: MezzanineFloorLevel.FLOOR_1, type: MezzanineType.PANEL,
+          code: MezzanineFloorCode.MEZ_1, floor: MezzanineFloorLevel.FLOOR_1, type: MezzanineType.PANEL,
           heightFrom: MezzanineHeightFrom.GROUND,
           thicknessMm: 100.0, lengthM: 30.0, widthM: 15.0, heightM: 4.0, materialConsumptionKgPerSqft: 10.0,
           beamsMidPrimary: 5, beamsEndPrimary: 2, beamsSecondary: 10,
@@ -332,7 +332,7 @@ async function main() {
       // Minimal: single floor, required fields only
       floors: [
         {
-          code: 'MZ-1', floor: MezzanineFloorLevel.FLOOR_1, type: MezzanineType.BOARD,
+          code: MezzanineFloorCode.MEZ_1, floor: MezzanineFloorLevel.FLOOR_1, type: MezzanineType.BOARD,
           heightFrom: MezzanineHeightFrom.GROUND,
           thicknessMm: 80.0, lengthM: 40.0, widthM: 20.0, heightM: 5.0, materialConsumptionKgPerSqft: 8.0,
           beamsMidPrimary: 4, beamsEndPrimary: 2, beamsSecondary: 8,
@@ -362,14 +362,14 @@ async function main() {
       // Full: multiple items + all optional sections
       canopies: [
         {
-          code: 'CANOPY-1', heightFrom: CanopyHeightFrom.GROUND,
+          code: CanopyCode.CANOPY_1, heightFrom: CanopyHeightFrom.GROUND,
           length: 6.0, width: 3.0, height: 3.5, materialConsumptionKgPerSqft: 9.5,
           numberOfBeams: 4, numberOfPurlins: 6, purlinDepth: 150.0, unitWeightOfPurlin: 5.2,
           canopySheet: CanopySheetType.PPGL, sheetThick: 0.5, canopySideCoveringHeight: 1.2,
           gutter: true, downTake: true, flashing: true,
         },
         {
-          code: 'CANOPY-2', heightFrom: CanopyHeightFrom.FF,
+          code: CanopyCode.CANOPY_2, heightFrom: CanopyHeightFrom.FF,
           length: 4.5, width: 2.5, height: 3.0, materialConsumptionKgPerSqft: 8.0,
           numberOfBeams: 3, numberOfPurlins: 5, purlinDepth: 120.0, unitWeightOfPurlin: 4.5,
           canopySheet: CanopySheetType.PUFF, sheetThick: 40.0, canopySideCoveringHeight: 1.0,
@@ -382,7 +382,7 @@ async function main() {
       // Mid: dimensions + members + covering, no accessories
       canopies: [
         {
-          code: 'CANOPY-1', heightFrom: CanopyHeightFrom.SF,
+          code: CanopyCode.CANOPY_1, heightFrom: CanopyHeightFrom.SF,
           length: 5.0, width: 2.8, height: 3.2, materialConsumptionKgPerSqft: 8.5,
           numberOfBeams: 3, numberOfPurlins: 4, purlinDepth: 130.0, unitWeightOfPurlin: 4.8,
           canopySheet: CanopySheetType.NCGL, sheetThick: 0.47,
@@ -394,7 +394,7 @@ async function main() {
       // Minimal: dimensions only
       canopies: [
         {
-          code: 'CANOPY-1', heightFrom: CanopyHeightFrom.GROUND,
+          code: CanopyCode.CANOPY_1, heightFrom: CanopyHeightFrom.GROUND,
           length: 3.5, width: 2.0, height: 2.8,
         },
       ],
@@ -541,12 +541,7 @@ async function main() {
         { length: 6.0, width: 0.6, nos: 8, quantity: 8 },
         { length: 4.5, width: 0.5, nos: 4, quantity: 4 },
       ],
-      openings: [
-        { kind: AccessoryOpeningKind.ROLLING_SHUTTER, length: 4.0, width: 4.0, nos: 2, quantity: 2 },
-        { kind: AccessoryOpeningKind.LOUVER, length: 1.2, width: 0.6, nos: 8, quantity: 8 },
-        { kind: AccessoryOpeningKind.SKY_LIGHT, length: 3.0, width: 1.2, nos: 6, quantity: 6 },
-        { kind: AccessoryOpeningKind.WALL_LIGHT, length: 1.5, width: 0.9, nos: 10, quantity: 10 },
-      ],
+
     },
     {
       jobId: 'seed_job_2',
@@ -580,9 +575,7 @@ async function main() {
       windows: [
         { height: 1.5, width: 1.8, nos: 4, quantity: 4 },
       ],
-      openings: [
-        { kind: AccessoryOpeningKind.ROLLING_SHUTTER, length: 3.5, width: 3.5, nos: 1, quantity: 1 },
-      ],
+
     },
     {
       jobId: 'seed_job_4',
@@ -605,7 +598,7 @@ async function main() {
     },
   ]
 
-  for (const { jobId, doors = [], windows = [], foldedPlates = [], openings = [], ...data } of accessories) {
+  for (const { jobId, doors = [], windows = [], foldedPlates = [], ...data } of accessories) {
     await prisma.accessories.upsert({
       where: { jobId },
       create: {
@@ -614,14 +607,12 @@ async function main() {
         doors: { createMany: { data: doors } },
         windows: { createMany: { data: windows } },
         foldedPlates: { createMany: { data: foldedPlates } },
-        openings: { createMany: { data: openings } },
       },
       update: {
         ...data,
         doors: { deleteMany: {}, createMany: { data: doors } },
         windows: { deleteMany: {}, createMany: { data: windows } },
         foldedPlates: { deleteMany: {}, createMany: { data: foldedPlates } },
-        openings: { deleteMany: {}, createMany: { data: openings } },
       },
     })
   }
@@ -769,80 +760,80 @@ async function main() {
       // Full: every category populated from the reference JSON.
       pebRoof: {
         quantityPebRoofValue: true,
-        materialWithPurlinUnit: QuantityUnit.KG_PER_SQFT,
+        
         materialWithPurlinQuantity: 0.48,
         raftersAndColumnsSpecification: 'FE 345',
-        raftersAndColumnsUnit: QuantityUnit.KG,
+        
         raftersAndColumnsQuantity: 6199,
         raftersAndColumnsAdditionalQuantity: 456,
         raftersAndColumnsBuildingLength: 30,
-        raftersAndColumnsBuildingLengthUnit: QuantityUnit.M,
+        
         raftersAndColumnsInclinedLengthOneHalf: 7.68,
-        raftersAndColumnsInclinedLengthUnit: QuantityUnit.M,
+        
         raftersAndColumnsRoofArea: 4959,
-        raftersAndColumnsRoofAreaUnit: QuantityUnit.SQFT,
+        
         raftersAndColumnsMaterialConsumption: 1.25,
-        raftersAndColumnsMaterialConsumptionUnit: QuantityUnit.KG_PER_SQFT,
+        
         roofPurlinesValue: 89,
         roofPurlinsSpecification: 'Z/C PURLIN 150 MM DEPTH',
-        roofPurlinsUnit: QuantityUnit.KG,
+        
         roofPurlinsQuantity: 27672,
         roofPurlinsAdditionalQuantity: 565,
         roofPurlinsSinglePurlinLength: 6.4,
-        roofPurlinsSinglePurlinLengthUnit: QuantityUnit.M,
+        
         roofPurlinsPurlinsPerFrame: 14,
         roofPurlinsTotalPurlinBays: 5,
         roofPurlinsPurlinUnitWeight: 4.72,
-        roofPurlinsPurlinUnitWeightUnit: QuantityUnit.KG_PER_M,
+        
         roofPurlinsExtendedFramePurlins: 10,
         roofPurlinsExtendedPurlinBays: 89,
         roofSheetSpecification: '30MM THICK PUFF SHEET',
-        roofSheetUnit: QuantityUnit.SQM,
+        
         roofSheetQuantity: 6563,
         roofSheetPurchaseQuantity: 7219,
         roofSheetAdditionalQuantity: 456,
         roofSheetExtendedRoofWidth: 12.07,
-        roofSheetExtendedRoofWidthUnit: QuantityUnit.M,
+        
         roofSheetExtendedRoofLength: 534,
-        roofSheetExtendedRoofLengthUnit: QuantityUnit.M,
+        
         roofSheetRoofAreaDeductions: 5,
-        roofSheetRoofAreaDeductionsUnit: QuantityUnit.SQM,
+        
         roofSheetPolycarbonateAreaDeduction: 336,
-        roofSheetPolycarbonateAreaDeductionUnit: QuantityUnit.SQM,
-        polycarbonateSheetUnit: QuantityUnit.SQM,
+        
+        
         polycarbonateSheetQuantity: 336,
         polycarbonateSheetPurchaseQuantity: 0,
         polycarbonateSheetAdditionalQuantity: 4564,
         polycarbonateSheetSheetLength: 6,
-        polycarbonateSheetSheetLengthUnit: QuantityUnit.M,
+        
         polycarbonateSheetSheetWidth: 7,
-        polycarbonateSheetSheetWidthUnit: QuantityUnit.M,
+        
         polycarbonateSheetNumberOfSheets: 8,
-        roofWindBracingsUnit: QuantityUnit.KG,
+        
         roofWindBracingsQuantity: 190,
         roofWindBracingsAdditionalQuantity: 5432,
         roofWindBracingsSingleBracingLength: 9.64,
-        roofWindBracingsSingleBracingLengthUnit: QuantityUnit.M,
+        
         roofWindBracingsTotalBracings: 8,
         roofWindBracingsUnitWeight: 2.46,
-        roofWindBracingsUnitWeightUnit: QuantityUnit.KG_PER_M,
+        
         roofSagRodValue:8.500,
-        roofSagRodUnit: QuantityUnit.KG,
+        
         roofSagRodQuantity: 726,
         roofSagRodAdditionalQuantity: 6756,
         roofSagRodSingleSagRodLength: 1.5,
-        roofSagRodSingleSagRodLengthUnit: QuantityUnit.M,
+        
         roofSagRodSagRodsPerFrame: 12,
         roofSagRodSagRodBays: 5,
         roofSagRodExtendedFrameSagRods: 9,
         roofSagRodExtendedSagRodBays: 89,
         roofSagRodUnitWeight: 0.89,
-        roofSagRodUnitWeightUnit: QuantityUnit.KG_PER_M,
-        roofFlangeBraceUnit: QuantityUnit.KG,
+        
+        
         roofFlangeBraceQuantity: 3308,
         roofFlangeBraceAdditionalQuantity: 767,
         roofFlangeBraceMidFrameBraceLength: 1.5,
-        roofFlangeBraceMidFrameBraceLengthUnit: QuantityUnit.M,
+        
         roofFlangeBraceMidFrameBraces: 28,
         roofFlangeBraceEndFrameBraces: 14,
         roofFlangeBraceMidFrames: 4,
@@ -852,9 +843,9 @@ async function main() {
         roofFlangeBraceExtendedMidFrames: 45,
         roofFlangeBraceExtendedEndFrames: 45,
         roofFlangeBraceEndFrameBraceLength: 0.5,
-        roofFlangeBraceEndFrameBraceLengthUnit: QuantityUnit.M,
+        
         purlinBoltsSpecification: '12 MM DIA ORDINARY BOLTS',
-        purlinBoltsUnit: QuantityUnit.NOS,
+        
         purlinBoltsQuantity: 13155,
         purlinBoltsPurlinJointsPerFrame: 14,
         purlinBoltsTotalFrames: 6,
@@ -862,176 +853,168 @@ async function main() {
         purlinBoltsExtendedFrames: 90,
         purlinBoltsBoltsPerPurlinJoint: 14,
         roofJointBoltsSpecification: '16 MM DIA HSFG BOLTS',
-        roofJointBoltsUnit: QuantityUnit.NOS,
+        
         roofJointBoltsQuantity: 1776,
         foundationBoltsSpecification: '20 MM DIA FOUNDATION BOLTS',
-        foundationBoltsUnit: QuantityUnit.NOS,
+        
         foundationBoltsQuantity: 848,
         anchorBoltsSpecification: '20 MM DIA ANCHOR BOLTS',
-        anchorBoltsUnit: QuantityUnit.NOS,
+        
         anchorBoltsQuantity: 0,
       },
       cladding: {
-        claddingStructureUnit: QuantityUnit.KG,
+        
         claddingStructureQuantity: 326,
         claddingStructureAdditionalQuantity: 3677,
         claddingStructureFrontEaveHeight: 3.25,
         claddingStructureBackEaveHeight: 3.25,
         claddingStructureRightEaveHeight: 3.25,
         claddingStructureLeftEaveHeight: 3.25,
-        claddingStructureEaveHeightUnit: QuantityUnit.M,
+        
         claddingStructureExtendedColumnHeight: 1.98,
-        claddingStructureExtendedColumnHeightUnit: QuantityUnit.M,
+        
         claddingStructureExtendedFrameWidth: 12,
-        claddingStructureExtendedFrameWidthUnit: QuantityUnit.M,
+        
         claddingStructureSideCladdingPurlins: 2,
         claddingStructureFaceCladdingPurlins: 4,
         claddingStructureTotalCladdingPurlinLength: 242,
-        claddingStructureTotalCladdingPurlinLengthUnit: QuantityUnit.M,
+        
         claddingStructureTotalCladdingPurlinWeight: 1140,
-        claddingStructureTotalCladdingPurlinWeightUnit: QuantityUnit.KG,
+        
         claddingStructureCladdingArea: 367,
-        claddingStructureCladdingAreaUnit: QuantityUnit.SQM,
+        
         claddingStructureAverageMaterialConsumption: 0.29,
-        claddingStructureAverageMaterialConsumptionUnit: QuantityUnit.KG_PER_SQM,
+        
         claddingStructureTotalOpenings: 210,
-        claddingStructureTotalOpeningsUnit: QuantityUnit.SQM,
+        
         claddingStructureFasciaOpening: 52,
-        claddingStructureFasciaOpeningUnit: QuantityUnit.SQM,
-        claddingSheetUnit: QuantityUnit.SQM,
+        
+        
         claddingSheetQuantity: 105,
         claddingSheetPurchaseQuantity: 115,
-        columnWindBracingsUnit: QuantityUnit.KG,
+        
         columnWindBracingsQuantity: 162,
-        claddingSagRodUnit: QuantityUnit.KG,
+        
         claddingSagRodQuantity: 19,
-        claddingFlangeBraceUnit: QuantityUnit.KG,
+        
         claddingFlangeBraceQuantity: 163,
-        claddingPurlinBoltsUnit: QuantityUnit.NOS,
+        
         claddingPurlinBoltsQuantity: 208,
       },
       canopy: {
-        structureUnit: QuantityUnit.KG,
+        
         structureQuantity: 404,
         structureCanopyArea: 322.8,
-        structureCanopyAreaUnit: QuantityUnit.SQFT,
-        purlinUnit: QuantityUnit.KG,
+        
+        
         purlinQuantity: 229.392,
-        sheetUnit: QuantityUnit.SQM,
+        
         sheetQuantity: 30,
         sheetPurchaseQuantity: 33,
-        gutterUnit: QuantityUnit.M,
+        
         gutterQuantity: 15,
-        downTakeUnit: QuantityUnit.M,
+        
         downTakeQuantity: 14,
-        sideCoveringUnit: QuantityUnit.SQM,
+        
         sideCoveringQuantity: 9.5,
-        flashingUnit: QuantityUnit.M,
+        
         flashingQuantity: 19,
-        purlinBoltsUnit: QuantityUnit.NOS,
+        
         purlinBoltsQuantity: 120,
-        jointBoltsUnit: QuantityUnit.NOS,
+        
         jointBoltsQuantity: 32,
       },
       accessories: {
         doorsCount: 10,
-        doorsCountUnit: QuantityUnit.NOS,
+        
         doorsArea: 21,
-        doorsAreaUnit: QuantityUnit.SQM,
+        
         windowsCount: 10,
-        windowsCountUnit: QuantityUnit.NOS,
+        
         windowsArea: 18,
-        windowsAreaUnit: QuantityUnit.SQM,
-        fasciaStructureUnit: QuantityUnit.KG,
+        
+        
         fasciaStructureQuantity: 556.5072,
-        fasciaCoveringSheetUnit: QuantityUnit.SQM,
+        
         fasciaCoveringSheetQuantity: 51.72,
-        internalPartitionsUnit: QuantityUnit.SQM,
+        
         internalPartitionsQuantity: 900,
-        ridgeUnit: QuantityUnit.M,
+        
         ridgeQuantity: 442,
-        gutterUnit: QuantityUnit.M,
+        
         gutterQuantity: 306,
-        downTakeUnit: QuantityUnit.M,
+        
         downTakeQuantity: 262.87,
-        dripTrimUnit: QuantityUnit.M,
+        
         dripTrimQuantity: 546,
-        gableEndFlashingUnit: QuantityUnit.M,
+        
         gableEndFlashingQuantity: 101,
-        cornerFlashCountUnit: QuantityUnit.NOS,
+        
         cornerFlashLength: 33,
-        cornerFlashLengthUnit: QuantityUnit.M,
+        
         rollingShutterCount: 1,
-        rollingShutterCountUnit: QuantityUnit.NOS,
+        
         rollingShutterArea: 100,
-        rollingShutterAreaUnit: QuantityUnit.SQM,
+        
         louversCount: 1,
-        louversCountUnit: QuantityUnit.NOS,
+        
         louversArea: 100,
-        louversAreaUnit: QuantityUnit.SQM,
+        
         skyLightCount: 1,
-        skyLightCountUnit: QuantityUnit.NOS,
+        
         skyLightArea: 100,
-        skyLightAreaUnit: QuantityUnit.SQM,
+        
         wallLightCount: 1,
-        wallLightCountUnit: QuantityUnit.NOS,
+        
         wallLightArea: 100,
-        wallLightAreaUnit: QuantityUnit.SQM,
+        
         roofInsulationType: 'XLPE',
-        roofInsulationUnit: QuantityUnit.SQM,
+        
         roofInsulationQuantity: 6563,
         wallInsulationType: 'XLPE',
-        wallInsulationUnit: QuantityUnit.SQM,
+        
         wallInsulationQuantity: 105,
-        turboVentilatorsUnit: QuantityUnit.NOS,
+        
         turboVentilatorsQuantity: 10,
-        handrailUnit: QuantityUnit.KG,
+        
         handrailQuantity: 250,
       },
       mezzanine: {
-        structureUnit: QuantityUnit.KG,
+        
         structureQuantity: 6455,
         structureAdditionalQuantity: 4756,
         structureTotalArea: 171,
-        structureTotalAreaUnit: QuantityUnit.SQM,
+        
         structureMaterialConsumption: 4,
-        structureMaterialConsumptionUnit: QuantityUnit.KG_PER_SQFT,
-        deckSheetUnit: QuantityUnit.SQM,
+        
+        
         deckSheetQuantity: 171,
         deckSheetPurchaseQuantity: 189,
         deckSheetAdditionalQuantity: 46,
-        shearStudsUnit: QuantityUnit.NOS,
+        
         shearStudsQuantity: 900,
-        concreteFlashingUnit: QuantityUnit.M,
+        
         concreteFlashingQuantity: 84,
         jointBoltsSpecification: '16 MM DIA HSFG BOLTS',
         jointBoltsQuantity: 392,
         // foundationBolts source is "NA" → left null.
       },
       stair: {
-        totalAreaUnit: QuantityUnit.SQM,
+        
         totalAreaQuantity: 5,
         stringerBeamsSection: 'HR SECTION',
-        stringerBeamsUnit: QuantityUnit.KG,
+        
         stringerBeamsQuantity: 484,
         stringerBeamsAdditionalQuantity: 456,
         stepsSpecification: '6MM CHQ PLATE',
-        stepsUnit: QuantityUnit.KG,
+        
         stepsQuantity: 243,
         stepsAdditionalQuantity: 457,
       },
-      additionalBolts: {
-        jointBolt24mmHsfgUnit: QuantityUnit.NOS,
-        jointBolt24mmHsfgQuantity: 10,
-        jointBolt20mmHsfgUnit: QuantityUnit.NOS,
-        jointBolt20mmHsfgQuantity: 11,
-        jointBolt16mmHsfgUnit: QuantityUnit.NOS,
-        jointBolt16mmHsfgQuantity: 12,
-        purlinBolt12mmOrdinaryUnit: QuantityUnit.NOS,
-        purlinBolt12mmOrdinaryQuantity: 13,
-        anchorBoltUnit: QuantityUnit.NOS,
+      additionalBolts: {        jointBolt24mmHsfgQuantity: 10,        jointBolt20mmHsfgQuantity: 11,        jointBolt16mmHsfgQuantity: 12,        purlinBolt12mmOrdinaryQuantity: 13,
+        
         anchorBoltQuantity: 14,
-        foundationBoltUnit: QuantityUnit.NOS,
+        
         foundationBoltQuantity: 15,
       },
     },
@@ -1039,40 +1022,36 @@ async function main() {
       jobId: 'seed_job_3',
       // Partial: peb roof + cladding + mezzanine only.
       pebRoof: {
-        materialWithPurlinUnit: QuantityUnit.KG_PER_SQFT,
+        
         materialWithPurlinQuantity: 0.52,
         raftersAndColumnsSpecification: 'FE 250',
-        raftersAndColumnsUnit: QuantityUnit.KG,
+        
         raftersAndColumnsQuantity: 5120,
         roofSheetSpecification: '40MM THICK PUFF SHEET',
-        roofSheetUnit: QuantityUnit.SQM,
+        
         roofSheetQuantity: 4200,
         roofSheetPurchaseQuantity: 4620,
       },
       cladding: {
-        claddingStructureUnit: QuantityUnit.KG,
+        
         claddingStructureQuantity: 280,
-        claddingSheetUnit: QuantityUnit.SQM,
+        
         claddingSheetQuantity: 90,
         claddingSheetPurchaseQuantity: 99,
       },
       mezzanine: {
-        structureUnit: QuantityUnit.KG,
+        
         structureQuantity: 5200,
         structureTotalArea: 150,
-        structureTotalAreaUnit: QuantityUnit.SQM,
-        deckSheetUnit: QuantityUnit.SQM,
+        
+        
         deckSheetQuantity: 150,
       },
     },
     {
       jobId: 'seed_job_5',
       // Minimal: additional bolts only.
-      additionalBolts: {
-        jointBolt16mmHsfgUnit: QuantityUnit.NOS,
-        jointBolt16mmHsfgQuantity: 24,
-        purlinBolt12mmOrdinaryUnit: QuantityUnit.NOS,
-        purlinBolt12mmOrdinaryQuantity: 48,
+      additionalBolts: {        jointBolt16mmHsfgQuantity: 24,        purlinBolt12mmOrdinaryQuantity: 48,
       },
     },
   ]

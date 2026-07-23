@@ -39,8 +39,6 @@ export const insulationTypeEnum = z.enum(['XLPE', 'ROCK_WOOL', 'GLASS_WOOL', 'AL
 /** Turbo ventilator diameter. */
 export const turboVentilatorDiameterEnum = z.enum(['IN_6', 'FT_1', 'IN_18', 'FT_2'])
 
-/** Kind of a wall/roof opening line item. */
-export const accessoryOpeningKindEnum = z.enum(['ROLLING_SHUTTER', 'LOUVER', 'SKY_LIGHT', 'WALL_LIGHT'])
 
 /** Paint/primer product type for frames. */
 export const paintTypeEnum = z.enum(['EPOXY_PRIMER', 'EPOXY_PAINT'])
@@ -82,14 +80,6 @@ export const accessoryFoldedPlateSchema = z.object({
   quantity: z.number().nonnegative().optional(),
 })
 
-/** An opening line item — `kind` is required (matches the non-null DB column). */
-export const accessoryOpeningSchema = z.object({
-  kind: accessoryOpeningKindEnum,
-  length: z.number().positive().optional(),
-  width: z.number().positive().optional(),
-  nos: z.number().int().nonnegative().optional(),
-  quantity: z.number().nonnegative().optional(),
-})
 
 /** Schema for creating/upserting accessories — all scalar/enum fields optional, plus inline arrays. */
 export const createAccessoriesSchema = z.object({
@@ -141,6 +131,27 @@ export const createAccessoriesSchema = z.object({
   partitionThickness: partitionThicknessEnum.optional(),
   partitionQuantity: z.number().int().nonnegative().optional(),
 
+  // ── Openings ──
+  rollingShutterLength: z.number().positive().optional(),
+  rollingShutterWidth: z.number().positive().optional(),
+  rollingShutterNos: z.number().int().nonnegative().optional(),
+  rollingShutterQuantity: z.number().nonnegative().optional(),
+
+  louverLength: z.number().positive().optional(),
+  louverWidth: z.number().positive().optional(),
+  louverNos: z.number().int().nonnegative().optional(),
+  louverQuantity: z.number().nonnegative().optional(),
+
+  skyLightLength: z.number().positive().optional(),
+  skyLightWidth: z.number().positive().optional(),
+  skyLightNos: z.number().int().nonnegative().optional(),
+  skyLightQuantity: z.number().nonnegative().optional(),
+
+  wallLightLength: z.number().positive().optional(),
+  wallLightWidth: z.number().positive().optional(),
+  wallLightNos: z.number().int().nonnegative().optional(),
+  wallLightQuantity: z.number().nonnegative().optional(),
+
   // ── Insulation ──
   roofInsulationType: insulationTypeEnum.optional(),
   wallInsulationType: insulationTypeEnum.optional(),
@@ -175,7 +186,6 @@ export const createAccessoriesSchema = z.object({
   doors: z.array(accessoryDoorSchema).optional(),
   windows: z.array(accessoryWindowSchema).optional(),
   foldedPlates: z.array(accessoryFoldedPlateSchema).optional(),
-  openings: z.array(accessoryOpeningSchema).optional(),
 })
 
 /** Schema for updating accessories — all fields optional (partial update). */

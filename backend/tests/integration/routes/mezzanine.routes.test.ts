@@ -64,7 +64,7 @@ describe('Mezzanine routes integration', () => {
     it('rejects an invalid floor code', async () => {
       const res = await app.inject({
         method: 'POST', url: '/api/jobs/job-1/mezzanine',
-        payload: { floors: [makeMezzanineFloor({ code: 'MEZ-0' })] },
+        payload: { floors: [makeMezzanineFloor({ code: 'MEZ-0' as any })] },
       })
       expect(res.statusCode).toBe(400)
     })

@@ -17,8 +17,12 @@ export const mezzanineFloorLevelEnum = z.enum([
 /** Valid reference levels a mezzanine height is measured from. */
 export const mezzanineHeightFromEnum = z.enum(['GROUND', 'FIRST_FLOOR', 'FLOOR_2', 'FLOOR_3', 'FLOOR_4', 'FLOOR_5'])
 
-/** Business code identifier for a floor, e.g. "MEZ-1". */
-export const mezzanineCode = z.string().regex(/^MEZ-[1-9][0-9]*$/, 'code must match MEZ-<n> (e.g. MEZ-1)')
+/** Business code identifier for a floor, e.g. "MEZ-1" to "MEZ-12". */
+export const mezzanineFloorCodeEnum = z.enum([
+  'MEZ-1', 'MEZ-2', 'MEZ-3', 'MEZ-4', 'MEZ-5', 'MEZ-6',
+  'MEZ-7', 'MEZ-8', 'MEZ-9', 'MEZ-10', 'MEZ-11', 'MEZ-12'
+])
+export const mezzanineCode = mezzanineFloorCodeEnum
 
 /** Schema for an individual mezzanine floor — all fields optional. */
 export const mezzanineFloorSchema = z.object({

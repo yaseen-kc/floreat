@@ -92,6 +92,8 @@ describe('Quantity routes integration', () => {
     it('updates a quantity', async () => {
       prismaMock.quantity.update.mockResolvedValue(makeQuantity({ jobId: 'job-1' }) as any)
       const res = await app.inject({
+        method: 'PUT',
+        url: '/api/jobs/job-1/quantity',
         payload: { stair: { totalWeightofStepsQuantity: 12 } },
       })
       expect(res.statusCode).toBe(200)

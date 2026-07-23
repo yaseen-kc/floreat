@@ -111,22 +111,28 @@ const withWindowQuantities = (items: any[]) =>
   items.map((w) => ({ ...w, quantity: deriveLineItemQuantity(w.height, w.width, w.nos) ?? null }))
 const withFoldedPlateQuantities = (items: any[]) =>
   items.map((f) => ({ ...f, quantity: deriveLineItemQuantity(f.length, f.width, f.nos) ?? null }))
-const withOpeningQuantities = (items: any[]) =>
-  items.map((o) => ({ ...o, quantity: deriveLineItemQuantity(o.length, o.width, o.nos) ?? null }))
+
 
 /** Creates or updates accessories for a given job. Line-item arrays are replaced entirely on update. */
 export async function upsertAccessories(jobId: string, data: CreateAccessoriesInput) {
-  const { doors, windows, foldedPlates, openings, ...rest } = data
+  const { doors, windows, foldedPlates, ...rest } = data
   const doorData = withDoorQuantities(doors ?? [])
   const windowData = withWindowQuantities(windows ?? [])
   const foldedPlateData = withFoldedPlateQuantities(foldedPlates ?? [])
-  const openingData = withOpeningQuantities(openings ?? [])
+
 
   // Quantity fields are server-derived by default: overwrite whatever the client
   // sent with values from the job's roof — except any field flagged manual, whose
   // client value is trusted and kept as-is.
   const derived = await deriveQuantitiesFromRoof(jobId)
-  const scalars = { ...rest, ...resolveWriteQuantities(derived, rest) }
+  const scalars = {
+    ...rest,
+    ...resolveWriteQuantities(derived, rest),
+    rollingShutterQuantity: deriveLineItemQuantity(rest.rollingShutterLength, rest.rollingShutterWidth, rest.rollingShutterNos) ?? null,
+    louverQuantity: deriveLineItemQuantity(rest.louverLength, rest.louverWidth, rest.louverNos) ?? null,
+    skyLightQuantity: deriveLineItemQuantity(rest.skyLightLength, rest.skyLightWidth, rest.skyLightNos) ?? null,
+    wallLightQuantity: deriveLineItemQuantity(rest.wallLightLength, rest.wallLightWidth, rest.wallLightNos) ?? null,
+  }
 
   return prisma.accessories.upsert({
     where: { jobId },
@@ -136,16 +142,14 @@ export async function upsertAccessories(jobId: string, data: CreateAccessoriesIn
       doors: { createMany: { data: doorData } },
       windows: { createMany: { data: windowData } },
       foldedPlates: { createMany: { data: foldedPlateData } },
-      openings: { createMany: { data: openingData } },
     },
     update: {
       ...scalars,
       doors: { deleteMany: {}, createMany: { data: doorData } },
       windows: { deleteMany: {}, createMany: { data: windowData } },
       foldedPlates: { deleteMany: {}, createMany: { data: foldedPlateData } },
-      openings: { deleteMany: {}, createMany: { data: openingData } },
     },
-    include: { doors: true, windows: true, foldedPlates: true, openings: true },
+    include: { doors: true, windows: true, foldedPlates: true },
   })
 }
 
@@ -158,7 +162,7 @@ export async function getAccessories(userId: string, page: number, pageSize: num
       skip: (page - 1) * pageSize,
       take: pageSize,
       orderBy: { createdAt: 'desc' },
-      include: { doors: true, windows: true, foldedPlates: true, openings: true },
+      include: { doors: true, windows: true, foldedPlates: true },
     }),
     prisma.accessories.count({ where }),
   ])
@@ -169,13 +173,13 @@ export async function getAccessories(userId: string, page: number, pageSize: num
 export function getAccessoriesByJobId(jobId: string) {
   return prisma.accessories.findUnique({
     where: { jobId },
-    include: { doors: true, windows: true, foldedPlates: true, openings: true },
+    include: { doors: true, windows: true, foldedPlates: true },
   })
 }
 
 /** Updates accessories by job ID. Replaces each line-item array entirely if provided. */
 export async function updateAccessories(jobId: string, data: Record<string, any>) {
-  const { doors, windows, foldedPlates, openings, ...rest } = data
+  const { doors, windows, foldedPlates, ...rest } = data
   const updateData: any = { ...rest }
 
   // Quantity fields are server-derived by default — recompute from the roof and
@@ -183,6 +187,11 @@ export async function updateAccessories(jobId: string, data: Record<string, any>
   // client value is kept as-is).
   const derived = await deriveQuantitiesFromRoof(jobId)
   Object.assign(updateData, resolveWriteQuantities(derived, rest))
+
+  updateData.rollingShutterQuantity = deriveLineItemQuantity(updateData.rollingShutterLength ?? rest.rollingShutterLength, updateData.rollingShutterWidth ?? rest.rollingShutterWidth, updateData.rollingShutterNos ?? rest.rollingShutterNos) ?? null
+  updateData.louverQuantity = deriveLineItemQuantity(updateData.louverLength ?? rest.louverLength, updateData.louverWidth ?? rest.louverWidth, updateData.louverNos ?? rest.louverNos) ?? null
+  updateData.skyLightQuantity = deriveLineItemQuantity(updateData.skyLightLength ?? rest.skyLightLength, updateData.skyLightWidth ?? rest.skyLightWidth, updateData.skyLightNos ?? rest.skyLightNos) ?? null
+  updateData.wallLightQuantity = deriveLineItemQuantity(updateData.wallLightLength ?? rest.wallLightLength, updateData.wallLightWidth ?? rest.wallLightWidth, updateData.wallLightNos ?? rest.wallLightNos) ?? null
 
   if (doors !== undefined) {
     updateData.doors = { deleteMany: {}, createMany: { data: withDoorQuantities(doors) } }
@@ -193,14 +202,12 @@ export async function updateAccessories(jobId: string, data: Record<string, any>
   if (foldedPlates !== undefined) {
     updateData.foldedPlates = { deleteMany: {}, createMany: { data: withFoldedPlateQuantities(foldedPlates) } }
   }
-  if (openings !== undefined) {
-    updateData.openings = { deleteMany: {}, createMany: { data: withOpeningQuantities(openings) } }
-  }
+
 
   return prisma.accessories.update({
     where: { jobId },
     data: updateData,
-    include: { doors: true, windows: true, foldedPlates: true, openings: true },
+    include: { doors: true, windows: true, foldedPlates: true },
   })
 }
 

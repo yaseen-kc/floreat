@@ -320,17 +320,6 @@ export function makeAccessoryFoldedPlate(overrides = {}) {
   }
 }
 
-export function makeAccessoryOpening(overrides = {}) {
-  return {
-    kind: 'ROLLING_SHUTTER' as const,
-    length: 3.5,
-    width: 3,
-    nos: 1,
-    quantity: 1,
-    ...overrides,
-  }
-}
-
 export function makeAccessoriesInput(jobId = faker.string.uuid()) {
   return {
     jobId,
@@ -349,7 +338,6 @@ export function makeAccessoriesInput(jobId = faker.string.uuid()) {
     doors: [makeAccessoryDoor()],
     windows: [makeAccessoryWindow()],
     foldedPlates: [makeAccessoryFoldedPlate()],
-    openings: [makeAccessoryOpening()],
   }
 }
 
@@ -375,7 +363,6 @@ export function makeAccessories(overrides = {}) {
     doors: [],
     windows: [],
     foldedPlates: [],
-    openings: [],
     createdAt: new Date(),
     updatedAt: new Date(),
     ...overrides,

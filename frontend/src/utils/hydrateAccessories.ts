@@ -4,7 +4,6 @@ import type {
   AccessoryDoorDraft,
   AccessoryWindowDraft,
   AccessoryFoldedPlateDraft,
-  AccessoryOpeningDraft,
 } from '@/stores/quotation-store'
 
 import { num, int } from '@floreat/shared/units'
@@ -31,12 +30,6 @@ export function mapAccessoriesResponseToDraft(a: Accessories): AccessoriesDraft 
     length: num(f.length),
     width: num(f.width),
     nos: int(f.nos),
-  }))
-  const openings: AccessoryOpeningDraft[] = a.openings.map((o) => ({
-    kind: o.kind,
-    length: num(o.length),
-    width: num(o.width),
-    nos: int(o.nos),
   }))
 
   return {
@@ -81,6 +74,27 @@ export function mapAccessoriesResponseToDraft(a: Accessories): AccessoriesDraft 
     partitionThickness: a.partitionThickness ?? undefined,
     partitionQuantity: int(a.partitionQuantity),
 
+    // ── Openings ──
+    rollingShutterLength: num(a.rollingShutterLength),
+    rollingShutterWidth: num(a.rollingShutterWidth),
+    rollingShutterNos: int(a.rollingShutterNos),
+    rollingShutterQuantity: num(a.rollingShutterQuantity),
+
+    louverLength: num(a.louverLength),
+    louverWidth: num(a.louverWidth),
+    louverNos: int(a.louverNos),
+    louverQuantity: num(a.louverQuantity),
+
+    skyLightLength: num(a.skyLightLength),
+    skyLightWidth: num(a.skyLightWidth),
+    skyLightNos: int(a.skyLightNos),
+    skyLightQuantity: num(a.skyLightQuantity),
+
+    wallLightLength: num(a.wallLightLength),
+    wallLightWidth: num(a.wallLightWidth),
+    wallLightNos: int(a.wallLightNos),
+    wallLightQuantity: num(a.wallLightQuantity),
+
     // ── Insulation ──
     roofInsulationType: a.roofInsulationType ?? undefined,
     wallInsulationType: a.wallInsulationType ?? undefined,
@@ -115,6 +129,5 @@ export function mapAccessoriesResponseToDraft(a: Accessories): AccessoriesDraft 
     doors,
     windows,
     foldedPlates,
-    openings,
   }
 }

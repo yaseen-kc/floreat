@@ -2727,6 +2727,274 @@
       ]
     },
     {
+      "name": "Amount",
+      "description": "",
+      "item": [
+        {
+          "name": "Create or replace a job's amount",
+          "request": {
+            "name": "Create or replace a job's amount",
+            "description": {
+              "content": "Creates or replaces the amount configuration for the specified job.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "jobs",
+                ":jobId",
+                "amount"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "type": "any",
+                  "value": "job_cuid_123",
+                  "key": "jobId",
+                  "disabled": false,
+                  "description": {
+                    "content": "(Required) ",
+                    "type": "text/plain"
+                  }
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"pebRoof\": {\n    \"materialWithPurlinRate\": 15,\n    \"materialWithPurlinAmount\": 187500,\n    \"roofSheetSpecification\": \"0.50 MM PPGL\",\n    \"roofSheetRate\": 12,\n    \"roofSheetAmount\": 5403\n  },\n  \"mezzanine\": {\n    \"structureRate\": 16.5,\n    \"structureAmount\": 52812.375\n  }\n}",
+              "options": {
+                "raw": {
+                  "headerFamily": "json",
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "name": "Get a job's amount",
+          "request": {
+            "name": "Get a job's amount",
+            "description": {
+              "content": "Returns the amount configuration belonging to the specified job.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "jobs",
+                ":jobId",
+                "amount"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "type": "any",
+                  "value": "job_cuid_123",
+                  "key": "jobId",
+                  "disabled": false,
+                  "description": {
+                    "content": "(Required) ",
+                    "type": "text/plain"
+                  }
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "body": {}
+          },
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "name": "Update a job's amount",
+          "request": {
+            "name": "Update a job's amount",
+            "description": {
+              "content": "Partially updates the amount configuration for the specified job.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "jobs",
+                ":jobId",
+                "amount"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "type": "any",
+                  "value": "job_cuid_123",
+                  "key": "jobId",
+                  "disabled": false,
+                  "description": {
+                    "content": "(Required) ",
+                    "type": "text/plain"
+                  }
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "PUT",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"pebRoof\": {\n    \"materialWithPurlinRate\": 15,\n    \"materialWithPurlinAmount\": 187500,\n    \"roofSheetSpecification\": \"0.50 MM PPGL\",\n    \"roofSheetRate\": 12,\n    \"roofSheetAmount\": 5403\n  },\n  \"mezzanine\": {\n    \"structureRate\": 16.5,\n    \"structureAmount\": 52812.375\n  }\n}",
+              "options": {
+                "raw": {
+                  "headerFamily": "json",
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "name": "Delete a job's amount",
+          "request": {
+            "name": "Delete a job's amount",
+            "description": {
+              "content": "Deletes the amount configuration for the specified job.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "jobs",
+                ":jobId",
+                "amount"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "type": "any",
+                  "value": "job_cuid_123",
+                  "key": "jobId",
+                  "disabled": false,
+                  "description": {
+                    "content": "(Required) ",
+                    "type": "text/plain"
+                  }
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "DELETE",
+            "body": {}
+          },
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "name": "List amounts",
+          "request": {
+            "name": "List amounts",
+            "description": {
+              "content": "Returns a paginated list of amounts.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "amounts"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "description": {
+                    "content": "",
+                    "type": "text/plain"
+                  },
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "disabled": false,
+                  "description": {
+                    "content": "",
+                    "type": "text/plain"
+                  },
+                  "key": "pageSize",
+                  "value": "10"
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "body": {}
+          },
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ]
+    },
+    {
       "name": "Quantity",
       "description": "",
       "item": [
@@ -2991,176 +3259,6 @@
           "protocolProfileBehavior": {
             "disableBodyPruning": true
           }
-        }
-      ]
-    },
-    {
-      "name": "Amount",
-      "description": "",
-      "item": [
-        {
-          "name": "Create or replace a job's amount",
-          "request": {
-            "name": "Create or replace a job's amount",
-            "description": {
-              "content": "Creates or replaces the amount (cost summary) for the specified job.",
-              "type": "text/plain"
-            },
-            "url": {
-              "path": ["api", "jobs", ":jobId", "amount"],
-              "host": ["{{baseUrl}}"],
-              "query": [],
-              "variable": [
-                {
-                  "type": "any",
-                  "value": "job_cuid_123",
-                  "key": "jobId",
-                  "disabled": false,
-                  "description": { "content": "(Required) ", "type": "text/plain" }
-                }
-              ]
-            },
-            "header": [
-              { "key": "Content-Type", "value": "application/json" },
-              { "key": "Accept", "value": "application/json" }
-            ],
-            "method": "POST",
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"items\": [\n    {\n      \"description\": \"PEB Roof Structure\",\n      \"unit\": \"KG\",\n      \"quantity\": 8500,\n      \"rateFabrication\": 85,\n      \"rateErection\": 12,\n      \"rateLoading\": 3,\n      \"amountFabrication\": 722500,\n      \"amountErection\": 102000,\n      \"amountLoading\": 25500\n    }\n  ]\n}",
-              "options": { "raw": { "headerFamily": "json", "language": "json" } }
-            }
-          },
-          "event": [],
-          "protocolProfileBehavior": { "disableBodyPruning": true }
-        },
-        {
-          "name": "Get a job's amount",
-          "request": {
-            "name": "Get a job's amount",
-            "description": {
-              "content": "Returns the amount (cost summary) belonging to the specified job.",
-              "type": "text/plain"
-            },
-            "url": {
-              "path": ["api", "jobs", ":jobId", "amount"],
-              "host": ["{{baseUrl}}"],
-              "query": [],
-              "variable": [
-                {
-                  "type": "any",
-                  "value": "job_cuid_123",
-                  "key": "jobId",
-                  "disabled": false,
-                  "description": { "content": "(Required) ", "type": "text/plain" }
-                }
-              ]
-            },
-            "header": [{ "key": "Accept", "value": "application/json" }],
-            "method": "GET",
-            "body": {}
-          },
-          "event": [],
-          "protocolProfileBehavior": { "disableBodyPruning": true }
-        },
-        {
-          "name": "Update a job's amount",
-          "request": {
-            "name": "Update a job's amount",
-            "description": {
-              "content": "Replaces the items in the amount for the specified job.",
-              "type": "text/plain"
-            },
-            "url": {
-              "path": ["api", "jobs", ":jobId", "amount"],
-              "host": ["{{baseUrl}}"],
-              "query": [],
-              "variable": [
-                {
-                  "type": "any",
-                  "value": "job_cuid_123",
-                  "key": "jobId",
-                  "disabled": false,
-                  "description": { "content": "(Required) ", "type": "text/plain" }
-                }
-              ]
-            },
-            "header": [
-              { "key": "Content-Type", "value": "application/json" },
-              { "key": "Accept", "value": "application/json" }
-            ],
-            "method": "PUT",
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"items\": [\n    {\n      \"description\": \"PEB Roof Structure\",\n      \"unit\": \"KG\",\n      \"quantity\": 8500,\n      \"rateFabrication\": 85,\n      \"rateErection\": 12,\n      \"rateLoading\": 3,\n      \"amountFabrication\": 722500,\n      \"amountErection\": 102000,\n      \"amountLoading\": 25500\n    }\n  ]\n}",
-              "options": { "raw": { "headerFamily": "json", "language": "json" } }
-            }
-          },
-          "event": [],
-          "protocolProfileBehavior": { "disableBodyPruning": true }
-        },
-        {
-          "name": "Delete a job's amount",
-          "request": {
-            "name": "Delete a job's amount",
-            "description": {
-              "content": "Deletes the amount for the specified job.",
-              "type": "text/plain"
-            },
-            "url": {
-              "path": ["api", "jobs", ":jobId", "amount"],
-              "host": ["{{baseUrl}}"],
-              "query": [],
-              "variable": [
-                {
-                  "type": "any",
-                  "value": "job_cuid_123",
-                  "key": "jobId",
-                  "disabled": false,
-                  "description": { "content": "(Required) ", "type": "text/plain" }
-                }
-              ]
-            },
-            "header": [{ "key": "Accept", "value": "application/json" }],
-            "method": "DELETE",
-            "body": {}
-          },
-          "event": [],
-          "protocolProfileBehavior": { "disableBodyPruning": true }
-        },
-        {
-          "name": "List amounts",
-          "request": {
-            "name": "List amounts",
-            "description": {
-              "content": "Returns a paginated list of amounts.",
-              "type": "text/plain"
-            },
-            "url": {
-              "path": ["api", "amounts"],
-              "host": ["{{baseUrl}}"],
-              "query": [
-                {
-                  "disabled": false,
-                  "description": { "content": "", "type": "text/plain" },
-                  "key": "page",
-                  "value": "1"
-                },
-                {
-                  "disabled": false,
-                  "description": { "content": "", "type": "text/plain" },
-                  "key": "pageSize",
-                  "value": "10"
-                }
-              ],
-              "variable": []
-            },
-            "header": [{ "key": "Accept", "value": "application/json" }],
-            "method": "GET",
-            "body": {}
-          },
-          "event": [],
-          "protocolProfileBehavior": { "disableBodyPruning": true }
         }
       ]
     }

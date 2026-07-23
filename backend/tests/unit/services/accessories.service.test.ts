@@ -136,7 +136,7 @@ describe('accessories.service', () => {
       expect(prismaMock.accessories.update).toHaveBeenCalledWith({
         where: { jobId: 'job-1' },
         data: expect.objectContaining(EXPECTED),
-        include: { doors: true, windows: true, foldedPlates: true, openings: true },
+        include: { doors: true, windows: true, foldedPlates: true },
       })
     })
 
@@ -154,7 +154,7 @@ describe('accessories.service', () => {
           gutterQuantity: 60, // derived
           cornerFlashQuantity: 8.58,
         }),
-        include: { doors: true, windows: true, foldedPlates: true, openings: true },
+        include: { doors: true, windows: true, foldedPlates: true },
       })
     })
 
@@ -178,23 +178,28 @@ describe('accessories.service', () => {
 
   describe('line-item quantities', () => {
     it('derives each item quantity on upsert and ignores the client value', async () => {
-      prismaMock.roof.findUnique.mockResolvedValue(null)
+      prismaMock.roof.findUnique.mockResolvedValue(roofWithSidewalls() as any)
       prismaMock.accessories.upsert.mockResolvedValue(makeAccessories({ jobId: 'job-1' }) as any)
 
       await upsertAccessories('job-1', {
-        doors: [{ height: 2.1, width: 1.2, nos: 2, quantity: 999 }], // → 5.04
+        doors: [{ height: 2, width: 1, nos: 2, quantity: 999 }], // → 4
         windows: [{ height: 1.2, width: 1.5, nos: 4, quantity: 999 }], // → 7.2
         foldedPlates: [{ length: 6, width: 1.2, nos: 3, quantity: 999 }], // → 21.6
-        openings: [{ kind: 'ROLLING_SHUTTER', length: 3, width: 3, nos: 1, quantity: 999 }], // → 9
+        rollingShutterLength: 3,
+        rollingShutterWidth: 3,
+        rollingShutterNos: 1,
       })
 
       expect(prismaMock.accessories.upsert).toHaveBeenCalledWith(
         expect.objectContaining({
           create: expect.objectContaining({
-            doors: { createMany: { data: [{ height: 2.1, width: 1.2, nos: 2, quantity: 5.04 }] } },
+            // scalar quantities
+            ...EXPECTED,
+            rollingShutterQuantity: 9,
+            // line-item quantities
+            doors: { createMany: { data: [{ height: 2, width: 1, nos: 2, quantity: 4 }] } },
             windows: { createMany: { data: [{ height: 1.2, width: 1.5, nos: 4, quantity: 7.2 }] } },
             foldedPlates: { createMany: { data: [{ length: 6, width: 1.2, nos: 3, quantity: 21.6 }] } },
-            openings: { createMany: { data: [{ kind: 'ROLLING_SHUTTER', length: 3, width: 3, nos: 1, quantity: 9 }] } },
           }),
         }),
       )
@@ -283,7 +288,7 @@ describe('accessories.service', () => {
       expect(result).toEqual(accessories)
       expect(prismaMock.accessories.findUnique).toHaveBeenCalledWith({
         where: { jobId: 'job-1' },
-        include: { doors: true, windows: true, foldedPlates: true, openings: true },
+        include: { doors: true, windows: true, foldedPlates: true },
       })
     })
 

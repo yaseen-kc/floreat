@@ -87,14 +87,6 @@ export const TURBO_VENTILATOR_DIAMETER_OPTIONS: SelectFieldOption[] = [
   { value: 'FT_2', label: '2 ft' },
 ]
 
-/** Kind of a wall/roof opening line item. */
-export const ACCESSORY_OPENING_KIND_OPTIONS: SelectFieldOption[] = [
-  { value: 'ROLLING_SHUTTER', label: 'Rolling Shutter' },
-  { value: 'LOUVER', label: 'Louver' },
-  { value: 'SKY_LIGHT', label: 'Sky Light' },
-  { value: 'WALL_LIGHT', label: 'Wall Light' },
-]
-
 /** Paint/primer product type for frames. */
 export const PAINT_TYPE_OPTIONS: SelectFieldOption[] = [
   { value: 'EPOXY_PRIMER', label: 'Epoxy Primer' },

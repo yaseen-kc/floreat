@@ -79,13 +79,6 @@ enum TurboVentilatorDiameter {
   FT_2  @map("2 Feet")
 }
 
-enum AccessoryOpeningKind {
-  ROLLING_SHUTTER
-  LOUVER
-  SKY_LIGHT
-  WALL_LIGHT
-}
-
 enum PaintType {
   EPOXY_PRIMER @map("EPOXY PRIMER")
   EPOXY_PAINT  @map("EPOXY PAINT")
@@ -157,6 +150,27 @@ model Accessories {
   partitionThickness PartitionThickness?
   partitionQuantity  Int?
 
+  // ── Openings ──
+  rollingShutterLength   Decimal? @db.Decimal(10, 3)
+  rollingShutterWidth    Decimal? @db.Decimal(10, 3)
+  rollingShutterNos      Int?
+  rollingShutterQuantity Decimal? @db.Decimal(10, 3)
+
+  louverLength   Decimal? @db.Decimal(10, 3)
+  louverWidth    Decimal? @db.Decimal(10, 3)
+  louverNos      Int?
+  louverQuantity Decimal? @db.Decimal(10, 3)
+
+  skyLightLength   Decimal? @db.Decimal(10, 3)
+  skyLightWidth    Decimal? @db.Decimal(10, 3)
+  skyLightNos      Int?
+  skyLightQuantity Decimal? @db.Decimal(10, 3)
+
+  wallLightLength   Decimal? @db.Decimal(10, 3)
+  wallLightWidth    Decimal? @db.Decimal(10, 3)
+  wallLightNos      Int?
+  wallLightQuantity Decimal? @db.Decimal(10, 3)
+
   // ── Insulation ──
   roofInsulationType InsulationType?
   wallInsulationType InsulationType?
@@ -189,9 +203,6 @@ model Accessories {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-
-  // ── Openings (rolling shutters, louvers, sky lights, wall lights) ──
-  openings AccessoryOpening[]
 
   // ── Line items ──
   doors        AccessoryDoor[]
@@ -241,26 +252,6 @@ model AccessoryFoldedPlate {
   id            String      @id @default(cuid())
   accessoriesId String
   accessories   Accessories @relation(fields: [accessoriesId], references: [id], onDelete: Cascade)
-
-  // ── Dimensions ──
-  length Decimal? @db.Decimal(10, 3)
-  width  Decimal? @db.Decimal(10, 3)
-
-  nos      Int?
-  // Server-derived per item (dimA × dimB × nos via @floreat/shared/calc
-  // deriveLineItemQuantity); any client value is ignored. Decimal preserves the
-  // fractional area × count result.
-  quantity Decimal? @db.Decimal(10, 3)
-
-  @@index([accessoriesId])
-}
-
-model AccessoryOpening {
-  id            String      @id @default(cuid())
-  accessoriesId String
-  accessories   Accessories @relation(fields: [accessoriesId], references: [id], onDelete: Cascade)
-
-  kind AccessoryOpeningKind
 
   // ── Dimensions ──
   length Decimal? @db.Decimal(10, 3)

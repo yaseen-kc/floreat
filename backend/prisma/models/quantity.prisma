@@ -1,250 +1,249 @@
 // ── Quantity Models ───────────────────────────────
 
 model Quantity {
-    id    String @id @default(cuid())
-    jobId String @unique
-    job   Job    @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  id    String @id @default(cuid())
+  jobId String @unique
+  job   Job    @relation(fields: [jobId], references: [id], onDelete: Cascade)
 
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-    pebRoof         QuantityPebRoof?
-    cladding        QuantityCladding?
-    canopy          QuantityCanopy?
-    accessories     QuantityAccessories?
-    mezzanine       QuantityMezzanine?
-    stair           QuantityStair?
-    additionalBolts QuantityAdditionalBolts?
+  pebRoof         QuantityPebRoof?
+  cladding        QuantityCladding?
+  canopy          QuantityCanopy?
+  accessories     QuantityAccessories?
+  mezzanine       QuantityMezzanine?
+  stair           QuantityStair?
+  additionalBolts QuantityAdditionalBolts?
 
-    @@index([createdAt])
+  @@index([createdAt])
 }
 
 model QuantityPebRoof {
-    id         String   @id @default(cuid())
-    quantityId String   @unique
-    quantity   Quantity @relation(fields: [quantityId], references: [id], onDelete: Cascade)
+  id         String   @id @default(cuid())
+  quantityId String   @unique
+  quantity   Quantity @relation(fields: [quantityId], references: [id], onDelete: Cascade)
 
-    pebRoofValue    Decimal? @db.Decimal(10, 3)
-    pebRoofQuantity Decimal? @db.Decimal(10, 3)
+  pebRoofValue    Decimal? @db.Decimal(10, 3)
+  pebRoofQuantity Decimal? @db.Decimal(10, 3)
 
-    // raftersAndColumns
-    raftersAndColumns         Decimal? @db.Decimal(10, 3)
-    raftersAndColumnsQuantity Decimal? @db.Decimal(10, 3)
-    lengthOfBuilding          Decimal? @db.Decimal(10, 3)
-    lengthOfBuildingQuantity  Decimal? @db.Decimal(10, 3)
-    inclinedLengthInOneHalf   Decimal? @db.Decimal(10, 3)
-    roofArea                  Decimal? @db.Decimal(10, 3)
-    materialConsumption       Decimal? @db.Decimal(10, 3)
+  // raftersAndColumns
+  raftersAndColumns         Decimal? @db.Decimal(10, 3)
+  raftersAndColumnsQuantity Decimal? @db.Decimal(10, 3)
+  lengthOfBuilding          Decimal? @db.Decimal(10, 3)
+  lengthOfBuildingQuantity  Decimal? @db.Decimal(10, 3)
+  inclinedLengthInOneHalf   Decimal? @db.Decimal(10, 3)
+  roofArea                  Decimal? @db.Decimal(10, 3)
+  materialConsumption       Decimal? @db.Decimal(10, 3)
 
-    // roofPurlins
-    roofPurlinsValue          Decimal? @db.Decimal(10, 3)
-    roofPurlins               Decimal? @db.Decimal(10, 3)
-    roofPurlinsQuantity       Decimal? @db.Decimal(10, 3)
-    lengthOfOnePurlin         Decimal? @db.Decimal(10, 3)
-    lengthOfOnePurlinQuantity Decimal? @db.Decimal(10, 3)
-    noOfPurlinsInOneFrame     Int?
-    totalNoOfPurlinBay        Int?
-    unitWeightOfPurlin        Decimal? @db.Decimal(10, 3)
-    noOfExtendedFrame         Int?
-    noOfExtendedPurlinBay     Int?
+  // roofPurlins
+  roofPurlinsValue          Decimal? @db.Decimal(10, 3)
+  roofPurlins               Decimal? @db.Decimal(10, 3)
+  roofPurlinsQuantity       Decimal? @db.Decimal(10, 3)
+  lengthOfOnePurlin         Decimal? @db.Decimal(10, 3)
+  lengthOfOnePurlinQuantity Decimal? @db.Decimal(10, 3)
+  noOfPurlinsInOneFrame     Int?
+  totalNoOfPurlinBay        Int?
+  unitWeightOfPurlin        Decimal? @db.Decimal(10, 3)
+  noOfExtendedFrame         Int?
+  noOfExtendedPurlinBay     Int?
 
-    // roofSheet
-    roofSheet                   Decimal? @db.Decimal(10, 3)
-    roofSheetQuantity           Decimal? @db.Decimal(10, 3)
-    roofSheetPurchaseQuantity   Decimal? @db.Decimal(10, 3)
-    extendedRoofWidth           Decimal? @db.Decimal(10, 3)
-    extendedRoofLength          Decimal? @db.Decimal(10, 3)
-    roofAreaDeductions          Decimal? @db.Decimal(10, 3)
-    polyCarbonateAreaDeductions Decimal? @db.Decimal(10, 3)
+  // roofSheet
+  roofSheet                   Decimal? @db.Decimal(10, 3)
+  roofSheetQuantity           Decimal? @db.Decimal(10, 3)
+  roofSheetPurchaseQuantity   Decimal? @db.Decimal(10, 3)
+  extendedRoofWidth           Decimal? @db.Decimal(10, 3)
+  extendedRoofWidthAdditonal  Decimal? @db.Decimal(10, 3)
+  extendedRoofLength          Decimal? @db.Decimal(10, 3)
+  roofAreaDeductions          Decimal? @db.Decimal(10, 3)
+  polyCarbonateAreaDeductions Decimal? @db.Decimal(10, 3)
 
-    // polyCarbonateSheet
-    polyCarbonateSheetQuantity           Decimal? @db.Decimal(10, 3)
-    polyCarbonateSheetPurchaseQuantity   Decimal? @db.Decimal(10, 3)
-    lengthOfpolyCarbonateSheet           Decimal? @db.Decimal(10, 3)
-    lengthOfpolyCarbonateSheetAdditional Decimal? @db.Decimal(10, 3)
-    widthOfpolyCarbonateSheet            Decimal? @db.Decimal(10, 3)
-    NosOfpolyCarbonateSheet              Int?
+  // polyCarbonateSheet
+  polyCarbonateSheetQuantity           Decimal? @db.Decimal(10, 3)
+  polyCarbonateSheetPurchaseQuantity   Decimal? @db.Decimal(10, 3)
+  lengthOfpolyCarbonateSheet           Decimal? @db.Decimal(10, 3)
+  lengthOfpolyCarbonateSheetAdditional Decimal? @db.Decimal(10, 3)
+  widthOfpolyCarbonateSheet            Decimal? @db.Decimal(10, 3)
+  NosOfpolyCarbonateSheet              Int?
 
-    // roofWindBracing
-    roofWindBracing                     Decimal? @db.Decimal(10, 3)
-    lengthOfSinlgeWindBracing           Decimal? @db.Decimal(10, 3)
-    lengthOfSinlgeWindBracingAdditional Decimal? @db.Decimal(10, 3)
-    totalNumberOfWindBracing            Int?
-    unitWeightOfRoofWindBracing         Decimal? @db.Decimal(10, 3)
+  // roofWindBracing
+  roofWindBracing                     Decimal? @db.Decimal(10, 3)
+  lengthOfSinlgeWindBracing           Decimal? @db.Decimal(10, 3)
+  lengthOfSinlgeWindBracingAdditional Decimal? @db.Decimal(10, 3)
+  totalNumberOfWindBracing            Int?
+  unitWeightOfRoofWindBracing         Decimal? @db.Decimal(10, 3)
 
-    // roofSagRoad
-    roofSagRoadValue              Decimal? @db.Decimal(10, 3)
-    roofSagRoadQuantity           Decimal? @db.Decimal(10, 3)
-    roofSagRoadQuantityAdditional Decimal? @db.Decimal(10, 3)
-    lengthOfSingleSagRoad         Decimal? @db.Decimal(10, 3)
-    noOfSagRodInASingleFrame      Int?
-    noOfBayInSagRodProvided       Int?
-    noOfSagRodInExtendedFrame     Int?
-    noOfExtendedSagRodBay         Int?
-    unitWeightOfSagRod            Decimal? @db.Decimal(10, 3)
+  // roofSagRoad
+  roofSagRoadValue                Decimal? @db.Decimal(10, 3)
+  roofSagRoadQuantity             Decimal? @db.Decimal(10, 3)
+  lengthOfSingleSagRoad           Decimal? @db.Decimal(10, 3)
+  lengthOfSingleSagRoadAdditional Decimal? @db.Decimal(10, 3)
+  noOfSagRodInASingleFrame        Int?
+  noOfBayInSagRodProvided         Int?
+  noOfSagRodInExtendedFrame       Int?
+  noOfExtendedSagRodBay           Int?
+  unitWeightOfSagRod              Decimal? @db.Decimal(10, 3)
 
-    // roofFlangeBrace
-    roofFlangeBraceQuantity               Decimal? @db.Decimal(10, 3)
-    lengthOfMidFrameFlangeBrace           Decimal? @db.Decimal(10, 3)
-    lengthOfMidFrameFlangeBraceAdditional Decimal? @db.Decimal(10, 3)
-    noOfFlangeBraceInMidFrame             Int?
-    noOfFlangeBraceInEndFrame             Int?
-    noOfMidFrame                          Int?
-    noOfEndFrame                          Int?
-    noOfFlngBraceInExtendedFrame          Int?
-    noOfExtendedMidFrame                  Int?
-    noOfExtendedEndFrame                  Int?
-    lengthOfEndFrameFlangeBrace           Decimal? @db.Decimal(10, 3)
+  // roofFlangeBrace
+  roofFlangeBraceQuantity               Decimal? @db.Decimal(10, 3)
+  lengthOfMidFrameFlangeBrace           Decimal? @db.Decimal(10, 3)
+  lengthOfMidFrameFlangeBraceAdditional Decimal? @db.Decimal(10, 3)
+  noOfFlangeBraceInMidFrame             Int?
+  noOfFlangeBraceInEndFrame             Int?
+  noOfMidFrame                          Int?
+  noOfEndFrame                          Int?
+  noOfFlngBraceInExtendedFrame          Int?
+  noOfFlngBraceInExtendedFrame2         Int?
+  noOfExtendedMidFrame                  Int?
+  noOfExtendedEndFrame                  Int?
+  lengthOfEndFrameFlangeBrace           Decimal? @db.Decimal(10, 3)
 
-    // bolts
-    numberOfPurlinBolts              Decimal? @db.Decimal(10, 3)
-    numberOfPurlinBoltsQuantity      Decimal? @db.Decimal(10, 3)
-    noOfPurlinJointInSingleFrame     Int?
-    totalnoOfFrames                  Int?
-    noOfPurlinnodeInExtendedFrame    Int?
-    noOfExtendedFrames               Int?
-    noOfBoltsInSinglePurlinJoint     Int?
-    numberOfRoofJointBolts           Decimal? @db.Decimal(10, 3)
-    numberOfFoundationBolts          Decimal? @db.Decimal(10, 3)
-    numberOfAnchorBolts              Decimal? @db.Decimal(10, 3)
+  // bolts
+  numberOfPurlinBolts           Decimal? @db.Decimal(10, 3)
+  numberOfPurlinBoltsQuantity   Decimal? @db.Decimal(10, 3)
+  noOfPurlinJointInSingleFrame  Int?
+  totalnoOfFrames               Int?
+  noOfPurlinnodeInExtendedFrame Int?
+  noOfExtendedFrames            Int?
+  noOfBoltsInSinglePurlinJoint  Int?
+  numberOfRoofJointBolts        Decimal? @db.Decimal(10, 3)
+  numberOfFoundationBolts       Decimal? @db.Decimal(10, 3)
+  numberOfAnchorBolts           Decimal? @db.Decimal(10, 3)
 }
 
 model QuantityCladding {
-    id         String   @id @default(cuid())
-    quantityId String   @unique
-    quantity   Quantity @relation(fields: [quantityId], references: [id], onDelete: Cascade)
+  id         String   @id @default(cuid())
+  quantityId String   @unique
+  quantity   Quantity @relation(fields: [quantityId], references: [id], onDelete: Cascade)
 
-    // claddingStructure
-    claddingStructureQuantity          Decimal? @db.Decimal(10, 3)
-    claddingEaveHeightFront            Decimal? @db.Decimal(10, 3)
-    claddingEaveHeightFrontAdditional  Decimal? @db.Decimal(10, 3)
-    claddingEaveHeightBack             Decimal? @db.Decimal(10, 3)
-    claddingEaveHeightRight            Decimal? @db.Decimal(10, 3)
-    claddingEaveHeightLeft             Decimal? @db.Decimal(10, 3)
-    extendedColumnHeight               Decimal? @db.Decimal(10, 3)
-    widthOfExtendedFrame               Decimal? @db.Decimal(10, 3)
-    noOfSideCladdingPurlin             Int?
-    noOfFaceCladdingPurlin             Int?
-    totalLengthOfCladdingPurlin        Decimal? @db.Decimal(10, 3)
-    totalWeightofCladdingPurlin        Decimal? @db.Decimal(10, 3)
-    claddingAreaWithoutAnyDeductions   Decimal? @db.Decimal(10, 3)
-    averageMaterialConsumption         Decimal? @db.Decimal(10, 3)
-    totalCladdingOpenings              Decimal? @db.Decimal(10, 3)
-    fasciaOpening                      Decimal? @db.Decimal(10, 3)
+  // claddingStructure
+  claddingStructureQuantity         Decimal? @db.Decimal(10, 3)
+  claddingEaveHeightFront           Decimal? @db.Decimal(10, 3)
+  claddingEaveHeightFrontAdditional Decimal? @db.Decimal(10, 3)
+  claddingEaveHeightBack            Decimal? @db.Decimal(10, 3)
+  claddingEaveHeightRight           Decimal? @db.Decimal(10, 3)
+  claddingEaveHeightLeft            Decimal? @db.Decimal(10, 3)
+  extendedColumnHeight              Decimal? @db.Decimal(10, 3)
+  widthOfExtendedFrame              Decimal? @db.Decimal(10, 3)
+  noOfSideCladdingPurlin            Int?
+  noOfFaceCladdingPurlin            Int?
+  totalLengthOfCladdingPurlin       Decimal? @db.Decimal(10, 3)
+  totalWeightofCladdingPurlin       Decimal? @db.Decimal(10, 3)
+  claddingAreaWithoutAnyDeductions  Decimal? @db.Decimal(10, 3)
+  averageMaterialConsumption        Decimal? @db.Decimal(10, 3)
+  totalCladdingOpenings             Decimal? @db.Decimal(10, 3)
+  fasciaOpening                     Decimal? @db.Decimal(10, 3)
 
-    // claddingSheet
-    claddingSheetQuantity              Decimal? @db.Decimal(10, 3)
-    claddingSheetAdditional            Decimal? @db.Decimal(10, 3)
-    claddingSheetPurchase              Decimal? @db.Decimal(10, 3)
+  // claddingSheet
+  claddingSheetQuantity   Decimal? @db.Decimal(10, 3)
+  claddingSheetAdditional Decimal? @db.Decimal(10, 3)
+  claddingSheetPurchase   Decimal? @db.Decimal(10, 3)
 
-    // additional
-    columnWindBracingsAdditional          Decimal? @db.Decimal(10, 3)
-    claddingSagRodAdditional              Decimal? @db.Decimal(10, 3)
-    claddingFlangeBraceAdditional         Decimal? @db.Decimal(10, 3)
-    numberOfCladdingPurlinBoltsAdditional Decimal? @db.Decimal(10, 3)
+  columnWindBracings                    Decimal? @db.Decimal(10, 3)
+  columnWindBracingsAdditional          Decimal? @db.Decimal(10, 3)
+  claddingSagRod                        Decimal? @db.Decimal(10, 3)
+  claddingSagRodAdditional              Decimal? @db.Decimal(10, 3)
+  claddingFlangeBrace                   Decimal? @db.Decimal(10, 3)
+  claddingFlangeBraceAdditional         Decimal? @db.Decimal(10, 3)
+  numberOfCladdingPurlinBolts           Decimal? @db.Decimal(10, 3)
+  numberOfCladdingPurlinBoltsAdditional Decimal? @db.Decimal(10, 3)
 }
 
 model QuantityCanopy {
-    id         String   @id @default(cuid())
-    quantityId String   @unique
-    quantity   Quantity @relation(fields: [quantityId], references: [id], onDelete: Cascade)
+  id         String   @id @default(cuid())
+  quantityId String   @unique
+  quantity   Quantity @relation(fields: [quantityId], references: [id], onDelete: Cascade)
 
-    canopyStructureQuantity          Decimal? @db.Decimal(10, 3)
-    canopyArea                       Decimal? @db.Decimal(10, 3)
-    canopyPurlinQuantity             Decimal? @db.Decimal(10, 3)
-    canopySheetQuantity              Decimal? @db.Decimal(10, 3)
-    canopySheetPurchaseQuantity      Decimal? @db.Decimal(10, 3)
-    canopyGutterQuantity             Decimal? @db.Decimal(10, 3)
-    canopyDownTakeQuantity           Decimal? @db.Decimal(10, 3)
-    canopySideCoveringQuantity       Decimal? @db.Decimal(10, 3)
-    canopyFlashingQuantity           Decimal? @db.Decimal(10, 3)
-    canopyPurlinBoltsQuantity        Decimal? @db.Decimal(10, 3)
-    canopyJointBoltsQuantity         Decimal? @db.Decimal(10, 3)
+  canopyStructureQuantity     Decimal? @db.Decimal(10, 3)
+  canopyArea                  Decimal? @db.Decimal(10, 3)
+  canopyPurlinQuantity        Decimal? @db.Decimal(10, 3)
+  canopySheetQuantity         Decimal? @db.Decimal(10, 3)
+  canopySheetPurchaseQuantity Decimal? @db.Decimal(10, 3)
+  canopyGutterQuantity        Decimal? @db.Decimal(10, 3)
+  canopyDownTakeQuantity      Decimal? @db.Decimal(10, 3)
+  canopySideCoveringQuantity  Decimal? @db.Decimal(10, 3)
+  canopyFlashingQuantity      Decimal? @db.Decimal(10, 3)
+  canopyPurlinBoltsQuantity   Decimal? @db.Decimal(10, 3)
+  canopyJointBoltsQuantity    Decimal? @db.Decimal(10, 3)
 }
 
 model QuantityAccessories {
-    id         String   @id @default(cuid())
-    quantityId String   @unique
-    quantity   Quantity @relation(fields: [quantityId], references: [id], onDelete: Cascade)
+  id         String   @id @default(cuid())
+  quantityId String   @unique
+  quantity   Quantity @relation(fields: [quantityId], references: [id], onDelete: Cascade)
 
-    doors                            Decimal? @db.Decimal(10, 3)
-    doorsQuantity                    Decimal? @db.Decimal(10, 3)
-    windows                          Decimal? @db.Decimal(10, 3)
-    windowsQuantity                  Decimal? @db.Decimal(10, 3)
-    fasciaStructureQuantity          Decimal? @db.Decimal(10, 3)
-    fasciaCoveringSheetBoardQuantity Decimal? @db.Decimal(10, 3)
-    internalPartitionsQuantity       Decimal? @db.Decimal(10, 3)
-    ridgeQuantity                    Decimal? @db.Decimal(10, 3)
-    gutterQuantity                   Decimal? @db.Decimal(10, 3)
-    downtakeQuantity                 Decimal? @db.Decimal(10, 3)
-    dripTrimQuantity                 Decimal? @db.Decimal(10, 3)
-    gableEndFlashingQuantity         Decimal? @db.Decimal(10, 3)
-    cornerFlashQuantity              Decimal? @db.Decimal(10, 3)
-    rollingShutter                   Decimal? @db.Decimal(10, 3)
-    rollingShutterQuantity           Decimal? @db.Decimal(10, 3)
-    louvers                          Decimal? @db.Decimal(10, 3)
-    louversQuantity                  Decimal? @db.Decimal(10, 3)
-    skyLight                         Decimal? @db.Decimal(10, 3)
-    skyLightQuantity                 Decimal? @db.Decimal(10, 3)
-    wallLight                        Decimal? @db.Decimal(10, 3)
-    wallLightQuantity                Decimal? @db.Decimal(10, 3)
-    roofInsulation                   Decimal? @db.Decimal(10, 3)
-    roofInsulationQuantity           Decimal? @db.Decimal(10, 3)
-    wallInsulation                   Decimal? @db.Decimal(10, 3)
-    wallInsulationQuantity           Decimal? @db.Decimal(10, 3)
-    turboVentilators                 Decimal? @db.Decimal(10, 3)
-    turboVentilatorsQuantity         Decimal? @db.Decimal(10, 3)
-    handrail                         Decimal? @db.Decimal(10, 3)
-    handrailQuantity                 Decimal? @db.Decimal(10, 3)
+  doors                            Decimal? @db.Decimal(10, 3)
+  doorsQuantity                    Decimal? @db.Decimal(10, 3)
+  windows                          Decimal? @db.Decimal(10, 3)
+  windowsQuantity                  Decimal? @db.Decimal(10, 3)
+  fasciaStructureQuantity          Decimal? @db.Decimal(10, 3)
+  fasciaCoveringSheetBoardQuantity Decimal? @db.Decimal(10, 3)
+  internalPartitionsQuantity       Decimal? @db.Decimal(10, 3)
+  ridgeQuantity                    Decimal? @db.Decimal(10, 3)
+  gutterQuantity                   Decimal? @db.Decimal(10, 3)
+  downtakeQuantity                 Decimal? @db.Decimal(10, 3)
+  dripTrimQuantity                 Decimal? @db.Decimal(10, 3)
+  gableEndFlashingQuantity         Decimal? @db.Decimal(10, 3)
+  cornerFlashQuantity              Decimal? @db.Decimal(10, 3)
+  rollingShutter                   Decimal? @db.Decimal(10, 3)
+  rollingShutterQuantity           Decimal? @db.Decimal(10, 3)
+  louvers                          Decimal? @db.Decimal(10, 3)
+  louversQuantity                  Decimal? @db.Decimal(10, 3)
+  skyLight                         Decimal? @db.Decimal(10, 3)
+  skyLightQuantity                 Decimal? @db.Decimal(10, 3)
+  wallLight                        Decimal? @db.Decimal(10, 3)
+  wallLightQuantity                Decimal? @db.Decimal(10, 3)
+  roofInsulation                   Decimal? @db.Decimal(10, 3)
+  roofInsulationQuantity           Decimal? @db.Decimal(10, 3)
+  wallInsulation                   Decimal? @db.Decimal(10, 3)
+  wallInsulationQuantity           Decimal? @db.Decimal(10, 3)
+  turboVentilatorsQuantity         Decimal? @db.Decimal(10, 3)
+  handrailQuantity                 Decimal? @db.Decimal(10, 3)
 }
 
 model QuantityMezzanine {
-    id         String   @id @default(cuid())
-    quantityId String   @unique
-    quantity   Quantity @relation(fields: [quantityId], references: [id], onDelete: Cascade)
+  id         String   @id @default(cuid())
+  quantityId String   @unique
+  quantity   Quantity @relation(fields: [quantityId], references: [id], onDelete: Cascade)
 
-    mezzanineStructure               Decimal? @db.Decimal(10, 3)
-    mezzanineStructureQuantity       Decimal? @db.Decimal(10, 3)
-    totalMezzanineArea               Decimal? @db.Decimal(10, 3)
-    totalMezzanineAreaQuantity       Decimal? @db.Decimal(10, 3)
-    materialConsumption              Decimal? @db.Decimal(10, 3)
-    deckSheetQuantity                Decimal? @db.Decimal(10, 3)
-    shearStudsQuantity               Decimal? @db.Decimal(10, 3)
-    shearStudsPurchaseQuantity       Decimal? @db.Decimal(10, 3)
-    shearStudsQuantityAdditional     Decimal? @db.Decimal(10, 3)
-    concreteFlashing                 Decimal? @db.Decimal(10, 3)
-    jointBolts                       Decimal? @db.Decimal(10, 3)
-    jointBoltsQuantity               Decimal? @db.Decimal(10, 3)
-    foundationBoltsQuantity          Decimal? @db.Decimal(10, 3)
+  mezzanineStructureQuantity   Decimal? @db.Decimal(10, 3)
+  totalMezzanineArea           Decimal? @db.Decimal(10, 3)
+  totalMezzanineAreaQuantity   Decimal? @db.Decimal(10, 3)
+  materialConsumption          Decimal? @db.Decimal(10, 3)
+  deckSheetQuantity            Decimal? @db.Decimal(10, 3)
+  deckSheetPurchaseQuantity    Decimal? @db.Decimal(10, 3)
+  deckSheetQuantityAdditional  Decimal? @db.Decimal(10, 3)
+  shearStudsQuantity           Decimal? @db.Decimal(10, 3)
+  shearStudsQuantityAdditional Decimal? @db.Decimal(10, 3)
+  concreteFlashing             Decimal? @db.Decimal(10, 3)
+  jointBolts                   Decimal? @db.Decimal(10, 3)
+  jointBoltsQuantity           Decimal? @db.Decimal(10, 3)
+  foundationBoltsQuantity      Decimal? @db.Decimal(10, 3)
 }
 
 model QuantityStair {
-    id         String   @id @default(cuid())
-    quantityId String   @unique
-    quantity   Quantity @relation(fields: [quantityId], references: [id], onDelete: Cascade)
+  id         String   @id @default(cuid())
+  quantityId String   @unique
+  quantity   Quantity @relation(fields: [quantityId], references: [id], onDelete: Cascade)
 
-    totalAreaOfStairQuantity             Decimal? @db.Decimal(10, 3)
-    totalWeightofStringerBeamsQuantity   Decimal? @db.Decimal(10, 3)
-    totalWeightofStringerBeamsAdditional Decimal? @db.Decimal(10, 3)
-    totalWeightofSteps                   Decimal? @db.Decimal(10, 3)
-    totalWeightofStepsQuantity           Decimal? @db.Decimal(10, 3)
-    totalWeightofStepsAdditional         Decimal? @db.Decimal(10, 3)
+  totalAreaOfStairQuantity             Decimal? @db.Decimal(10, 3)
+  totalWeightofStringerBeams           Decimal? @db.Decimal(10, 3)
+  totalWeightofStringerBeamsQuantity   Decimal? @db.Decimal(10, 3)
+  totalWeightofStringerBeamsAdditional Decimal? @db.Decimal(10, 3)
+  totalWeightofSteps                   Decimal? @db.Decimal(10, 3)
+  totalWeightofStepsQuantity           Decimal? @db.Decimal(10, 3)
+  totalWeightofStepsAdditional         Decimal? @db.Decimal(10, 3)
 }
 
 model QuantityAdditionalBolts {
-    id         String   @id @default(cuid())
-    quantityId String   @unique
-    quantity   Quantity @relation(fields: [quantityId], references: [id], onDelete: Cascade)
+  id         String   @id @default(cuid())
+  quantityId String   @unique
+  quantity   Quantity @relation(fields: [quantityId], references: [id], onDelete: Cascade)
 
-    jointBolt1                       Decimal? @db.Decimal(10, 3)
-    jointBolt1Quantity               Decimal? @db.Decimal(10, 3)
-    jointBolt2                       Decimal? @db.Decimal(10, 3)
-    jointBolt2Quantity               Decimal? @db.Decimal(10, 3)
-    jointBolt3                       Decimal? @db.Decimal(10, 3)
-    jointBolt3Quantity               Decimal? @db.Decimal(10, 3)
-    
-    purlinBolt                       Decimal? @db.Decimal(10, 3)
-    purlinBoltQuantity               Decimal? @db.Decimal(10, 3)
-    anchorBoltQuantity               Decimal? @db.Decimal(10, 3)
-    foundationBoltQuantity           Decimal? @db.Decimal(10, 3)
+  jointBolt1Quantity     Decimal? @db.Decimal(10, 3)
+  jointBolt2Quantity     Decimal? @db.Decimal(10, 3)
+  jointBolt3Quantity     Decimal? @db.Decimal(10, 3)
+  purlinBoltQuantity     Decimal? @db.Decimal(10, 3)
+  anchorBoltQuantity     Decimal? @db.Decimal(10, 3)
+  foundationBoltQuantity Decimal? @db.Decimal(10, 3)
 }

@@ -8,7 +8,7 @@ import type { CreateMezzanineInput } from '../schemas/mezzanine.schema.js'
 /** Creates or updates a mezzanine for a given job. Floors and extensions are replaced entirely on update. */
 export function upsertMezzanine(jobId: string, data: CreateMezzanineInput) {
   const { floors, extensions, ...rest } = data
-  const floorData = floors ?? []
+  const floorData = floors?.map(f => ({ ...f, code: f.code as any })) ?? []
   const extensionData = extensions ?? []
 
   return prisma.mezzanine.upsert({
@@ -49,7 +49,7 @@ export function updateMezzanine(jobId: string, data: Record<string, any>) {
   const updateData: any = { ...rest }
 
   if (floors !== undefined) {
-    updateData.floors = { deleteMany: {}, createMany: { data: floors } }
+    updateData.floors = { deleteMany: {}, createMany: { data: floors.map((f: any) => ({ ...f, code: f.code as any })) } }
   }
   if (extensions !== undefined) {
     updateData.extensions = { deleteMany: {}, createMany: { data: extensions } }

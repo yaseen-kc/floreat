@@ -6,9 +6,9 @@ enum RateUnit {
 }
 
 model Rate {
-  id    String   @id @default(cuid())
-  item  String   @unique
-  unit  RateUnit
+  id   String   @id @default(cuid())
+  item String   @unique
+  unit RateUnit
 
   material         Decimal? @db.Decimal(10, 3)
   fabrication      Decimal? @db.Decimal(10, 3)

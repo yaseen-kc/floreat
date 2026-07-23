@@ -4,6 +4,7 @@ import { z } from 'zod'
 
 const {
   createAccessoriesSchema,
+  createAmountSchema,
   createCanopySchema,
   createJobSchema,
   createJointSchema,
@@ -16,6 +17,7 @@ const {
   createStairSchema,
   paginationSchema,
   updateAccessoriesSchema,
+  updateAmountSchema,
   updateCanopySchema,
   updateJobSchema,
   updateJointSchema,
@@ -33,6 +35,8 @@ const registry = new OpenAPIRegistry()
 const schemas = {
   CreateAccessoriesRequest: createAccessoriesSchema.meta({ id: 'CreateAccessoriesRequest' }),
   UpdateAccessoriesRequest: updateAccessoriesSchema.meta({ id: 'UpdateAccessoriesRequest' }),
+  CreateAmountRequest: createAmountSchema.meta({ id: 'CreateAmountRequest' }),
+  UpdateAmountRequest: updateAmountSchema.meta({ id: 'UpdateAmountRequest' }),
   CreateCanopyRequest: createCanopySchema.meta({ id: 'CreateCanopyRequest' }),
   UpdateCanopyRequest: updateCanopySchema.meta({ id: 'UpdateCanopyRequest' }),
   CreateJobRequest: createJobSchema.meta({ id: 'CreateJobRequest' }),
@@ -88,6 +92,7 @@ const healthResponseSchema = z.object({ status: z.enum(['ok', 'error']), db: z.e
 
 const responseSchemas = {
   AccessoriesResponse: resourceResponseSchema.meta({ id: 'AccessoriesResponse' }),
+  AmountResponse: resourceResponseSchema.meta({ id: 'AmountResponse' }),
   CanopyResponse: resourceResponseSchema.meta({ id: 'CanopyResponse' }),
   JobResponse: resourceResponseSchema.meta({ id: 'JobResponse' }),
   JointResponse: resourceResponseSchema.meta({ id: 'JointResponse' }),
@@ -100,6 +105,7 @@ const responseSchemas = {
   QuantityResponse: resourceResponseSchema.meta({ id: 'QuantityResponse' }),
   UserResponse: resourceResponseSchema.meta({ id: 'UserResponse' }),
   PaginatedAccessoriesResponse: paginatedResponseSchema.meta({ id: 'PaginatedAccessoriesResponse' }),
+  PaginatedAmountResponse: paginatedResponseSchema.meta({ id: 'PaginatedAmountResponse' }),
   PaginatedCanopyResponse: paginatedResponseSchema.meta({ id: 'PaginatedCanopyResponse' }),
   PaginatedJobResponse: paginatedResponseSchema.meta({ id: 'PaginatedJobResponse' }),
   PaginatedJointResponse: paginatedResponseSchema.meta({ id: 'PaginatedJointResponse' }),
@@ -265,6 +271,19 @@ const examples = {
       structureQuantity: 3200.75,
     },
   },
+  amount: {
+    pebRoof: {
+      materialWithPurlinRate: 15.0,
+      materialWithPurlinAmount: 187500.0,
+      roofSheetSpecification: '0.50 MM PPGL',
+      roofSheetRate: 12.0,
+      roofSheetAmount: 5403.0,
+    },
+    mezzanine: {
+      structureRate: 16.5,
+      structureAmount: 52812.375,
+    },
+  },
 }
 
 interface ResourceDefinition {
@@ -285,6 +304,7 @@ const resourceDefinitions: ResourceDefinition[] = [
   { singular: 'Canopy', plural: 'canopies', tag: 'Canopy', createSchema: schemas.CreateCanopyRequest, updateSchema: schemas.UpdateCanopyRequest, responseSchema: responseSchemas.CanopyResponse, paginatedSchema: responseSchemas.PaginatedCanopyResponse, example: examples.canopy },
   { singular: 'Load', plural: 'loads', tag: 'Load', createSchema: schemas.CreateLoadRequest, updateSchema: schemas.UpdateLoadRequest, responseSchema: responseSchemas.LoadResponse, paginatedSchema: responseSchemas.PaginatedLoadResponse, example: examples.load },
   { singular: 'Accessories', plural: 'accessories', tag: 'Accessories', createSchema: schemas.CreateAccessoriesRequest, updateSchema: schemas.UpdateAccessoriesRequest, responseSchema: responseSchemas.AccessoriesResponse, paginatedSchema: responseSchemas.PaginatedAccessoriesResponse, example: examples.accessories },
+  { singular: 'Amount', plural: 'amounts', tag: 'Amount', createSchema: schemas.CreateAmountRequest, updateSchema: schemas.UpdateAmountRequest, responseSchema: responseSchemas.AmountResponse, paginatedSchema: responseSchemas.PaginatedAmountResponse, example: examples.amount },
   { singular: 'Joint', plural: 'joints', tag: 'Joint', createSchema: schemas.CreateJointRequest, updateSchema: schemas.UpdateJointRequest, responseSchema: responseSchemas.JointResponse, paginatedSchema: responseSchemas.PaginatedJointResponse, example: examples.joint },
   { singular: 'Spec', plural: 'specs', tag: 'Specs', createSchema: schemas.CreateSpecRequest, updateSchema: schemas.UpdateSpecRequest, responseSchema: responseSchemas.SpecResponse, paginatedSchema: responseSchemas.PaginatedSpecResponse, example: examples.spec },
   { singular: 'Quantity', plural: 'quantities', tag: 'Quantity', createSchema: schemas.CreateQuantityRequest, updateSchema: schemas.UpdateQuantityRequest, responseSchema: responseSchemas.QuantityResponse, paginatedSchema: responseSchemas.PaginatedQuantityResponse, example: examples.quantity },
