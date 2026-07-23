@@ -22,6 +22,7 @@ import { type CreateSpecInput, specProductItemSchema } from '@/schemas/spec.sche
 import {
   type CreateAccessoriesInput,
 } from '@/schemas/accessories.schema'
+import type { Quantity } from '@/api/quotation/quantity/getQuantity'
 import {
   type CreateJointInput,
   jointBoltRoofItemSchema,
@@ -289,6 +290,7 @@ interface QuotationState {
   accessories: AccessoriesDraft
   joint: JointDraft
   spec: SpecDraft
+  quantity: Quantity | null
   showValidation: boolean
   jobId: string | null
   setProjectInfo: (v: Partial<ProjectInfo>) => void
@@ -430,6 +432,7 @@ export const useQuotationStore = create<QuotationState>()(
       currentStep: 1,
       showValidation: false,
       jobId: null,
+      quantity: null,
       projectInfo: createDefaultProjectInfo(),
       roof: createDefaultRoof(),
       roofSectionsEnabled: createDefaultRoofSections(),
@@ -517,6 +520,7 @@ export const useQuotationStore = create<QuotationState>()(
         currentStep: 1,
         showValidation: false,
         jobId: null,
+        quantity: null,
         projectInfo: createDefaultProjectInfo(),
         roof: createDefaultRoof(),
         roofSectionsEnabled: createDefaultRoofSections(),
