@@ -20,7 +20,7 @@ interface QuantitySectionMeta {
 }
 
 /**
- * Quantity peb-roof section as returned by the backend.
+ * Quantity pebRoof section as returned by the backend.
  *
  * NOTE: Prisma `Decimal` columns serialize to JSON strings over HTTP, so
  * numeric-precision fields are `DecimalString | null` even though payloads

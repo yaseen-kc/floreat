@@ -189,6 +189,41 @@ export const quantityAdditionalBoltsSchema = z.object({
   foundationBoltQuantity: dec,
 })
 
+export const createQuantityPebRoofSchema = quantityPebRoofSchema
+export const updateQuantityPebRoofSchema = quantityPebRoofSchema.partial()
+export type CreateQuantityPebRoofInput = z.infer<typeof createQuantityPebRoofSchema>
+export type UpdateQuantityPebRoofInput = z.infer<typeof updateQuantityPebRoofSchema>
+
+export const createQuantityCladdingSchema = quantityCladdingSchema
+export const updateQuantityCladdingSchema = quantityCladdingSchema.partial()
+export type CreateQuantityCladdingInput = z.infer<typeof createQuantityCladdingSchema>
+export type UpdateQuantityCladdingInput = z.infer<typeof updateQuantityCladdingSchema>
+
+export const createQuantityCanopySchema = quantityCanopySchema
+export const updateQuantityCanopySchema = quantityCanopySchema.partial()
+export type CreateQuantityCanopyInput = z.infer<typeof createQuantityCanopySchema>
+export type UpdateQuantityCanopyInput = z.infer<typeof updateQuantityCanopySchema>
+
+export const createQuantityAccessoriesSchema = quantityAccessoriesSchema
+export const updateQuantityAccessoriesSchema = quantityAccessoriesSchema.partial()
+export type CreateQuantityAccessoriesInput = z.infer<typeof createQuantityAccessoriesSchema>
+export type UpdateQuantityAccessoriesInput = z.infer<typeof updateQuantityAccessoriesSchema>
+
+export const createQuantityMezzanineSchema = quantityMezzanineSchema
+export const updateQuantityMezzanineSchema = quantityMezzanineSchema.partial()
+export type CreateQuantityMezzanineInput = z.infer<typeof createQuantityMezzanineSchema>
+export type UpdateQuantityMezzanineInput = z.infer<typeof updateQuantityMezzanineSchema>
+
+export const createQuantityStairSchema = quantityStairSchema
+export const updateQuantityStairSchema = quantityStairSchema.partial()
+export type CreateQuantityStairInput = z.infer<typeof createQuantityStairSchema>
+export type UpdateQuantityStairInput = z.infer<typeof updateQuantityStairSchema>
+
+export const createQuantityAdditionalBoltsSchema = quantityAdditionalBoltsSchema
+export const updateQuantityAdditionalBoltsSchema = quantityAdditionalBoltsSchema.partial()
+export type CreateQuantityAdditionalBoltsInput = z.infer<typeof createQuantityAdditionalBoltsSchema>
+export type UpdateQuantityAdditionalBoltsInput = z.infer<typeof updateQuantityAdditionalBoltsSchema>
+
 export const createQuantitySchema = z.object({
   pebRoof: quantityPebRoofSchema.optional(),
   cladding: quantityCladdingSchema.optional(),

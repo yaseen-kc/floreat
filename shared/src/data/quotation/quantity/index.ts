@@ -1,5 +1,5 @@
 export * from './types.js';
-export * from './peb-roof.js';
+export * from './pebRoof.js';
 export * from './cladding.js';
 export * from './canopy.js';
 export * from './accessories.js';
