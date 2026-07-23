@@ -29,7 +29,7 @@ const mezzanine: Mezzanine = {
     {
       id: 'floor-1',
       mezzanineId: 'mezz-1',
-      code: 'MEZ-1',
+      code: 'MEZ_1',
       floor: 'FLOOR_1',
       type: 'DECK_SHEET',
       heightFrom: 'GROUND',
@@ -51,6 +51,7 @@ const mezzanine: Mezzanine = {
     {
       id: 'ext-1',
       mezzanineId: 'mezz-1',
+      code: 'EXT_1',
       type: 'PANEL',
       heightFrom: 'FIRST_FLOOR',
       typicalTo: 'FLOOR_3',
@@ -102,6 +103,7 @@ const nullableMezzanine: Mezzanine = {
     {
       id: 'ext-null',
       mezzanineId: 'mezz-2',
+      code: null,
       type: null,
       heightFrom: null,
       typicalTo: null,

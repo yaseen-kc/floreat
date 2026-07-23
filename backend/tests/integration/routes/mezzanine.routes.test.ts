@@ -35,6 +35,7 @@ describe('Mezzanine routes integration', () => {
         payload: { floors, extensions },
       })
 
+      if (res.statusCode !== 200) console.log(JSON.stringify(res.json().error.fieldErrors, null, 2))
       expect(res.statusCode).toBe(200)
       expect(res.json().id).toBe(mezzanine.id)
       expect(res.json().floors).toEqual(floors)
@@ -55,7 +56,7 @@ describe('Mezzanine routes integration', () => {
       expect(prismaMock.mezzanine.upsert).toHaveBeenCalledWith(
         expect.objectContaining({
           create: expect.objectContaining({
-            floors: { createMany: { data: floors.map(f => ({ ...f, code: f.code ? (f.code as string).replace('-', '_') : f.code })) } },
+            floors: { createMany: { data: floors.map(f => ({ ...f, code: f.code as string })) } },
           }),
         }),
       )
@@ -64,7 +65,7 @@ describe('Mezzanine routes integration', () => {
     it('rejects an invalid floor code', async () => {
       const res = await app.inject({
         method: 'POST', url: '/api/jobs/job-1/mezzanine',
-        payload: { floors: [makeMezzanineFloor({ code: 'MEZ-0' as any })] },
+        payload: { floors: [makeMezzanineFloor({ code: 'MEZ_0' as any })] },
       })
       expect(res.statusCode).toBe(400)
     })
@@ -121,7 +122,7 @@ describe('Mezzanine routes integration', () => {
 
       const res = await app.inject({
         method: 'PUT', url: '/api/jobs/job-1/mezzanine',
-        payload: { floors: [makeMezzanineFloor({ code: 'MEZ-2', floor: 'FLOOR_2' })] },
+        payload: { floors: [makeMezzanineFloor({ code: 'MEZ_2', floor: 'FLOOR_2' })] },
       })
 
       expect(res.statusCode).toBe(200)

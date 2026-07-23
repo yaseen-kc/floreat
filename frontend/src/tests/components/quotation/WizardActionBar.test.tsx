@@ -267,7 +267,7 @@ describe('WizardActionBar Step 3 mezzanine persistence', () => {
 
   it('upserts the mezzanine with populated rows and advances to step 4', async () => {
     mocks.upsertMezzMutateAsync.mockResolvedValueOnce({ id: 'mezz-1' })
-    useQuotationStore.getState().setMezzanine({ floors: [{ code: 'MEZ-1', lengthM: 12 }] })
+    useQuotationStore.getState().setMezzanine({ floors: [{ code: 'MEZ_1', lengthM: 12 }] })
     render(<WizardActionBar />)
 
     await userEvent.click(screen.getByRole('button', { name: /continue/i }))
@@ -275,7 +275,7 @@ describe('WizardActionBar Step 3 mezzanine persistence', () => {
     await waitFor(() => expect(useQuotationStore.getState().currentStep).toBe(4))
     expect(mocks.upsertMezzMutateAsync).toHaveBeenCalledWith({
       jobId: 'job-1',
-      payload: { floors: [{ code: 'MEZ-1', lengthM: 12 }] },
+      payload: { floors: [{ code: 'MEZ_1', lengthM: 12 }] },
     })
   })
 

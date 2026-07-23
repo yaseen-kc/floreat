@@ -13,10 +13,10 @@ export const canopyHeightFromEnum = z.enum(['GROUND', 'FF', 'SF', 'FLOOR_3', 'FL
 /** Canopy sheet covering type. */
 export const canopySheetTypeEnum = z.enum(['NCGL', 'PPGL', 'PUFF', 'OTHER'])
 
-/** Business code identifier for a canopy, e.g. "CANOPY-1" to "CANOPY-10". */
+/** Business code identifier for a canopy, e.g. "CANOPY_1" to "CANOPY_10". */
 export const canopyCodeEnum = z.enum([
-  'CANOPY-1', 'CANOPY-2', 'CANOPY-3', 'CANOPY-4', 'CANOPY-5',
-  'CANOPY-6', 'CANOPY-7', 'CANOPY-8', 'CANOPY-9', 'CANOPY-10'
+  'CANOPY_1', 'CANOPY_2', 'CANOPY_3', 'CANOPY_4', 'CANOPY_5',
+  'CANOPY_6', 'CANOPY_7', 'CANOPY_8', 'CANOPY_9', 'CANOPY_10'
 ])
 export const canopyCode = canopyCodeEnum
 

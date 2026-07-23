@@ -62,7 +62,7 @@ describe('Canopy routes integration', () => {
     it('rejects an invalid canopy code', async () => {
       const res = await app.inject({
         method: 'POST', url: '/api/jobs/job-1/canopy',
-        payload: { canopies: [makeCanopyItem({ code: 'CANOPY-0' as any })] },
+        payload: { canopies: [makeCanopyItem({ code: 'CANOPY_0' as any })] },
       })
       expect(res.statusCode).toBe(400)
     })
@@ -119,7 +119,7 @@ describe('Canopy routes integration', () => {
 
       const res = await app.inject({
         method: 'PUT', url: '/api/jobs/job-1/canopy',
-        payload: { canopies: [makeCanopyItem({ code: 'CANOPY-2' })] },
+        payload: { canopies: [makeCanopyItem({ code: 'CANOPY_2' })] },
       })
 
       expect(res.statusCode).toBe(200)

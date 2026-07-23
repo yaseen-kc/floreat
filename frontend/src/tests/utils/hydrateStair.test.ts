@@ -14,7 +14,7 @@ const serverStair = (): Stair => ({
       stairId: 'stair-1',
       code: 'STAIR-1',
       typeOfStep: 'TUBE',
-      location: 'MEZ-1',
+      location: 'MEZ_1',
       startingFrom: 'GROUND',
       endingUpTo: 'FIRST_FLOOR',
       length: '12.5',
@@ -38,7 +38,7 @@ describe('mapStairResponseToDraft', () => {
     expect(item.unitWeightOfStringer).toBeUndefined()
     expect(item.code).toBe('STAIR-1')
     expect(item.typeOfStep).toBe('TUBE')
-    expect(item.location).toBe('MEZ-1')
+    expect(item.location).toBe('MEZ_1')
   })
 
   it('returns populated stairs when the server record has data', () => {
@@ -56,9 +56,9 @@ describe('mapStairResponseToDraft', () => {
 })
 
 describe('buildLocationOptions', () => {
-  it('derives MEZ-/EXT- codes by position from the mezzanine draft', () => {
+  it('derives MEZ_/EXT_ codes by position from the mezzanine draft', () => {
     const options = buildLocationOptions({ floors: [{}, {}], extensions: [{}] })
-    expect(options.map((o) => o.value)).toEqual(['MEZ-1', 'MEZ-2', 'EXT-1'])
+    expect(options.map((o) => o.value)).toEqual(['MEZ_1', 'MEZ_2', 'EXT_1'])
   })
 
   it('returns no options when the mezzanine draft is empty', () => {

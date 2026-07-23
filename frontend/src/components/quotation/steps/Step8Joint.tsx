@@ -27,7 +27,7 @@ export function Step8Joint() {
                 title="Roof Joints"
                 icon={<Building2 className="w-3.5 h-3.5" />}
                 columns="diameterAndCount"
-                hint="Bolt diameter and count per roof / rafter joint code (A–L and end-frame A-1…L-1)."
+                hint="Bolt diameter and count per roof / rafter joint code (A–L and end-frame A_1…L_1)."
             />
             <JointBoltTable
                 group="mezzanine"

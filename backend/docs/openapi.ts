@@ -171,7 +171,7 @@ const examples = {
   },
   mezzanine: {
     floors: [{
-      code: 'MEZ-1', floor: 'FLOOR_1', type: 'DECK_SHEET', heightFrom: 'GROUND',
+      code: 'MEZ_1', floor: 'FLOOR_1', type: 'DECK_SHEET', heightFrom: 'GROUND',
       thicknessMm: 150, lengthM: 12, widthM: 8, heightM: 3.5,
       materialConsumptionKgPerSqft: 4.5, beamsMidPrimary: 4, beamsEndPrimary: 2,
       beamsSecondary: 6, jointsMidPrimary: 2, jointsEndPrimary: 1,
@@ -187,16 +187,16 @@ const examples = {
   },
   stair: {
     stairs: [{
-      code: 'STAIR-1', typeOfStep: 'CHQ_PLATE_6MM', location: 'MEZ-1',
+      code: 'STAIR-1', typeOfStep: 'CHQ_PLATE_6MM', location: 'MEZ_1',
       startingFrom: 'GROUND', endingUpTo: 'FIRST_FLOOR', length: 4.2,
       width: 1.2, height: 3.5, numberOfMidLanding: 1,
       typeOfStringer: 'FAB_SECTION', unitWeightOfStringer: 18,
     }],
-    areaDeductions: [{ type: 'LIFT', location: 'EXT-1', areaM2: 8, numbers: 1, deductionFor: 'BOTH' }],
+    areaDeductions: [{ type: 'LIFT', location: 'EXT_1', areaM2: 8, numbers: 1, deductionFor: 'BOTH' }],
   },
   canopy: {
     canopies: [{
-      code: 'CANOPY-1', heightFrom: 'GROUND', length: 6, width: 3, height: 3.5,
+      code: 'CANOPY_1', heightFrom: 'GROUND', length: 6, width: 3, height: 3.5,
       materialConsumptionKgPerSqft: 9.5, numberOfBeams: 4, numberOfPurlins: 6,
       purlinDepth: 150, unitWeightOfPurlin: 5.2, canopySheet: 'PPGL',
       sheetThick: 0.5, canopySideCoveringHeight: 1.2, gutter: true,

@@ -15,11 +15,10 @@ export const BOLT_TYPE_OPTIONS: SelectFieldOption[] = [
 /**
  * The UI form of a joint-id enum member. Prisma enum member names carry an
  * underscore (`A_1`) or a compact foundation code (`FB4`); the drawings and
- * humans use the hyphenated form (`A-1`, `FB-4`). `SEC` is shown as-is.
+ * humans use the hyphenated form (`A_1`, `FB-4`). `SEC` is shown as-is.
  */
 export function jointIdLabel(id: string): string {
-  if (id.startsWith('FB')) return `FB-${id.slice(2)}`
-  return id.replace('_', '-')
+  return id
 }
 
 /** The closed roof / mezzanine / foundation joint-id sets, in enum order. */

@@ -115,7 +115,7 @@ export function makeRoof(overrides = {}) {
 
 export function makeMezzanineFloor(overrides = {}) {
   return {
-    code: 'MEZ-1',
+    code: 'MEZ_1',
     floor: 'FLOOR_1' as const,
     type: 'DECK_SHEET' as const,
     heightFrom: 'GROUND' as const,
@@ -172,7 +172,7 @@ export function makeStairItem(overrides = {}) {
   return {
     code: 'STAIR-1',
     typeOfStep: 'CHQ_PLATE_6MM' as const,
-    location: 'MEZ-1',
+    location: 'MEZ_1',
     startingFrom: 'GROUND' as const,
     endingUpTo: 'FIRST_FLOOR' as const,
     length: 4,
@@ -188,7 +188,7 @@ export function makeStairItem(overrides = {}) {
 export function makeAreaDeduction(overrides = {}) {
   return {
     type: 'CUT_OUT' as const,
-    location: 'MEZ-1',
+    location: 'MEZ_1',
     areaM2: 3.6,
     numbers: 1,
     deductionFor: 'BOTH' as const,
@@ -481,9 +481,9 @@ export function makeRate(overrides = {}) {
 /** A quantity pebRoof section with a couple of representative leaves. */
 export function makeQuantityPebRoof(overrides = {}) {
   return {
-    pebRoofValue: 12500.5,
+    pebRoofValue: '12500.5',
     pebRoofQuantity: 8000,
-    roofSheet: 450.25,
+    roofSheet: '450.25',
     roofSheetQuantity: 450.25,
     ...overrides,
   }

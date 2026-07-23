@@ -35,6 +35,7 @@ describe('Quantity routes integration', () => {
         payload: { pebRoof },
       })
 
+      if (res.statusCode !== 200) console.log(JSON.stringify(res.json().error?.fieldErrors, null, 2))
       expect(res.statusCode).toBe(200)
       expect(res.json().id).toBe(quantity.id)
       expect(prismaMock.quantity.upsert).toHaveBeenCalledWith(
@@ -51,7 +52,7 @@ describe('Quantity routes integration', () => {
     it('rejects an invalid data type', async () => {
       const res = await app.inject({
         method: 'POST', url: '/api/jobs/job-1/quantity',
-        payload: { pebRoof: { pebRoofValue: 'TONNES' } },
+        payload: { pebRoof: { pebRoofQuantity: 'TONNES' } },
       })
       expect(res.statusCode).toBe(400)
     })

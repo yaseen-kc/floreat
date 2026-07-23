@@ -23,7 +23,7 @@ const mockedApiFetch = vi.mocked(apiFetch)
 const payload: CreateMezzaninePayload = {
   floors: [
     {
-      code: 'MEZ-1',
+      code: 'MEZ_1',
       floor: 'FLOOR_1',
       type: 'DECK_SHEET',
       heightFrom: 'GROUND',

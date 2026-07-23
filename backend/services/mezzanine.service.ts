@@ -8,10 +8,10 @@ import type { CreateMezzanineInput } from '../schemas/mezzanine.schema.js'
 function mapMezzOutput(mezz: any) {
   if (!mezz) return mezz
   if (mezz.floors) {
-    mezz.floors = mezz.floors.map((f: any) => ({ ...f, code: f.code ? f.code.replace('_', '-') : f.code }))
+    mezz.floors = mezz.floors.map((f: any) => ({ ...f, code: f.code }))
   }
   if (mezz.extensions) {
-    mezz.extensions = mezz.extensions.map((e: any) => ({ ...e, code: e.code ? e.code.replace('_', '-') : e.code }))
+    mezz.extensions = mezz.extensions.map((e: any) => ({ ...e, code: e.code }))
   }
   return mezz
 }
@@ -19,8 +19,8 @@ function mapMezzOutput(mezz: any) {
 /** Creates or updates a mezzanine for a given job. Floors and extensions are replaced entirely on update. */
 export async function upsertMezzanine(jobId: string, data: CreateMezzanineInput) {
   const { floors, extensions, ...rest } = data
-  const floorData = floors?.map(f => ({ ...f, code: f.code ? f.code.replace('-', '_') as any : f.code })) ?? []
-  const extensionData = extensions?.map(e => ({ ...e, code: e.code ? e.code.replace('-', '_') as any : e.code })) ?? []
+  const floorData = floors?.map(f => ({ ...f, code: f.code as any })) ?? []
+  const extensionData = extensions?.map(e => ({ ...e, code: e.code as any })) ?? []
 
   const result = await prisma.mezzanine.upsert({
     where: { jobId },
@@ -62,10 +62,10 @@ export async function updateMezzanine(jobId: string, data: Record<string, any>) 
   const updateData: any = { ...rest }
 
   if (floors !== undefined) {
-    updateData.floors = { deleteMany: {}, createMany: { data: floors.map((f: any) => ({ ...f, code: f.code ? f.code.replace('-', '_') as any : f.code })) } }
+    updateData.floors = { deleteMany: {}, createMany: { data: floors.map((f: any) => ({ ...f, code: f.code as any })) } }
   }
   if (extensions !== undefined) {
-    updateData.extensions = { deleteMany: {}, createMany: { data: extensions.map((e: any) => ({ ...e, code: e.code ? e.code.replace('-', '_') as any : e.code })) } }
+    updateData.extensions = { deleteMany: {}, createMany: { data: extensions.map((e: any) => ({ ...e, code: e.code as any })) } }
   }
 
   const result = await prisma.mezzanine.update({ where: { jobId }, data: updateData, include: { floors: true, extensions: true } })

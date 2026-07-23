@@ -18,7 +18,7 @@ describe('JointBoltTable', () => {
     expect(document.getElementById('joint-roof-A_1')).toBeInTheDocument()
     expect(document.getElementById('joint-roof-L_1')).toBeInTheDocument()
     // Hyphenated UI label for underscore member.
-    expect(screen.getByText('A-1')).toBeInTheDocument()
+    expect(screen.getByText('A_1')).toBeInTheDocument()
   })
 
   it('emits a store patch when a bolt count is typed', async () => {

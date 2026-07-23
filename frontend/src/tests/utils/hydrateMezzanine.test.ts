@@ -11,7 +11,7 @@ const serverMezzanine = (): Mezzanine => ({
     {
       id: 'floor-1',
       mezzanineId: 'mezz-1',
-      code: 'MEZ-1',
+      code: 'MEZ_1',
       floor: 'FLOOR_1',
       type: 'DECK_SHEET',
       heightFrom: 'GROUND',
@@ -41,7 +41,7 @@ describe('mapMezzanineResponseToDraft', () => {
     expect(floor.beamsMidPrimary).toBe(4)
     expect(floor.widthM).toBeUndefined()
     expect(floor.beamsEndPrimary).toBeUndefined()
-    expect(floor.code).toBe('MEZ-1')
+    expect(floor.code).toBe('MEZ_1')
     expect(floor.type).toBe('DECK_SHEET')
   })
 

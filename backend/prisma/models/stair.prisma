@@ -24,7 +24,7 @@ enum StairStringerType {
 enum AreaDeductionType {
   LIFT
   DUCT
-  CUT_OUT @map("CUT-OUT")
+  CUT_OUT
 }
 
 enum AreaDeductionFor {

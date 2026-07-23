@@ -8,7 +8,7 @@ import type { CreateMezzanineInput } from '@/schemas/mezzanine.schema'
 
 /** A fully-valid floor used as the baseline for the floor assertions. */
 const validFloor = {
-  code: 'MEZ-1',
+  code: 'MEZ_1',
   floor: 'FLOOR_1',
   type: 'DECK_SHEET',
   heightFrom: 'GROUND',
@@ -42,8 +42,8 @@ describe('mezzanineFloorSchema', () => {
     expect(mezzanineFloorSchema.safeParse(validFloor).success).toBe(true)
   })
 
-  it('rejects a code that does not match MEZ-<n>', () => {
-    const result = mezzanineFloorSchema.safeParse({ ...validFloor, code: 'MEZ_1' })
+  it('rejects an invalid code', () => {
+    const result = mezzanineFloorSchema.safeParse({ ...validFloor, code: 'MEZ-1' })
     expect(result.success).toBe(false)
   })
 

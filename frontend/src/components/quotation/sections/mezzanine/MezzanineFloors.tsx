@@ -61,9 +61,9 @@ export function MezzanineFloors() {
     useShallow((s) => ({ floors: s.mezzanine.floors, setMezzanine: s.setMezzanine })),
   )
 
-  // ponytail: codes are reassigned MEZ-1..MEZ-n by position on every add/remove.
+  // ponytail: codes are reassigned MEZ_1..MEZ_n by position on every add/remove.
   const withCodes = (rows: MezzanineFloorDraft[]): MezzanineFloorDraft[] =>
-    rows.map((row, i) => ({ ...row, code: `MEZ-${i + 1}` as MezzanineFloorDraft['code'] }))
+    rows.map((row, i) => ({ ...row, code: `MEZ_${i + 1}` as MezzanineFloorDraft['code'] }))
 
   const addRow = () => {
     if (floors.length >= 12) return

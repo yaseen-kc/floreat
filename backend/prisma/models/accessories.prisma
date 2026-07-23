@@ -85,7 +85,7 @@ enum PaintType {
 }
 
 enum PurlinsGirtsFinish {
-  PRE_GALVANISED @map("PRE-GALVANISED")
+  PRE_GALVANISED
 }
 
 enum PurlinsGirtsPaint {
@@ -222,5 +222,3 @@ model Accessories {
 
   @@index([createdAt])
 }
-
-

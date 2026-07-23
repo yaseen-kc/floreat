@@ -77,7 +77,7 @@ describe('canopy.service', () => {
   describe('updateCanopy', () => {
     it('updates canopy and replaces canopies when provided', async () => {
       const canopy = makeCanopy()
-      const canopies = [makeCanopyItem({ code: 'CANOPY-2' })]
+      const canopies = [makeCanopyItem({ code: 'CANOPY_2' })]
       prismaMock.canopy.update.mockResolvedValue(canopy as any)
 
       const result = await updateCanopy('job-1', { canopies })

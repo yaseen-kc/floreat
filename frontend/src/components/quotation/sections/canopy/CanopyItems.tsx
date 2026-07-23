@@ -59,9 +59,9 @@ export function CanopyItems() {
     useShallow((s) => ({ canopies: s.canopy.canopies, setCanopy: s.setCanopy })),
   )
 
-  // ponytail: codes are reassigned CANOPY-1..CANOPY-n by position on every add/remove.
+  // ponytail: codes are reassigned CANOPY_1..CANOPY_n by position on every add/remove.
   const withCodes = (rows: CanopyItemDraft[]): CanopyItemDraft[] =>
-    rows.map((row, i) => ({ ...row, code: `CANOPY-${i + 1}` as CanopyItemDraft['code'] }))
+    rows.map((row, i) => ({ ...row, code: `CANOPY_${i + 1}` as CanopyItemDraft['code'] }))
 
   const addRow = () => {
     if (canopies.length >= 10) return

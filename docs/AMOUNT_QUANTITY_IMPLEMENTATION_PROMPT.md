@@ -43,7 +43,7 @@ Every token is one of five things:
    `joint.jointBoltRoof[I].numberOfBolts`, `accessories.openings[ROLLING_SHUTTER].nos`.
    The bracket holds a **enum value / code**, NOT an array index. Look the record up by
    that key: `job.roof.sidewalls.find(w => w.side === 'LEFT').height`. Hyphenated sheet
-   codes use the Prisma enum member name: sheet "B-1" → `B_1` (schema `B_1 @map("B-1")`).
+   codes use the Prisma enum member name: sheet "B_1" → `B_1` (schema `B_1 @map("B_1")`).
 3. **Field on a 1-to-many record, indexed** — e.g. `mezzanine.floors[0].lengthM`,
    `canopy.canopies[0].length`, `stair.stairs[0].height`. The bracket is a **0-based
    position** in the ordered collection. `[0]` = first row entered, `[1]` = second, etc.

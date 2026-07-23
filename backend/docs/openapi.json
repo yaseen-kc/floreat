@@ -1249,18 +1249,18 @@
                 "code": {
                   "type": "string",
                   "enum": [
-                    "MEZ-1",
-                    "MEZ-2",
-                    "MEZ-3",
-                    "MEZ-4",
-                    "MEZ-5",
-                    "MEZ-6",
-                    "MEZ-7",
-                    "MEZ-8",
-                    "MEZ-9",
-                    "MEZ-10",
-                    "MEZ-11",
-                    "MEZ-12"
+                    "MEZ_1",
+                    "MEZ_2",
+                    "MEZ_3",
+                    "MEZ_4",
+                    "MEZ_5",
+                    "MEZ_6",
+                    "MEZ_7",
+                    "MEZ_8",
+                    "MEZ_9",
+                    "MEZ_10",
+                    "MEZ_11",
+                    "MEZ_12"
                   ]
                 },
                 "floor": {
@@ -1363,9 +1363,9 @@
                 "code": {
                   "type": "string",
                   "enum": [
-                    "EXT-1",
-                    "EXT-2",
-                    "EXT-3"
+                    "EXT_1",
+                    "EXT_2",
+                    "EXT_3"
                   ]
                 },
                 "type": {
@@ -1468,18 +1468,18 @@
                 "code": {
                   "type": "string",
                   "enum": [
-                    "MEZ-1",
-                    "MEZ-2",
-                    "MEZ-3",
-                    "MEZ-4",
-                    "MEZ-5",
-                    "MEZ-6",
-                    "MEZ-7",
-                    "MEZ-8",
-                    "MEZ-9",
-                    "MEZ-10",
-                    "MEZ-11",
-                    "MEZ-12"
+                    "MEZ_1",
+                    "MEZ_2",
+                    "MEZ_3",
+                    "MEZ_4",
+                    "MEZ_5",
+                    "MEZ_6",
+                    "MEZ_7",
+                    "MEZ_8",
+                    "MEZ_9",
+                    "MEZ_10",
+                    "MEZ_11",
+                    "MEZ_12"
                   ]
                 },
                 "floor": {
@@ -1582,9 +1582,9 @@
                 "code": {
                   "type": "string",
                   "enum": [
-                    "EXT-1",
-                    "EXT-2",
-                    "EXT-3"
+                    "EXT_1",
+                    "EXT_2",
+                    "EXT_3"
                   ]
                 },
                 "type": {
@@ -1736,7 +1736,7 @@
                 },
                 "location": {
                   "type": "string",
-                  "pattern": "^(MEZ|EXT)-[1-9][0-9]*$"
+                  "pattern": "^(MEZ|EXT)_[1-9][0-9]*$"
                 },
                 "startingFrom": {
                   "type": "string",
@@ -1811,7 +1811,7 @@
                 },
                 "location": {
                   "type": "string",
-                  "pattern": "^(MEZ|EXT)-[1-9][0-9]*$"
+                  "pattern": "^(MEZ|EXT)_[1-9][0-9]*$"
                 },
                 "areaM2": {
                   "type": "number",
@@ -1857,7 +1857,7 @@
                 },
                 "location": {
                   "type": "string",
-                  "pattern": "^(MEZ|EXT)-[1-9][0-9]*$"
+                  "pattern": "^(MEZ|EXT)_[1-9][0-9]*$"
                 },
                 "startingFrom": {
                   "type": "string",
@@ -1932,7 +1932,7 @@
                 },
                 "location": {
                   "type": "string",
-                  "pattern": "^(MEZ|EXT)-[1-9][0-9]*$"
+                  "pattern": "^(MEZ|EXT)_[1-9][0-9]*$"
                 },
                 "areaM2": {
                   "type": "number",
@@ -2005,16 +2005,16 @@
                 "code": {
                   "type": "string",
                   "enum": [
-                    "CANOPY-1",
-                    "CANOPY-2",
-                    "CANOPY-3",
-                    "CANOPY-4",
-                    "CANOPY-5",
-                    "CANOPY-6",
-                    "CANOPY-7",
-                    "CANOPY-8",
-                    "CANOPY-9",
-                    "CANOPY-10"
+                    "CANOPY_1",
+                    "CANOPY_2",
+                    "CANOPY_3",
+                    "CANOPY_4",
+                    "CANOPY_5",
+                    "CANOPY_6",
+                    "CANOPY_7",
+                    "CANOPY_8",
+                    "CANOPY_9",
+                    "CANOPY_10"
                   ]
                 },
                 "heightFrom": {
@@ -2110,16 +2110,16 @@
                 "code": {
                   "type": "string",
                   "enum": [
-                    "CANOPY-1",
-                    "CANOPY-2",
-                    "CANOPY-3",
-                    "CANOPY-4",
-                    "CANOPY-5",
-                    "CANOPY-6",
-                    "CANOPY-7",
-                    "CANOPY-8",
-                    "CANOPY-9",
-                    "CANOPY-10"
+                    "CANOPY_1",
+                    "CANOPY_2",
+                    "CANOPY_3",
+                    "CANOPY_4",
+                    "CANOPY_5",
+                    "CANOPY_6",
+                    "CANOPY_7",
+                    "CANOPY_8",
+                    "CANOPY_9",
+                    "CANOPY_10"
                   ]
                 },
                 "heightFrom": {
@@ -4041,7 +4041,7 @@
             "type": "object",
             "properties": {
               "pebRoofValue": {
-                "type": "number",
+                "type": "string",
                 "nullable": true
               },
               "pebRoofQuantity": {
@@ -4049,7 +4049,7 @@
                 "nullable": true
               },
               "raftersAndColumns": {
-                "type": "number",
+                "type": "string",
                 "nullable": true
               },
               "raftersAndColumnsQuantity": {
@@ -4061,7 +4061,7 @@
                 "nullable": true
               },
               "lengthOfBuildingQuantity": {
-                "type": "number",
+                "type": "string",
                 "nullable": true
               },
               "inclinedLengthInOneHalf": {
@@ -4081,7 +4081,7 @@
                 "nullable": true
               },
               "roofPurlins": {
-                "type": "number",
+                "type": "string",
                 "nullable": true
               },
               "roofPurlinsQuantity": {
@@ -4093,7 +4093,7 @@
                 "nullable": true
               },
               "lengthOfOnePurlinQuantity": {
-                "type": "number",
+                "type": "string",
                 "nullable": true
               },
               "noOfPurlinsInOneFrame": {
@@ -4117,7 +4117,7 @@
                 "nullable": true
               },
               "roofSheet": {
-                "type": "number",
+                "type": "string",
                 "nullable": true
               },
               "roofSheetQuantity": {
@@ -4157,7 +4157,7 @@
                 "nullable": true
               },
               "lengthOfpolyCarbonateSheetAdditional": {
-                "type": "number",
+                "type": "string",
                 "nullable": true
               },
               "widthOfpolyCarbonateSheet": {
@@ -4177,7 +4177,7 @@
                 "nullable": true
               },
               "lengthOfSinlgeWindBracingAdditional": {
-                "type": "number",
+                "type": "string",
                 "nullable": true
               },
               "totalNumberOfWindBracing": {
@@ -4202,6 +4202,10 @@
               },
               "lengthOfSingleSagRoad": {
                 "type": "number",
+                "nullable": true
+              },
+              "lengthOfSingleSagRoadAdditional": {
+                "type": "string",
                 "nullable": true
               },
               "noOfSagRodInASingleFrame": {
@@ -4233,7 +4237,7 @@
                 "nullable": true
               },
               "lengthOfMidFrameFlangeBraceAdditional": {
-                "type": "number",
+                "type": "string",
                 "nullable": true
               },
               "noOfFlangeBraceInMidFrame": {
@@ -4269,7 +4273,7 @@
                 "nullable": true
               },
               "numberOfPurlinBolts": {
-                "type": "number",
+                "type": "string",
                 "nullable": true
               },
               "numberOfPurlinBoltsQuantity": {
@@ -4297,15 +4301,15 @@
                 "nullable": true
               },
               "numberOfRoofJointBolts": {
-                "type": "number",
+                "type": "string",
                 "nullable": true
               },
               "numberOfFoundationBolts": {
-                "type": "number",
+                "type": "string",
                 "nullable": true
               },
               "numberOfAnchorBolts": {
-                "type": "number",
+                "type": "string",
                 "nullable": true
               }
             }
@@ -4717,7 +4721,7 @@
             "type": "object",
             "properties": {
               "pebRoofValue": {
-                "type": "number",
+                "type": "string",
                 "nullable": true
               },
               "pebRoofQuantity": {
@@ -4725,7 +4729,7 @@
                 "nullable": true
               },
               "raftersAndColumns": {
-                "type": "number",
+                "type": "string",
                 "nullable": true
               },
               "raftersAndColumnsQuantity": {
@@ -4737,7 +4741,7 @@
                 "nullable": true
               },
               "lengthOfBuildingQuantity": {
-                "type": "number",
+                "type": "string",
                 "nullable": true
               },
               "inclinedLengthInOneHalf": {
@@ -4757,7 +4761,7 @@
                 "nullable": true
               },
               "roofPurlins": {
-                "type": "number",
+                "type": "string",
                 "nullable": true
               },
               "roofPurlinsQuantity": {
@@ -4769,7 +4773,7 @@
                 "nullable": true
               },
               "lengthOfOnePurlinQuantity": {
-                "type": "number",
+                "type": "string",
                 "nullable": true
               },
               "noOfPurlinsInOneFrame": {
@@ -4793,7 +4797,7 @@
                 "nullable": true
               },
               "roofSheet": {
-                "type": "number",
+                "type": "string",
                 "nullable": true
               },
               "roofSheetQuantity": {
@@ -4833,7 +4837,7 @@
                 "nullable": true
               },
               "lengthOfpolyCarbonateSheetAdditional": {
-                "type": "number",
+                "type": "string",
                 "nullable": true
               },
               "widthOfpolyCarbonateSheet": {
@@ -4853,7 +4857,7 @@
                 "nullable": true
               },
               "lengthOfSinlgeWindBracingAdditional": {
-                "type": "number",
+                "type": "string",
                 "nullable": true
               },
               "totalNumberOfWindBracing": {
@@ -4878,6 +4882,10 @@
               },
               "lengthOfSingleSagRoad": {
                 "type": "number",
+                "nullable": true
+              },
+              "lengthOfSingleSagRoadAdditional": {
+                "type": "string",
                 "nullable": true
               },
               "noOfSagRodInASingleFrame": {
@@ -4909,7 +4917,7 @@
                 "nullable": true
               },
               "lengthOfMidFrameFlangeBraceAdditional": {
-                "type": "number",
+                "type": "string",
                 "nullable": true
               },
               "noOfFlangeBraceInMidFrame": {
@@ -4945,7 +4953,7 @@
                 "nullable": true
               },
               "numberOfPurlinBolts": {
-                "type": "number",
+                "type": "string",
                 "nullable": true
               },
               "numberOfPurlinBoltsQuantity": {
@@ -4973,15 +4981,15 @@
                 "nullable": true
               },
               "numberOfRoofJointBolts": {
-                "type": "number",
+                "type": "string",
                 "nullable": true
               },
               "numberOfFoundationBolts": {
-                "type": "number",
+                "type": "string",
                 "nullable": true
               },
               "numberOfAnchorBolts": {
-                "type": "number",
+                "type": "string",
                 "nullable": true
               }
             }
@@ -6606,7 +6614,7 @@
               "example": {
                 "floors": [
                   {
-                    "code": "MEZ-1",
+                    "code": "MEZ_1",
                     "floor": "FLOOR_1",
                     "type": "DECK_SHEET",
                     "heightFrom": "GROUND",
@@ -6768,7 +6776,7 @@
               "example": {
                 "floors": [
                   {
-                    "code": "MEZ-1",
+                    "code": "MEZ_1",
                     "floor": "FLOOR_1",
                     "type": "DECK_SHEET",
                     "heightFrom": "GROUND",
@@ -6999,7 +7007,7 @@
                   {
                     "code": "STAIR-1",
                     "typeOfStep": "CHQ_PLATE_6MM",
-                    "location": "MEZ-1",
+                    "location": "MEZ_1",
                     "startingFrom": "GROUND",
                     "endingUpTo": "FIRST_FLOOR",
                     "length": 4.2,
@@ -7013,7 +7021,7 @@
                 "areaDeductions": [
                   {
                     "type": "LIFT",
-                    "location": "EXT-1",
+                    "location": "EXT_1",
                     "areaM2": 8,
                     "numbers": 1,
                     "deductionFor": "BOTH"
@@ -7147,7 +7155,7 @@
                   {
                     "code": "STAIR-1",
                     "typeOfStep": "CHQ_PLATE_6MM",
-                    "location": "MEZ-1",
+                    "location": "MEZ_1",
                     "startingFrom": "GROUND",
                     "endingUpTo": "FIRST_FLOOR",
                     "length": 4.2,
@@ -7161,7 +7169,7 @@
                 "areaDeductions": [
                   {
                     "type": "LIFT",
-                    "location": "EXT-1",
+                    "location": "EXT_1",
                     "areaM2": 8,
                     "numbers": 1,
                     "deductionFor": "BOTH"
@@ -7360,7 +7368,7 @@
               "example": {
                 "canopies": [
                   {
-                    "code": "CANOPY-1",
+                    "code": "CANOPY_1",
                     "heightFrom": "GROUND",
                     "length": 6,
                     "width": 3,
@@ -7504,7 +7512,7 @@
               "example": {
                 "canopies": [
                   {
-                    "code": "CANOPY-1",
+                    "code": "CANOPY_1",
                     "heightFrom": "GROUND",
                     "length": 6,
                     "width": 3,

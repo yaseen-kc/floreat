@@ -283,7 +283,7 @@ export const canopyHeightFromEnum = z.enum(['GROUND', 'FF', 'SF', 'FLOOR_3', 'FL
 export const canopySheetTypeEnum = z.enum(['NCGL', 'PPGL', 'PUFF', 'OTHER'])
 
 export const canopyItemSchema = z.object({
-  code: z.string().regex(/^CANOPY-[1-9][0-9]*$/).optional(),
+  code: z.string().regex(/^CANOPY_[1-9][0-9]*$/).optional(),
   heightFrom: canopyHeightFromEnum.optional(),
   length: z.number().positive().optional(),
   canopySheet: canopySheetTypeEnum.optional(),

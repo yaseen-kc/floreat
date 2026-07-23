@@ -19,12 +19,12 @@ describe('mezzanine.service', () => {
         where: { jobId: 'job-1' },
         create: {
           jobId: 'job-1',
-          floors: { createMany: { data: floors.map(f => ({ ...f, code: f.code ? (f.code as string).replace('-', '_') : f.code })) } },
-          extensions: { createMany: { data: extensions.map(e => ({ ...e, code: e.code ? (e.code as string).replace('-', '_') : e.code })) } },
+          floors: { createMany: { data: floors.map(f => ({ ...f, code: f.code as string })) } },
+          extensions: { createMany: { data: extensions.map(e => ({ ...e, code: e.code as string })) } },
         },
         update: {
-          floors: { deleteMany: {}, createMany: { data: floors.map(f => ({ ...f, code: f.code ? (f.code as string).replace('-', '_') : f.code })) } },
-          extensions: { deleteMany: {}, createMany: { data: extensions.map(e => ({ ...e, code: e.code ? (e.code as string).replace('-', '_') : e.code })) } },
+          floors: { deleteMany: {}, createMany: { data: floors.map(f => ({ ...f, code: f.code as string })) } },
+          extensions: { deleteMany: {}, createMany: { data: extensions.map(e => ({ ...e, code: e.code as string })) } },
         },
         include: { floors: true, extensions: true },
       })
@@ -92,7 +92,7 @@ describe('mezzanine.service', () => {
   describe('updateMezzanine', () => {
     it('updates mezzanine and replaces floors and extensions when provided', async () => {
       const mezzanine = makeMezzanine()
-      const floors = [makeMezzanineFloor({ code: 'MEZ-2', floor: 'FLOOR_2' })]
+      const floors = [makeMezzanineFloor({ code: 'MEZ_2', floor: 'FLOOR_2' })]
       const extensions = [makeMezzanineExtension()]
       prismaMock.mezzanine.update.mockResolvedValue(mezzanine as any)
 
@@ -102,8 +102,8 @@ describe('mezzanine.service', () => {
       expect(prismaMock.mezzanine.update).toHaveBeenCalledWith({
         where: { jobId: 'job-1' },
         data: {
-          floors: { deleteMany: {}, createMany: { data: floors.map(f => ({ ...f, code: f.code ? (f.code as string).replace('-', '_') : f.code })) } },
-          extensions: { deleteMany: {}, createMany: { data: extensions.map(e => ({ ...e, code: e.code ? (e.code as string).replace('-', '_') : e.code })) } },
+          floors: { deleteMany: {}, createMany: { data: floors.map(f => ({ ...f, code: f.code as string })) } },
+          extensions: { deleteMany: {}, createMany: { data: extensions.map(e => ({ ...e, code: e.code as string })) } },
         },
         include: { floors: true, extensions: true },
       })

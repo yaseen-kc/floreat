@@ -41,12 +41,12 @@ export const AREA_DEDUCTION_FOR_OPTIONS: SelectFieldOption[] = [
 
 /**
  * Derives the valid stair/area-deduction `location` options from the current
- * mezzanine draft: `MEZ-1..` for each floor and `EXT-1..` for each extension
+ * mezzanine draft: `MEZ_1..` for each floor and `EXT_1..` for each extension
  * (by position, matching the codes assigned in the mezzanine sections). The
  * value equals the label since these are the schema-validated location codes.
  */
 export function buildLocationOptions(mezzanine: MezzanineDraft): SelectFieldOption[] {
-  const floors = mezzanine.floors.map((_, i) => ({ value: `MEZ-${i + 1}`, label: `MEZ-${i + 1}` }))
-  const extensions = mezzanine.extensions.map((_, i) => ({ value: `EXT-${i + 1}`, label: `EXT-${i + 1}` }))
+  const floors = mezzanine.floors.map((_, i) => ({ value: `MEZ_${i + 1}`, label: `MEZ_${i + 1}` }))
+  const extensions = mezzanine.extensions.map((_, i) => ({ value: `EXT_${i + 1}`, label: `EXT_${i + 1}` }))
   return [...floors, ...extensions]
 }

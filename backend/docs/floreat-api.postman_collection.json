@@ -647,7 +647,7 @@
             "method": "POST",
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"floors\": [\n    {\n      \"code\": \"MEZ-1\",\n      \"floor\": \"FLOOR_1\",\n      \"type\": \"DECK_SHEET\",\n      \"heightFrom\": \"GROUND\",\n      \"thicknessMm\": 150,\n      \"lengthM\": 12,\n      \"widthM\": 8,\n      \"heightM\": 3.5,\n      \"materialConsumptionKgPerSqft\": 4.5,\n      \"beamsMidPrimary\": 4,\n      \"beamsEndPrimary\": 2,\n      \"beamsSecondary\": 6,\n      \"jointsMidPrimary\": 2,\n      \"jointsEndPrimary\": 1,\n      \"internalColumnsMidPrimary\": 2,\n      \"internalColumnsEndPrimary\": 1\n    }\n  ],\n  \"extensions\": [\n    {\n      \"type\": \"RCC_SLAB\",\n      \"heightFrom\": \"FIRST_FLOOR\",\n      \"typicalTo\": \"FLOOR_3\",\n      \"thicknessMm\": 120,\n      \"lengthM\": 10,\n      \"widthM\": 6,\n      \"heightM\": 3,\n      \"beamsMidPrimary\": 3,\n      \"beamsEndPrimary\": 1,\n      \"beamsSecondary\": 4,\n      \"jointsMidPrimary\": 1,\n      \"jointsEndPrimary\": 1,\n      \"extendedColumnsMidPrimary\": 2,\n      \"extendedColumnsEndPrimary\": 1\n    }\n  ]\n}",
+              "raw": "{\n  \"floors\": [\n    {\n      \"code\": \"MEZ_1\",\n      \"floor\": \"FLOOR_1\",\n      \"type\": \"DECK_SHEET\",\n      \"heightFrom\": \"GROUND\",\n      \"thicknessMm\": 150,\n      \"lengthM\": 12,\n      \"widthM\": 8,\n      \"heightM\": 3.5,\n      \"materialConsumptionKgPerSqft\": 4.5,\n      \"beamsMidPrimary\": 4,\n      \"beamsEndPrimary\": 2,\n      \"beamsSecondary\": 6,\n      \"jointsMidPrimary\": 2,\n      \"jointsEndPrimary\": 1,\n      \"internalColumnsMidPrimary\": 2,\n      \"internalColumnsEndPrimary\": 1\n    }\n  ],\n  \"extensions\": [\n    {\n      \"type\": \"RCC_SLAB\",\n      \"heightFrom\": \"FIRST_FLOOR\",\n      \"typicalTo\": \"FLOOR_3\",\n      \"thicknessMm\": 120,\n      \"lengthM\": 10,\n      \"widthM\": 6,\n      \"heightM\": 3,\n      \"beamsMidPrimary\": 3,\n      \"beamsEndPrimary\": 1,\n      \"beamsSecondary\": 4,\n      \"jointsMidPrimary\": 1,\n      \"jointsEndPrimary\": 1,\n      \"extendedColumnsMidPrimary\": 2,\n      \"extendedColumnsEndPrimary\": 1\n    }\n  ]\n}",
               "options": {
                 "raw": {
                   "headerFamily": "json",
@@ -752,7 +752,7 @@
             "method": "PUT",
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"floors\": [\n    {\n      \"code\": \"MEZ-1\",\n      \"floor\": \"FLOOR_1\",\n      \"type\": \"DECK_SHEET\",\n      \"heightFrom\": \"GROUND\",\n      \"thicknessMm\": 150,\n      \"lengthM\": 12,\n      \"widthM\": 8,\n      \"heightM\": 3.5,\n      \"materialConsumptionKgPerSqft\": 4.5,\n      \"beamsMidPrimary\": 4,\n      \"beamsEndPrimary\": 2,\n      \"beamsSecondary\": 6,\n      \"jointsMidPrimary\": 2,\n      \"jointsEndPrimary\": 1,\n      \"internalColumnsMidPrimary\": 2,\n      \"internalColumnsEndPrimary\": 1\n    }\n  ],\n  \"extensions\": [\n    {\n      \"type\": \"RCC_SLAB\",\n      \"heightFrom\": \"FIRST_FLOOR\",\n      \"typicalTo\": \"FLOOR_3\",\n      \"thicknessMm\": 120,\n      \"lengthM\": 10,\n      \"widthM\": 6,\n      \"heightM\": 3,\n      \"beamsMidPrimary\": 3,\n      \"beamsEndPrimary\": 1,\n      \"beamsSecondary\": 4,\n      \"jointsMidPrimary\": 1,\n      \"jointsEndPrimary\": 1,\n      \"extendedColumnsMidPrimary\": 2,\n      \"extendedColumnsEndPrimary\": 1\n    }\n  ]\n}",
+              "raw": "{\n  \"floors\": [\n    {\n      \"code\": \"MEZ_1\",\n      \"floor\": \"FLOOR_1\",\n      \"type\": \"DECK_SHEET\",\n      \"heightFrom\": \"GROUND\",\n      \"thicknessMm\": 150,\n      \"lengthM\": 12,\n      \"widthM\": 8,\n      \"heightM\": 3.5,\n      \"materialConsumptionKgPerSqft\": 4.5,\n      \"beamsMidPrimary\": 4,\n      \"beamsEndPrimary\": 2,\n      \"beamsSecondary\": 6,\n      \"jointsMidPrimary\": 2,\n      \"jointsEndPrimary\": 1,\n      \"internalColumnsMidPrimary\": 2,\n      \"internalColumnsEndPrimary\": 1\n    }\n  ],\n  \"extensions\": [\n    {\n      \"type\": \"RCC_SLAB\",\n      \"heightFrom\": \"FIRST_FLOOR\",\n      \"typicalTo\": \"FLOOR_3\",\n      \"thicknessMm\": 120,\n      \"lengthM\": 10,\n      \"widthM\": 6,\n      \"heightM\": 3,\n      \"beamsMidPrimary\": 3,\n      \"beamsEndPrimary\": 1,\n      \"beamsSecondary\": 4,\n      \"jointsMidPrimary\": 1,\n      \"jointsEndPrimary\": 1,\n      \"extendedColumnsMidPrimary\": 2,\n      \"extendedColumnsEndPrimary\": 1\n    }\n  ]\n}",
               "options": {
                 "raw": {
                   "headerFamily": "json",
@@ -915,7 +915,7 @@
             "method": "POST",
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"stairs\": [\n    {\n      \"code\": \"STAIR-1\",\n      \"typeOfStep\": \"CHQ_PLATE_6MM\",\n      \"location\": \"MEZ-1\",\n      \"startingFrom\": \"GROUND\",\n      \"endingUpTo\": \"FIRST_FLOOR\",\n      \"length\": 4.2,\n      \"width\": 1.2,\n      \"height\": 3.5,\n      \"numberOfMidLanding\": 1,\n      \"typeOfStringer\": \"FAB_SECTION\",\n      \"unitWeightOfStringer\": 18\n    }\n  ],\n  \"areaDeductions\": [\n    {\n      \"type\": \"LIFT\",\n      \"location\": \"EXT-1\",\n      \"areaM2\": 8,\n      \"numbers\": 1,\n      \"deductionFor\": \"BOTH\"\n    }\n  ]\n}",
+              "raw": "{\n  \"stairs\": [\n    {\n      \"code\": \"STAIR-1\",\n      \"typeOfStep\": \"CHQ_PLATE_6MM\",\n      \"location\": \"MEZ_1\",\n      \"startingFrom\": \"GROUND\",\n      \"endingUpTo\": \"FIRST_FLOOR\",\n      \"length\": 4.2,\n      \"width\": 1.2,\n      \"height\": 3.5,\n      \"numberOfMidLanding\": 1,\n      \"typeOfStringer\": \"FAB_SECTION\",\n      \"unitWeightOfStringer\": 18\n    }\n  ],\n  \"areaDeductions\": [\n    {\n      \"type\": \"LIFT\",\n      \"location\": \"EXT_1\",\n      \"areaM2\": 8,\n      \"numbers\": 1,\n      \"deductionFor\": \"BOTH\"\n    }\n  ]\n}",
               "options": {
                 "raw": {
                   "headerFamily": "json",
@@ -1020,7 +1020,7 @@
             "method": "PUT",
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"stairs\": [\n    {\n      \"code\": \"STAIR-1\",\n      \"typeOfStep\": \"CHQ_PLATE_6MM\",\n      \"location\": \"MEZ-1\",\n      \"startingFrom\": \"GROUND\",\n      \"endingUpTo\": \"FIRST_FLOOR\",\n      \"length\": 4.2,\n      \"width\": 1.2,\n      \"height\": 3.5,\n      \"numberOfMidLanding\": 1,\n      \"typeOfStringer\": \"FAB_SECTION\",\n      \"unitWeightOfStringer\": 18\n    }\n  ],\n  \"areaDeductions\": [\n    {\n      \"type\": \"LIFT\",\n      \"location\": \"EXT-1\",\n      \"areaM2\": 8,\n      \"numbers\": 1,\n      \"deductionFor\": \"BOTH\"\n    }\n  ]\n}",
+              "raw": "{\n  \"stairs\": [\n    {\n      \"code\": \"STAIR-1\",\n      \"typeOfStep\": \"CHQ_PLATE_6MM\",\n      \"location\": \"MEZ_1\",\n      \"startingFrom\": \"GROUND\",\n      \"endingUpTo\": \"FIRST_FLOOR\",\n      \"length\": 4.2,\n      \"width\": 1.2,\n      \"height\": 3.5,\n      \"numberOfMidLanding\": 1,\n      \"typeOfStringer\": \"FAB_SECTION\",\n      \"unitWeightOfStringer\": 18\n    }\n  ],\n  \"areaDeductions\": [\n    {\n      \"type\": \"LIFT\",\n      \"location\": \"EXT_1\",\n      \"areaM2\": 8,\n      \"numbers\": 1,\n      \"deductionFor\": \"BOTH\"\n    }\n  ]\n}",
               "options": {
                 "raw": {
                   "headerFamily": "json",
@@ -1183,7 +1183,7 @@
             "method": "POST",
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"canopies\": [\n    {\n      \"code\": \"CANOPY-1\",\n      \"heightFrom\": \"GROUND\",\n      \"length\": 6,\n      \"width\": 3,\n      \"height\": 3.5,\n      \"materialConsumptionKgPerSqft\": 9.5,\n      \"numberOfBeams\": 4,\n      \"numberOfPurlins\": 6,\n      \"purlinDepth\": 150,\n      \"unitWeightOfPurlin\": 5.2,\n      \"canopySheet\": \"PPGL\",\n      \"sheetThick\": 0.5,\n      \"canopySideCoveringHeight\": 1.2,\n      \"gutter\": true,\n      \"downTake\": false,\n      \"flashing\": true\n    }\n  ]\n}",
+              "raw": "{\n  \"canopies\": [\n    {\n      \"code\": \"CANOPY_1\",\n      \"heightFrom\": \"GROUND\",\n      \"length\": 6,\n      \"width\": 3,\n      \"height\": 3.5,\n      \"materialConsumptionKgPerSqft\": 9.5,\n      \"numberOfBeams\": 4,\n      \"numberOfPurlins\": 6,\n      \"purlinDepth\": 150,\n      \"unitWeightOfPurlin\": 5.2,\n      \"canopySheet\": \"PPGL\",\n      \"sheetThick\": 0.5,\n      \"canopySideCoveringHeight\": 1.2,\n      \"gutter\": true,\n      \"downTake\": false,\n      \"flashing\": true\n    }\n  ]\n}",
               "options": {
                 "raw": {
                   "headerFamily": "json",
@@ -1288,7 +1288,7 @@
             "method": "PUT",
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"canopies\": [\n    {\n      \"code\": \"CANOPY-1\",\n      \"heightFrom\": \"GROUND\",\n      \"length\": 6,\n      \"width\": 3,\n      \"height\": 3.5,\n      \"materialConsumptionKgPerSqft\": 9.5,\n      \"numberOfBeams\": 4,\n      \"numberOfPurlins\": 6,\n      \"purlinDepth\": 150,\n      \"unitWeightOfPurlin\": 5.2,\n      \"canopySheet\": \"PPGL\",\n      \"sheetThick\": 0.5,\n      \"canopySideCoveringHeight\": 1.2,\n      \"gutter\": true,\n      \"downTake\": false,\n      \"flashing\": true\n    }\n  ]\n}",
+              "raw": "{\n  \"canopies\": [\n    {\n      \"code\": \"CANOPY_1\",\n      \"heightFrom\": \"GROUND\",\n      \"length\": 6,\n      \"width\": 3,\n      \"height\": 3.5,\n      \"materialConsumptionKgPerSqft\": 9.5,\n      \"numberOfBeams\": 4,\n      \"numberOfPurlins\": 6,\n      \"purlinDepth\": 150,\n      \"unitWeightOfPurlin\": 5.2,\n      \"canopySheet\": \"PPGL\",\n      \"sheetThick\": 0.5,\n      \"canopySideCoveringHeight\": 1.2,\n      \"gutter\": true,\n      \"downTake\": false,\n      \"flashing\": true\n    }\n  ]\n}",
               "options": {
                 "raw": {
                   "headerFamily": "json",

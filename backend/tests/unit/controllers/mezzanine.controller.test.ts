@@ -38,7 +38,7 @@ describe('mezzanine controller', () => {
     it('returns 400 with invalid floor body', async () => {
       const res = await app.inject({
         method: 'POST', url: '/api/jobs/job-1/mezzanine',
-        payload: { floors: [makeMezzanineFloor({ code: 'BAD-1' as any })] },
+        payload: { floors: [makeMezzanineFloor({ code: 'BAD_1' as any })] },
       })
 
       expect(res.statusCode).toBe(400)

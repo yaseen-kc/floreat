@@ -27,7 +27,7 @@ export const MEZZANINE_HEIGHT_FROM_OPTIONS: SelectFieldOption[] = [
 
 /** Human-readable labels for mezzanine floor extension code. */
 export const MEZZANINE_FLOOR_CODE_EXT_OPTIONS: SelectFieldOption[] = [
-  { value: 'EXT-1', label: 'EXT-1' },
-  { value: 'EXT-2', label: 'EXT-2' },
-  { value: 'EXT-3', label: 'EXT-3' },
+  { value: 'EXT_1', label: 'EXT_1' },
+  { value: 'EXT_2', label: 'EXT_2' },
+  { value: 'EXT_3', label: 'EXT_3' },
 ]
