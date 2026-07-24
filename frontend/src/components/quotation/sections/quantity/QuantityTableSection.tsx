@@ -14,9 +14,10 @@ interface Props {
   title: string
   icon: React.ReactNode
   rows: RowDef[]
+  calculatedData?: Record<string, any>
 }
 
-export function QuantityTableSection({ sectionKey, title, icon, rows }: Props) {
+export function QuantityTableSection({ sectionKey, title, icon, rows, calculatedData }: Props) {
   const jobId = useQuotationStore((s) => s.jobId)
   const initialData = useQuotationStore((s) => s.quantity?.[sectionKey] ?? null)
   const [draft, setDraft] = useState<Record<string, string>>({})
@@ -53,6 +54,7 @@ export function QuantityTableSection({ sectionKey, title, icon, rows }: Props) {
       title={title}
       rows={rows}
       sectionData={initialData as unknown as Record<string, string | number | boolean | null | undefined> | null}
+      calculatedData={calculatedData}
       draft={draft}
       onEdit={onEdit}
       onSave={onSave}

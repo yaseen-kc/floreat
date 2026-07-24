@@ -2,17 +2,61 @@ import { useQuantityHydration } from '@/hooks/useQuantityHydration'
 import { QuantityTableSection } from '@/components/quotation/sections/quantity/QuantityTableSection'
 import { Layers, LayoutGrid, Umbrella, Wrench, Layers2, MoveUpRight, Nut } from 'lucide-react'
 import {
-  PEB_ROOF_ROWS,
-  CLADDING_ROWS,
-  CANOPY_ROWS,
-  ACCESSORIES_ROWS,
-  MEZZANINE_ROWS,
-  STAIR_ROWS,
-  ADDITIONAL_BOLTS_ROWS,
+  getPebRoofRows,
+  getCladdingRows,
+  getCanopyRows,
+  getAccessoriesRows,
+  getMezzanineRows,
+  getStairRows,
+  getAdditionalBoltsRows,
 } from '@/components/quotation/sections/quantity/quantity-rows'
+import { 
+  calculatePebQuantities,
+  calculateCladdingQuantities,
+  calculateCanopyQuantities,
+  calculateAccessoriesQuantities,
+  calculateMezzanineQuantities,
+  calculateStairQuantities,
+  calculateAdditionalBoltsQuantities
+} from '@floreat/shared/calc'
+import { useQuotationStore } from '@/stores/quotation-store'
+import { useShallow } from 'zustand/react/shallow'
 
 export function Step12Quantity() {
   useQuantityHydration()
+
+  const { roof, joint, canopy, accessories, mezzanine, stair } = useQuotationStore(
+    useShallow((s) => ({
+      roof: s.roof,
+      joint: s.joint,
+      canopy: s.canopy,
+      accessories: s.accessories,
+      mezzanine: s.mezzanine,
+      stair: s.stair,
+    }))
+  )
+
+  const pebCalculatedNested = calculatePebQuantities({
+    roof,
+    joint,
+    jointBoltRoofs: joint?.jointBoltRoof,
+    foundationBoltRoof: joint?.foundationBoltRoof?.[0] || joint?.foundationBoltRoof,
+  })
+
+  const claddingCalc = calculateCladdingQuantities({ roof })
+  const canopyCalc = calculateCanopyQuantities({ canopy, joint })
+  const accessoriesCalc = calculateAccessoriesQuantities({ accessories, roof })
+  const mezzanineCalc = calculateMezzanineQuantities({ mezzanine, joint, jointBoltMezzanines: joint.jointBoltMezzanine, stair })
+  const stairCalc = calculateStairQuantities({ stair, mezzanine })
+  const additionalBoltsCalc = calculateAdditionalBoltsQuantities({})
+
+  const pebRoofRows = getPebRoofRows(pebCalculatedNested)
+  const claddingRows = getCladdingRows(claddingCalc)
+  const canopyRows = getCanopyRows(canopyCalc)
+  const accessoriesRows = getAccessoriesRows(accessoriesCalc)
+  const mezzanineRows = getMezzanineRows(mezzanineCalc)
+  const stairRows = getStairRows(stairCalc)
+  const additionalBoltsRows = getAdditionalBoltsRows(additionalBoltsCalc)
 
   return (
     <section>
@@ -23,13 +67,13 @@ export function Step12Quantity() {
         </p>
       </div>
       <div className="space-y-6">
-        <QuantityTableSection sectionKey="pebRoof" title="PEB Roof" icon={<Layers />} rows={PEB_ROOF_ROWS} />
-        <QuantityTableSection sectionKey="cladding" title="Cladding" icon={<LayoutGrid />} rows={CLADDING_ROWS} />
-        <QuantityTableSection sectionKey="canopy" title="Canopy" icon={<Umbrella />} rows={CANOPY_ROWS} />
-        <QuantityTableSection sectionKey="accessories" title="Accessories" icon={<Wrench />} rows={ACCESSORIES_ROWS} />
-        <QuantityTableSection sectionKey="mezzanine" title="Mezzanine" icon={<Layers2 />} rows={MEZZANINE_ROWS} />
-        <QuantityTableSection sectionKey="stair" title="Stair" icon={<MoveUpRight />} rows={STAIR_ROWS} />
-        <QuantityTableSection sectionKey="additionalBolts" title="Additional Bolts" icon={<Nut />} rows={ADDITIONAL_BOLTS_ROWS} />
+        <QuantityTableSection sectionKey="pebRoof" title="PEB Roof" icon={<Layers />} rows={pebRoofRows} />
+        <QuantityTableSection sectionKey="cladding" title="Cladding" icon={<LayoutGrid />} rows={claddingRows} />
+        <QuantityTableSection sectionKey="canopy" title="Canopy" icon={<Umbrella />} rows={canopyRows} />
+        <QuantityTableSection sectionKey="accessories" title="Accessories" icon={<Wrench />} rows={accessoriesRows} />
+        <QuantityTableSection sectionKey="mezzanine" title="Mezzanine" icon={<Layers2 />} rows={mezzanineRows} />
+        <QuantityTableSection sectionKey="stair" title="Stair" icon={<MoveUpRight />} rows={stairRows} />
+        <QuantityTableSection sectionKey="additionalBolts" title="Additional Bolts" icon={<Nut />} rows={additionalBoltsRows} />
       </div>
     </section>
   )

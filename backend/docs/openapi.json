@@ -5424,6 +5424,1622 @@
           "page",
           "pageSize"
         ]
+      },
+      "QuantityPebRoofResponse": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": {
+          "nullable": true
+        }
+      },
+      "CreateQuantityPebRoofRequest": {
+        "type": "object",
+        "properties": {
+          "pebRoofValue": {
+            "type": "string",
+            "nullable": true
+          },
+          "pebRoofQuantity": {
+            "type": "number",
+            "nullable": true
+          },
+          "raftersAndColumns": {
+            "type": "string",
+            "nullable": true
+          },
+          "raftersAndColumnsQuantity": {
+            "type": "number",
+            "nullable": true
+          },
+          "lengthOfBuilding": {
+            "type": "number",
+            "nullable": true
+          },
+          "lengthOfBuildingQuantity": {
+            "type": "string",
+            "nullable": true
+          },
+          "inclinedLengthInOneHalf": {
+            "type": "number",
+            "nullable": true
+          },
+          "roofArea": {
+            "type": "number",
+            "nullable": true
+          },
+          "materialConsumption": {
+            "type": "number",
+            "nullable": true
+          },
+          "roofPurlinsValue": {
+            "type": "number",
+            "nullable": true
+          },
+          "roofPurlins": {
+            "type": "string",
+            "nullable": true
+          },
+          "roofPurlinsQuantity": {
+            "type": "number",
+            "nullable": true
+          },
+          "lengthOfOnePurlin": {
+            "type": "number",
+            "nullable": true
+          },
+          "lengthOfOnePurlinQuantity": {
+            "type": "string",
+            "nullable": true
+          },
+          "noOfPurlinsInOneFrame": {
+            "type": "integer",
+            "nullable": true
+          },
+          "totalNoOfPurlinBay": {
+            "type": "integer",
+            "nullable": true
+          },
+          "unitWeightOfPurlin": {
+            "type": "number",
+            "nullable": true
+          },
+          "noOfExtendedFrame": {
+            "type": "integer",
+            "nullable": true
+          },
+          "noOfExtendedPurlinBay": {
+            "type": "integer",
+            "nullable": true
+          },
+          "roofSheet": {
+            "type": "string",
+            "nullable": true
+          },
+          "roofSheetQuantity": {
+            "type": "number",
+            "nullable": true
+          },
+          "roofSheetPurchaseQuantity": {
+            "type": "number",
+            "nullable": true
+          },
+          "extendedRoofWidth": {
+            "type": "number",
+            "nullable": true
+          },
+          "extendedRoofLength": {
+            "type": "number",
+            "nullable": true
+          },
+          "roofAreaDeductions": {
+            "type": "number",
+            "nullable": true
+          },
+          "polyCarbonateAreaDeductions": {
+            "type": "number",
+            "nullable": true
+          },
+          "polyCarbonateSheetQuantity": {
+            "type": "number",
+            "nullable": true
+          },
+          "polyCarbonateSheetPurchaseQuantity": {
+            "type": "number",
+            "nullable": true
+          },
+          "lengthOfpolyCarbonateSheet": {
+            "type": "number",
+            "nullable": true
+          },
+          "lengthOfpolyCarbonateSheetAdditional": {
+            "type": "string",
+            "nullable": true
+          },
+          "widthOfpolyCarbonateSheet": {
+            "type": "number",
+            "nullable": true
+          },
+          "NosOfpolyCarbonateSheet": {
+            "type": "integer",
+            "nullable": true
+          },
+          "roofWindBracing": {
+            "type": "number",
+            "nullable": true
+          },
+          "lengthOfSinlgeWindBracing": {
+            "type": "number",
+            "nullable": true
+          },
+          "lengthOfSinlgeWindBracingAdditional": {
+            "type": "string",
+            "nullable": true
+          },
+          "totalNumberOfWindBracing": {
+            "type": "integer",
+            "nullable": true
+          },
+          "unitWeightOfRoofWindBracing": {
+            "type": "number",
+            "nullable": true
+          },
+          "roofSagRoadValue": {
+            "type": "number",
+            "nullable": true
+          },
+          "roofSagRoadQuantity": {
+            "type": "number",
+            "nullable": true
+          },
+          "roofSagRoadQuantityAdditional": {
+            "type": "number",
+            "nullable": true
+          },
+          "lengthOfSingleSagRoad": {
+            "type": "number",
+            "nullable": true
+          },
+          "lengthOfSingleSagRoadAdditional": {
+            "type": "string",
+            "nullable": true
+          },
+          "noOfSagRodInASingleFrame": {
+            "type": "integer",
+            "nullable": true
+          },
+          "noOfBayInSagRodProvided": {
+            "type": "integer",
+            "nullable": true
+          },
+          "noOfSagRodInExtendedFrame": {
+            "type": "integer",
+            "nullable": true
+          },
+          "noOfExtendedSagRodBay": {
+            "type": "integer",
+            "nullable": true
+          },
+          "unitWeightOfSagRod": {
+            "type": "number",
+            "nullable": true
+          },
+          "roofFlangeBraceQuantity": {
+            "type": "number",
+            "nullable": true
+          },
+          "lengthOfMidFrameFlangeBrace": {
+            "type": "number",
+            "nullable": true
+          },
+          "lengthOfMidFrameFlangeBraceAdditional": {
+            "type": "string",
+            "nullable": true
+          },
+          "noOfFlangeBraceInMidFrame": {
+            "type": "integer",
+            "nullable": true
+          },
+          "noOfFlangeBraceInEndFrame": {
+            "type": "integer",
+            "nullable": true
+          },
+          "noOfMidFrame": {
+            "type": "integer",
+            "nullable": true
+          },
+          "noOfEndFrame": {
+            "type": "integer",
+            "nullable": true
+          },
+          "noOfFlngBraceInExtendedFrame": {
+            "type": "integer",
+            "nullable": true
+          },
+          "noOfExtendedMidFrame": {
+            "type": "integer",
+            "nullable": true
+          },
+          "noOfExtendedEndFrame": {
+            "type": "integer",
+            "nullable": true
+          },
+          "lengthOfEndFrameFlangeBrace": {
+            "type": "number",
+            "nullable": true
+          },
+          "numberOfPurlinBolts": {
+            "type": "string",
+            "nullable": true
+          },
+          "numberOfPurlinBoltsQuantity": {
+            "type": "number",
+            "nullable": true
+          },
+          "noOfPurlinJointInSingleFrame": {
+            "type": "integer",
+            "nullable": true
+          },
+          "totalnoOfFrames": {
+            "type": "integer",
+            "nullable": true
+          },
+          "noOfPurlinnodeInExtendedFrame": {
+            "type": "integer",
+            "nullable": true
+          },
+          "noOfExtendedFrames": {
+            "type": "integer",
+            "nullable": true
+          },
+          "noOfBoltsInSinglePurlinJoint": {
+            "type": "integer",
+            "nullable": true
+          },
+          "numberOfRoofJointBolts": {
+            "type": "string",
+            "nullable": true
+          },
+          "numberOfFoundationBolts": {
+            "type": "string",
+            "nullable": true
+          },
+          "numberOfAnchorBolts": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "UpdateQuantityPebRoofRequest": {
+        "type": "object",
+        "properties": {
+          "pebRoofValue": {
+            "type": "string",
+            "nullable": true
+          },
+          "pebRoofQuantity": {
+            "type": "number",
+            "nullable": true
+          },
+          "raftersAndColumns": {
+            "type": "string",
+            "nullable": true
+          },
+          "raftersAndColumnsQuantity": {
+            "type": "number",
+            "nullable": true
+          },
+          "lengthOfBuilding": {
+            "type": "number",
+            "nullable": true
+          },
+          "lengthOfBuildingQuantity": {
+            "type": "string",
+            "nullable": true
+          },
+          "inclinedLengthInOneHalf": {
+            "type": "number",
+            "nullable": true
+          },
+          "roofArea": {
+            "type": "number",
+            "nullable": true
+          },
+          "materialConsumption": {
+            "type": "number",
+            "nullable": true
+          },
+          "roofPurlinsValue": {
+            "type": "number",
+            "nullable": true
+          },
+          "roofPurlins": {
+            "type": "string",
+            "nullable": true
+          },
+          "roofPurlinsQuantity": {
+            "type": "number",
+            "nullable": true
+          },
+          "lengthOfOnePurlin": {
+            "type": "number",
+            "nullable": true
+          },
+          "lengthOfOnePurlinQuantity": {
+            "type": "string",
+            "nullable": true
+          },
+          "noOfPurlinsInOneFrame": {
+            "type": "integer",
+            "nullable": true
+          },
+          "totalNoOfPurlinBay": {
+            "type": "integer",
+            "nullable": true
+          },
+          "unitWeightOfPurlin": {
+            "type": "number",
+            "nullable": true
+          },
+          "noOfExtendedFrame": {
+            "type": "integer",
+            "nullable": true
+          },
+          "noOfExtendedPurlinBay": {
+            "type": "integer",
+            "nullable": true
+          },
+          "roofSheet": {
+            "type": "string",
+            "nullable": true
+          },
+          "roofSheetQuantity": {
+            "type": "number",
+            "nullable": true
+          },
+          "roofSheetPurchaseQuantity": {
+            "type": "number",
+            "nullable": true
+          },
+          "extendedRoofWidth": {
+            "type": "number",
+            "nullable": true
+          },
+          "extendedRoofLength": {
+            "type": "number",
+            "nullable": true
+          },
+          "roofAreaDeductions": {
+            "type": "number",
+            "nullable": true
+          },
+          "polyCarbonateAreaDeductions": {
+            "type": "number",
+            "nullable": true
+          },
+          "polyCarbonateSheetQuantity": {
+            "type": "number",
+            "nullable": true
+          },
+          "polyCarbonateSheetPurchaseQuantity": {
+            "type": "number",
+            "nullable": true
+          },
+          "lengthOfpolyCarbonateSheet": {
+            "type": "number",
+            "nullable": true
+          },
+          "lengthOfpolyCarbonateSheetAdditional": {
+            "type": "string",
+            "nullable": true
+          },
+          "widthOfpolyCarbonateSheet": {
+            "type": "number",
+            "nullable": true
+          },
+          "NosOfpolyCarbonateSheet": {
+            "type": "integer",
+            "nullable": true
+          },
+          "roofWindBracing": {
+            "type": "number",
+            "nullable": true
+          },
+          "lengthOfSinlgeWindBracing": {
+            "type": "number",
+            "nullable": true
+          },
+          "lengthOfSinlgeWindBracingAdditional": {
+            "type": "string",
+            "nullable": true
+          },
+          "totalNumberOfWindBracing": {
+            "type": "integer",
+            "nullable": true
+          },
+          "unitWeightOfRoofWindBracing": {
+            "type": "number",
+            "nullable": true
+          },
+          "roofSagRoadValue": {
+            "type": "number",
+            "nullable": true
+          },
+          "roofSagRoadQuantity": {
+            "type": "number",
+            "nullable": true
+          },
+          "roofSagRoadQuantityAdditional": {
+            "type": "number",
+            "nullable": true
+          },
+          "lengthOfSingleSagRoad": {
+            "type": "number",
+            "nullable": true
+          },
+          "lengthOfSingleSagRoadAdditional": {
+            "type": "string",
+            "nullable": true
+          },
+          "noOfSagRodInASingleFrame": {
+            "type": "integer",
+            "nullable": true
+          },
+          "noOfBayInSagRodProvided": {
+            "type": "integer",
+            "nullable": true
+          },
+          "noOfSagRodInExtendedFrame": {
+            "type": "integer",
+            "nullable": true
+          },
+          "noOfExtendedSagRodBay": {
+            "type": "integer",
+            "nullable": true
+          },
+          "unitWeightOfSagRod": {
+            "type": "number",
+            "nullable": true
+          },
+          "roofFlangeBraceQuantity": {
+            "type": "number",
+            "nullable": true
+          },
+          "lengthOfMidFrameFlangeBrace": {
+            "type": "number",
+            "nullable": true
+          },
+          "lengthOfMidFrameFlangeBraceAdditional": {
+            "type": "string",
+            "nullable": true
+          },
+          "noOfFlangeBraceInMidFrame": {
+            "type": "integer",
+            "nullable": true
+          },
+          "noOfFlangeBraceInEndFrame": {
+            "type": "integer",
+            "nullable": true
+          },
+          "noOfMidFrame": {
+            "type": "integer",
+            "nullable": true
+          },
+          "noOfEndFrame": {
+            "type": "integer",
+            "nullable": true
+          },
+          "noOfFlngBraceInExtendedFrame": {
+            "type": "integer",
+            "nullable": true
+          },
+          "noOfExtendedMidFrame": {
+            "type": "integer",
+            "nullable": true
+          },
+          "noOfExtendedEndFrame": {
+            "type": "integer",
+            "nullable": true
+          },
+          "lengthOfEndFrameFlangeBrace": {
+            "type": "number",
+            "nullable": true
+          },
+          "numberOfPurlinBolts": {
+            "type": "string",
+            "nullable": true
+          },
+          "numberOfPurlinBoltsQuantity": {
+            "type": "number",
+            "nullable": true
+          },
+          "noOfPurlinJointInSingleFrame": {
+            "type": "integer",
+            "nullable": true
+          },
+          "totalnoOfFrames": {
+            "type": "integer",
+            "nullable": true
+          },
+          "noOfPurlinnodeInExtendedFrame": {
+            "type": "integer",
+            "nullable": true
+          },
+          "noOfExtendedFrames": {
+            "type": "integer",
+            "nullable": true
+          },
+          "noOfBoltsInSinglePurlinJoint": {
+            "type": "integer",
+            "nullable": true
+          },
+          "numberOfRoofJointBolts": {
+            "type": "string",
+            "nullable": true
+          },
+          "numberOfFoundationBolts": {
+            "type": "string",
+            "nullable": true
+          },
+          "numberOfAnchorBolts": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "PaginatedQuantityPebRoofResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "nullable": true
+            }
+          },
+          "total": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "page": {
+            "type": "integer",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          },
+          "pageSize": {
+            "type": "integer",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          }
+        },
+        "required": [
+          "data",
+          "total",
+          "page",
+          "pageSize"
+        ]
+      },
+      "QuantityCladdingResponse": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": {
+          "nullable": true
+        }
+      },
+      "CreateQuantityCladdingRequest": {
+        "type": "object",
+        "properties": {
+          "claddingStructureQuantity": {
+            "type": "number",
+            "nullable": true
+          },
+          "claddingEaveHeightFront": {
+            "type": "number",
+            "nullable": true
+          },
+          "claddingEaveHeightFrontAdditional": {
+            "type": "number",
+            "nullable": true
+          },
+          "claddingEaveHeightBack": {
+            "type": "number",
+            "nullable": true
+          },
+          "claddingEaveHeightRight": {
+            "type": "number",
+            "nullable": true
+          },
+          "claddingEaveHeightLeft": {
+            "type": "number",
+            "nullable": true
+          },
+          "extendedColumnHeight": {
+            "type": "number",
+            "nullable": true
+          },
+          "widthOfExtendedFrame": {
+            "type": "number",
+            "nullable": true
+          },
+          "noOfSideCladdingPurlin": {
+            "type": "integer",
+            "nullable": true
+          },
+          "noOfFaceCladdingPurlin": {
+            "type": "integer",
+            "nullable": true
+          },
+          "totalLengthOfCladdingPurlin": {
+            "type": "number",
+            "nullable": true
+          },
+          "totalWeightofCladdingPurlin": {
+            "type": "number",
+            "nullable": true
+          },
+          "claddingAreaWithoutAnyDeductions": {
+            "type": "number",
+            "nullable": true
+          },
+          "averageMaterialConsumption": {
+            "type": "number",
+            "nullable": true
+          },
+          "totalCladdingOpenings": {
+            "type": "number",
+            "nullable": true
+          },
+          "fasciaOpening": {
+            "type": "number",
+            "nullable": true
+          },
+          "claddingSheetQuantity": {
+            "type": "number",
+            "nullable": true
+          },
+          "claddingSheetAdditional": {
+            "type": "number",
+            "nullable": true
+          },
+          "claddingSheetPurchase": {
+            "type": "number",
+            "nullable": true
+          },
+          "columnWindBracingsAdditional": {
+            "type": "number",
+            "nullable": true
+          },
+          "claddingSagRodAdditional": {
+            "type": "number",
+            "nullable": true
+          },
+          "claddingFlangeBraceAdditional": {
+            "type": "number",
+            "nullable": true
+          },
+          "numberOfCladdingPurlinBoltsAdditional": {
+            "type": "number",
+            "nullable": true
+          }
+        }
+      },
+      "UpdateQuantityCladdingRequest": {
+        "type": "object",
+        "properties": {
+          "claddingStructureQuantity": {
+            "type": "number",
+            "nullable": true
+          },
+          "claddingEaveHeightFront": {
+            "type": "number",
+            "nullable": true
+          },
+          "claddingEaveHeightFrontAdditional": {
+            "type": "number",
+            "nullable": true
+          },
+          "claddingEaveHeightBack": {
+            "type": "number",
+            "nullable": true
+          },
+          "claddingEaveHeightRight": {
+            "type": "number",
+            "nullable": true
+          },
+          "claddingEaveHeightLeft": {
+            "type": "number",
+            "nullable": true
+          },
+          "extendedColumnHeight": {
+            "type": "number",
+            "nullable": true
+          },
+          "widthOfExtendedFrame": {
+            "type": "number",
+            "nullable": true
+          },
+          "noOfSideCladdingPurlin": {
+            "type": "integer",
+            "nullable": true
+          },
+          "noOfFaceCladdingPurlin": {
+            "type": "integer",
+            "nullable": true
+          },
+          "totalLengthOfCladdingPurlin": {
+            "type": "number",
+            "nullable": true
+          },
+          "totalWeightofCladdingPurlin": {
+            "type": "number",
+            "nullable": true
+          },
+          "claddingAreaWithoutAnyDeductions": {
+            "type": "number",
+            "nullable": true
+          },
+          "averageMaterialConsumption": {
+            "type": "number",
+            "nullable": true
+          },
+          "totalCladdingOpenings": {
+            "type": "number",
+            "nullable": true
+          },
+          "fasciaOpening": {
+            "type": "number",
+            "nullable": true
+          },
+          "claddingSheetQuantity": {
+            "type": "number",
+            "nullable": true
+          },
+          "claddingSheetAdditional": {
+            "type": "number",
+            "nullable": true
+          },
+          "claddingSheetPurchase": {
+            "type": "number",
+            "nullable": true
+          },
+          "columnWindBracingsAdditional": {
+            "type": "number",
+            "nullable": true
+          },
+          "claddingSagRodAdditional": {
+            "type": "number",
+            "nullable": true
+          },
+          "claddingFlangeBraceAdditional": {
+            "type": "number",
+            "nullable": true
+          },
+          "numberOfCladdingPurlinBoltsAdditional": {
+            "type": "number",
+            "nullable": true
+          }
+        }
+      },
+      "PaginatedQuantityCladdingResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "nullable": true
+            }
+          },
+          "total": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "page": {
+            "type": "integer",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          },
+          "pageSize": {
+            "type": "integer",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          }
+        },
+        "required": [
+          "data",
+          "total",
+          "page",
+          "pageSize"
+        ]
+      },
+      "QuantityCanopyResponse": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": {
+          "nullable": true
+        }
+      },
+      "CreateQuantityCanopyRequest": {
+        "type": "object",
+        "properties": {
+          "canopyStructureQuantity": {
+            "type": "number",
+            "nullable": true
+          },
+          "canopyArea": {
+            "type": "number",
+            "nullable": true
+          },
+          "canopyPurlinQuantity": {
+            "type": "number",
+            "nullable": true
+          },
+          "canopySheetQuantity": {
+            "type": "number",
+            "nullable": true
+          },
+          "canopySheetPurchaseQuantity": {
+            "type": "number",
+            "nullable": true
+          },
+          "canopyGutterQuantity": {
+            "type": "number",
+            "nullable": true
+          },
+          "canopyDownTakeQuantity": {
+            "type": "number",
+            "nullable": true
+          },
+          "canopySideCoveringQuantity": {
+            "type": "number",
+            "nullable": true
+          },
+          "canopyFlashingQuantity": {
+            "type": "number",
+            "nullable": true
+          },
+          "canopyPurlinBoltsQuantity": {
+            "type": "number",
+            "nullable": true
+          },
+          "canopyJointBoltsQuantity": {
+            "type": "number",
+            "nullable": true
+          }
+        }
+      },
+      "UpdateQuantityCanopyRequest": {
+        "type": "object",
+        "properties": {
+          "canopyStructureQuantity": {
+            "type": "number",
+            "nullable": true
+          },
+          "canopyArea": {
+            "type": "number",
+            "nullable": true
+          },
+          "canopyPurlinQuantity": {
+            "type": "number",
+            "nullable": true
+          },
+          "canopySheetQuantity": {
+            "type": "number",
+            "nullable": true
+          },
+          "canopySheetPurchaseQuantity": {
+            "type": "number",
+            "nullable": true
+          },
+          "canopyGutterQuantity": {
+            "type": "number",
+            "nullable": true
+          },
+          "canopyDownTakeQuantity": {
+            "type": "number",
+            "nullable": true
+          },
+          "canopySideCoveringQuantity": {
+            "type": "number",
+            "nullable": true
+          },
+          "canopyFlashingQuantity": {
+            "type": "number",
+            "nullable": true
+          },
+          "canopyPurlinBoltsQuantity": {
+            "type": "number",
+            "nullable": true
+          },
+          "canopyJointBoltsQuantity": {
+            "type": "number",
+            "nullable": true
+          }
+        }
+      },
+      "PaginatedQuantityCanopyResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "nullable": true
+            }
+          },
+          "total": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "page": {
+            "type": "integer",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          },
+          "pageSize": {
+            "type": "integer",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          }
+        },
+        "required": [
+          "data",
+          "total",
+          "page",
+          "pageSize"
+        ]
+      },
+      "QuantityAccessoriesResponse": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": {
+          "nullable": true
+        }
+      },
+      "CreateQuantityAccessoriesRequest": {
+        "type": "object",
+        "properties": {
+          "doors": {
+            "type": "number",
+            "nullable": true
+          },
+          "doorsQuantity": {
+            "type": "number",
+            "nullable": true
+          },
+          "windows": {
+            "type": "number",
+            "nullable": true
+          },
+          "windowsQuantity": {
+            "type": "number",
+            "nullable": true
+          },
+          "fasciaStructureQuantity": {
+            "type": "number",
+            "nullable": true
+          },
+          "fasciaCoveringSheetBoardQuantity": {
+            "type": "number",
+            "nullable": true
+          },
+          "internalPartitionsQuantity": {
+            "type": "number",
+            "nullable": true
+          },
+          "ridgeQuantity": {
+            "type": "number",
+            "nullable": true
+          },
+          "gutterQuantity": {
+            "type": "number",
+            "nullable": true
+          },
+          "downtakeQuantity": {
+            "type": "number",
+            "nullable": true
+          },
+          "dripTrimQuantity": {
+            "type": "number",
+            "nullable": true
+          },
+          "gableEndFlashingQuantity": {
+            "type": "number",
+            "nullable": true
+          },
+          "cornerFlashQuantity": {
+            "type": "number",
+            "nullable": true
+          },
+          "rollingShutter": {
+            "type": "number",
+            "nullable": true
+          },
+          "rollingShutterQuantity": {
+            "type": "number",
+            "nullable": true
+          },
+          "louvers": {
+            "type": "number",
+            "nullable": true
+          },
+          "louversQuantity": {
+            "type": "number",
+            "nullable": true
+          },
+          "skyLight": {
+            "type": "number",
+            "nullable": true
+          },
+          "skyLightQuantity": {
+            "type": "number",
+            "nullable": true
+          },
+          "wallLight": {
+            "type": "number",
+            "nullable": true
+          },
+          "wallLightQuantity": {
+            "type": "number",
+            "nullable": true
+          },
+          "roofInsulation": {
+            "type": "number",
+            "nullable": true
+          },
+          "roofInsulationQuantity": {
+            "type": "number",
+            "nullable": true
+          },
+          "wallInsulation": {
+            "type": "number",
+            "nullable": true
+          },
+          "wallInsulationQuantity": {
+            "type": "number",
+            "nullable": true
+          },
+          "turboVentilators": {
+            "type": "number",
+            "nullable": true
+          },
+          "turboVentilatorsQuantity": {
+            "type": "number",
+            "nullable": true
+          },
+          "handrail": {
+            "type": "number",
+            "nullable": true
+          },
+          "handrailQuantity": {
+            "type": "number",
+            "nullable": true
+          }
+        }
+      },
+      "UpdateQuantityAccessoriesRequest": {
+        "type": "object",
+        "properties": {
+          "doors": {
+            "type": "number",
+            "nullable": true
+          },
+          "doorsQuantity": {
+            "type": "number",
+            "nullable": true
+          },
+          "windows": {
+            "type": "number",
+            "nullable": true
+          },
+          "windowsQuantity": {
+            "type": "number",
+            "nullable": true
+          },
+          "fasciaStructureQuantity": {
+            "type": "number",
+            "nullable": true
+          },
+          "fasciaCoveringSheetBoardQuantity": {
+            "type": "number",
+            "nullable": true
+          },
+          "internalPartitionsQuantity": {
+            "type": "number",
+            "nullable": true
+          },
+          "ridgeQuantity": {
+            "type": "number",
+            "nullable": true
+          },
+          "gutterQuantity": {
+            "type": "number",
+            "nullable": true
+          },
+          "downtakeQuantity": {
+            "type": "number",
+            "nullable": true
+          },
+          "dripTrimQuantity": {
+            "type": "number",
+            "nullable": true
+          },
+          "gableEndFlashingQuantity": {
+            "type": "number",
+            "nullable": true
+          },
+          "cornerFlashQuantity": {
+            "type": "number",
+            "nullable": true
+          },
+          "rollingShutter": {
+            "type": "number",
+            "nullable": true
+          },
+          "rollingShutterQuantity": {
+            "type": "number",
+            "nullable": true
+          },
+          "louvers": {
+            "type": "number",
+            "nullable": true
+          },
+          "louversQuantity": {
+            "type": "number",
+            "nullable": true
+          },
+          "skyLight": {
+            "type": "number",
+            "nullable": true
+          },
+          "skyLightQuantity": {
+            "type": "number",
+            "nullable": true
+          },
+          "wallLight": {
+            "type": "number",
+            "nullable": true
+          },
+          "wallLightQuantity": {
+            "type": "number",
+            "nullable": true
+          },
+          "roofInsulation": {
+            "type": "number",
+            "nullable": true
+          },
+          "roofInsulationQuantity": {
+            "type": "number",
+            "nullable": true
+          },
+          "wallInsulation": {
+            "type": "number",
+            "nullable": true
+          },
+          "wallInsulationQuantity": {
+            "type": "number",
+            "nullable": true
+          },
+          "turboVentilators": {
+            "type": "number",
+            "nullable": true
+          },
+          "turboVentilatorsQuantity": {
+            "type": "number",
+            "nullable": true
+          },
+          "handrail": {
+            "type": "number",
+            "nullable": true
+          },
+          "handrailQuantity": {
+            "type": "number",
+            "nullable": true
+          }
+        }
+      },
+      "PaginatedQuantityAccessoriesResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "nullable": true
+            }
+          },
+          "total": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "page": {
+            "type": "integer",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          },
+          "pageSize": {
+            "type": "integer",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          }
+        },
+        "required": [
+          "data",
+          "total",
+          "page",
+          "pageSize"
+        ]
+      },
+      "QuantityMezzanineResponse": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": {
+          "nullable": true
+        }
+      },
+      "CreateQuantityMezzanineRequest": {
+        "type": "object",
+        "properties": {
+          "mezzanineStructure": {
+            "type": "number",
+            "nullable": true
+          },
+          "mezzanineStructureQuantity": {
+            "type": "number",
+            "nullable": true
+          },
+          "totalMezzanineArea": {
+            "type": "number",
+            "nullable": true
+          },
+          "totalMezzanineAreaQuantity": {
+            "type": "number",
+            "nullable": true
+          },
+          "materialConsumption": {
+            "type": "number",
+            "nullable": true
+          },
+          "deckSheetQuantity": {
+            "type": "number",
+            "nullable": true
+          },
+          "shearStudsQuantity": {
+            "type": "number",
+            "nullable": true
+          },
+          "shearStudsPurchaseQuantity": {
+            "type": "number",
+            "nullable": true
+          },
+          "shearStudsQuantityAdditional": {
+            "type": "number",
+            "nullable": true
+          },
+          "concreteFlashing": {
+            "type": "number",
+            "nullable": true
+          },
+          "jointBolts": {
+            "type": "number",
+            "nullable": true
+          },
+          "jointBoltsQuantity": {
+            "type": "number",
+            "nullable": true
+          },
+          "foundationBoltsQuantity": {
+            "type": "number",
+            "nullable": true
+          }
+        }
+      },
+      "UpdateQuantityMezzanineRequest": {
+        "type": "object",
+        "properties": {
+          "mezzanineStructure": {
+            "type": "number",
+            "nullable": true
+          },
+          "mezzanineStructureQuantity": {
+            "type": "number",
+            "nullable": true
+          },
+          "totalMezzanineArea": {
+            "type": "number",
+            "nullable": true
+          },
+          "totalMezzanineAreaQuantity": {
+            "type": "number",
+            "nullable": true
+          },
+          "materialConsumption": {
+            "type": "number",
+            "nullable": true
+          },
+          "deckSheetQuantity": {
+            "type": "number",
+            "nullable": true
+          },
+          "shearStudsQuantity": {
+            "type": "number",
+            "nullable": true
+          },
+          "shearStudsPurchaseQuantity": {
+            "type": "number",
+            "nullable": true
+          },
+          "shearStudsQuantityAdditional": {
+            "type": "number",
+            "nullable": true
+          },
+          "concreteFlashing": {
+            "type": "number",
+            "nullable": true
+          },
+          "jointBolts": {
+            "type": "number",
+            "nullable": true
+          },
+          "jointBoltsQuantity": {
+            "type": "number",
+            "nullable": true
+          },
+          "foundationBoltsQuantity": {
+            "type": "number",
+            "nullable": true
+          }
+        }
+      },
+      "PaginatedQuantityMezzanineResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "nullable": true
+            }
+          },
+          "total": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "page": {
+            "type": "integer",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          },
+          "pageSize": {
+            "type": "integer",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          }
+        },
+        "required": [
+          "data",
+          "total",
+          "page",
+          "pageSize"
+        ]
+      },
+      "QuantityStairResponse": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": {
+          "nullable": true
+        }
+      },
+      "CreateQuantityStairRequest": {
+        "type": "object",
+        "properties": {
+          "totalAreaOfStairQuantity": {
+            "type": "number",
+            "nullable": true
+          },
+          "totalWeightofStringerBeamsQuantity": {
+            "type": "number",
+            "nullable": true
+          },
+          "totalWeightofStringerBeamsAdditional": {
+            "type": "number",
+            "nullable": true
+          },
+          "totalWeightofSteps": {
+            "type": "number",
+            "nullable": true
+          },
+          "totalWeightofStepsQuantity": {
+            "type": "number",
+            "nullable": true
+          },
+          "totalWeightofStepsAdditional": {
+            "type": "number",
+            "nullable": true
+          }
+        }
+      },
+      "UpdateQuantityStairRequest": {
+        "type": "object",
+        "properties": {
+          "totalAreaOfStairQuantity": {
+            "type": "number",
+            "nullable": true
+          },
+          "totalWeightofStringerBeamsQuantity": {
+            "type": "number",
+            "nullable": true
+          },
+          "totalWeightofStringerBeamsAdditional": {
+            "type": "number",
+            "nullable": true
+          },
+          "totalWeightofSteps": {
+            "type": "number",
+            "nullable": true
+          },
+          "totalWeightofStepsQuantity": {
+            "type": "number",
+            "nullable": true
+          },
+          "totalWeightofStepsAdditional": {
+            "type": "number",
+            "nullable": true
+          }
+        }
+      },
+      "PaginatedQuantityStairResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "nullable": true
+            }
+          },
+          "total": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "page": {
+            "type": "integer",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          },
+          "pageSize": {
+            "type": "integer",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          }
+        },
+        "required": [
+          "data",
+          "total",
+          "page",
+          "pageSize"
+        ]
+      },
+      "QuantityAdditionalBoltsResponse": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": {
+          "nullable": true
+        }
+      },
+      "CreateQuantityAdditionalBoltsRequest": {
+        "type": "object",
+        "properties": {
+          "jointBolt1": {
+            "type": "number",
+            "nullable": true
+          },
+          "jointBolt1Quantity": {
+            "type": "number",
+            "nullable": true
+          },
+          "jointBolt2": {
+            "type": "number",
+            "nullable": true
+          },
+          "jointBolt2Quantity": {
+            "type": "number",
+            "nullable": true
+          },
+          "jointBolt3": {
+            "type": "number",
+            "nullable": true
+          },
+          "jointBolt3Quantity": {
+            "type": "number",
+            "nullable": true
+          },
+          "purlinBolt": {
+            "type": "number",
+            "nullable": true
+          },
+          "purlinBoltQuantity": {
+            "type": "number",
+            "nullable": true
+          },
+          "anchorBoltQuantity": {
+            "type": "number",
+            "nullable": true
+          },
+          "foundationBoltQuantity": {
+            "type": "number",
+            "nullable": true
+          }
+        }
+      },
+      "UpdateQuantityAdditionalBoltsRequest": {
+        "type": "object",
+        "properties": {
+          "jointBolt1": {
+            "type": "number",
+            "nullable": true
+          },
+          "jointBolt1Quantity": {
+            "type": "number",
+            "nullable": true
+          },
+          "jointBolt2": {
+            "type": "number",
+            "nullable": true
+          },
+          "jointBolt2Quantity": {
+            "type": "number",
+            "nullable": true
+          },
+          "jointBolt3": {
+            "type": "number",
+            "nullable": true
+          },
+          "jointBolt3Quantity": {
+            "type": "number",
+            "nullable": true
+          },
+          "purlinBolt": {
+            "type": "number",
+            "nullable": true
+          },
+          "purlinBoltQuantity": {
+            "type": "number",
+            "nullable": true
+          },
+          "anchorBoltQuantity": {
+            "type": "number",
+            "nullable": true
+          },
+          "foundationBoltQuantity": {
+            "type": "number",
+            "nullable": true
+          }
+        }
+      },
+      "PaginatedQuantityAdditionalBoltsResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "nullable": true
+            }
+          },
+          "total": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "page": {
+            "type": "integer",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          },
+          "pageSize": {
+            "type": "integer",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          }
+        },
+        "required": [
+          "data",
+          "total",
+          "page",
+          "pageSize"
+        ]
       }
     },
     "parameters": {}
@@ -5821,6 +7437,142 @@
           },
           "401": {
             "description": "Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/all/{jobId}": {
+      "get": {
+        "operationId": "getJobWithAllData",
+        "tags": [
+          "Jobs"
+        ],
+        "summary": "Get all job data by ID",
+        "description": "Returns all data of a specific job including all nested relations.",
+        "security": [
+          {
+            "LocalDevUserId": []
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "example": "job_cuid_123"
+            },
+            "required": true,
+            "name": "jobId",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Full job data returned.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/JobResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Resource not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/jobs/{jobId}/all": {
+      "get": {
+        "operationId": "getJobWithAllDataAlias",
+        "tags": [
+          "Jobs"
+        ],
+        "summary": "Get all job data by ID (canonical alias)",
+        "description": "Returns all data of a specific job including all nested relations.",
+        "security": [
+          {
+            "LocalDevUserId": []
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "example": "job_cuid_123"
+            },
+            "required": true,
+            "name": "jobId",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Full job data returned.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/JobResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Resource not found",
             "content": {
               "application/json": {
                 "schema": {
@@ -9850,6 +11602,2197 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/PaginatedQuantityResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/jobs/{jobId}/quantity/peb-roof": {
+      "post": {
+        "operationId": "upsertQuantityPebRoof",
+        "tags": [
+          "Quantity"
+        ],
+        "summary": "Create or replace a job's quantitypebroof",
+        "description": "Creates or replaces the quantitypebroof configuration for the specified job.",
+        "security": [
+          {
+            "LocalDevUserId": []
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "example": "job_cuid_123"
+            },
+            "required": true,
+            "name": "jobId",
+            "in": "path"
+          }
+        ],
+        "requestBody": {
+          "description": "Validated quantitypebroof payload.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateQuantityPebRoofRequest"
+              },
+              "example": {}
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Resource saved.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/QuantityPebRoofResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "operationId": "getQuantityPebRoofByJob",
+        "tags": [
+          "Quantity"
+        ],
+        "summary": "Get a job's quantitypebroof",
+        "description": "Returns the quantitypebroof configuration belonging to the specified job.",
+        "security": [
+          {
+            "LocalDevUserId": []
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "example": "job_cuid_123"
+            },
+            "required": true,
+            "name": "jobId",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Resource returned.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/QuantityPebRoofResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "operationId": "updateQuantityPebRoof",
+        "tags": [
+          "Quantity"
+        ],
+        "summary": "Update a job's quantitypebroof",
+        "description": "Partially updates the quantitypebroof configuration for the specified job.",
+        "security": [
+          {
+            "LocalDevUserId": []
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "example": "job_cuid_123"
+            },
+            "required": true,
+            "name": "jobId",
+            "in": "path"
+          }
+        ],
+        "requestBody": {
+          "description": "Partial quantitypebroof payload.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateQuantityPebRoofRequest"
+              },
+              "example": {}
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Resource updated.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/QuantityPebRoofResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "operationId": "deleteQuantityPebRoof",
+        "tags": [
+          "Quantity"
+        ],
+        "summary": "Delete a job's quantitypebroof",
+        "description": "Deletes the quantitypebroof configuration for the specified job.",
+        "security": [
+          {
+            "LocalDevUserId": []
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "example": "job_cuid_123"
+            },
+            "required": true,
+            "name": "jobId",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Resource deleted. No response body is returned."
+          },
+          "400": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/quantity-peb-roofs": {
+      "get": {
+        "operationId": "listQuantity-peb-roofs",
+        "tags": [
+          "Quantity"
+        ],
+        "summary": "List quantity-peb-roofs",
+        "description": "Returns a paginated list of quantity-peb-roofs.",
+        "security": [
+          {
+            "LocalDevUserId": []
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "exclusiveMinimum": true,
+              "default": 1
+            },
+            "required": false,
+            "name": "page",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "exclusiveMinimum": true,
+              "maximum": 100,
+              "default": 10
+            },
+            "required": false,
+            "name": "pageSize",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Paginated resource list returned.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedQuantityPebRoofResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/jobs/{jobId}/quantity/cladding": {
+      "post": {
+        "operationId": "upsertQuantityCladding",
+        "tags": [
+          "Quantity"
+        ],
+        "summary": "Create or replace a job's quantitycladding",
+        "description": "Creates or replaces the quantitycladding configuration for the specified job.",
+        "security": [
+          {
+            "LocalDevUserId": []
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "example": "job_cuid_123"
+            },
+            "required": true,
+            "name": "jobId",
+            "in": "path"
+          }
+        ],
+        "requestBody": {
+          "description": "Validated quantitycladding payload.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateQuantityCladdingRequest"
+              },
+              "example": {}
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Resource saved.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/QuantityCladdingResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "operationId": "getQuantityCladdingByJob",
+        "tags": [
+          "Quantity"
+        ],
+        "summary": "Get a job's quantitycladding",
+        "description": "Returns the quantitycladding configuration belonging to the specified job.",
+        "security": [
+          {
+            "LocalDevUserId": []
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "example": "job_cuid_123"
+            },
+            "required": true,
+            "name": "jobId",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Resource returned.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/QuantityCladdingResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "operationId": "updateQuantityCladding",
+        "tags": [
+          "Quantity"
+        ],
+        "summary": "Update a job's quantitycladding",
+        "description": "Partially updates the quantitycladding configuration for the specified job.",
+        "security": [
+          {
+            "LocalDevUserId": []
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "example": "job_cuid_123"
+            },
+            "required": true,
+            "name": "jobId",
+            "in": "path"
+          }
+        ],
+        "requestBody": {
+          "description": "Partial quantitycladding payload.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateQuantityCladdingRequest"
+              },
+              "example": {}
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Resource updated.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/QuantityCladdingResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "operationId": "deleteQuantityCladding",
+        "tags": [
+          "Quantity"
+        ],
+        "summary": "Delete a job's quantitycladding",
+        "description": "Deletes the quantitycladding configuration for the specified job.",
+        "security": [
+          {
+            "LocalDevUserId": []
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "example": "job_cuid_123"
+            },
+            "required": true,
+            "name": "jobId",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Resource deleted. No response body is returned."
+          },
+          "400": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/quantity-claddings": {
+      "get": {
+        "operationId": "listQuantity-claddings",
+        "tags": [
+          "Quantity"
+        ],
+        "summary": "List quantity-claddings",
+        "description": "Returns a paginated list of quantity-claddings.",
+        "security": [
+          {
+            "LocalDevUserId": []
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "exclusiveMinimum": true,
+              "default": 1
+            },
+            "required": false,
+            "name": "page",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "exclusiveMinimum": true,
+              "maximum": 100,
+              "default": 10
+            },
+            "required": false,
+            "name": "pageSize",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Paginated resource list returned.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedQuantityCladdingResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/jobs/{jobId}/quantity/canopy": {
+      "post": {
+        "operationId": "upsertQuantityCanopy",
+        "tags": [
+          "Quantity"
+        ],
+        "summary": "Create or replace a job's quantitycanopy",
+        "description": "Creates or replaces the quantitycanopy configuration for the specified job.",
+        "security": [
+          {
+            "LocalDevUserId": []
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "example": "job_cuid_123"
+            },
+            "required": true,
+            "name": "jobId",
+            "in": "path"
+          }
+        ],
+        "requestBody": {
+          "description": "Validated quantitycanopy payload.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateQuantityCanopyRequest"
+              },
+              "example": {}
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Resource saved.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/QuantityCanopyResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "operationId": "getQuantityCanopyByJob",
+        "tags": [
+          "Quantity"
+        ],
+        "summary": "Get a job's quantitycanopy",
+        "description": "Returns the quantitycanopy configuration belonging to the specified job.",
+        "security": [
+          {
+            "LocalDevUserId": []
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "example": "job_cuid_123"
+            },
+            "required": true,
+            "name": "jobId",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Resource returned.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/QuantityCanopyResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "operationId": "updateQuantityCanopy",
+        "tags": [
+          "Quantity"
+        ],
+        "summary": "Update a job's quantitycanopy",
+        "description": "Partially updates the quantitycanopy configuration for the specified job.",
+        "security": [
+          {
+            "LocalDevUserId": []
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "example": "job_cuid_123"
+            },
+            "required": true,
+            "name": "jobId",
+            "in": "path"
+          }
+        ],
+        "requestBody": {
+          "description": "Partial quantitycanopy payload.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateQuantityCanopyRequest"
+              },
+              "example": {}
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Resource updated.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/QuantityCanopyResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "operationId": "deleteQuantityCanopy",
+        "tags": [
+          "Quantity"
+        ],
+        "summary": "Delete a job's quantitycanopy",
+        "description": "Deletes the quantitycanopy configuration for the specified job.",
+        "security": [
+          {
+            "LocalDevUserId": []
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "example": "job_cuid_123"
+            },
+            "required": true,
+            "name": "jobId",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Resource deleted. No response body is returned."
+          },
+          "400": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/quantity-canopies": {
+      "get": {
+        "operationId": "listQuantity-canopies",
+        "tags": [
+          "Quantity"
+        ],
+        "summary": "List quantity-canopies",
+        "description": "Returns a paginated list of quantity-canopies.",
+        "security": [
+          {
+            "LocalDevUserId": []
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "exclusiveMinimum": true,
+              "default": 1
+            },
+            "required": false,
+            "name": "page",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "exclusiveMinimum": true,
+              "maximum": 100,
+              "default": 10
+            },
+            "required": false,
+            "name": "pageSize",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Paginated resource list returned.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedQuantityCanopyResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/jobs/{jobId}/quantity/accessories": {
+      "post": {
+        "operationId": "upsertQuantityAccessories",
+        "tags": [
+          "Quantity"
+        ],
+        "summary": "Create or replace a job's quantityaccessories",
+        "description": "Creates or replaces the quantityaccessories configuration for the specified job.",
+        "security": [
+          {
+            "LocalDevUserId": []
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "example": "job_cuid_123"
+            },
+            "required": true,
+            "name": "jobId",
+            "in": "path"
+          }
+        ],
+        "requestBody": {
+          "description": "Validated quantityaccessories payload.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateQuantityAccessoriesRequest"
+              },
+              "example": {}
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Resource saved.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/QuantityAccessoriesResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "operationId": "getQuantityAccessoriesByJob",
+        "tags": [
+          "Quantity"
+        ],
+        "summary": "Get a job's quantityaccessories",
+        "description": "Returns the quantityaccessories configuration belonging to the specified job.",
+        "security": [
+          {
+            "LocalDevUserId": []
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "example": "job_cuid_123"
+            },
+            "required": true,
+            "name": "jobId",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Resource returned.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/QuantityAccessoriesResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "operationId": "updateQuantityAccessories",
+        "tags": [
+          "Quantity"
+        ],
+        "summary": "Update a job's quantityaccessories",
+        "description": "Partially updates the quantityaccessories configuration for the specified job.",
+        "security": [
+          {
+            "LocalDevUserId": []
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "example": "job_cuid_123"
+            },
+            "required": true,
+            "name": "jobId",
+            "in": "path"
+          }
+        ],
+        "requestBody": {
+          "description": "Partial quantityaccessories payload.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateQuantityAccessoriesRequest"
+              },
+              "example": {}
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Resource updated.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/QuantityAccessoriesResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "operationId": "deleteQuantityAccessories",
+        "tags": [
+          "Quantity"
+        ],
+        "summary": "Delete a job's quantityaccessories",
+        "description": "Deletes the quantityaccessories configuration for the specified job.",
+        "security": [
+          {
+            "LocalDevUserId": []
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "example": "job_cuid_123"
+            },
+            "required": true,
+            "name": "jobId",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Resource deleted. No response body is returned."
+          },
+          "400": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/quantity-accessories": {
+      "get": {
+        "operationId": "listQuantity-accessories",
+        "tags": [
+          "Quantity"
+        ],
+        "summary": "List quantity-accessories",
+        "description": "Returns a paginated list of quantity-accessories.",
+        "security": [
+          {
+            "LocalDevUserId": []
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "exclusiveMinimum": true,
+              "default": 1
+            },
+            "required": false,
+            "name": "page",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "exclusiveMinimum": true,
+              "maximum": 100,
+              "default": 10
+            },
+            "required": false,
+            "name": "pageSize",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Paginated resource list returned.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedQuantityAccessoriesResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/jobs/{jobId}/quantity/mezzanine": {
+      "post": {
+        "operationId": "upsertQuantityMezzanine",
+        "tags": [
+          "Quantity"
+        ],
+        "summary": "Create or replace a job's quantitymezzanine",
+        "description": "Creates or replaces the quantitymezzanine configuration for the specified job.",
+        "security": [
+          {
+            "LocalDevUserId": []
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "example": "job_cuid_123"
+            },
+            "required": true,
+            "name": "jobId",
+            "in": "path"
+          }
+        ],
+        "requestBody": {
+          "description": "Validated quantitymezzanine payload.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateQuantityMezzanineRequest"
+              },
+              "example": {}
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Resource saved.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/QuantityMezzanineResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "operationId": "getQuantityMezzanineByJob",
+        "tags": [
+          "Quantity"
+        ],
+        "summary": "Get a job's quantitymezzanine",
+        "description": "Returns the quantitymezzanine configuration belonging to the specified job.",
+        "security": [
+          {
+            "LocalDevUserId": []
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "example": "job_cuid_123"
+            },
+            "required": true,
+            "name": "jobId",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Resource returned.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/QuantityMezzanineResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "operationId": "updateQuantityMezzanine",
+        "tags": [
+          "Quantity"
+        ],
+        "summary": "Update a job's quantitymezzanine",
+        "description": "Partially updates the quantitymezzanine configuration for the specified job.",
+        "security": [
+          {
+            "LocalDevUserId": []
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "example": "job_cuid_123"
+            },
+            "required": true,
+            "name": "jobId",
+            "in": "path"
+          }
+        ],
+        "requestBody": {
+          "description": "Partial quantitymezzanine payload.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateQuantityMezzanineRequest"
+              },
+              "example": {}
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Resource updated.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/QuantityMezzanineResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "operationId": "deleteQuantityMezzanine",
+        "tags": [
+          "Quantity"
+        ],
+        "summary": "Delete a job's quantitymezzanine",
+        "description": "Deletes the quantitymezzanine configuration for the specified job.",
+        "security": [
+          {
+            "LocalDevUserId": []
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "example": "job_cuid_123"
+            },
+            "required": true,
+            "name": "jobId",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Resource deleted. No response body is returned."
+          },
+          "400": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/quantity-mezzanines": {
+      "get": {
+        "operationId": "listQuantity-mezzanines",
+        "tags": [
+          "Quantity"
+        ],
+        "summary": "List quantity-mezzanines",
+        "description": "Returns a paginated list of quantity-mezzanines.",
+        "security": [
+          {
+            "LocalDevUserId": []
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "exclusiveMinimum": true,
+              "default": 1
+            },
+            "required": false,
+            "name": "page",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "exclusiveMinimum": true,
+              "maximum": 100,
+              "default": 10
+            },
+            "required": false,
+            "name": "pageSize",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Paginated resource list returned.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedQuantityMezzanineResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/jobs/{jobId}/quantity/stair": {
+      "post": {
+        "operationId": "upsertQuantityStair",
+        "tags": [
+          "Quantity"
+        ],
+        "summary": "Create or replace a job's quantitystair",
+        "description": "Creates or replaces the quantitystair configuration for the specified job.",
+        "security": [
+          {
+            "LocalDevUserId": []
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "example": "job_cuid_123"
+            },
+            "required": true,
+            "name": "jobId",
+            "in": "path"
+          }
+        ],
+        "requestBody": {
+          "description": "Validated quantitystair payload.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateQuantityStairRequest"
+              },
+              "example": {}
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Resource saved.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/QuantityStairResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "operationId": "getQuantityStairByJob",
+        "tags": [
+          "Quantity"
+        ],
+        "summary": "Get a job's quantitystair",
+        "description": "Returns the quantitystair configuration belonging to the specified job.",
+        "security": [
+          {
+            "LocalDevUserId": []
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "example": "job_cuid_123"
+            },
+            "required": true,
+            "name": "jobId",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Resource returned.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/QuantityStairResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "operationId": "updateQuantityStair",
+        "tags": [
+          "Quantity"
+        ],
+        "summary": "Update a job's quantitystair",
+        "description": "Partially updates the quantitystair configuration for the specified job.",
+        "security": [
+          {
+            "LocalDevUserId": []
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "example": "job_cuid_123"
+            },
+            "required": true,
+            "name": "jobId",
+            "in": "path"
+          }
+        ],
+        "requestBody": {
+          "description": "Partial quantitystair payload.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateQuantityStairRequest"
+              },
+              "example": {}
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Resource updated.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/QuantityStairResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "operationId": "deleteQuantityStair",
+        "tags": [
+          "Quantity"
+        ],
+        "summary": "Delete a job's quantitystair",
+        "description": "Deletes the quantitystair configuration for the specified job.",
+        "security": [
+          {
+            "LocalDevUserId": []
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "example": "job_cuid_123"
+            },
+            "required": true,
+            "name": "jobId",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Resource deleted. No response body is returned."
+          },
+          "400": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/quantity-stairs": {
+      "get": {
+        "operationId": "listQuantity-stairs",
+        "tags": [
+          "Quantity"
+        ],
+        "summary": "List quantity-stairs",
+        "description": "Returns a paginated list of quantity-stairs.",
+        "security": [
+          {
+            "LocalDevUserId": []
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "exclusiveMinimum": true,
+              "default": 1
+            },
+            "required": false,
+            "name": "page",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "exclusiveMinimum": true,
+              "maximum": 100,
+              "default": 10
+            },
+            "required": false,
+            "name": "pageSize",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Paginated resource list returned.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedQuantityStairResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/jobs/{jobId}/quantity/additional-bolts": {
+      "post": {
+        "operationId": "upsertQuantityAdditionalBolts",
+        "tags": [
+          "Quantity"
+        ],
+        "summary": "Create or replace a job's quantityadditionalbolts",
+        "description": "Creates or replaces the quantityadditionalbolts configuration for the specified job.",
+        "security": [
+          {
+            "LocalDevUserId": []
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "example": "job_cuid_123"
+            },
+            "required": true,
+            "name": "jobId",
+            "in": "path"
+          }
+        ],
+        "requestBody": {
+          "description": "Validated quantityadditionalbolts payload.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateQuantityAdditionalBoltsRequest"
+              },
+              "example": {}
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Resource saved.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/QuantityAdditionalBoltsResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "operationId": "getQuantityAdditionalBoltsByJob",
+        "tags": [
+          "Quantity"
+        ],
+        "summary": "Get a job's quantityadditionalbolts",
+        "description": "Returns the quantityadditionalbolts configuration belonging to the specified job.",
+        "security": [
+          {
+            "LocalDevUserId": []
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "example": "job_cuid_123"
+            },
+            "required": true,
+            "name": "jobId",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Resource returned.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/QuantityAdditionalBoltsResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "operationId": "updateQuantityAdditionalBolts",
+        "tags": [
+          "Quantity"
+        ],
+        "summary": "Update a job's quantityadditionalbolts",
+        "description": "Partially updates the quantityadditionalbolts configuration for the specified job.",
+        "security": [
+          {
+            "LocalDevUserId": []
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "example": "job_cuid_123"
+            },
+            "required": true,
+            "name": "jobId",
+            "in": "path"
+          }
+        ],
+        "requestBody": {
+          "description": "Partial quantityadditionalbolts payload.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateQuantityAdditionalBoltsRequest"
+              },
+              "example": {}
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Resource updated.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/QuantityAdditionalBoltsResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "operationId": "deleteQuantityAdditionalBolts",
+        "tags": [
+          "Quantity"
+        ],
+        "summary": "Delete a job's quantityadditionalbolts",
+        "description": "Deletes the quantityadditionalbolts configuration for the specified job.",
+        "security": [
+          {
+            "LocalDevUserId": []
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "example": "job_cuid_123"
+            },
+            "required": true,
+            "name": "jobId",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Resource deleted. No response body is returned."
+          },
+          "400": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/quantity-additional-bolts": {
+      "get": {
+        "operationId": "listQuantity-additional-bolts",
+        "tags": [
+          "Quantity"
+        ],
+        "summary": "List quantity-additional-bolts",
+        "description": "Returns a paginated list of quantity-additional-bolts.",
+        "security": [
+          {
+            "LocalDevUserId": []
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "exclusiveMinimum": true,
+              "default": 1
+            },
+            "required": false,
+            "name": "page",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "exclusiveMinimum": true,
+              "maximum": 100,
+              "default": 10
+            },
+            "required": false,
+            "name": "pageSize",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Paginated resource list returned.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedQuantityAdditionalBoltsResponse"
                 }
               }
             }

@@ -19,6 +19,8 @@ export interface SubRowDef {
   purchField?: string;
   defaultQty?: string | number;
   isCalculated?: boolean;
+  calcAddlValue?: string | number;
+  calcPurchValue?: string | number;
 }
 
 export interface RowDef {
@@ -35,6 +37,7 @@ export interface RowDef {
   unitField: string | null;
   defaultQty?: string | number;
   isCalculated?: boolean;
+  calcValue?: string | number;
   subRows: SubRowDef[];
 }
 
@@ -52,6 +55,12 @@ export const getEditableFields = (rows: RowDef[]): string[] => {
 }
 
 export const toStr = (v: unknown): string => (v == null ? '' : String(v))
+
+export const getCalcValue = (explicitVal?: string | number, fallbackVal?: unknown) => {
+  if (explicitVal !== undefined) return typeof explicitVal === 'number' ? explicitVal.toFixed(2) : String(explicitVal);
+  if (fallbackVal !== undefined && fallbackVal !== null) return typeof fallbackVal === 'number' ? fallbackVal.toFixed(2) : String(fallbackVal);
+  return '—';
+}
 
 export const getDefaults = (rows: RowDef[]) => {
   const defs: Record<string, string | number> = {}
@@ -148,7 +157,7 @@ export function SectionTable({ icon, title, rows, sectionData, draft, onEdit, on
                         readOnly
                         disabled
                         className="text-right font-mono tabular-nums h-8 bg-muted"
-                        value={calculatedData?.[row.qtyField] !== undefined ? (typeof calculatedData[row.qtyField] === 'number' ? (calculatedData[row.qtyField] as number).toFixed(2) : String(calculatedData[row.qtyField])) : '—'}
+                        value={getCalcValue(row.calcValue, calculatedData?.[row.qtyField])}
                         aria-label={`${row.label} calculated`}
                       />
                     ) : (
@@ -181,7 +190,7 @@ export function SectionTable({ icon, title, rows, sectionData, draft, onEdit, on
                                 readOnly
                                 disabled
                                 className="text-right font-mono tabular-nums h-8 bg-muted"
-                                value={calculatedData?.[sub.addlField] !== undefined ? (typeof calculatedData[sub.addlField] === 'number' ? (calculatedData[sub.addlField] as number).toFixed(2) : String(calculatedData[sub.addlField])) : '—'}
+                                value={getCalcValue(sub.calcAddlValue, calculatedData?.[sub.addlField])}
                                 aria-label={`${sub.desc} additional calculated`}
                               />
                             ) : (
@@ -209,7 +218,7 @@ export function SectionTable({ icon, title, rows, sectionData, draft, onEdit, on
                                 readOnly
                                 disabled
                                 className="text-right font-mono tabular-nums h-8 bg-muted"
-                                value={calculatedData?.[sub.purchField] !== undefined ? (typeof calculatedData[sub.purchField] === 'number' ? (calculatedData[sub.purchField] as number).toFixed(2) : String(calculatedData[sub.purchField])) : '—'}
+                                value={getCalcValue(sub.calcPurchValue, calculatedData?.[sub.purchField])}
                                 aria-label={`${sub.desc} purchase calculated`}
                               />
                             ) : (

@@ -11,6 +11,13 @@ const {
   createLoadSchema,
   createMezzanineSchema,
   createQuantitySchema,
+  createQuantityPebRoofSchema,
+  createQuantityCladdingSchema,
+  createQuantityCanopySchema,
+  createQuantityAccessoriesSchema,
+  createQuantityMezzanineSchema,
+  createQuantityStairSchema,
+  createQuantityAdditionalBoltsSchema,
   createRateSchema,
   createRoofSchema,
   createSpecSchema,
@@ -24,6 +31,13 @@ const {
   updateLoadSchema,
   updateMezzanineSchema,
   updateQuantitySchema,
+  updateQuantityPebRoofSchema,
+  updateQuantityCladdingSchema,
+  updateQuantityCanopySchema,
+  updateQuantityAccessoriesSchema,
+  updateQuantityMezzanineSchema,
+  updateQuantityStairSchema,
+  updateQuantityAdditionalBoltsSchema,
   updateRateSchema,
   updateRoofSchema,
   updateSpecSchema,
@@ -57,6 +71,20 @@ const schemas = {
   UpdateRateRequest: updateRateSchema.meta({ id: 'UpdateRateRequest' }),
   CreateQuantityRequest: createQuantitySchema.meta({ id: 'CreateQuantityRequest' }),
   UpdateQuantityRequest: updateQuantitySchema.meta({ id: 'UpdateQuantityRequest' }),
+  CreateQuantityPebRoofRequest: createQuantityPebRoofSchema.meta({ id: 'CreateQuantityPebRoofRequest' }),
+  UpdateQuantityPebRoofRequest: updateQuantityPebRoofSchema.meta({ id: 'UpdateQuantityPebRoofRequest' }),
+  CreateQuantityCladdingRequest: createQuantityCladdingSchema.meta({ id: 'CreateQuantityCladdingRequest' }),
+  UpdateQuantityCladdingRequest: updateQuantityCladdingSchema.meta({ id: 'UpdateQuantityCladdingRequest' }),
+  CreateQuantityCanopyRequest: createQuantityCanopySchema.meta({ id: 'CreateQuantityCanopyRequest' }),
+  UpdateQuantityCanopyRequest: updateQuantityCanopySchema.meta({ id: 'UpdateQuantityCanopyRequest' }),
+  CreateQuantityAccessoriesRequest: createQuantityAccessoriesSchema.meta({ id: 'CreateQuantityAccessoriesRequest' }),
+  UpdateQuantityAccessoriesRequest: updateQuantityAccessoriesSchema.meta({ id: 'UpdateQuantityAccessoriesRequest' }),
+  CreateQuantityMezzanineRequest: createQuantityMezzanineSchema.meta({ id: 'CreateQuantityMezzanineRequest' }),
+  UpdateQuantityMezzanineRequest: updateQuantityMezzanineSchema.meta({ id: 'UpdateQuantityMezzanineRequest' }),
+  CreateQuantityStairRequest: createQuantityStairSchema.meta({ id: 'CreateQuantityStairRequest' }),
+  UpdateQuantityStairRequest: updateQuantityStairSchema.meta({ id: 'UpdateQuantityStairRequest' }),
+  CreateQuantityAdditionalBoltsRequest: createQuantityAdditionalBoltsSchema.meta({ id: 'CreateQuantityAdditionalBoltsRequest' }),
+  UpdateQuantityAdditionalBoltsRequest: updateQuantityAdditionalBoltsSchema.meta({ id: 'UpdateQuantityAdditionalBoltsRequest' }),
   PaginationQuery: paginationSchema.meta({ id: 'PaginationQuery' }),
 }
 
@@ -103,6 +131,13 @@ const responseSchemas = {
   StairResponse: resourceResponseSchema.meta({ id: 'StairResponse' }),
   RateResponse: resourceResponseSchema.meta({ id: 'RateResponse' }),
   QuantityResponse: resourceResponseSchema.meta({ id: 'QuantityResponse' }),
+  QuantityPebRoofResponse: resourceResponseSchema.meta({ id: 'QuantityPebRoofResponse' }),
+  QuantityCladdingResponse: resourceResponseSchema.meta({ id: 'QuantityCladdingResponse' }),
+  QuantityCanopyResponse: resourceResponseSchema.meta({ id: 'QuantityCanopyResponse' }),
+  QuantityAccessoriesResponse: resourceResponseSchema.meta({ id: 'QuantityAccessoriesResponse' }),
+  QuantityMezzanineResponse: resourceResponseSchema.meta({ id: 'QuantityMezzanineResponse' }),
+  QuantityStairResponse: resourceResponseSchema.meta({ id: 'QuantityStairResponse' }),
+  QuantityAdditionalBoltsResponse: resourceResponseSchema.meta({ id: 'QuantityAdditionalBoltsResponse' }),
   UserResponse: resourceResponseSchema.meta({ id: 'UserResponse' }),
   PaginatedAccessoriesResponse: paginatedResponseSchema.meta({ id: 'PaginatedAccessoriesResponse' }),
   PaginatedAmountResponse: paginatedResponseSchema.meta({ id: 'PaginatedAmountResponse' }),
@@ -116,6 +151,13 @@ const responseSchemas = {
   PaginatedStairResponse: paginatedResponseSchema.meta({ id: 'PaginatedStairResponse' }),
   PaginatedRateResponse: paginatedResponseSchema.meta({ id: 'PaginatedRateResponse' }),
   PaginatedQuantityResponse: paginatedResponseSchema.meta({ id: 'PaginatedQuantityResponse' }),
+  PaginatedQuantityPebRoofResponse: paginatedResponseSchema.meta({ id: 'PaginatedQuantityPebRoofResponse' }),
+  PaginatedQuantityCladdingResponse: paginatedResponseSchema.meta({ id: 'PaginatedQuantityCladdingResponse' }),
+  PaginatedQuantityCanopyResponse: paginatedResponseSchema.meta({ id: 'PaginatedQuantityCanopyResponse' }),
+  PaginatedQuantityAccessoriesResponse: paginatedResponseSchema.meta({ id: 'PaginatedQuantityAccessoriesResponse' }),
+  PaginatedQuantityMezzanineResponse: paginatedResponseSchema.meta({ id: 'PaginatedQuantityMezzanineResponse' }),
+  PaginatedQuantityStairResponse: paginatedResponseSchema.meta({ id: 'PaginatedQuantityStairResponse' }),
+  PaginatedQuantityAdditionalBoltsResponse: paginatedResponseSchema.meta({ id: 'PaginatedQuantityAdditionalBoltsResponse' }),
   ApiError: apiErrorSchema.meta({ id: 'ApiError' }),
   HealthResponse: healthResponseSchema.meta({ id: 'HealthResponse' }),
 }
@@ -295,6 +337,7 @@ interface ResourceDefinition {
   responseSchema: z.ZodType
   paginatedSchema: z.ZodType
   example: Record<string, unknown>
+  customNestedPath?: string
 }
 
 const resourceDefinitions: ResourceDefinition[] = [
@@ -308,6 +351,13 @@ const resourceDefinitions: ResourceDefinition[] = [
   { singular: 'Joint', plural: 'joints', tag: 'Joint', createSchema: schemas.CreateJointRequest, updateSchema: schemas.UpdateJointRequest, responseSchema: responseSchemas.JointResponse, paginatedSchema: responseSchemas.PaginatedJointResponse, example: examples.joint },
   { singular: 'Spec', plural: 'specs', tag: 'Specs', createSchema: schemas.CreateSpecRequest, updateSchema: schemas.UpdateSpecRequest, responseSchema: responseSchemas.SpecResponse, paginatedSchema: responseSchemas.PaginatedSpecResponse, example: examples.spec },
   { singular: 'Quantity', plural: 'quantities', tag: 'Quantity', createSchema: schemas.CreateQuantityRequest, updateSchema: schemas.UpdateQuantityRequest, responseSchema: responseSchemas.QuantityResponse, paginatedSchema: responseSchemas.PaginatedQuantityResponse, example: examples.quantity },
+  { singular: 'QuantityPebRoof', plural: 'quantity-peb-roofs', customNestedPath: '/api/jobs/{jobId}/quantity/peb-roof', tag: 'Quantity', createSchema: schemas.CreateQuantityPebRoofRequest, updateSchema: schemas.UpdateQuantityPebRoofRequest, responseSchema: responseSchemas.QuantityPebRoofResponse, paginatedSchema: responseSchemas.PaginatedQuantityPebRoofResponse, example: {} },
+  { singular: 'QuantityCladding', plural: 'quantity-claddings', customNestedPath: '/api/jobs/{jobId}/quantity/cladding', tag: 'Quantity', createSchema: schemas.CreateQuantityCladdingRequest, updateSchema: schemas.UpdateQuantityCladdingRequest, responseSchema: responseSchemas.QuantityCladdingResponse, paginatedSchema: responseSchemas.PaginatedQuantityCladdingResponse, example: {} },
+  { singular: 'QuantityCanopy', plural: 'quantity-canopies', customNestedPath: '/api/jobs/{jobId}/quantity/canopy', tag: 'Quantity', createSchema: schemas.CreateQuantityCanopyRequest, updateSchema: schemas.UpdateQuantityCanopyRequest, responseSchema: responseSchemas.QuantityCanopyResponse, paginatedSchema: responseSchemas.PaginatedQuantityCanopyResponse, example: {} },
+  { singular: 'QuantityAccessories', plural: 'quantity-accessories', customNestedPath: '/api/jobs/{jobId}/quantity/accessories', tag: 'Quantity', createSchema: schemas.CreateQuantityAccessoriesRequest, updateSchema: schemas.UpdateQuantityAccessoriesRequest, responseSchema: responseSchemas.QuantityAccessoriesResponse, paginatedSchema: responseSchemas.PaginatedQuantityAccessoriesResponse, example: {} },
+  { singular: 'QuantityMezzanine', plural: 'quantity-mezzanines', customNestedPath: '/api/jobs/{jobId}/quantity/mezzanine', tag: 'Quantity', createSchema: schemas.CreateQuantityMezzanineRequest, updateSchema: schemas.UpdateQuantityMezzanineRequest, responseSchema: responseSchemas.QuantityMezzanineResponse, paginatedSchema: responseSchemas.PaginatedQuantityMezzanineResponse, example: {} },
+  { singular: 'QuantityStair', plural: 'quantity-stairs', customNestedPath: '/api/jobs/{jobId}/quantity/stair', tag: 'Quantity', createSchema: schemas.CreateQuantityStairRequest, updateSchema: schemas.UpdateQuantityStairRequest, responseSchema: responseSchemas.QuantityStairResponse, paginatedSchema: responseSchemas.PaginatedQuantityStairResponse, example: {} },
+  { singular: 'QuantityAdditionalBolts', plural: 'quantity-additional-bolts', customNestedPath: '/api/jobs/{jobId}/quantity/additional-bolts', tag: 'Quantity', createSchema: schemas.CreateQuantityAdditionalBoltsRequest, updateSchema: schemas.UpdateQuantityAdditionalBoltsRequest, responseSchema: responseSchemas.QuantityAdditionalBoltsResponse, paginatedSchema: responseSchemas.PaginatedQuantityAdditionalBoltsResponse, example: {} },
 ]
 
 export const documentedOperations: string[] = []
@@ -383,7 +433,7 @@ function registerOperation(options: {
 }
 
 function registerResourceOperations(resource: ResourceDefinition) {
-  const nestedPath = `/api/jobs/{jobId}/${resource.singular.toLowerCase()}`
+  const nestedPath = resource.customNestedPath ?? `/api/jobs/{jobId}/${resource.singular.toLowerCase()}`
   registerOperation({
     method: 'post', path: nestedPath, operationId: `upsert${resource.singular}`, tag: resource.tag,
     summary: `Create or replace a job's ${resource.singular.toLowerCase()}`, auth: true,
@@ -443,6 +493,16 @@ registerOperation({
   method: 'get', path: '/api/jobs/{id}', operationId: 'getJobById', tag: 'Jobs', auth: true,
   summary: 'Get a job by ID', description: 'Returns one job by its identifier.', params: idParams(),
   responseSchema: responseSchemas.JobResponse, responseDescription: 'Job returned.',
+})
+registerOperation({
+  method: 'get', path: '/api/all/{jobId}', operationId: 'getJobWithAllData', tag: 'Jobs', auth: true,
+  summary: 'Get all job data by ID', description: 'Returns all data of a specific job including all nested relations.', params: jobIdParams(),
+  responseSchema: responseSchemas.JobResponse, responseDescription: 'Full job data returned.', notFound: true,
+})
+registerOperation({
+  method: 'get', path: '/api/jobs/{jobId}/all', operationId: 'getJobWithAllDataAlias', tag: 'Jobs', auth: true,
+  summary: 'Get all job data by ID (canonical alias)', description: 'Returns all data of a specific job including all nested relations.', params: jobIdParams(),
+  responseSchema: responseSchemas.JobResponse, responseDescription: 'Full job data returned.', notFound: true,
 })
 registerOperation({
   method: 'put', path: '/api/jobs/{id}', operationId: 'updateJob', tag: 'Jobs', auth: true,

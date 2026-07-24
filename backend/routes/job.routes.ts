@@ -14,6 +14,8 @@ export async function jobRoutes(app: FastifyInstance) {
   app.post('/jobs', { preHandler: [authMiddleware, syncUser], ...writeLimit }, jobController.create)
   app.get('/jobs', { preHandler: [authMiddleware] }, jobController.getAll)
   app.get('/jobs/:id', { preHandler: [authMiddleware] }, jobController.getById)
+  app.get('/all/:jobId', { preHandler: [authMiddleware] }, jobController.getAllDataByJobId)
+  app.get('/jobs/:jobId/all', { preHandler: [authMiddleware] }, jobController.getAllDataByJobId)
   app.put('/jobs/:id', { preHandler: [authMiddleware], ...writeLimit }, jobController.update)
   app.delete('/jobs/:id', { preHandler: [authMiddleware], ...writeLimit }, jobController.remove)
 }

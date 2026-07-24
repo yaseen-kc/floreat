@@ -31,6 +31,16 @@ export async function getById(request: FastifyRequest, reply: FastifyReply) {
   return reply.send(job)
 }
 
+/** GET /api/all/:jobId (or /api/jobs/:jobId/all) — returns all aggregated data for a specific job. */
+export async function getAllDataByJobId(request: FastifyRequest, reply: FastifyReply) {
+  const { jobId, id } = request.params as { jobId?: string; id?: string }
+  const targetId = jobId || id
+  if (!targetId) return sendError(reply, 400, 'Job ID is required')
+  const job = await jobService.getJobWithAllData(targetId, request.userId)
+  if (!job) return sendError(reply, 404, 'Job not found')
+  return reply.send(job)
+}
+
 /** PUT /api/jobs/:id — partially updates a job owned by the user. */
 export async function update(request: FastifyRequest, reply: FastifyReply) {
   const { id } = request.params as { id: string }
