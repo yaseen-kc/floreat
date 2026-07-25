@@ -129,6 +129,13 @@ export interface QuantityPebRoof extends QuantitySectionMeta {
   anchorBoltsSpecification: TextField
   anchorBoltsUnit: UnitField
   anchorBoltsQuantity: DecimalField
+  lengthOfBuildingQuantity?: DecimalField | TextField
+  lengthOfOnePurlinQuantity?: DecimalField | TextField
+  extendedRoofWidthAdditonal?: DecimalField
+  lengthOfpolyCarbonateSheetAdditional?: DecimalField | TextField
+  lengthOfSinlgeWindBracingAdditional?: DecimalField | TextField
+  lengthOfSingleSagRoadAdditional?: DecimalField | TextField
+  lengthOfMidFrameFlangeBraceAdditional?: DecimalField | TextField
 }
 
 /** Cladding quantity section returned by the backend. */
@@ -162,14 +169,19 @@ export interface QuantityCladding extends QuantitySectionMeta {
   claddingSheetUnit: UnitField
   claddingSheetQuantity: DecimalField
   claddingSheetPurchaseQuantity: DecimalField
+  claddingSheetAdditional?: DecimalField
   columnWindBracingsUnit: UnitField
   columnWindBracingsQuantity: DecimalField
+  columnWindBracingsAdditional?: DecimalField
   claddingSagRodUnit: UnitField
   claddingSagRodQuantity: DecimalField
+  claddingSagRodAdditional?: DecimalField
   claddingFlangeBraceUnit: UnitField
   claddingFlangeBraceQuantity: DecimalField
+  claddingFlangeBraceAdditional?: DecimalField
   claddingPurlinBoltsUnit: UnitField
   claddingPurlinBoltsQuantity: DecimalField
+  numberOfCladdingPurlinBoltsAdditional?: DecimalField
 }
 
 /** Canopy quantity section returned by the backend. */
@@ -262,16 +274,20 @@ export interface QuantityMezzanine extends QuantitySectionMeta {
   structureAdditionalQuantity: DecimalField
   structureTotalArea: DecimalField
   structureTotalAreaUnit: UnitField
+  totalMezzanineAreaQuantity?: DecimalField
   structureMaterialConsumption: DecimalField
   structureMaterialConsumptionUnit: UnitField
   deckSheetUnit: UnitField
   deckSheetQuantity: DecimalField
   deckSheetPurchaseQuantity: DecimalField
-  deckSheetAdditionalQuantity: DecimalField
+  deckSheetAdditionalQuantity?: DecimalField
+  deckSheetQuantityAdditional?: DecimalField
   shearStudsUnit: UnitField
   shearStudsQuantity: DecimalField
+  shearStudsQuantityAdditional?: DecimalField
   concreteFlashingUnit: UnitField
   concreteFlashingQuantity: DecimalField
+  concreteFlashingAdditional?: DecimalField
   jointBoltsSpecification: TextField
   jointBoltsQuantity: DecimalField
   foundationBoltsQuantity: DecimalField
@@ -289,6 +305,8 @@ export interface QuantityStair extends QuantitySectionMeta {
   stepsUnit: UnitField
   stepsQuantity: DecimalField
   stepsAdditionalQuantity: DecimalField
+  totalWeightofStringerBeamsAdditional?: DecimalField
+  totalWeightofStepsAdditional?: DecimalField
 }
 
 /** Additional-bolts quantity section returned by the backend. */
@@ -305,6 +323,10 @@ export interface QuantityAdditionalBolts extends QuantitySectionMeta {
   anchorBoltQuantity: DecimalField
   foundationBoltUnit: UnitField
   foundationBoltQuantity: DecimalField
+  jointBolt1Quantity?: DecimalField
+  jointBolt2Quantity?: DecimalField
+  jointBolt3Quantity?: DecimalField
+  purlinBoltQuantity?: DecimalField
 }
 
 /** Shape of a single Quantity returned by the backend with all optional sections included. */

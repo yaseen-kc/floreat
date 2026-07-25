@@ -216,6 +216,7 @@ model QuantityMezzanine {
   shearStudsQuantity           Decimal? @db.Decimal(10, 3)
   shearStudsQuantityAdditional Decimal? @db.Decimal(10, 3)
   concreteFlashing             Decimal? @db.Decimal(10, 3)
+  concreteFlashingAdditional   Decimal? @db.Decimal(10, 3)
   jointBolts                   Decimal? @db.Decimal(10, 3)
   jointBoltsQuantity           Decimal? @db.Decimal(10, 3)
   foundationBoltsQuantity      Decimal? @db.Decimal(10, 3)

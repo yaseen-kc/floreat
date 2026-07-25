@@ -9,10 +9,10 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Save } from 'lucide-react'
 
 export interface SubRowDef {
-  sl: string;
-  desc: string;
-  spec: string;
-  unit: string;
+  sl?: string;
+  desc?: string;
+  spec?: string;
+  unit?: string;
   addlSpec?: string;
   addlUnit?: string;
   addlField?: string;
@@ -24,33 +24,37 @@ export interface SubRowDef {
 }
 
 export interface RowDef {
-  sl: string;
+  sl?: string;
   labelPrefix?: string;
   labelSuffix?: string;
-  label: string;
-  spec: string;
+  label?: string;
+  spec?: string;
   specValue?: string;
-  unit: string;
+  isSpecValueInput?: boolean;
+  unit?: string;
   addlSpec?: string;
   addlUnit?: string;
-  qtyField: string;
-  unitField: string | null;
+  qtyField?: string;
+  unitField?: string | null;
   defaultQty?: string | number;
   isCalculated?: boolean;
   calcValue?: string | number;
-  subRows: SubRowDef[];
+  subRows?: SubRowDef[];
 }
 
 export const getEditableFields = (rows: RowDef[]): string[] => {
   return rows.flatMap(r => {
-    const fields = [r.qtyField];
+    const fields: (string | undefined)[] = [r.qtyField];
+    if (r.specValue && (r.isSpecValueInput || (r.specValue !== 'NOS' && r.specValue !== ''))) {
+      fields.push(r.specValue);
+    }
     if (r.subRows) {
       r.subRows.forEach(sub => {
         if (sub.addlField) fields.push(sub.addlField);
         if (sub.purchField) fields.push(sub.purchField);
       });
     }
-    return fields.filter(Boolean);
+    return fields.filter((f): f is string => Boolean(f));
   });
 }
 
@@ -119,23 +123,23 @@ export function SectionTable({ icon, title, rows, sectionData, draft, onEdit, on
           {rows.map((row) => {
             const unitVal = (row.unitField && sectionData?.[row.unitField]) || row.unit;
             const unitDisplay = unitVal ? <Badge variant="outline">{String(unitVal)}</Badge> : <span className="text-muted-foreground">—</span>;
-            
+
             return (
-              <Fragment key={row.qtyField}>
+              <Fragment key={row.qtyField || row.sl}>
                 <TableRow className="border-b">
                   <TableCell className="border-r font-medium text-muted-foreground">{row.sl}</TableCell>
                   {row.labelPrefix ? (
                     <Fragment>
                       <TableCell className="border-r font-semibold text-center">{row.labelPrefix}</TableCell>
-                      <TableCell className="border-r font-semibold">{row.label.toUpperCase()}</TableCell>
+                      <TableCell className="border-r font-semibold">{row.label?.toUpperCase() || ''}</TableCell>
                     </Fragment>
                   ) : row.labelSuffix ? (
                     <Fragment>
-                      <TableCell className="border-r font-semibold">{row.label.toUpperCase()}</TableCell>
+                      <TableCell className="border-r font-semibold">{row.label?.toUpperCase() || ''}</TableCell>
                       <TableCell className="border-r font-semibold text-center">{row.labelSuffix}</TableCell>
                     </Fragment>
                   ) : (
-                    <TableCell colSpan={2} className="border-r font-semibold">{row.label.toUpperCase()}</TableCell>
+                    <TableCell colSpan={2} className="border-r font-semibold">{row.label?.toUpperCase() || ''}</TableCell>
                   )}
                   {row.addlSpec ? (
                     <Fragment>
@@ -147,7 +151,23 @@ export function SectionTable({ icon, title, rows, sectionData, draft, onEdit, on
                   ) : (
                     <Fragment>
                       <TableCell colSpan={row.specValue ? 2 : 3} className="border-r font-mono text-xs">{row.spec || '—'}</TableCell>
-                      {row.specValue && <TableCell className="border-r text-center font-medium text-muted-foreground whitespace-nowrap">{row.specValue}</TableCell>}
+                      {row.specValue && (
+                        <TableCell className="border-r text-center font-medium text-muted-foreground whitespace-nowrap p-1 align-middle">
+                          {row.isSpecValueInput || (row.specValue !== 'NOS' && row.specValue !== '') ? (
+                            <Input
+                              type="number"
+                              inputMode="decimal"
+                              min={0}
+                              className="text-right font-mono tabular-nums h-8"
+                              value={draft[row.specValue] ?? ''}
+                              onChange={(e) => onEdit(row.specValue!, e.target.value)}
+                              aria-label={`${row.label} specification value`}
+                            />
+                          ) : (
+                            row.specValue
+                          )}
+                        </TableCell>
+                      )}
                       <TableCell className="border-r text-center">{unitDisplay}</TableCell>
                     </Fragment>
                   )}
@@ -157,7 +177,7 @@ export function SectionTable({ icon, title, rows, sectionData, draft, onEdit, on
                         readOnly
                         disabled
                         className="text-right font-mono tabular-nums h-8 bg-muted"
-                        value={getCalcValue(row.calcValue, calculatedData?.[row.qtyField])}
+                        value={getCalcValue(row.calcValue, row.qtyField ? calculatedData?.[row.qtyField] : undefined)}
                         aria-label={`${row.label} calculated`}
                       />
                     ) : (
@@ -166,8 +186,8 @@ export function SectionTable({ icon, title, rows, sectionData, draft, onEdit, on
                         inputMode="decimal"
                         min={0}
                         className="text-right font-mono tabular-nums h-8"
-                        value={draft[row.qtyField] ?? ''}
-                        onChange={(e) => onEdit(row.qtyField, e.target.value)}
+                        value={row.qtyField ? (draft[row.qtyField] ?? '') : ''}
+                        onChange={(e) => row.qtyField && onEdit(row.qtyField, e.target.value)}
                         aria-label={row.label}
                       />
                     )}

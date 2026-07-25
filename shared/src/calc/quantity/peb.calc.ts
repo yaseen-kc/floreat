@@ -161,9 +161,7 @@ export function calculatePebQuantities(job: PebCalculationInput) {
             n(roof?.roofExtensionWidthHeight) / COS((n(roof?.roofSlope) * PI()) / 180),
         extendedRoofLength:
             (n(roof?.buildingOverallLength) / (n(roof?.mainRoofFrames) + n(roof?.endRoofFrames) - 1)) *
-            n(roof?.roofExtensionEndFrameCount) +
-            n(roof?.roofExtensionMidFrameCount) -
-            1,
+            (n(roof?.roofExtensionEndFrameCount) + n(roof?.roofExtensionMidFrameCount) - 1),
         roofAreaDeductions: n(roof?.roofAreaDeduction),
         polyCarbonateAreaDeductions:
             n(roof?.polycarbonateRoofLength) *
@@ -324,10 +322,14 @@ export function calculatePebQuantities(job: PebCalculationInput) {
         noOfExtendedFrames: n(roof?.roofExtensionMidFrameCount) + n(roof?.roofExtensionEndFrameCount),
         noOfBoltsInSinglePurlinJoint: n(joint?.purlinFlangeBraceNumberOfBolts),
         numberOfRoofJointBolts: `${n(
-            jointBoltRoofs?.find((j) => j.roofJointId === "A")?.numberOfBolts
+            jointBoltRoofs?.find((j) => j.roofJointId === "A")?.boltDiameter
         )} MM DIA HSFG BOLTS`,
-        numberOfFoundationBolts: `${n(foundationBoltRoof?.boltDiameter11)} MM DIA FOUNDATION BOLTS`,
-        numberOfAnchorBolts: `${n(foundationBoltRoof?.boltDiameter11)} MM DIA ANCHOR BOLTS`,
+        numberOfFoundationBolts: `${n(
+            (Array.isArray(foundationBoltRoof) ? foundationBoltRoof[0] : foundationBoltRoof)?.boltDiameter
+        )} MM DIA FOUNDATION BOLTS`,
+        numberOfAnchorBolts: `${n(
+            (Array.isArray(foundationBoltRoof) ? foundationBoltRoof[0] : foundationBoltRoof)?.boltDiameter
+        )} MM DIA ANCHOR BOLTS`,
     };
 
     return {

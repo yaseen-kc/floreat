@@ -47,7 +47,8 @@ export function calculateMezzanineQuantities(job: MezzanineCalculationInput) {
     // Net mezzanine area across all floors and extensions minus deductions
     const netMezzanineArea = mez1Area - stairDeductionArea + ext1Area + otherFloorsArea + otherExtensionsArea;
 
-    const mezzanineStructureQuantity = netMezzanineArea * n(job.mezzanine?.materialConsumptionKgPerSqft) * 10.76;
+    const matCons = job.mezzanine?.materialConsumptionKgPerSqft || mez1?.materialConsumptionKgPerSqft;
+    const mezzanineStructureQuantity = netMezzanineArea * n(matCons) * 10.76;
     const totalMezzanineArea = netMezzanineArea;
     const deckSheetQuantity = netMezzanineArea;
     const deckSheetPurcahseQuantity = netMezzanineArea * 1.1;
@@ -69,11 +70,13 @@ export function calculateMezzanineQuantities(job: MezzanineCalculationInput) {
         (n(mez1?.beamsMidPrimary) + n(mez1?.beamsEndPrimary) - 1) * n(mez1?.beamsSecondary) * n(job.joint?.secondaryBeamsNumberOfBolts) +
         (n(ext1?.beamsMidPrimary) + n(ext1?.beamsEndPrimary) - 1) * n(ext1?.beamsSecondary) * n(job.joint?.canopyNumberOfBolts);
 
+    const boltDiameter = n(job.jointBoltMezzanines?.find((j: any) => j.mezzanineJointId === 'Q')?.boltDiameter || job.joint?.secondaryBeamsBoltDiameter);
+
     return {
         mezzanineStructureQuantity,
         totalMezzanineArea,
         totalMezzanineAreaQuantity: "User Input",
-        materialConsumption: job.mezzanine?.materialConsumptionKgPerSqft,
+        materialConsumption: matCons,
         deckSheetQuantity,
         deckSheetPurcahseQuantity,
         deckSheetQuantityAdditional: "User Input",
@@ -81,7 +84,7 @@ export function calculateMezzanineQuantities(job: MezzanineCalculationInput) {
         shearStudsQuantityAdditional: "User Input",
         concreteFlashing,
         concreteFlashingAdditional: "User Input",
-        jointBolts: `${n(job.jointBoltMezzanines?.find((j: any) => j.jointId === 'Q')?.boltDiameter)} MM DIA HSFG BOLTS`,
+        jointBolts: `${boltDiameter} MM DIA HSFG BOLTS`,
         jointBoltsQuantity,
         foundationBoltsQuantity: "NA"
     };
