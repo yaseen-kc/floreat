@@ -1,28 +1,46 @@
 import { prisma } from '../lib/prisma.js'
 import type { CreateQuantityPebRoofInput, UpdateQuantityPebRoofInput } from '../schemas/quantity.schema.js'
+import { computeJobQuantities } from './quantity-calc.helper.js'
 
-/** Upserts the pebRoof section for a job, creating the parent Quantity if needed. */
+/** Upserts the pebRoof section for a job, calculating authoritative defaults server-side. */
 export async function upsertQuantityPebRoof(jobId: string, data: CreateQuantityPebRoofInput) {
+  const computed = await computeJobQuantities(jobId)
+  const mergedData = { ...computed?.pebRoof, ...data }
+
   const result = await prisma.quantity.upsert({
     where: { jobId },
-    create: { jobId, pebRoof: { create: data as any } } as any,
-    update: { pebRoof: { upsert: { create: data as any, update: data as any } } } as any,
+    create: { jobId, pebRoof: { create: mergedData as any } } as any,
+    update: { pebRoof: { upsert: { create: mergedData as any, update: mergedData as any } } } as any,
     include: { pebRoof: true },
   })
   return result.pebRoof
 }
 
-/** Returns the pebRoof section for a job, or null. */
+/** Returns the pebRoof section for a job, calculating defaults server-side if not yet persisted. */
 export async function getQuantityPebRoofByJobId(jobId: string) {
   const q = await prisma.quantity.findUnique({ where: { jobId }, include: { pebRoof: true } })
-  return q?.pebRoof ?? null
+  if (q?.pebRoof) return q.pebRoof
+
+  const computed = await computeJobQuantities(jobId)
+  if (!computed?.pebRoof) return null
+
+  const result = await prisma.quantity.upsert({
+    where: { jobId },
+    create: { jobId, pebRoof: { create: computed.pebRoof as any } } as any,
+    update: { pebRoof: { upsert: { create: computed.pebRoof as any, update: computed.pebRoof as any } } } as any,
+    include: { pebRoof: true },
+  })
+  return result.pebRoof
 }
 
 /** Updates the pebRoof section. Throws P2025 if the parent quantity is not found. */
 export async function updateQuantityPebRoof(jobId: string, data: UpdateQuantityPebRoofInput) {
+  const computed = await computeJobQuantities(jobId)
+  const mergedData = { ...computed?.pebRoof, ...data }
+
   const result = await prisma.quantity.update({
     where: { jobId },
-    data: { pebRoof: { upsert: { create: data as any, update: data as any } } } as any,
+    data: { pebRoof: { upsert: { create: mergedData as any, update: mergedData as any } } } as any,
     include: { pebRoof: true },
   })
   return result.pebRoof

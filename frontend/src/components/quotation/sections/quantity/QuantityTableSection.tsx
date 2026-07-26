@@ -72,21 +72,6 @@ export function QuantityTableSection({ sectionKey, title, icon, rows, calculated
   const onEdit = (field: string, value: string) => {
     setDraft((prev) => {
       const next = { ...prev, [field]: value }
-      const parseVal = (v: string) => (v === '' ? null : isNaN(Number(v)) ? v : Number(v))
-      const parsedDraft = Object.fromEntries(Object.entries(next).map(([k, v]) => [k, parseVal(v)]))
-      useQuotationStore.setState((s) => ({
-        quantity: s.quantity
-          ? {
-              ...s.quantity,
-              [sectionKey]: {
-                ...s.quantity[sectionKey],
-                ...parsedDraft,
-              },
-            }
-          : ({
-              [sectionKey]: parsedDraft,
-            } as unknown as Quantity),
-      }))
       onDraftChange?.(sectionKey, next)
       return next
     })

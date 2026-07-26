@@ -33,7 +33,7 @@ const PEB_ROOF_NUMERIC_FIELDS = new Set([
   'roofArea', 'materialConsumption', 'roofPurlinsValue', 'roofPurlinsQuantity', 'lengthOfOnePurlin', 'lengthOfOnePurlinQuantity',
   'noOfPurlinsInOneFrame', 'totalNoOfPurlinBay', 'unitWeightOfPurlin', 'noOfExtendedFrame',
   'noOfExtendedPurlinBay', 'roofSheetQuantity', 'roofSheetPurchaseQuantity', 'extendedRoofWidth',
-  'extendedRoofWidthAdditonal', 'extendedRoofLength', 'roofAreaDeductions', 'polyCarbonateAreaDeductions',
+  'extendedRoofWidthAdditonal', 'extendedRoofWidthAdditional', 'extendedRoofLength', 'roofAreaDeductions', 'polyCarbonateAreaDeductions',
   'polyCarbonateSheetQuantity', 'polyCarbonateSheetPurchaseQuantity', 'lengthOfpolyCarbonateSheet',
   'lengthOfpolyCarbonateSheetAdditional', 'widthOfpolyCarbonateSheet', 'NosOfpolyCarbonateSheet', 'roofWindBracing',
   'lengthOfSinlgeWindBracing', 'lengthOfSinlgeWindBracingAdditional', 'totalNumberOfWindBracing',

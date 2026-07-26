@@ -37,18 +37,26 @@ export function Step12Quantity() {
   )
 
   const pebCalculatedNested = calculatePebQuantities({
-    roof,
-    joint,
-    jointBoltRoofs: joint?.jointBoltRoof,
-    foundationBoltRoof: joint?.foundationBoltRoof,
+    roof: roof ?? undefined,
+    joint: joint ?? undefined,
+    jointBoltRoofs: joint?.jointBoltRoof ?? [],
+    foundationBoltRoof: joint?.foundationBoltRoof ?? undefined,
   })
 
-  const claddingCalc = calculateCladdingQuantities({ roof })
-  const canopyCalc = calculateCanopyQuantities({ canopy, joint })
-  const accessoriesCalc = calculateAccessoriesQuantities({ accessories, roof })
-  const mezzanineCalc = calculateMezzanineQuantities({ mezzanine, joint, jointBoltMezzanines: joint.jointBoltMezzanine, stair })
-  const stairCalc = calculateStairQuantities({ stair, mezzanine })
-  const additionalBoltsCalc = calculateAdditionalBoltsQuantities({})
+  const claddingCalc = calculateCladdingQuantities({ roof: roof ?? undefined })
+  const canopyCalc = calculateCanopyQuantities({ canopy: canopy ?? undefined, joint: joint ?? undefined })
+  const accessoriesCalc = calculateAccessoriesQuantities({ accessories: accessories ?? undefined, roof: roof ?? undefined })
+  const mezzanineCalc = calculateMezzanineQuantities({
+    mezzanine: mezzanine ?? undefined,
+    joint: joint ?? undefined,
+    jointBoltMezzanines: joint?.jointBoltMezzanine ?? [],
+    stair: stair ?? undefined,
+  })
+  const stairCalc = calculateStairQuantities({ stair: stair ?? undefined, mezzanine: mezzanine ?? undefined })
+  const additionalBoltsCalc = calculateAdditionalBoltsQuantities({
+    roof: roof ?? undefined,
+    joint: joint ?? undefined,
+  })
 
   const pebRoofRows = getPebRoofRows(pebCalculatedNested)
   const claddingRows = getCladdingRows(claddingCalc)

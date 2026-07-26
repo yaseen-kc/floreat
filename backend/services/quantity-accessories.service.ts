@@ -1,28 +1,46 @@
 import { prisma } from '../lib/prisma.js'
 import type { CreateQuantityAccessoriesInput, UpdateQuantityAccessoriesInput } from '../schemas/quantity.schema.js'
+import { computeJobQuantities } from './quantity-calc.helper.js'
 
-/** Upserts the accessories section for a job, creating the parent Quantity if needed. */
+/** Upserts the accessories section for a job, calculating authoritative defaults server-side. */
 export async function upsertQuantityAccessories(jobId: string, data: CreateQuantityAccessoriesInput) {
+  const computed = await computeJobQuantities(jobId)
+  const mergedData = { ...computed?.accessories, ...data }
+
   const result = await prisma.quantity.upsert({
     where: { jobId },
-    create: { jobId, accessories: { create: data as any } } as any,
-    update: { accessories: { upsert: { create: data as any, update: data as any } } } as any,
+    create: { jobId, accessories: { create: mergedData as any } } as any,
+    update: { accessories: { upsert: { create: mergedData as any, update: mergedData as any } } } as any,
     include: { accessories: true },
   })
   return result.accessories
 }
 
-/** Returns the accessories section for a job, or null. */
+/** Returns the accessories section for a job, calculating defaults server-side if not yet persisted. */
 export async function getQuantityAccessoriesByJobId(jobId: string) {
   const q = await prisma.quantity.findUnique({ where: { jobId }, include: { accessories: true } })
-  return q?.accessories ?? null
+  if (q?.accessories) return q.accessories
+
+  const computed = await computeJobQuantities(jobId)
+  if (!computed?.accessories) return null
+
+  const result = await prisma.quantity.upsert({
+    where: { jobId },
+    create: { jobId, accessories: { create: computed.accessories as any } } as any,
+    update: { accessories: { upsert: { create: computed.accessories as any, update: computed.accessories as any } } } as any,
+    include: { accessories: true },
+  })
+  return result.accessories
 }
 
 /** Updates the accessories section. Throws P2025 if the parent quantity is not found. */
 export async function updateQuantityAccessories(jobId: string, data: UpdateQuantityAccessoriesInput) {
+  const computed = await computeJobQuantities(jobId)
+  const mergedData = { ...computed?.accessories, ...data }
+
   const result = await prisma.quantity.update({
     where: { jobId },
-    data: { accessories: { upsert: { create: data as any, update: data as any } } } as any,
+    data: { accessories: { upsert: { create: mergedData as any, update: mergedData as any } } } as any,
     include: { accessories: true },
   })
   return result.accessories
@@ -49,5 +67,3 @@ export async function getQuantityAccessories(userId: string, page: number, pageS
   ])
   return { data, total, page, pageSize }
 }
-
-export const getQuantityAccessoriesList = getQuantityAccessories

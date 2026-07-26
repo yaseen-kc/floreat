@@ -1,28 +1,46 @@
 import { prisma } from '../lib/prisma.js'
 import type { CreateQuantityCladdingInput, UpdateQuantityCladdingInput } from '../schemas/quantity.schema.js'
+import { computeJobQuantities } from './quantity-calc.helper.js'
 
-/** Upserts the cladding section for a job, creating the parent Quantity if needed. */
+/** Upserts the cladding section for a job, calculating authoritative defaults server-side. */
 export async function upsertQuantityCladding(jobId: string, data: CreateQuantityCladdingInput) {
+  const computed = await computeJobQuantities(jobId)
+  const mergedData = { ...computed?.cladding, ...data }
+
   const result = await prisma.quantity.upsert({
     where: { jobId },
-    create: { jobId, cladding: { create: data as any } } as any,
-    update: { cladding: { upsert: { create: data as any, update: data as any } } } as any,
+    create: { jobId, cladding: { create: mergedData as any } } as any,
+    update: { cladding: { upsert: { create: mergedData as any, update: mergedData as any } } } as any,
     include: { cladding: true },
   })
   return result.cladding
 }
 
-/** Returns the cladding section for a job, or null. */
+/** Returns the cladding section for a job, calculating defaults server-side if not yet persisted. */
 export async function getQuantityCladdingByJobId(jobId: string) {
   const q = await prisma.quantity.findUnique({ where: { jobId }, include: { cladding: true } })
-  return q?.cladding ?? null
+  if (q?.cladding) return q.cladding
+
+  const computed = await computeJobQuantities(jobId)
+  if (!computed?.cladding) return null
+
+  const result = await prisma.quantity.upsert({
+    where: { jobId },
+    create: { jobId, cladding: { create: computed.cladding as any } } as any,
+    update: { cladding: { upsert: { create: computed.cladding as any, update: computed.cladding as any } } } as any,
+    include: { cladding: true },
+  })
+  return result.cladding
 }
 
 /** Updates the cladding section. Throws P2025 if the parent quantity is not found. */
 export async function updateQuantityCladding(jobId: string, data: UpdateQuantityCladdingInput) {
+  const computed = await computeJobQuantities(jobId)
+  const mergedData = { ...computed?.cladding, ...data }
+
   const result = await prisma.quantity.update({
     where: { jobId },
-    data: { cladding: { upsert: { create: data as any, update: data as any } } } as any,
+    data: { cladding: { upsert: { create: mergedData as any, update: mergedData as any } } } as any,
     include: { cladding: true },
   })
   return result.cladding
