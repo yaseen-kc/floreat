@@ -5,8 +5,8 @@ import type { CreateQuantityPebRoofInput, UpdateQuantityPebRoofInput } from '../
 export async function upsertQuantityPebRoof(jobId: string, data: CreateQuantityPebRoofInput) {
   const result = await prisma.quantity.upsert({
     where: { jobId },
-    create: { jobId, pebRoof: { create: data } } as any,
-    update: { pebRoof: { upsert: { create: data, update: data } } },
+    create: { jobId, pebRoof: { create: data as any } } as any,
+    update: { pebRoof: { upsert: { create: data as any, update: data as any } } } as any,
     include: { pebRoof: true },
   })
   return result.pebRoof
@@ -22,7 +22,7 @@ export async function getQuantityPebRoofByJobId(jobId: string) {
 export async function updateQuantityPebRoof(jobId: string, data: UpdateQuantityPebRoofInput) {
   const result = await prisma.quantity.update({
     where: { jobId },
-    data: { pebRoof: { upsert: { create: data, update: data } } },
+    data: { pebRoof: { upsert: { create: data as any, update: data as any } } } as any,
     include: { pebRoof: true },
   })
   return result.pebRoof

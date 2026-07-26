@@ -296,6 +296,59 @@ export function calculatePebQuantities(job: PebCalculationInput) {
         lengthOfEndFrameFlangeBrace: n(roof?.endFrameFlangeBraceAverageLength),
     };
 
+    const getRoofJointBolts = (id: string): number =>
+        n(jointBoltRoofs?.find((j: any) => j.roofJointId === id)?.numberOfBolts);
+
+    const getFoundationBolts = (id: string): number => {
+        if (!foundationBoltRoof) return 0;
+        if (Array.isArray(foundationBoltRoof)) {
+            return n(foundationBoltRoof.find((f: any) => f.foundationJointId === id)?.numberOfBolts);
+        }
+        return (foundationBoltRoof.foundationJointId === id || !foundationBoltRoof.foundationJointId)
+            ? n(foundationBoltRoof.numberOfBolts)
+            : 0;
+    };
+
+    const numberOfRoofJointBoltsQuantity =
+        getRoofJointBolts("D") * n(roof?.mainRoofFrames) * (n(roof?.columnSegmentsInMainFrame) - 1) * 2 +
+        getRoofJointBolts("K") * n(roof?.mainRoofFrames) * (n(roof?.columnSegmentsInMainFrame) - 1) * n(roof?.internalColumnsForMainRoofFrames) +
+        getRoofJointBolts("G") * n(roof?.roofExtensionMidFrameCount) * (n(roof?.columnSegmentsInMainFrame) - 1) +
+        getRoofJointBolts("H") * n(roof?.roofExtensionMidFrameCount) * 1 +
+        getRoofJointBolts("D_1") * n(roof?.endRoofFrames) * (n(roof?.columnSegmentsInEndFrame) - 1) +
+        getRoofJointBolts("L") * n(roof?.mainRoofFrames) * n(roof?.internalColumnsForMainRoofFrames) +
+        getRoofJointBolts("G_1") * n(roof?.roofExtensionEndFrameCount) * (n(roof?.columnSegmentsInEndFrame) - 1) +
+        getRoofJointBolts("H_1") * n(roof?.roofExtensionEndFrameCount) * 1 +
+        getRoofJointBolts("K_1") * n(roof?.endRoofFrames) * (n(roof?.columnSegmentsInEndFrame) - 1) * n(roof?.internalColumnsForEndRoofFrames) +
+        getRoofJointBolts("L_1") * n(roof?.endRoofFrames) * (n(roof?.columnSegmentsInEndFrame) - 1) * n(roof?.internalColumnsForEndRoofFrames) +
+        getRoofJointBolts("I") * n(roof?.roofExtensionMidFrameCount) * 1 +
+        getRoofJointBolts("I_1") * n(roof?.roofExtensionEndFrameCount) * 1 +
+        getRoofJointBolts("B") * n(roof?.mainRoofFrames) * (n(roof?.raftersInOneHalfOfMainFrame) - 1) * 2 +
+        getRoofJointBolts("B_1") * n(roof?.mainRoofFrames) * (n(roof?.raftersInOneHalfOfMainFrame) - 1) * 2 +
+        getRoofJointBolts("B_2") * n(roof?.endRoofFrames) * (n(roof?.raftersInOneHalfOfEndFrame) - 1) * 2 +
+        getRoofJointBolts("A") * n(roof?.mainRoofFrames) * 1 +
+        getRoofJointBolts("A_1") * n(roof?.endRoofFrames) * 1 +
+        getRoofJointBolts("C") * n(roof?.mainRoofFrames) * 2 +
+        getRoofJointBolts("C_1") * n(roof?.endRoofFrames) * 2;
+
+    const numberOfFoundationBoltsQuantity =
+        getFoundationBolts("FB4") * n(roof?.mainRoofFrames) * 1 +
+        getFoundationBolts("FB4") * n(roof?.endRoofFrames) * 2 +
+        getFoundationBolts("FB5") * (n(roof?.roofExtensionMidFrameCount) + n(roof?.roofExtensionEndFrameCount)) * 1 +
+        getFoundationBolts("FB6") * n(roof?.mainRoofFrames) * n(roof?.internalColumnsForMainRoofFrames) +
+        getFoundationBolts("FB6") * n(roof?.endRoofFrames) * n(roof?.internalColumnsForEndRoofFrames);
+
+    const isAnchorBoltFixing = roof?.roofFrameBaseFixing === "ANCHOR BOLT" ? 1 : 0;
+    const numberOfAnchorBoltsQuantity =
+        getFoundationBolts("FB6") *
+        (
+            n(roof?.mainRoofFrames) +
+            2 * n(roof?.endRoofFrames) +
+            (n(roof?.roofExtensionMidFrameCount) + n(roof?.roofExtensionEndFrameCount)) +
+            n(roof?.mainRoofFrames) * n(roof?.internalColumnsForMainRoofFrames) +
+            n(roof?.endRoofFrames) * n(roof?.internalColumnsForEndRoofFrames)
+        ) *
+        isAnchorBoltFixing;
+
     const bolts = {
         numberOfPurlinBolts: `${n(joint?.purlinFlangeBraceBoltDiameter)} MM DIA ORDINARY BOLTS`,
         numberOfPurlinBoltsQuantity:
@@ -324,12 +377,15 @@ export function calculatePebQuantities(job: PebCalculationInput) {
         numberOfRoofJointBolts: `${n(
             jointBoltRoofs?.find((j) => j.roofJointId === "A")?.boltDiameter
         )} MM DIA HSFG BOLTS`,
+        numberOfRoofJointBoltsQuantity,
         numberOfFoundationBolts: `${n(
             (Array.isArray(foundationBoltRoof) ? foundationBoltRoof[0] : foundationBoltRoof)?.boltDiameter
         )} MM DIA FOUNDATION BOLTS`,
+        numberOfFoundationBoltsQuantity,
         numberOfAnchorBolts: `${n(
             (Array.isArray(foundationBoltRoof) ? foundationBoltRoof[0] : foundationBoltRoof)?.boltDiameter
         )} MM DIA ANCHOR BOLTS`,
+        numberOfAnchorBoltsQuantity,
     };
 
     return {

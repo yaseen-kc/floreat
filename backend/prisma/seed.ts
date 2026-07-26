@@ -1069,7 +1069,7 @@ async function main() {
     // 1-to-1 sub-models don't support nested `deleteMany` on update, so recreate
     // the whole record for idempotency — the cascade drops all children.
     await prisma.quantity.deleteMany({ where: { jobId } })
-    await prisma.quantity.create({ data: { jobId, ...nested } })
+    await prisma.quantity.create({ data: { jobId, ...nested } as any })
   }
   console.log('✓ Quantities seeded')
 

@@ -5,8 +5,8 @@ import type { CreateQuantityAccessoriesInput, UpdateQuantityAccessoriesInput } f
 export async function upsertQuantityAccessories(jobId: string, data: CreateQuantityAccessoriesInput) {
   const result = await prisma.quantity.upsert({
     where: { jobId },
-    create: { jobId, accessories: { create: data } } as any,
-    update: { accessories: { upsert: { create: data, update: data } } },
+    create: { jobId, accessories: { create: data as any } } as any,
+    update: { accessories: { upsert: { create: data as any, update: data as any } } } as any,
     include: { accessories: true },
   })
   return result.accessories
@@ -22,7 +22,7 @@ export async function getQuantityAccessoriesByJobId(jobId: string) {
 export async function updateQuantityAccessories(jobId: string, data: UpdateQuantityAccessoriesInput) {
   const result = await prisma.quantity.update({
     where: { jobId },
-    data: { accessories: { upsert: { create: data, update: data } } },
+    data: { accessories: { upsert: { create: data as any, update: data as any } } } as any,
     include: { accessories: true },
   })
   return result.accessories
@@ -36,7 +36,7 @@ export async function deleteQuantityAccessories(jobId: string) {
 }
 
 /** Paginated list of accessories sections for jobs owned by userId. */
-export async function getQuantityAccessoriesList(userId: string, page: number, pageSize: number) {
+export async function getQuantityAccessories(userId: string, page: number, pageSize: number) {
   const where = { quantity: { job: { userId } } }
   const [data, total] = await Promise.all([
     prisma.quantityAccessories.findMany({
@@ -49,3 +49,5 @@ export async function getQuantityAccessoriesList(userId: string, page: number, p
   ])
   return { data, total, page, pageSize }
 }
+
+export const getQuantityAccessoriesList = getQuantityAccessories

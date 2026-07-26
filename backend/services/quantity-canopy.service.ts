@@ -5,8 +5,8 @@ import type { CreateQuantityCanopyInput, UpdateQuantityCanopyInput } from '../sc
 export async function upsertQuantityCanopy(jobId: string, data: CreateQuantityCanopyInput) {
   const result = await prisma.quantity.upsert({
     where: { jobId },
-    create: { jobId, canopy: { create: data } } as any,
-    update: { canopy: { upsert: { create: data, update: data } } },
+    create: { jobId, canopy: { create: data as any } } as any,
+    update: { canopy: { upsert: { create: data as any, update: data as any } } } as any,
     include: { canopy: true },
   })
   return result.canopy
@@ -22,7 +22,7 @@ export async function getQuantityCanopyByJobId(jobId: string) {
 export async function updateQuantityCanopy(jobId: string, data: UpdateQuantityCanopyInput) {
   const result = await prisma.quantity.update({
     where: { jobId },
-    data: { canopy: { upsert: { create: data, update: data } } },
+    data: { canopy: { upsert: { create: data as any, update: data as any } } } as any,
     include: { canopy: true },
   })
   return result.canopy
@@ -36,7 +36,7 @@ export async function deleteQuantityCanopy(jobId: string) {
 }
 
 /** Paginated list of canopy sections for jobs owned by userId. */
-export async function getQuantityCanopies(userId: string, page: number, pageSize: number) {
+export async function getQuantityCanopys(userId: string, page: number, pageSize: number) {
   const where = { quantity: { job: { userId } } }
   const [data, total] = await Promise.all([
     prisma.quantityCanopy.findMany({
@@ -49,3 +49,5 @@ export async function getQuantityCanopies(userId: string, page: number, pageSize
   ])
   return { data, total, page, pageSize }
 }
+
+export const getQuantityCanopies = getQuantityCanopys

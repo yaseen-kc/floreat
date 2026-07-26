@@ -5,8 +5,8 @@ import type { CreateQuantityAdditionalBoltsInput, UpdateQuantityAdditionalBoltsI
 export async function upsertQuantityAdditionalBolts(jobId: string, data: CreateQuantityAdditionalBoltsInput) {
   const result = await prisma.quantity.upsert({
     where: { jobId },
-    create: { jobId, additionalBolts: { create: data } } as any,
-    update: { additionalBolts: { upsert: { create: data, update: data } } },
+    create: { jobId, additionalBolts: { create: data as any } } as any,
+    update: { additionalBolts: { upsert: { create: data as any, update: data as any } } } as any,
     include: { additionalBolts: true },
   })
   return result.additionalBolts
@@ -22,7 +22,7 @@ export async function getQuantityAdditionalBoltsByJobId(jobId: string) {
 export async function updateQuantityAdditionalBolts(jobId: string, data: UpdateQuantityAdditionalBoltsInput) {
   const result = await prisma.quantity.update({
     where: { jobId },
-    data: { additionalBolts: { upsert: { create: data, update: data } } },
+    data: { additionalBolts: { upsert: { create: data as any, update: data as any } } } as any,
     include: { additionalBolts: true },
   })
   return result.additionalBolts
@@ -36,7 +36,7 @@ export async function deleteQuantityAdditionalBolts(jobId: string) {
 }
 
 /** Paginated list of additionalBolts sections for jobs owned by userId. */
-export async function getQuantityAdditionalBoltsList(userId: string, page: number, pageSize: number) {
+export async function getQuantityAdditionalBoltss(userId: string, page: number, pageSize: number) {
   const where = { quantity: { job: { userId } } }
   const [data, total] = await Promise.all([
     prisma.quantityAdditionalBolts.findMany({
@@ -49,3 +49,5 @@ export async function getQuantityAdditionalBoltsList(userId: string, page: numbe
   ])
   return { data, total, page, pageSize }
 }
+
+export const getQuantityAdditionalBoltsList = getQuantityAdditionalBoltss

@@ -17,6 +17,7 @@ const mocks = vi.hoisted(() => ({
   upsertJointMutateAsync: vi.fn(),
   upsertSpecMutateAsync: vi.fn(),
   upsertAmountMutateAsync: vi.fn(),
+  upsertQuantityMutateAsync: vi.fn(),
   createPending: false,
   updatePending: false,
   upsertRoofPending: false,
@@ -56,6 +57,10 @@ vi.mock('@/api/quotation/canopy/postCanopy', () => ({
 
 vi.mock('@/api/quotation/load/postLoad', () => ({
   useUpsertLoad: () => ({ mutateAsync: mocks.upsertLoadMutateAsync, isPending: false }),
+}))
+
+vi.mock('@/api/quotation/quantity/postQuantity', () => ({
+  useUpsertQuantity: () => ({ mutateAsync: mocks.upsertQuantityMutateAsync, isPending: false }),
 }))
 
 vi.mock('@/api/quotation/accessories/postAccessories', () => ({

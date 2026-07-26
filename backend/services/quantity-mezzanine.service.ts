@@ -5,8 +5,8 @@ import type { CreateQuantityMezzanineInput, UpdateQuantityMezzanineInput } from 
 export async function upsertQuantityMezzanine(jobId: string, data: CreateQuantityMezzanineInput) {
   const result = await prisma.quantity.upsert({
     where: { jobId },
-    create: { jobId, mezzanine: { create: data } } as any,
-    update: { mezzanine: { upsert: { create: data, update: data } } },
+    create: { jobId, mezzanine: { create: data as any } } as any,
+    update: { mezzanine: { upsert: { create: data as any, update: data as any } } } as any,
     include: { mezzanine: true },
   })
   return result.mezzanine
@@ -22,7 +22,7 @@ export async function getQuantityMezzanineByJobId(jobId: string) {
 export async function updateQuantityMezzanine(jobId: string, data: UpdateQuantityMezzanineInput) {
   const result = await prisma.quantity.update({
     where: { jobId },
-    data: { mezzanine: { upsert: { create: data, update: data } } },
+    data: { mezzanine: { upsert: { create: data as any, update: data as any } } } as any,
     include: { mezzanine: true },
   })
   return result.mezzanine

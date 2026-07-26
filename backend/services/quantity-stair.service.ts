@@ -5,8 +5,8 @@ import type { CreateQuantityStairInput, UpdateQuantityStairInput } from '../sche
 export async function upsertQuantityStair(jobId: string, data: CreateQuantityStairInput) {
   const result = await prisma.quantity.upsert({
     where: { jobId },
-    create: { jobId, stair: { create: data } } as any,
-    update: { stair: { upsert: { create: data, update: data } } },
+    create: { jobId, stair: { create: data as any } } as any,
+    update: { stair: { upsert: { create: data as any, update: data as any } } } as any,
     include: { stair: true },
   })
   return result.stair
@@ -22,7 +22,7 @@ export async function getQuantityStairByJobId(jobId: string) {
 export async function updateQuantityStair(jobId: string, data: UpdateQuantityStairInput) {
   const result = await prisma.quantity.update({
     where: { jobId },
-    data: { stair: { upsert: { create: data, update: data } } },
+    data: { stair: { upsert: { create: data as any, update: data as any } } } as any,
     include: { stair: true },
   })
   return result.stair

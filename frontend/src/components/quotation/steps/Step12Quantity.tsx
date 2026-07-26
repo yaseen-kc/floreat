@@ -40,7 +40,7 @@ export function Step12Quantity() {
     roof,
     joint,
     jointBoltRoofs: joint?.jointBoltRoof,
-    foundationBoltRoof: joint?.foundationBoltRoof?.[0] || joint?.foundationBoltRoof,
+    foundationBoltRoof: joint?.foundationBoltRoof,
   })
 
   const claddingCalc = calculateCladdingQuantities({ roof })
@@ -63,17 +63,17 @@ export function Step12Quantity() {
       <div className="mb-5">
         <h2 className="text-xl font-semibold tracking-tight">Quantity</h2>
         <p className="text-muted-foreground text-sm mt-1">
-          Bill of quantities breakdown by section. Review and adjust computed quantities, then save each section independently.
+          Bill of quantities breakdown by section. Review and adjust computed quantities, then save each section independently or save the entire draft.
         </p>
       </div>
       <div className="space-y-6">
-        <QuantityTableSection sectionKey="pebRoof" title="PEB Roof" icon={<Layers />} rows={pebRoofRows} />
-        <QuantityTableSection sectionKey="cladding" title="Cladding" icon={<LayoutGrid />} rows={claddingRows} />
-        <QuantityTableSection sectionKey="canopy" title="Canopy" icon={<Umbrella />} rows={canopyRows} />
-        <QuantityTableSection sectionKey="accessories" title="Accessories" icon={<Wrench />} rows={accessoriesRows} />
-        <QuantityTableSection sectionKey="mezzanine" title="Mezzanine" icon={<Layers2 />} rows={mezzanineRows} />
-        <QuantityTableSection sectionKey="stair" title="Stair" icon={<MoveUpRight />} rows={stairRows} />
-        <QuantityTableSection sectionKey="additionalBolts" title="Additional Bolts" icon={<Nut />} rows={additionalBoltsRows} />
+        <QuantityTableSection sectionKey="pebRoof" title="PEB Roof" icon={<Layers />} rows={pebRoofRows} calculatedData={pebCalculatedNested} />
+        <QuantityTableSection sectionKey="cladding" title="Cladding" icon={<LayoutGrid />} rows={claddingRows} calculatedData={claddingCalc} />
+        <QuantityTableSection sectionKey="canopy" title="Canopy" icon={<Umbrella />} rows={canopyRows} calculatedData={canopyCalc} />
+        <QuantityTableSection sectionKey="accessories" title="Accessories" icon={<Wrench />} rows={accessoriesRows} calculatedData={accessoriesCalc} />
+        <QuantityTableSection sectionKey="mezzanine" title="Mezzanine" icon={<Layers2 />} rows={mezzanineRows} calculatedData={mezzanineCalc} />
+        <QuantityTableSection sectionKey="stair" title="Stair" icon={<MoveUpRight />} rows={stairRows} calculatedData={stairCalc} />
+        <QuantityTableSection sectionKey="additionalBolts" title="Additional Bolts" icon={<Nut />} rows={additionalBoltsRows} calculatedData={additionalBoltsCalc} />
       </div>
     </section>
   )

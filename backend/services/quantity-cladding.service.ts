@@ -5,8 +5,8 @@ import type { CreateQuantityCladdingInput, UpdateQuantityCladdingInput } from '.
 export async function upsertQuantityCladding(jobId: string, data: CreateQuantityCladdingInput) {
   const result = await prisma.quantity.upsert({
     where: { jobId },
-    create: { jobId, cladding: { create: data } } as any,
-    update: { cladding: { upsert: { create: data, update: data } } },
+    create: { jobId, cladding: { create: data as any } } as any,
+    update: { cladding: { upsert: { create: data as any, update: data as any } } } as any,
     include: { cladding: true },
   })
   return result.cladding
@@ -22,7 +22,7 @@ export async function getQuantityCladdingByJobId(jobId: string) {
 export async function updateQuantityCladding(jobId: string, data: UpdateQuantityCladdingInput) {
   const result = await prisma.quantity.update({
     where: { jobId },
-    data: { cladding: { upsert: { create: data, update: data } } },
+    data: { cladding: { upsert: { create: data as any, update: data as any } } } as any,
     include: { cladding: true },
   })
   return result.cladding

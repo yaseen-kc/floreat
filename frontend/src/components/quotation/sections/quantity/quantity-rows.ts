@@ -19,7 +19,7 @@ type StairCalc = ReturnType<typeof calculateStairQuantities>
 type AdditionalBoltsCalc = ReturnType<typeof calculateAdditionalBoltsQuantities>
 
 export const getPebRoofRows = (calc: PebCalc): RowDef[] => [
-  { "sl": "1", "labelPrefix": calc.pebRoof?.pebRoofValue, "label": "PEB ROOF", "spec": "MATERIAL WITH PURLIN", "unit": "KG/SQFT", "qtyField": "materialWithPurlinQuantity", "unitField": "materialWithPurlinUnit", "subRows": [], "isCalculated": true, "calcValue": calc.pebRoof?.pebRoofQuantity },
+  { "sl": "1", "labelPrefix": calc.pebRoof?.pebRoofValue, "label": "PEB ROOF", "spec": "MATERIAL WITH PURLIN", "unit": "KG/SQFT", "qtyField": "pebRoofQuantity", "unitField": "materialWithPurlinUnit", "subRows": [], "isCalculated": true, "calcValue": calc.pebRoof?.pebRoofQuantity },
   {
     "sl": "1.1", "label": "Rafters & columns", "spec": calc.raftersAndColumns?.raftersAndColumns || "", "unit": "KG", "qtyField": "raftersAndColumnsQuantity", "unitField": "raftersAndColumnsUnit", "calcValue": calc.raftersAndColumns?.raftersAndColumnsQuantity,
     "subRows": [
@@ -54,9 +54,9 @@ export const getPebRoofRows = (calc: PebCalc): RowDef[] => [
     "isCalculated": true
   },
   {
-    "sl": "1.4", "label": "Polycarbonate sheet", "spec": "", "unit": "SQM", "qtyField": "polycarbonateSheetQuantity", "unitField": "polycarbonateSheetUnit", "calcValue": calc.polyCarbonateSheet?.polyCarbonateSheetQuantity,
+    "sl": "1.4", "label": "Polycarbonate sheet", "spec": "", "unit": "SQM", "qtyField": "polyCarbonateSheetQuantity", "unitField": "polycarbonateSheetUnit", "calcValue": calc.polyCarbonateSheet?.polyCarbonateSheetQuantity,
     "subRows": [
-      { "sl": "", "desc": "", "spec": "PURCHASE QUANTITY", "unit": "SQM", "purchField": "polycarbonateSheetPurchaseQuantity", "isCalculated": true, "calcPurchValue": calc.polyCarbonateSheet?.polyCarbonateSheetPurchaseQuantity },
+      { "sl": "", "desc": "", "spec": "PURCHASE QUANTITY", "unit": "SQM", "purchField": "polyCarbonateSheetPurchaseQuantity", "isCalculated": true, "calcPurchValue": calc.polyCarbonateSheet?.polyCarbonateSheetPurchaseQuantity },
       { "sl": "a", "desc": "LENGTH OF POLYCARBONATE SHEET", "spec": String(calc.polyCarbonateSheet?.lengthOfpolyCarbonateSheet || ""), "unit": "M", "addlSpec": "ADDITIONAL=", "addlUnit": "SQM", "addlField": "lengthOfpolyCarbonateSheetAdditional" },
       { "sl": "b", "desc": "WIDTH OF POLYCARBONATE SHEET", "spec": String(calc.polyCarbonateSheet?.widthOfpolyCarbonateSheet || ""), "unit": "M" },
       { "sl": "c", "desc": "NOS OF POLYCARBONATE SHEET", "spec": String(calc.polyCarbonateSheet?.NosOfpolyCarbonateSheet || ""), "unit": "NOS" }
@@ -64,7 +64,7 @@ export const getPebRoofRows = (calc: PebCalc): RowDef[] => [
     "isCalculated": true
   },
   {
-    "sl": "1.5", "label": "Roof wind bracings", "spec": "", "unit": "KG", "qtyField": "roofWindBracingsQuantity", "unitField": "roofWindBracingsUnit", "calcValue": calc.roofWindBracing?.roofWindBracing,
+    "sl": "1.5", "label": "Roof wind bracings", "spec": "", "unit": "KG", "qtyField": "roofWindBracing", "unitField": "roofWindBracingsUnit", "calcValue": calc.roofWindBracing?.roofWindBracing,
     "subRows": [
       { "sl": "a", "desc": "LENGTH OF ROOF SINGLE WIND BRACING", "spec": String(calc.roofWindBracing?.lengthOfSinlgeWindBracing || ""), "unit": "M", "addlSpec": "ADDITIONAL=", "addlUnit": "KG", "addlField": "lengthOfSinlgeWindBracingAdditional" },
       { "sl": "b", "desc": "TOTAL NUMBER OF ROOF WIND BRACING", "spec": String(calc.roofWindBracing?.totalNumberOfWindBracing || ""), "unit": "NOS" },
@@ -73,7 +73,7 @@ export const getPebRoofRows = (calc: PebCalc): RowDef[] => [
     "isCalculated": true
   },
   {
-    "sl": "1.6", "label": "Roof sag rod", "labelSuffix": String(calc.roofSagRoad?.roofSagRoadValue || ""), "spec": "", "unit": "KG", "qtyField": "roofSagRodQuantity", "unitField": "roofSagRodUnit", "calcValue": calc.roofSagRoad?.roofSagRoadQuantity,
+    "sl": "1.6", "label": "Roof sag rod", "labelSuffix": String(calc.roofSagRoad?.roofSagRoadValue || ""), "spec": "", "unit": "KG", "qtyField": "roofSagRoadQuantity", "unitField": "roofSagRodUnit", "calcValue": calc.roofSagRoad?.roofSagRoadQuantity,
     "subRows": [
       { "sl": "a", "desc": "LENGTH OF SINGLE SAG ROD", "spec": String(calc.roofSagRoad?.lengthOfSingleSagRoad || ""), "unit": "M", "addlSpec": "ADDITIONAL=", "addlUnit": "KG", "addlField": "lengthOfSingleSagRoadAdditional" },
       { "sl": "b", "desc": "NO.OF SAG ROD IN A SINGLE FRAME", "spec": String(calc.roofSagRoad?.noOfSagRodInASingleFrame || ""), "unit": "" },
@@ -101,7 +101,7 @@ export const getPebRoofRows = (calc: PebCalc): RowDef[] => [
     "isCalculated": true
   },
   {
-    "sl": "1.8", "label": "Purlin bolts", "spec": calc.bolts?.numberOfPurlinBolts || "", "unit": "NOS", "qtyField": "purlinBoltsQuantity", "unitField": "purlinBoltsUnit", "calcValue": calc.bolts?.numberOfPurlinBoltsQuantity,
+    "sl": "1.8", "label": "Purlin bolts", "spec": calc.bolts?.numberOfPurlinBolts || "", "unit": "NOS", "qtyField": "numberOfPurlinBoltsQuantity", "unitField": "purlinBoltsUnit", "calcValue": calc.bolts?.numberOfPurlinBoltsQuantity,
     "subRows": [
       { "sl": "a", "desc": "NO.OF PURLIN JOINT IN SINGLE FRAME", "spec": String(calc.bolts?.noOfPurlinJointInSingleFrame || ""), "unit": "" },
       { "sl": "b", "desc": "TOTAL NO.OF FRAMES", "spec": String(calc.bolts?.totalnoOfFrames || ""), "unit": "" },
@@ -111,11 +111,10 @@ export const getPebRoofRows = (calc: PebCalc): RowDef[] => [
     ],
     "isCalculated": true
   },
-  { "sl": "1.9", "label": "NUMBER OF ROOF JOINT BOLTS", "spec": calc.bolts?.numberOfRoofJointBolts || "", "unit": "NOS", "qtyField": "roofJointBoltsQuantity", "unitField": "roofJointBoltsUnit", "subRows": [], "isCalculated": true },
-  { "sl": "1.9.1", "label": "NUMBER OF Foundation bolts", "spec": calc.bolts?.numberOfFoundationBolts || "", "unit": "", "qtyField": "foundationBoltsQuantity", "unitField": "foundationBoltsUnit", "subRows": [], "isCalculated": true },
-  { "sl": "1.9.2", "label": "Anchor bolts", "spec": calc.bolts?.numberOfAnchorBolts || "", "unit": "", "qtyField": "anchorBoltsQuantity", "unitField": "anchorBoltsUnit", "subRows": [], "isCalculated": true }
+  { "sl": "1.9", "label": "NUMBER OF ROOF JOINT BOLTS", "spec": calc.bolts?.numberOfRoofJointBolts || "", "unit": "NOS", "qtyField": "numberOfRoofJointBoltsQuantity", "unitField": "roofJointBoltsUnit", "subRows": [], "isCalculated": true, "calcValue": calc.bolts?.numberOfRoofJointBoltsQuantity },
+  { "sl": "1.9.1", "label": "NUMBER OF Foundation bolts", "spec": calc.bolts?.numberOfFoundationBolts || "", "unit": "NOS", "qtyField": "numberOfFoundationBoltsQuantity", "unitField": "foundationBoltsUnit", "subRows": [], "isCalculated": true, "calcValue": calc.bolts?.numberOfFoundationBoltsQuantity },
+  { "sl": "1.9.2", "label": "Anchor bolts", "spec": calc.bolts?.numberOfAnchorBolts || "", "unit": "NOS", "qtyField": "numberOfAnchorBoltsQuantity", "unitField": "anchorBoltsUnit", "subRows": [], "isCalculated": true, "calcValue": calc.bolts?.numberOfAnchorBoltsQuantity }
 ]
-
 
 export const getCladdingRows = (calc: CladdingCalc): RowDef[] => [
   {
