@@ -51,9 +51,10 @@ export function calculateMezzanineQuantities(job: MezzanineCalculationInput) {
     const mezzanineStructureQuantity = netMezzanineArea * n(matCons) * 10.76;
     const totalMezzanineArea = netMezzanineArea;
     const deckSheetQuantity = netMezzanineArea;
-    const deckSheetPurcahseQuantity = netMezzanineArea * 1.1;
+    const deckSheetPurchaseQuantity = netMezzanineArea * 1.1;
 
     const shearStudsQuantity = (n(mez1?.lengthM) * n(mez1?.beamsSecondary) + n(ext1?.lengthM) * n(ext1?.beamsSecondary)) / 0.4;
+    const shearStudsPurchaseQuantity = shearStudsQuantity * 1.1;
     const concreteFlashing = (n(mez1?.lengthM) + n(mez1?.widthM)) * 2 + (n(ext1?.lengthM) + n(ext1?.widthM)) * 2;
 
     const jointBoltsQuantity =
@@ -73,14 +74,16 @@ export function calculateMezzanineQuantities(job: MezzanineCalculationInput) {
     const boltDiameter = n(job.jointBoltMezzanines?.find((j: any) => j.mezzanineJointId === 'Q')?.boltDiameter || job.joint?.secondaryBeamsBoltDiameter);
 
     return {
+        mezzanineStructure: mez1?.type ? String(mez1.type) : (job.mezzanine?.structureType ? String(job.mezzanine.structureType) : null),
         mezzanineStructureQuantity,
         totalMezzanineArea,
         totalMezzanineAreaQuantity: 0,
         materialConsumption: matCons,
         deckSheetQuantity,
-        deckSheetPurcahseQuantity,
+        deckSheetPurchaseQuantity,
         deckSheetQuantityAdditional: 0,
         shearStudsQuantity,
+        shearStudsPurchaseQuantity,
         shearStudsQuantityAdditional: 0,
         concreteFlashing,
         concreteFlashingAdditional: 0,

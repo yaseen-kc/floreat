@@ -6,8 +6,11 @@ export interface AdditionalBoltsCalculationInput {
 
 export function calculateAdditionalBoltsQuantities(job: AdditionalBoltsCalculationInput) {
     return {
+        jointBolt1: null,
         jointBolt1Quantity: 0,
+        jointBolt2: null,
         jointBolt2Quantity: 0,
+        jointBolt3: null,
         jointBolt3Quantity: 0,
         purlinBolt: null,
         purlinBoltQuantity: 0,

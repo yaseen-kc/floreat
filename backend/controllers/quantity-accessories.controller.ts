@@ -47,5 +47,5 @@ export async function remove(request: FastifyRequest, reply: FastifyReply) {
 export async function getAll(request: FastifyRequest, reply: FastifyReply) {
   const result = paginationSchema.safeParse(request.query)
   if (!result.success) return reply.status(400).send({ error: result.error.flatten() })
-  return reply.send(await svc.getQuantityAccessoriesList(request.userId, result.data.page, result.data.pageSize))
+  return reply.send(await svc.getQuantityAccessories(request.userId, result.data.page, result.data.pageSize))
 }
