@@ -32,6 +32,41 @@ export function getJobById(id: string, userId: string) {
   return prisma.job.findFirst({ where: { id, userId } })
 }
 
+/** Finds a single job owned by `userId` and returns all nested relations and sub-items. */
+export function getJobWithAllData(id: string, userId: string) {
+  return prisma.job.findFirst({
+    where: { id, userId },
+    include: {
+      roof: { include: { sidewalls: true } },
+      mezzanine: { include: { floors: true, extensions: true } },
+      stair: { include: { stairs: true, areaDeductions: true } },
+      canopy: { include: { canopies: true } },
+      load: true,
+      accessories: true,
+      joint: {
+        include: {
+          jointBoltRoof: true,
+          jointBoltMezzanine: true,
+          foundationBoltRoof: true,
+        },
+      },
+      spec: { include: { products: true } },
+      quantity: {
+        include: {
+          pebRoof: true,
+          cladding: true,
+          canopy: true,
+          accessories: true,
+          mezzanine: true,
+          stair: true,
+          additionalBolts: true,
+        },
+      },
+      amount: { include: { items: true } },
+    },
+  })
+}
+
 /**
  * Partially updates a job owned by `userId`. Throws a P2025-coded error when the
  * job does not exist or is not owned by the user (mapped to 404 by the controller).

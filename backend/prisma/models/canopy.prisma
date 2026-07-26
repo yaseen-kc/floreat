@@ -1,5 +1,18 @@
 // ── Canopy Enums ──────────────────────────────────
 
+enum CanopyCode {
+  CANOPY_1  @map("CANOPY-1")
+  CANOPY_2  @map("CANOPY-2")
+  CANOPY_3  @map("CANOPY-3")
+  CANOPY_4  @map("CANOPY-4")
+  CANOPY_5  @map("CANOPY-5")
+  CANOPY_6  @map("CANOPY-6")
+  CANOPY_7  @map("CANOPY-7")
+  CANOPY_8  @map("CANOPY-8")
+  CANOPY_9  @map("CANOPY-9")
+  CANOPY_10 @map("CANOPY-10")
+}
+
 enum CanopyHeightFrom {
   GROUND
   FF
@@ -36,7 +49,7 @@ model CanopyItem {
   canopyId String
   canopy   Canopy @relation(fields: [canopyId], references: [id], onDelete: Cascade)
 
-  code       String?
+  code       CanopyCode?
   heightFrom CanopyHeightFrom?
 
   // ── Dimensions ──

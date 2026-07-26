@@ -7,7 +7,7 @@ describe('mapCanopyResponseToDraft', () => {
     const response: Canopy = {
       id: 'c1', jobId: 'j1', createdAt: '', updatedAt: '',
       canopies: [{
-        id: 'ci1', canopyId: 'c1', code: 'CANOPY-1', heightFrom: 'GROUND',
+        id: 'ci1', canopyId: 'c1', code: 'CANOPY_1', heightFrom: 'GROUND',
         length: '5.500', width: '3.000', height: '4.200',
         materialConsumptionKgPerSqft: '2.100',
         numberOfBeams: 4, numberOfPurlins: 6, purlinDepth: '0.150', unitWeightOfPurlin: '3.200',

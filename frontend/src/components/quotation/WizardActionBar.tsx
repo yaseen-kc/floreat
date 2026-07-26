@@ -13,6 +13,17 @@ import { useUpsertAccessories } from '@/api/quotation/accessories/postAccessorie
 import { useUpsertJoint } from '@/api/quotation/joint/postJoint'
 import { useUpsertSpec } from '@/api/quotation/spec/postSpec'
 import { useUpsertAmount } from '@/api/quotation/amount/postAmount'
+import { useUpsertQuantity } from '@/api/quotation/quantity/postQuantity'
+import {
+  calculatePebQuantities,
+  calculateCladdingQuantities,
+  calculateCanopyQuantities,
+  calculateAccessoriesQuantities,
+  calculateMezzanineQuantities,
+  calculateStairQuantities,
+  calculateAdditionalBoltsQuantities,
+} from '@floreat/shared/calc'
+import { buildFullQuantityPayload } from '@/lib/quantity-payload'
 import { DEFAULT_AMOUNT_ITEMS } from '@/schemas/amount.schema'
 import { useNavigate } from 'react-router-dom'
 import { useRates } from '@/api/quotation/rate/getRate'
@@ -22,7 +33,6 @@ import { Spinner } from '@/components/ui/spinner'
 import { cn } from '@/lib/utils'
 import { ArrowLeft, ArrowRight, Check, Save } from 'lucide-react'
 import { STEPS, STEP_COUNT } from '@/components/quotation/steps'
-
 /** Fires a success toast, but stays silent on small (≤640px) devices, where the
  *  sticky action bar already surfaces state via the save-status pill and spinner. */
 export const successToast = (message: string) => {
@@ -71,6 +81,7 @@ export function WizardActionBar() {
   const upsertJoint = useUpsertJoint()
   const upsertSpec = useUpsertSpec()
   const upsertAmount = useUpsertAmount()
+  const upsertQuantity = useUpsertQuantity()
   const isLast = currentStep === STEP_COUNT
   const isSubmitting =
     createJob.isPending ||
@@ -83,7 +94,8 @@ export function WizardActionBar() {
     upsertAccessories.isPending ||
     upsertJoint.isPending ||
     upsertSpec.isPending ||
-    upsertAmount.isPending
+    upsertAmount.isPending ||
+    upsertQuantity.isPending
 
   /**
    * Persists Step 1 data. Creates the job once (POST) and stores its id;
@@ -338,6 +350,46 @@ export function WizardActionBar() {
     }
   }
 
+  /**
+   * Persists Step 12 quantity data via an idempotent upsert.
+   * Requires the Step 1 `jobId`.
+   */
+  const submitQuantity = async () => {
+    if (!jobId) {
+      toast.error('Save the project details first')
+      throw new Error('Cannot save quantity before the job is created')
+    }
+    try {
+      setSaving()
+      const storeState = useQuotationStore.getState()
+      const calcs = {
+        pebRoof: calculatePebQuantities({
+          roof: storeState.roof,
+          joint: storeState.joint,
+          jointBoltRoofs: storeState.joint?.jointBoltRoof,
+          foundationBoltRoof: storeState.joint?.foundationBoltRoof,
+        }),
+        cladding: calculateCladdingQuantities({ roof: storeState.roof }),
+        canopy: calculateCanopyQuantities({ canopy: storeState.canopy, joint: storeState.joint }),
+        accessories: calculateAccessoriesQuantities({ accessories: storeState.accessories, roof: storeState.roof }),
+        mezzanine: calculateMezzanineQuantities({ mezzanine: storeState.mezzanine, joint: storeState.joint, jointBoltMezzanines: storeState.joint?.jointBoltMezzanine, stair: storeState.stair }),
+        stair: calculateStairQuantities({ stair: storeState.stair, mezzanine: storeState.mezzanine }),
+        additionalBolts: calculateAdditionalBoltsQuantities({}),
+      }
+
+      const payload = buildFullQuantityPayload(calcs, storeState.quantity)
+
+      const updatedQuantity = await upsertQuantity.mutateAsync({ jobId, payload })
+      useQuotationStore.setState({ quantity: updatedQuantity })
+      setSaved()
+      successToast('Quantity saved successfully')
+    } catch (err) {
+      resetSaveStatus()
+      toast.error('Failed to save quantity')
+      throw err
+    }
+  }
+
   const handleNext = async () => {
     if (isSubmitting) return
 
@@ -466,11 +518,15 @@ export function WizardActionBar() {
       return
     }
 
-    // Final step (Quantity): no wizard-level persistence — rows are saved
-    // independently in the table. Just finalise.
+    // Final step (Quantity): upsert all quantity sections then finalise.
     if (isLast) {
-      resetQuotation()
-      navigate('/')
+      try {
+        await submitQuantity()
+        resetQuotation()
+        navigate('/')
+      } catch {
+        // Error toast already shown; stay on Step 12.
+      }
       return
     }
 
@@ -502,6 +558,8 @@ export function WizardActionBar() {
       try { await submitSpec() } catch { /* error toast already shown */ }
     } else if (currentStep === 11) {
       try { await submitAmount() } catch { /* error toast already shown */ }
+    } else if (currentStep === 12) {
+      try { await submitQuantity() } catch { /* error toast already shown */ }
     } else {
       successToast('Draft saved')
     }

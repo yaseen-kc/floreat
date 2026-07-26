@@ -2,49 +2,113 @@ import { describe, it, expect } from 'vitest'
 import { mapAccessoriesResponseToDraft } from '@/utils/hydrateAccessories'
 import type { Accessories } from '@/api/quotation/accessories/getAccessories'
 
-const base = {
-  id: 'acc-1',
-  jobId: 'job-1',
-  createdAt: '',
-  updatedAt: '',
-  doors: [],
-  windows: [],
-  foldedPlates: [],
-  openings: [],
-} as unknown as Accessories
+const mockAccessories: Accessories = {
+  id: 'acc-123',
+  jobId: 'job-123',
+  createdAt: '2026-01-01T00:00:00Z',
+  updatedAt: '2026-01-01T00:00:00Z',
+
+  gutterType: 'PPGL',
+  gutterSize: 'IN_6',
+  gutterQuantity: '100.5',
+  gutterQuantityManual: false,
+  downTakeType: null,
+  downTakeSize: null,
+  downTakeQuantity: null,
+  downTakeQuantityManual: null,
+  dripTrimType: null,
+  dripTrimThickness: null,
+  dripTrimQuantity: null,
+  dripTrimQuantityManual: null,
+  gableEndFlashingType: null,
+  gableEndFlashingThickness: null,
+  gableEndFlashingQuantity: null,
+  gableEndFlashingQuantityManual: null,
+  cornerFlashType: null,
+  cornerFlashThickness: null,
+  cornerFlashQuantity: null,
+  cornerFlashQuantityManual: null,
+  ridgeType: null,
+  ridgeThickness: null,
+  ridgeQuantity: null,
+  ridgeQuantityManual: null,
+
+  partitionType: 'AEROCON_PANEL',
+  partitionThickness: 'MM_50',
+  partitionQuantity: 5,
+
+  rollingShutterLength: '3.5',
+  rollingShutterWidth: '2.5',
+  rollingShutterNos: 2,
+  rollingShutterQuantity: '17.5',
+
+  louverLength: null,
+  louverWidth: null,
+  louverNos: null,
+  louverQuantity: null,
+  skyLightLength: null,
+  skyLightWidth: null,
+  skyLightNos: null,
+  skyLightQuantity: null,
+  wallLightLength: null,
+  wallLightWidth: null,
+  wallLightNos: null,
+  wallLightQuantity: null,
+
+  roofInsulationType: null,
+  wallInsulationType: null,
+
+  turboVentilatorDiameter: null,
+  turboVentilatorNos: null,
+
+  handrailWeightKg: null,
+
+  deckSheetFlashingEnabled: true,
+  gantryGirderEnabled: false,
+  liftStructureEnabled: null,
+
+  framesPrimerCoats: 2,
+  framesPrimerType: 'EPOXY_PRIMER',
+  framesPaintCoats: null,
+  framesPaintType: null,
+  purlinsGirtsFinish: 'PRE_GALVANISED',
+  purlinsGirtsGsm: 120,
+  purlinsGirtsPaint: 'UNPAINTED',
+  foundationBoltFinish: 'BLACK_UNPAINTED',
+
+  doorHeight: '2.1',
+  doorWidth: '0.9',
+  doorNos: 3,
+  doorQuantity: '5.67',
+
+  windowHeight: null,
+  windowWidth: null,
+  windowNos: null,
+  windowQuantity: null,
+
+  foldedPlateLength: null,
+  foldedPlateWidth: null,
+  foldedPlateNos: null,
+  foldedPlateQuantity: null,
+}
 
 describe('mapAccessoriesResponseToDraft', () => {
-  it('coerces Decimal strings to numbers and nulls to undefined', () => {
-    const response = {
-      ...base,
-      gutterType: 'PPGL',
-      gutterQuantity: '200.000',
-      gutterQuantityManual: true,
-      handrailWeightKg: '55.500',
-      partitionType: null,
-      partitionQuantity: 4,
-    } as unknown as Accessories
-
-    const draft = mapAccessoriesResponseToDraft(response)
+  it('maps scalar fields and converts Decimals to numbers', () => {
+    const draft = mapAccessoriesResponseToDraft(mockAccessories)
 
     expect(draft.gutterType).toBe('PPGL')
-    expect(draft.gutterQuantity).toBe(200)
-    expect(draft.gutterQuantityManual).toBe(true)
-    expect(draft.handrailWeightKg).toBe(55.5)
-    expect(draft.partitionType).toBeUndefined()
-    expect(draft.partitionQuantity).toBe(4)
+    expect(draft.gutterQuantity).toBe(100.5)
+
+    expect(draft.partitionQuantity).toBe(5)
+    
+    expect(draft.doorHeight).toBe(2.1)
+    expect(draft.doorWidth).toBe(0.9)
+    expect(draft.doorNos).toBe(3)
   })
 
-  it('maps line-item arrays dropping server-only fields', () => {
-    const response = {
-      ...base,
-      doors: [{ id: 'd1', accessoriesId: 'acc-1', height: '2.100', width: '0.900', nos: 3, quantity: '5.670' }],
-      openings: [{ id: 'o1', accessoriesId: 'acc-1', kind: 'LOUVER', length: '1.000', width: '1.000', nos: 2, quantity: '2.000' }],
-    } as unknown as Accessories
-
-    const draft = mapAccessoriesResponseToDraft(response)
-
-    expect(draft.doors).toEqual([{ height: 2.1, width: 0.9, nos: 3 }])
-    expect(draft.openings).toEqual([{ kind: 'LOUVER', length: 1, width: 1, nos: 2 }])
+  it('maps missing values to undefined', () => {
+    const draft = mapAccessoriesResponseToDraft(mockAccessories)
+    expect(draft.windowHeight).toBeUndefined()
+    expect(draft.downTakeSize).toBeUndefined()
   })
 })

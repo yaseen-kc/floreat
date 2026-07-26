@@ -59,11 +59,14 @@ export function CanopyItems() {
     useShallow((s) => ({ canopies: s.canopy.canopies, setCanopy: s.setCanopy })),
   )
 
-  // ponytail: codes are reassigned CANOPY-1..CANOPY-n by position on every add/remove.
+  // ponytail: codes are reassigned CANOPY_1..CANOPY_n by position on every add/remove.
   const withCodes = (rows: CanopyItemDraft[]): CanopyItemDraft[] =>
-    rows.map((row, i) => ({ ...row, code: `CANOPY-${i + 1}` }))
+    rows.map((row, i) => ({ ...row, code: `CANOPY_${i + 1}` as CanopyItemDraft['code'] }))
 
-  const addRow = () => setCanopy({ canopies: withCodes([...canopies, {}]) })
+  const addRow = () => {
+    if (canopies.length >= 10) return
+    setCanopy({ canopies: withCodes([...canopies, {}]) })
+  }
   const removeRow = (index: number) => setCanopy({ canopies: withCodes(canopies.filter((_, i) => i !== index)) })
   const updateRow = (index: number, patch: Partial<CanopyItemDraft>) =>
     setCanopy({ canopies: canopies.map((row, i) => (i === index ? { ...row, ...patch } : row)) })
@@ -92,7 +95,7 @@ export function CanopyItems() {
         ))}
 
         <div>
-          <Button type="button" variant="outline" size="sm" onClick={addRow}>
+          <Button type="button" variant="outline" size="sm" onClick={addRow} disabled={canopies.length >= 10}>
             <Plus /> Add canopy
           </Button>
         </div>

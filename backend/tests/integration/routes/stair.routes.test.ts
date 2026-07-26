@@ -72,7 +72,7 @@ describe('Stair routes integration', () => {
     it('rejects an invalid location code', async () => {
       const res = await app.inject({
         method: 'POST', url: '/api/jobs/job-1/stair',
-        payload: { stairs: [makeStairItem({ location: 'MEZ-0' })] },
+        payload: { stairs: [makeStairItem({ location: 'MEZ_0' })] },
       })
       expect(res.statusCode).toBe(400)
     })

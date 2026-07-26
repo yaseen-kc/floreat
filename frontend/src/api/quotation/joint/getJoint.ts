@@ -7,7 +7,7 @@ import { jointKeys } from './queryKeys'
  * Enum unions — mirror the backend Prisma enums (string literals over the wire).
  *
  * NOTE: `RoofJointId` uses the Prisma enum *member names* (e.g. `A_1`), not the
- * `@map`'d hyphenated DB/UI form (`A-1`) — Prisma serializes enums to their
+ * `@map`'d hyphenated DB/UI form (`A_1`) — Prisma serializes enums to their
  * member name in JSON, matching the shared `roofJointIdEnum` values.
  * ────────────────────────────────────────────────────────────────────────── */
 

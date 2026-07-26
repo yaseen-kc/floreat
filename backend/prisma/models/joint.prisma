@@ -18,16 +18,16 @@ enum RoofJointId {
   J
   K
   L
-  A_1 @map("A-1")
-  B_1 @map("B-1")
-  B_2 @map("B-2")
-  C_1 @map("C-1")
-  D_1 @map("D-1")
-  G_1 @map("G-1")
-  H_1 @map("H-1")
-  I_1 @map("I-1")
-  K_1 @map("K-1")
-  L_1 @map("L-1")
+  A_1
+  B_1
+  B_2
+  C_1
+  D_1
+  G_1
+  H_1
+  I_1
+  K_1
+  L_1
 }
 
 enum MezzanineJointId {

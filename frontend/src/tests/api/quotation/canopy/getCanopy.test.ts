@@ -29,7 +29,7 @@ const canopy: Canopy = {
     {
       id: 'item-1',
       canopyId: 'canopy-1',
-      code: 'CANOPY-1',
+      code: 'CANOPY_1',
       heightFrom: 'GROUND',
       length: '10.000',
       width: '5.000',

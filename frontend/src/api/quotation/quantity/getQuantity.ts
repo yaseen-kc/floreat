@@ -1,15 +1,13 @@
 import { useQuery } from '@tanstack/react-query'
 import { useAuth } from '@clerk/react'
 import { apiFetch } from '@/lib/api'
-import type { CreateQuantityInput } from '@floreat/shared/schemas'
+import { quantityUnitEnum } from '@floreat/shared/schemas'
 import type { DecimalString, Nullable } from '@floreat/shared/types'
 import { quantityKeys } from './queryKeys'
+import { z } from 'zod'
 
 /** Units a quantity leaf can be measured in, derived from the shared quantity schema. */
-export type QuantityUnit = Exclude<
-  NonNullable<CreateQuantityInput['pebRoof']>['materialWithPurlinUnit'],
-  null | undefined
->
+export type QuantityUnit = z.infer<typeof quantityUnitEnum>
 
 type DecimalField = Nullable<DecimalString>
 type CountField = Nullable<number>
@@ -22,7 +20,7 @@ interface QuantitySectionMeta {
 }
 
 /**
- * Quantity peb-roof section as returned by the backend.
+ * Quantity pebRoof section as returned by the backend.
  *
  * NOTE: Prisma `Decimal` columns serialize to JSON strings over HTTP, so
  * numeric-precision fields are `DecimalString | null` even though payloads
@@ -131,6 +129,13 @@ export interface QuantityPebRoof extends QuantitySectionMeta {
   anchorBoltsSpecification: TextField
   anchorBoltsUnit: UnitField
   anchorBoltsQuantity: DecimalField
+  lengthOfBuildingQuantity?: DecimalField | TextField
+  lengthOfOnePurlinQuantity?: DecimalField | TextField
+  extendedRoofWidthAdditonal?: DecimalField
+  lengthOfpolyCarbonateSheetAdditional?: DecimalField | TextField
+  lengthOfSinlgeWindBracingAdditional?: DecimalField | TextField
+  lengthOfSingleSagRoadAdditional?: DecimalField | TextField
+  lengthOfMidFrameFlangeBraceAdditional?: DecimalField | TextField
 }
 
 /** Cladding quantity section returned by the backend. */
@@ -164,14 +169,19 @@ export interface QuantityCladding extends QuantitySectionMeta {
   claddingSheetUnit: UnitField
   claddingSheetQuantity: DecimalField
   claddingSheetPurchaseQuantity: DecimalField
+  claddingSheetAdditional?: DecimalField
   columnWindBracingsUnit: UnitField
   columnWindBracingsQuantity: DecimalField
+  columnWindBracingsAdditional?: DecimalField
   claddingSagRodUnit: UnitField
   claddingSagRodQuantity: DecimalField
+  claddingSagRodAdditional?: DecimalField
   claddingFlangeBraceUnit: UnitField
   claddingFlangeBraceQuantity: DecimalField
+  claddingFlangeBraceAdditional?: DecimalField
   claddingPurlinBoltsUnit: UnitField
   claddingPurlinBoltsQuantity: DecimalField
+  numberOfCladdingPurlinBoltsAdditional?: DecimalField
 }
 
 /** Canopy quantity section returned by the backend. */
@@ -264,16 +274,20 @@ export interface QuantityMezzanine extends QuantitySectionMeta {
   structureAdditionalQuantity: DecimalField
   structureTotalArea: DecimalField
   structureTotalAreaUnit: UnitField
+  totalMezzanineAreaQuantity?: DecimalField
   structureMaterialConsumption: DecimalField
   structureMaterialConsumptionUnit: UnitField
   deckSheetUnit: UnitField
   deckSheetQuantity: DecimalField
   deckSheetPurchaseQuantity: DecimalField
-  deckSheetAdditionalQuantity: DecimalField
+  deckSheetAdditionalQuantity?: DecimalField
+  deckSheetQuantityAdditional?: DecimalField
   shearStudsUnit: UnitField
   shearStudsQuantity: DecimalField
+  shearStudsQuantityAdditional?: DecimalField
   concreteFlashingUnit: UnitField
   concreteFlashingQuantity: DecimalField
+  concreteFlashingAdditional?: DecimalField
   jointBoltsSpecification: TextField
   jointBoltsQuantity: DecimalField
   foundationBoltsQuantity: DecimalField
@@ -291,6 +305,8 @@ export interface QuantityStair extends QuantitySectionMeta {
   stepsUnit: UnitField
   stepsQuantity: DecimalField
   stepsAdditionalQuantity: DecimalField
+  totalWeightofStringerBeamsAdditional?: DecimalField
+  totalWeightofStepsAdditional?: DecimalField
 }
 
 /** Additional-bolts quantity section returned by the backend. */
@@ -307,6 +323,10 @@ export interface QuantityAdditionalBolts extends QuantitySectionMeta {
   anchorBoltQuantity: DecimalField
   foundationBoltUnit: UnitField
   foundationBoltQuantity: DecimalField
+  jointBolt1Quantity?: DecimalField
+  jointBolt2Quantity?: DecimalField
+  jointBolt3Quantity?: DecimalField
+  purlinBoltQuantity?: DecimalField
 }
 
 /** Shape of a single Quantity returned by the backend with all optional sections included. */

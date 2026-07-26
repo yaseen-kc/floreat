@@ -105,47 +105,35 @@ export async function deriveQuantitiesFromRoof(jobId: string): Promise<DerivedQu
  * (@floreat/shared/calc), mapped to `null` when any input is blank.
  * Doors & windows use height × width; openings & folded plates use length × width.
  */
-const withDoorQuantities = (items: any[]) =>
-  items.map((d) => ({ ...d, quantity: deriveLineItemQuantity(d.height, d.width, d.nos) ?? null }))
-const withWindowQuantities = (items: any[]) =>
-  items.map((w) => ({ ...w, quantity: deriveLineItemQuantity(w.height, w.width, w.nos) ?? null }))
-const withFoldedPlateQuantities = (items: any[]) =>
-  items.map((f) => ({ ...f, quantity: deriveLineItemQuantity(f.length, f.width, f.nos) ?? null }))
-const withOpeningQuantities = (items: any[]) =>
-  items.map((o) => ({ ...o, quantity: deriveLineItemQuantity(o.length, o.width, o.nos) ?? null }))
 
 /** Creates or updates accessories for a given job. Line-item arrays are replaced entirely on update. */
 export async function upsertAccessories(jobId: string, data: CreateAccessoriesInput) {
-  const { doors, windows, foldedPlates, openings, ...rest } = data
-  const doorData = withDoorQuantities(doors ?? [])
-  const windowData = withWindowQuantities(windows ?? [])
-  const foldedPlateData = withFoldedPlateQuantities(foldedPlates ?? [])
-  const openingData = withOpeningQuantities(openings ?? [])
-
+  const { ...rest } = data
   // Quantity fields are server-derived by default: overwrite whatever the client
   // sent with values from the job's roof — except any field flagged manual, whose
   // client value is trusted and kept as-is.
   const derived = await deriveQuantitiesFromRoof(jobId)
-  const scalars = { ...rest, ...resolveWriteQuantities(derived, rest) }
+  const scalars = {
+    ...rest,
+    ...resolveWriteQuantities(derived, rest),
+    rollingShutterQuantity: deriveLineItemQuantity(rest.rollingShutterLength, rest.rollingShutterWidth, rest.rollingShutterNos) ?? null,
+    louverQuantity: deriveLineItemQuantity(rest.louverLength, rest.louverWidth, rest.louverNos) ?? null,
+    skyLightQuantity: deriveLineItemQuantity(rest.skyLightLength, rest.skyLightWidth, rest.skyLightNos) ?? null,
+    wallLightQuantity: deriveLineItemQuantity(rest.wallLightLength, rest.wallLightWidth, rest.wallLightNos) ?? null,
+    doorQuantity: deriveLineItemQuantity(rest.doorHeight, rest.doorWidth, rest.doorNos) ?? null,
+    windowQuantity: deriveLineItemQuantity(rest.windowHeight, rest.windowWidth, rest.windowNos) ?? null,
+    foldedPlateQuantity: deriveLineItemQuantity(rest.foldedPlateLength, rest.foldedPlateWidth, rest.foldedPlateNos) ?? null,
+  }
 
   return prisma.accessories.upsert({
     where: { jobId },
     create: {
       jobId,
       ...scalars,
-      doors: { createMany: { data: doorData } },
-      windows: { createMany: { data: windowData } },
-      foldedPlates: { createMany: { data: foldedPlateData } },
-      openings: { createMany: { data: openingData } },
     },
     update: {
       ...scalars,
-      doors: { deleteMany: {}, createMany: { data: doorData } },
-      windows: { deleteMany: {}, createMany: { data: windowData } },
-      foldedPlates: { deleteMany: {}, createMany: { data: foldedPlateData } },
-      openings: { deleteMany: {}, createMany: { data: openingData } },
     },
-    include: { doors: true, windows: true, foldedPlates: true, openings: true },
   })
 }
 
@@ -158,7 +146,6 @@ export async function getAccessories(userId: string, page: number, pageSize: num
       skip: (page - 1) * pageSize,
       take: pageSize,
       orderBy: { createdAt: 'desc' },
-      include: { doors: true, windows: true, foldedPlates: true, openings: true },
     }),
     prisma.accessories.count({ where }),
   ])
@@ -169,13 +156,12 @@ export async function getAccessories(userId: string, page: number, pageSize: num
 export function getAccessoriesByJobId(jobId: string) {
   return prisma.accessories.findUnique({
     where: { jobId },
-    include: { doors: true, windows: true, foldedPlates: true, openings: true },
   })
 }
 
 /** Updates accessories by job ID. Replaces each line-item array entirely if provided. */
 export async function updateAccessories(jobId: string, data: Record<string, any>) {
-  const { doors, windows, foldedPlates, openings, ...rest } = data
+  const { ...rest } = data
   const updateData: any = { ...rest }
 
   // Quantity fields are server-derived by default — recompute from the roof and
@@ -184,23 +170,18 @@ export async function updateAccessories(jobId: string, data: Record<string, any>
   const derived = await deriveQuantitiesFromRoof(jobId)
   Object.assign(updateData, resolveWriteQuantities(derived, rest))
 
-  if (doors !== undefined) {
-    updateData.doors = { deleteMany: {}, createMany: { data: withDoorQuantities(doors) } }
-  }
-  if (windows !== undefined) {
-    updateData.windows = { deleteMany: {}, createMany: { data: withWindowQuantities(windows) } }
-  }
-  if (foldedPlates !== undefined) {
-    updateData.foldedPlates = { deleteMany: {}, createMany: { data: withFoldedPlateQuantities(foldedPlates) } }
-  }
-  if (openings !== undefined) {
-    updateData.openings = { deleteMany: {}, createMany: { data: withOpeningQuantities(openings) } }
-  }
+  updateData.rollingShutterQuantity = deriveLineItemQuantity(updateData.rollingShutterLength ?? rest.rollingShutterLength, updateData.rollingShutterWidth ?? rest.rollingShutterWidth, updateData.rollingShutterNos ?? rest.rollingShutterNos) ?? null
+  updateData.louverQuantity = deriveLineItemQuantity(updateData.louverLength ?? rest.louverLength, updateData.louverWidth ?? rest.louverWidth, updateData.louverNos ?? rest.louverNos) ?? null
+  updateData.skyLightQuantity = deriveLineItemQuantity(updateData.skyLightLength ?? rest.skyLightLength, updateData.skyLightWidth ?? rest.skyLightWidth, updateData.skyLightNos ?? rest.skyLightNos) ?? null
+  updateData.wallLightQuantity = deriveLineItemQuantity(updateData.wallLightLength ?? rest.wallLightLength, updateData.wallLightWidth ?? rest.wallLightWidth, updateData.wallLightNos ?? rest.wallLightNos) ?? null
+  updateData.doorQuantity = deriveLineItemQuantity(updateData.doorHeight ?? rest.doorHeight, updateData.doorWidth ?? rest.doorWidth, updateData.doorNos ?? rest.doorNos) ?? null
+  updateData.windowQuantity = deriveLineItemQuantity(updateData.windowHeight ?? rest.windowHeight, updateData.windowWidth ?? rest.windowWidth, updateData.windowNos ?? rest.windowNos) ?? null
+  updateData.foldedPlateQuantity = deriveLineItemQuantity(updateData.foldedPlateLength ?? rest.foldedPlateLength, updateData.foldedPlateWidth ?? rest.foldedPlateWidth, updateData.foldedPlateNos ?? rest.foldedPlateNos) ?? null
+
 
   return prisma.accessories.update({
     where: { jobId },
     data: updateData,
-    include: { doors: true, windows: true, foldedPlates: true, openings: true },
   })
 }
 

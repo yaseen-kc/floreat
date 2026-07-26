@@ -1,60 +1,61 @@
 import { useQuotationStore } from '@/stores/quotation-store'
-import type { AccessoryDoorDraft } from '@/stores/quotation-store'
+import type { AccessoriesDraft } from '@/stores/quotation-store'
 import { useShallow } from 'zustand/react/shallow'
 import { SectionCard } from '@/components/quotation/shared/SectionCard'
-import { RowCard, type RowGroup } from '@/components/quotation/shared/RowCard'
-import { EmptyState } from '@/components/ui/empty-state'
-import { Button } from '@/components/ui/button'
-import { DoorOpen, Plus } from 'lucide-react'
+import { NumberField } from '@/components/quotation/shared/NumberField'
+import { DoorOpen } from 'lucide-react'
+import { deriveLineItemQuantity } from '@floreat/shared/calc'
 
-const DOOR_GROUPS: RowGroup[] = [
-  {
-    title: 'Dimensions',
-    fields: [
-      { kind: 'number', name: 'height', label: 'Height', unit: 'm' },
-      { kind: 'number', name: 'width', label: 'Width', unit: 'm' },
-      { kind: 'number', name: 'nos', label: 'Nos', unit: 'count', step: 1 },
-    ],
-  },
-]
-
-/** Repeating door line items for Step 6. `quantity` is server-derived (not shown). */
+/** Flat door fields for Step 6. */
 export function Doors() {
-  const { doors, setAccessories } = useQuotationStore(
-    useShallow((s) => ({ doors: s.accessories.doors, setAccessories: s.setAccessories })),
+  const { height, width, nos, setAccessories } = useQuotationStore(
+    useShallow((s) => ({
+      height: s.accessories.doorHeight as number | undefined,
+      width: s.accessories.doorWidth as number | undefined,
+      nos: s.accessories.doorNos as number | undefined,
+      setAccessories: s.setAccessories,
+    })),
   )
 
-  const addRow = () => setAccessories({ doors: [...doors, {}] })
-  const removeRow = (index: number) => setAccessories({ doors: doors.filter((_, i) => i !== index) })
-  const updateRow = (index: number, patch: Partial<AccessoryDoorDraft>) =>
-    setAccessories({ doors: doors.map((row, i) => (i === index ? { ...row, ...patch } : row)) })
+  const quantity = deriveLineItemQuantity(height, width, nos)
 
   return (
     <SectionCard icon={<DoorOpen className="w-3.5 h-3.5" />} title="Doors">
-      <div className="flex flex-col gap-[18px] desktop:gap-6">
-        {doors.length === 0 && (
-          <EmptyState
-            icon={<DoorOpen />}
-            title="No doors added yet."
-            description="Add a door to include it in this quotation."
+      <div className="flex flex-col gap-3 p-4 border rounded-md bg-zinc-50 dark:bg-zinc-900/50">
+        <div className="flex items-center justify-between">
+          <h4 className="text-sm font-medium">Door</h4>
+          {quantity !== undefined && (
+            <span className="text-xs font-mono px-2 py-0.5 rounded bg-zinc-200 dark:bg-zinc-800">
+              Total: {quantity} m²
+            </span>
+          )}
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <NumberField
+            label="Height"
+            value={height}
+            unit="m"
+            required={false}
+            error={false}
+            onChange={(v) => setAccessories({ doorHeight: v } as unknown as Partial<AccessoriesDraft>)}
           />
-        )}
-
-        {doors.map((row, index) => (
-          <RowCard
-            key={index}
-            title={`Door ${index + 1}`}
-            groups={DOOR_GROUPS}
-            values={row as Record<string, number | string | boolean | undefined>}
-            onChange={(patch) => updateRow(index, patch as Partial<AccessoryDoorDraft>)}
-            onRemove={() => removeRow(index)}
+          <NumberField
+            label="Width"
+            value={width}
+            unit="m"
+            required={false}
+            error={false}
+            onChange={(v) => setAccessories({ doorWidth: v } as unknown as Partial<AccessoriesDraft>)}
           />
-        ))}
-
-        <div>
-          <Button type="button" variant="outline" size="sm" onClick={addRow}>
-            <Plus /> Add door
-          </Button>
+          <NumberField
+            label="Nos"
+            value={nos}
+            unit="count"
+            step={1}
+            required={false}
+            error={false}
+            onChange={(v) => setAccessories({ doorNos: v } as unknown as Partial<AccessoriesDraft>)}
+          />
         </div>
       </div>
     </SectionCard>

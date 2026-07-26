@@ -1,3 +1,4 @@
+import { useId } from 'react'
 import type { ReactNode } from 'react'
 import { Label } from '@/components/ui/label'
 import { InputUnit } from '@/components/quotation/shared/InputUnit'
@@ -44,10 +45,12 @@ export function NumberField({
   hint,
   className,
 }: NumberFieldProps) {
+  const id = useId()
   return (
     <div className={className}>
-      <Label className="desktop:mb-2">{label} {required && !readOnly && <span className="text-destructive">*</span>}</Label>
+      <Label htmlFor={id} className="desktop:mb-2">{label} {required && !readOnly && <span className="text-destructive">*</span>}</Label>
       <InputUnit
+        id={id}
         value={value}
         unit={unit}
         step={step}

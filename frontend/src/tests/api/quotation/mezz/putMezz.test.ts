@@ -23,7 +23,7 @@ const mockedApiFetch = vi.mocked(apiFetch)
 const payload: UpdateMezzaninePayload = {
   floors: [
     {
-      code: 'MEZ-1',
+      code: 'MEZ_1',
       floor: 'FLOOR_2',
       type: 'RCC_SLAB',
       heightFrom: 'GROUND',

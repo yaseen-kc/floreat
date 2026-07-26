@@ -115,7 +115,7 @@ export function makeRoof(overrides = {}) {
 
 export function makeMezzanineFloor(overrides = {}) {
   return {
-    code: 'MEZ-1',
+    code: 'MEZ_1',
     floor: 'FLOOR_1' as const,
     type: 'DECK_SHEET' as const,
     heightFrom: 'GROUND' as const,
@@ -172,7 +172,7 @@ export function makeStairItem(overrides = {}) {
   return {
     code: 'STAIR-1',
     typeOfStep: 'CHQ_PLATE_6MM' as const,
-    location: 'MEZ-1',
+    location: 'MEZ_1',
     startingFrom: 'GROUND' as const,
     endingUpTo: 'FIRST_FLOOR' as const,
     length: 4,
@@ -188,7 +188,7 @@ export function makeStairItem(overrides = {}) {
 export function makeAreaDeduction(overrides = {}) {
   return {
     type: 'CUT_OUT' as const,
-    location: 'MEZ-1',
+    location: 'MEZ_1',
     areaM2: 3.6,
     numbers: 1,
     deductionFor: 'BOTH' as const,
@@ -251,7 +251,7 @@ export function makeLoad(overrides = {}) {
 
 export function makeCanopyItem(overrides = {}) {
   return {
-    code: 'CANOPY-1',
+    code: 'CANOPY_1',
     heightFrom: 'GROUND' as const,
     length: 6,
     width: 3,
@@ -320,17 +320,6 @@ export function makeAccessoryFoldedPlate(overrides = {}) {
   }
 }
 
-export function makeAccessoryOpening(overrides = {}) {
-  return {
-    kind: 'ROLLING_SHUTTER' as const,
-    length: 3.5,
-    width: 3,
-    nos: 1,
-    quantity: 1,
-    ...overrides,
-  }
-}
-
 export function makeAccessoriesInput(jobId = faker.string.uuid()) {
   return {
     jobId,
@@ -349,7 +338,6 @@ export function makeAccessoriesInput(jobId = faker.string.uuid()) {
     doors: [makeAccessoryDoor()],
     windows: [makeAccessoryWindow()],
     foldedPlates: [makeAccessoryFoldedPlate()],
-    openings: [makeAccessoryOpening()],
   }
 }
 
@@ -375,7 +363,6 @@ export function makeAccessories(overrides = {}) {
     doors: [],
     windows: [],
     foldedPlates: [],
-    openings: [],
     createdAt: new Date(),
     updatedAt: new Date(),
     ...overrides,
@@ -498,13 +485,9 @@ export function makeRate(overrides = {}) {
 /** A quantity pebRoof section with a couple of representative leaves. */
 export function makeQuantityPebRoof(overrides = {}) {
   return {
-    materialWithPurlinUnit: 'KG' as const,
-    materialWithPurlinQuantity: 12500.5,
-    raftersAndColumnsSpecification: 'ISMB 300',
-    raftersAndColumnsUnit: 'KG' as const,
-    raftersAndColumnsQuantity: 8000,
-    roofSheetSpecification: '0.50 MM PPGL',
-    roofSheetUnit: 'SQM' as const,
+    pebRoofValue: '12500.5',
+    pebRoofQuantity: 8000,
+    roofSheet: '450.25',
     roofSheetQuantity: 450.25,
     ...overrides,
   }
@@ -513,9 +496,8 @@ export function makeQuantityPebRoof(overrides = {}) {
 /** A quantity mezzanine section with a few representative leaves. */
 export function makeQuantityMezzanine(overrides = {}) {
   return {
-    structureUnit: 'KG' as const,
-    structureQuantity: 3200.75,
-    deckSheetUnit: 'SQM' as const,
+    mezzanineStructure: 3200.75,
+    mezzanineStructureQuantity: 3200.75,
     deckSheetQuantity: 90,
     ...overrides,
   }
@@ -564,7 +546,24 @@ export function makeAmount(overrides = {}) {
   return {
     id: faker.string.uuid(),
     jobId: faker.string.uuid(),
-    items: [],
+    // Server-derived quantity columns (Decimal → serialised as strings over the
+    // wire). Default to null; override per test to assert derived values.
+    gutterQuantity: null,
+    downTakeQuantity: null,
+    dripTrimQuantity: null,
+    gableEndFlashingQuantity: null,
+    cornerFlashQuantity: null,
+    ridgeQuantity: null,
+    // Per-field manual-override flags (default false → server-derived).
+    gutterQuantityManual: false,
+    downTakeQuantityManual: false,
+    dripTrimQuantityManual: false,
+    gableEndFlashingQuantityManual: false,
+    cornerFlashQuantityManual: false,
+    ridgeQuantityManual: false,
+    doors: [],
+    windows: [],
+    foldedPlates: [],
     createdAt: new Date(),
     updatedAt: new Date(),
     ...overrides,

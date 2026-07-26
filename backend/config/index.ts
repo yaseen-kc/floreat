@@ -31,6 +31,7 @@ export const config = {
   port: Number(process.env.PORT) || 3000,
   corsOrigins: resolveCorsOrigin(process.env),
   rateLimit: {
+    enabled: process.env.RATELIMITER !== 'false',
     max: Number(process.env.RATE_LIMIT_MAX) || 100,
     timeWindow: process.env.RATE_LIMIT_WINDOW || '1 minute',
   },

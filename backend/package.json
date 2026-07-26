@@ -7,7 +7,8 @@
   "type": "module",
   "main": "index.js",
   "scripts": {
-    "dev": "tsx --env-file=.env server.ts",
+    "dev": "tsx watch --env-file=.env server.ts",
+    "dev:once": "tsx --env-file=.env server.ts",
     "docs:generate": "tsx docs/generate.ts",
     "docs:check": "tsx docs/check.ts",
     "build": "rimraf dist && tsc",

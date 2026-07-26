@@ -1,39 +1,39 @@
 enum AmountUnit {
-    KG
-    RM
-    SQM
-    NOS
+  KG
+  RM
+  SQM
+  NOS
 }
 
 model Amount {
-    id    String @id @default(cuid())
-    jobId String @unique
-    job   Job    @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  id    String @id @default(cuid())
+  jobId String @unique
+  job   Job    @relation(fields: [jobId], references: [id], onDelete: Cascade)
 
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-    items AmountItem[]
+  items AmountItem[]
 
-    @@index([createdAt])
+  @@index([createdAt])
 }
 
 model AmountItem {
-    id       String @id @default(cuid())
-    amountId String
-    amount   Amount @relation(fields: [amountId], references: [id], onDelete: Cascade)
+  id       String @id @default(cuid())
+  amountId String
+  amount   Amount @relation(fields: [amountId], references: [id], onDelete: Cascade)
 
-    description String?
-    unit        AmountUnit?
-    quantity    Decimal?    @db.Decimal(10, 3)
+  description String?
+  unit        AmountUnit?
+  quantity    Decimal?    @db.Decimal(10, 3)
 
-    rateFabrication Decimal? @db.Decimal(10, 3)
-    rateErection    Decimal? @db.Decimal(10, 3)
-    rateLoading     Decimal? @db.Decimal(10, 3)
+  rateFabrication Decimal? @db.Decimal(10, 3)
+  rateErection    Decimal? @db.Decimal(10, 3)
+  rateLoading     Decimal? @db.Decimal(10, 3)
 
-    amountFabrication Decimal? @db.Decimal(10, 3)
-    amountErection    Decimal? @db.Decimal(10, 3)
-    amountLoading     Decimal? @db.Decimal(10, 3)
+  amountFabrication Decimal? @db.Decimal(10, 3)
+  amountErection    Decimal? @db.Decimal(10, 3)
+  amountLoading     Decimal? @db.Decimal(10, 3)
 
-    @@index([amountId])
+  @@index([amountId])
 }

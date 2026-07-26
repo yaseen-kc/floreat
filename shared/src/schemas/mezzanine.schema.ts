@@ -17,8 +17,15 @@ export const mezzanineFloorLevelEnum = z.enum([
 /** Valid reference levels a mezzanine height is measured from. */
 export const mezzanineHeightFromEnum = z.enum(['GROUND', 'FIRST_FLOOR', 'FLOOR_2', 'FLOOR_3', 'FLOOR_4', 'FLOOR_5'])
 
-/** Business code identifier for a floor, e.g. "MEZ-1". */
-export const mezzanineCode = z.string().regex(/^MEZ-[1-9][0-9]*$/, 'code must match MEZ-<n> (e.g. MEZ-1)')
+/** Business code identifier for a floor, e.g. "MEZ_1" to "MEZ_12". */
+export const mezzanineFloorCodeEnum = z.enum([
+  'MEZ_1', 'MEZ_2', 'MEZ_3', 'MEZ_4', 'MEZ_5', 'MEZ_6',
+  'MEZ_7', 'MEZ_8', 'MEZ_9', 'MEZ_10', 'MEZ_11', 'MEZ_12'
+])
+export const mezzanineCode = mezzanineFloorCodeEnum
+
+/** Business code identifier for a floor extension, e.g. "EXT_1". */
+export const mezzanineFloorCodeExtEnum = z.enum(['EXT_1', 'EXT_2', 'EXT_3'])
 
 /** Schema for an individual mezzanine floor — all fields optional. */
 export const mezzanineFloorSchema = z.object({
@@ -50,6 +57,7 @@ export const mezzanineFloorSchema = z.object({
 
 /** Schema for a mezzanine floor extension — all fields optional. */
 export const mezzanineFloorExtensionSchema = z.object({
+  code: mezzanineFloorCodeExtEnum.optional(),
   type: mezzanineTypeEnum.optional(),
   heightFrom: mezzanineHeightFromEnum.optional(),
   typicalTo: mezzanineFloorLevelEnum.optional(),

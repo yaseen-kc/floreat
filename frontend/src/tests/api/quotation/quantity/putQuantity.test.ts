@@ -22,7 +22,6 @@ const mockedApiFetch = vi.mocked(apiFetch)
 const payload: UpdateQuantityPayload = {
   cladding: {
     claddingStructureQuantity: 80,
-    claddingStructureUnit: 'KG',
   },
 }
 

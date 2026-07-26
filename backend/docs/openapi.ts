@@ -4,24 +4,40 @@ import { z } from 'zod'
 
 const {
   createAccessoriesSchema,
+  createAmountSchema,
   createCanopySchema,
   createJobSchema,
   createJointSchema,
   createLoadSchema,
   createMezzanineSchema,
   createQuantitySchema,
+  createQuantityPebRoofSchema,
+  createQuantityCladdingSchema,
+  createQuantityCanopySchema,
+  createQuantityAccessoriesSchema,
+  createQuantityMezzanineSchema,
+  createQuantityStairSchema,
+  createQuantityAdditionalBoltsSchema,
   createRateSchema,
   createRoofSchema,
   createSpecSchema,
   createStairSchema,
   paginationSchema,
   updateAccessoriesSchema,
+  updateAmountSchema,
   updateCanopySchema,
   updateJobSchema,
   updateJointSchema,
   updateLoadSchema,
   updateMezzanineSchema,
   updateQuantitySchema,
+  updateQuantityPebRoofSchema,
+  updateQuantityCladdingSchema,
+  updateQuantityCanopySchema,
+  updateQuantityAccessoriesSchema,
+  updateQuantityMezzanineSchema,
+  updateQuantityStairSchema,
+  updateQuantityAdditionalBoltsSchema,
   updateRateSchema,
   updateRoofSchema,
   updateSpecSchema,
@@ -33,6 +49,8 @@ const registry = new OpenAPIRegistry()
 const schemas = {
   CreateAccessoriesRequest: createAccessoriesSchema.meta({ id: 'CreateAccessoriesRequest' }),
   UpdateAccessoriesRequest: updateAccessoriesSchema.meta({ id: 'UpdateAccessoriesRequest' }),
+  CreateAmountRequest: createAmountSchema.meta({ id: 'CreateAmountRequest' }),
+  UpdateAmountRequest: updateAmountSchema.meta({ id: 'UpdateAmountRequest' }),
   CreateCanopyRequest: createCanopySchema.meta({ id: 'CreateCanopyRequest' }),
   UpdateCanopyRequest: updateCanopySchema.meta({ id: 'UpdateCanopyRequest' }),
   CreateJobRequest: createJobSchema.meta({ id: 'CreateJobRequest' }),
@@ -53,6 +71,20 @@ const schemas = {
   UpdateRateRequest: updateRateSchema.meta({ id: 'UpdateRateRequest' }),
   CreateQuantityRequest: createQuantitySchema.meta({ id: 'CreateQuantityRequest' }),
   UpdateQuantityRequest: updateQuantitySchema.meta({ id: 'UpdateQuantityRequest' }),
+  CreateQuantityPebRoofRequest: createQuantityPebRoofSchema.meta({ id: 'CreateQuantityPebRoofRequest' }),
+  UpdateQuantityPebRoofRequest: updateQuantityPebRoofSchema.meta({ id: 'UpdateQuantityPebRoofRequest' }),
+  CreateQuantityCladdingRequest: createQuantityCladdingSchema.meta({ id: 'CreateQuantityCladdingRequest' }),
+  UpdateQuantityCladdingRequest: updateQuantityCladdingSchema.meta({ id: 'UpdateQuantityCladdingRequest' }),
+  CreateQuantityCanopyRequest: createQuantityCanopySchema.meta({ id: 'CreateQuantityCanopyRequest' }),
+  UpdateQuantityCanopyRequest: updateQuantityCanopySchema.meta({ id: 'UpdateQuantityCanopyRequest' }),
+  CreateQuantityAccessoriesRequest: createQuantityAccessoriesSchema.meta({ id: 'CreateQuantityAccessoriesRequest' }),
+  UpdateQuantityAccessoriesRequest: updateQuantityAccessoriesSchema.meta({ id: 'UpdateQuantityAccessoriesRequest' }),
+  CreateQuantityMezzanineRequest: createQuantityMezzanineSchema.meta({ id: 'CreateQuantityMezzanineRequest' }),
+  UpdateQuantityMezzanineRequest: updateQuantityMezzanineSchema.meta({ id: 'UpdateQuantityMezzanineRequest' }),
+  CreateQuantityStairRequest: createQuantityStairSchema.meta({ id: 'CreateQuantityStairRequest' }),
+  UpdateQuantityStairRequest: updateQuantityStairSchema.meta({ id: 'UpdateQuantityStairRequest' }),
+  CreateQuantityAdditionalBoltsRequest: createQuantityAdditionalBoltsSchema.meta({ id: 'CreateQuantityAdditionalBoltsRequest' }),
+  UpdateQuantityAdditionalBoltsRequest: updateQuantityAdditionalBoltsSchema.meta({ id: 'UpdateQuantityAdditionalBoltsRequest' }),
   PaginationQuery: paginationSchema.meta({ id: 'PaginationQuery' }),
 }
 
@@ -88,6 +120,7 @@ const healthResponseSchema = z.object({ status: z.enum(['ok', 'error']), db: z.e
 
 const responseSchemas = {
   AccessoriesResponse: resourceResponseSchema.meta({ id: 'AccessoriesResponse' }),
+  AmountResponse: resourceResponseSchema.meta({ id: 'AmountResponse' }),
   CanopyResponse: resourceResponseSchema.meta({ id: 'CanopyResponse' }),
   JobResponse: resourceResponseSchema.meta({ id: 'JobResponse' }),
   JointResponse: resourceResponseSchema.meta({ id: 'JointResponse' }),
@@ -98,8 +131,16 @@ const responseSchemas = {
   StairResponse: resourceResponseSchema.meta({ id: 'StairResponse' }),
   RateResponse: resourceResponseSchema.meta({ id: 'RateResponse' }),
   QuantityResponse: resourceResponseSchema.meta({ id: 'QuantityResponse' }),
+  QuantityPebRoofResponse: resourceResponseSchema.meta({ id: 'QuantityPebRoofResponse' }),
+  QuantityCladdingResponse: resourceResponseSchema.meta({ id: 'QuantityCladdingResponse' }),
+  QuantityCanopyResponse: resourceResponseSchema.meta({ id: 'QuantityCanopyResponse' }),
+  QuantityAccessoriesResponse: resourceResponseSchema.meta({ id: 'QuantityAccessoriesResponse' }),
+  QuantityMezzanineResponse: resourceResponseSchema.meta({ id: 'QuantityMezzanineResponse' }),
+  QuantityStairResponse: resourceResponseSchema.meta({ id: 'QuantityStairResponse' }),
+  QuantityAdditionalBoltsResponse: resourceResponseSchema.meta({ id: 'QuantityAdditionalBoltsResponse' }),
   UserResponse: resourceResponseSchema.meta({ id: 'UserResponse' }),
   PaginatedAccessoriesResponse: paginatedResponseSchema.meta({ id: 'PaginatedAccessoriesResponse' }),
+  PaginatedAmountResponse: paginatedResponseSchema.meta({ id: 'PaginatedAmountResponse' }),
   PaginatedCanopyResponse: paginatedResponseSchema.meta({ id: 'PaginatedCanopyResponse' }),
   PaginatedJobResponse: paginatedResponseSchema.meta({ id: 'PaginatedJobResponse' }),
   PaginatedJointResponse: paginatedResponseSchema.meta({ id: 'PaginatedJointResponse' }),
@@ -110,6 +151,13 @@ const responseSchemas = {
   PaginatedStairResponse: paginatedResponseSchema.meta({ id: 'PaginatedStairResponse' }),
   PaginatedRateResponse: paginatedResponseSchema.meta({ id: 'PaginatedRateResponse' }),
   PaginatedQuantityResponse: paginatedResponseSchema.meta({ id: 'PaginatedQuantityResponse' }),
+  PaginatedQuantityPebRoofResponse: paginatedResponseSchema.meta({ id: 'PaginatedQuantityPebRoofResponse' }),
+  PaginatedQuantityCladdingResponse: paginatedResponseSchema.meta({ id: 'PaginatedQuantityCladdingResponse' }),
+  PaginatedQuantityCanopyResponse: paginatedResponseSchema.meta({ id: 'PaginatedQuantityCanopyResponse' }),
+  PaginatedQuantityAccessoriesResponse: paginatedResponseSchema.meta({ id: 'PaginatedQuantityAccessoriesResponse' }),
+  PaginatedQuantityMezzanineResponse: paginatedResponseSchema.meta({ id: 'PaginatedQuantityMezzanineResponse' }),
+  PaginatedQuantityStairResponse: paginatedResponseSchema.meta({ id: 'PaginatedQuantityStairResponse' }),
+  PaginatedQuantityAdditionalBoltsResponse: paginatedResponseSchema.meta({ id: 'PaginatedQuantityAdditionalBoltsResponse' }),
   ApiError: apiErrorSchema.meta({ id: 'ApiError' }),
   HealthResponse: healthResponseSchema.meta({ id: 'HealthResponse' }),
 }
@@ -165,7 +213,7 @@ const examples = {
   },
   mezzanine: {
     floors: [{
-      code: 'MEZ-1', floor: 'FLOOR_1', type: 'DECK_SHEET', heightFrom: 'GROUND',
+      code: 'MEZ_1', floor: 'FLOOR_1', type: 'DECK_SHEET', heightFrom: 'GROUND',
       thicknessMm: 150, lengthM: 12, widthM: 8, heightM: 3.5,
       materialConsumptionKgPerSqft: 4.5, beamsMidPrimary: 4, beamsEndPrimary: 2,
       beamsSecondary: 6, jointsMidPrimary: 2, jointsEndPrimary: 1,
@@ -181,16 +229,16 @@ const examples = {
   },
   stair: {
     stairs: [{
-      code: 'STAIR-1', typeOfStep: 'CHQ_PLATE_6MM', location: 'MEZ-1',
+      code: 'STAIR-1', typeOfStep: 'CHQ_PLATE_6MM', location: 'MEZ_1',
       startingFrom: 'GROUND', endingUpTo: 'FIRST_FLOOR', length: 4.2,
       width: 1.2, height: 3.5, numberOfMidLanding: 1,
       typeOfStringer: 'FAB_SECTION', unitWeightOfStringer: 18,
     }],
-    areaDeductions: [{ type: 'LIFT', location: 'EXT-1', areaM2: 8, numbers: 1, deductionFor: 'BOTH' }],
+    areaDeductions: [{ type: 'LIFT', location: 'EXT_1', areaM2: 8, numbers: 1, deductionFor: 'BOTH' }],
   },
   canopy: {
     canopies: [{
-      code: 'CANOPY-1', heightFrom: 'GROUND', length: 6, width: 3, height: 3.5,
+      code: 'CANOPY_1', heightFrom: 'GROUND', length: 6, width: 3, height: 3.5,
       materialConsumptionKgPerSqft: 9.5, numberOfBeams: 4, numberOfPurlins: 6,
       purlinDepth: 150, unitWeightOfPurlin: 5.2, canopySheet: 'PPGL',
       sheetThick: 0.5, canopySideCoveringHeight: 1.2, gutter: true,
@@ -265,6 +313,19 @@ const examples = {
       structureQuantity: 3200.75,
     },
   },
+  amount: {
+    pebRoof: {
+      materialWithPurlinRate: 15.0,
+      materialWithPurlinAmount: 187500.0,
+      roofSheetSpecification: '0.50 MM PPGL',
+      roofSheetRate: 12.0,
+      roofSheetAmount: 5403.0,
+    },
+    mezzanine: {
+      structureRate: 16.5,
+      structureAmount: 52812.375,
+    },
+  },
 }
 
 interface ResourceDefinition {
@@ -276,6 +337,7 @@ interface ResourceDefinition {
   responseSchema: z.ZodType
   paginatedSchema: z.ZodType
   example: Record<string, unknown>
+  customNestedPath?: string
 }
 
 const resourceDefinitions: ResourceDefinition[] = [
@@ -285,9 +347,17 @@ const resourceDefinitions: ResourceDefinition[] = [
   { singular: 'Canopy', plural: 'canopies', tag: 'Canopy', createSchema: schemas.CreateCanopyRequest, updateSchema: schemas.UpdateCanopyRequest, responseSchema: responseSchemas.CanopyResponse, paginatedSchema: responseSchemas.PaginatedCanopyResponse, example: examples.canopy },
   { singular: 'Load', plural: 'loads', tag: 'Load', createSchema: schemas.CreateLoadRequest, updateSchema: schemas.UpdateLoadRequest, responseSchema: responseSchemas.LoadResponse, paginatedSchema: responseSchemas.PaginatedLoadResponse, example: examples.load },
   { singular: 'Accessories', plural: 'accessories', tag: 'Accessories', createSchema: schemas.CreateAccessoriesRequest, updateSchema: schemas.UpdateAccessoriesRequest, responseSchema: responseSchemas.AccessoriesResponse, paginatedSchema: responseSchemas.PaginatedAccessoriesResponse, example: examples.accessories },
+  { singular: 'Amount', plural: 'amounts', tag: 'Amount', createSchema: schemas.CreateAmountRequest, updateSchema: schemas.UpdateAmountRequest, responseSchema: responseSchemas.AmountResponse, paginatedSchema: responseSchemas.PaginatedAmountResponse, example: examples.amount },
   { singular: 'Joint', plural: 'joints', tag: 'Joint', createSchema: schemas.CreateJointRequest, updateSchema: schemas.UpdateJointRequest, responseSchema: responseSchemas.JointResponse, paginatedSchema: responseSchemas.PaginatedJointResponse, example: examples.joint },
   { singular: 'Spec', plural: 'specs', tag: 'Specs', createSchema: schemas.CreateSpecRequest, updateSchema: schemas.UpdateSpecRequest, responseSchema: responseSchemas.SpecResponse, paginatedSchema: responseSchemas.PaginatedSpecResponse, example: examples.spec },
   { singular: 'Quantity', plural: 'quantities', tag: 'Quantity', createSchema: schemas.CreateQuantityRequest, updateSchema: schemas.UpdateQuantityRequest, responseSchema: responseSchemas.QuantityResponse, paginatedSchema: responseSchemas.PaginatedQuantityResponse, example: examples.quantity },
+  { singular: 'QuantityPebRoof', plural: 'quantity-peb-roofs', customNestedPath: '/api/jobs/{jobId}/quantity/peb-roof', tag: 'Quantity', createSchema: schemas.CreateQuantityPebRoofRequest, updateSchema: schemas.UpdateQuantityPebRoofRequest, responseSchema: responseSchemas.QuantityPebRoofResponse, paginatedSchema: responseSchemas.PaginatedQuantityPebRoofResponse, example: {} },
+  { singular: 'QuantityCladding', plural: 'quantity-claddings', customNestedPath: '/api/jobs/{jobId}/quantity/cladding', tag: 'Quantity', createSchema: schemas.CreateQuantityCladdingRequest, updateSchema: schemas.UpdateQuantityCladdingRequest, responseSchema: responseSchemas.QuantityCladdingResponse, paginatedSchema: responseSchemas.PaginatedQuantityCladdingResponse, example: {} },
+  { singular: 'QuantityCanopy', plural: 'quantity-canopies', customNestedPath: '/api/jobs/{jobId}/quantity/canopy', tag: 'Quantity', createSchema: schemas.CreateQuantityCanopyRequest, updateSchema: schemas.UpdateQuantityCanopyRequest, responseSchema: responseSchemas.QuantityCanopyResponse, paginatedSchema: responseSchemas.PaginatedQuantityCanopyResponse, example: {} },
+  { singular: 'QuantityAccessories', plural: 'quantity-accessories', customNestedPath: '/api/jobs/{jobId}/quantity/accessories', tag: 'Quantity', createSchema: schemas.CreateQuantityAccessoriesRequest, updateSchema: schemas.UpdateQuantityAccessoriesRequest, responseSchema: responseSchemas.QuantityAccessoriesResponse, paginatedSchema: responseSchemas.PaginatedQuantityAccessoriesResponse, example: {} },
+  { singular: 'QuantityMezzanine', plural: 'quantity-mezzanines', customNestedPath: '/api/jobs/{jobId}/quantity/mezzanine', tag: 'Quantity', createSchema: schemas.CreateQuantityMezzanineRequest, updateSchema: schemas.UpdateQuantityMezzanineRequest, responseSchema: responseSchemas.QuantityMezzanineResponse, paginatedSchema: responseSchemas.PaginatedQuantityMezzanineResponse, example: {} },
+  { singular: 'QuantityStair', plural: 'quantity-stairs', customNestedPath: '/api/jobs/{jobId}/quantity/stair', tag: 'Quantity', createSchema: schemas.CreateQuantityStairRequest, updateSchema: schemas.UpdateQuantityStairRequest, responseSchema: responseSchemas.QuantityStairResponse, paginatedSchema: responseSchemas.PaginatedQuantityStairResponse, example: {} },
+  { singular: 'QuantityAdditionalBolts', plural: 'quantity-additional-bolts', customNestedPath: '/api/jobs/{jobId}/quantity/additional-bolts', tag: 'Quantity', createSchema: schemas.CreateQuantityAdditionalBoltsRequest, updateSchema: schemas.UpdateQuantityAdditionalBoltsRequest, responseSchema: responseSchemas.QuantityAdditionalBoltsResponse, paginatedSchema: responseSchemas.PaginatedQuantityAdditionalBoltsResponse, example: {} },
 ]
 
 export const documentedOperations: string[] = []
@@ -363,7 +433,7 @@ function registerOperation(options: {
 }
 
 function registerResourceOperations(resource: ResourceDefinition) {
-  const nestedPath = `/api/jobs/{jobId}/${resource.singular.toLowerCase()}`
+  const nestedPath = resource.customNestedPath ?? `/api/jobs/{jobId}/${resource.singular.toLowerCase()}`
   registerOperation({
     method: 'post', path: nestedPath, operationId: `upsert${resource.singular}`, tag: resource.tag,
     summary: `Create or replace a job's ${resource.singular.toLowerCase()}`, auth: true,
@@ -423,6 +493,16 @@ registerOperation({
   method: 'get', path: '/api/jobs/{id}', operationId: 'getJobById', tag: 'Jobs', auth: true,
   summary: 'Get a job by ID', description: 'Returns one job by its identifier.', params: idParams(),
   responseSchema: responseSchemas.JobResponse, responseDescription: 'Job returned.',
+})
+registerOperation({
+  method: 'get', path: '/api/all/{jobId}', operationId: 'getJobWithAllData', tag: 'Jobs', auth: true,
+  summary: 'Get all job data by ID', description: 'Returns all data of a specific job including all nested relations.', params: jobIdParams(),
+  responseSchema: responseSchemas.JobResponse, responseDescription: 'Full job data returned.', notFound: true,
+})
+registerOperation({
+  method: 'get', path: '/api/jobs/{jobId}/all', operationId: 'getJobWithAllDataAlias', tag: 'Jobs', auth: true,
+  summary: 'Get all job data by ID (canonical alias)', description: 'Returns all data of a specific job including all nested relations.', params: jobIdParams(),
+  responseSchema: responseSchemas.JobResponse, responseDescription: 'Full job data returned.', notFound: true,
 })
 registerOperation({
   method: 'put', path: '/api/jobs/{id}', operationId: 'updateJob', tag: 'Jobs', auth: true,
