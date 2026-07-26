@@ -69,10 +69,19 @@ export const getCalcValue = (explicitVal?: string | number, fallbackVal?: unknow
 export const getDefaults = (rows: RowDef[]) => {
   const defs: Record<string, string | number> = {}
   rows.forEach(r => {
-    if (r.qtyField && r.defaultQty !== undefined) defs[r.qtyField] = r.defaultQty
+    if (r.qtyField && (r.defaultQty !== undefined || (!r.isCalculated && r.calcValue !== undefined))) {
+      defs[r.qtyField] = r.defaultQty ?? r.calcValue!
+    }
+    if (r.specValue && (r.isSpecValueInput || (r.specValue !== 'NOS' && r.specValue !== ''))) {
+      defs[r.specValue] = ''
+    }
     r.subRows?.forEach(sub => {
-      if (sub.addlField && sub.defaultQty !== undefined) defs[sub.addlField] = sub.defaultQty
-      if (sub.purchField && sub.defaultQty !== undefined) defs[sub.purchField] = sub.defaultQty
+      if (sub.addlField && (sub.defaultQty !== undefined || (!sub.isCalculated && sub.calcAddlValue !== undefined))) {
+        defs[sub.addlField] = sub.defaultQty ?? sub.calcAddlValue!
+      }
+      if (sub.purchField && (sub.defaultQty !== undefined || (!sub.isCalculated && sub.calcPurchValue !== undefined))) {
+        defs[sub.purchField] = sub.defaultQty ?? sub.calcPurchValue!
+      }
     })
   })
   return defs
@@ -80,7 +89,13 @@ export const getDefaults = (rows: RowDef[]) => {
 
 export const seedDrafts = (obj: Record<string, unknown> | null | undefined, rows: RowDef[]) => {
   const defs = getDefaults(rows)
-  return Object.fromEntries(getEditableFields(rows).map((f) => [f, toStr(obj?.[f] ?? defs[f])]))
+  return Object.fromEntries(
+    getEditableFields(rows).map((f) => {
+      const val = obj?.[f]
+      const strVal = val != null ? String(val) : toStr(defs[f])
+      return [f, strVal]
+    })
+  )
 }
 
 export interface SectionTableProps {

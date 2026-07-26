@@ -77,4 +77,23 @@ describe('Step12Quantity', () => {
     const saveButtons = screen.getAllByRole('button', { name: /Save/i })
     expect(saveButtons.length).toBe(7)
   })
+
+  it('populates user input fields when quantity data is hydrated', () => {
+    mocks.quantityData = {
+      pebRoof: {
+        lengthOfBuildingQuantity: '15.5',
+      },
+      additionalBolts: {
+        jointBolt1Quantity: '42',
+      },
+    }
+
+    render(<Step12Quantity />)
+
+    const buildingLenInput = screen.getByRole('spinbutton', { name: /LENGTH OF BUILDING additional/i })
+    expect(buildingLenInput).toHaveValue(15.5)
+
+    const jointBolt1Input = screen.getAllByRole('spinbutton', { name: /Joint bolt/i })[0]
+    expect(jointBolt1Input).toHaveValue(42)
+  })
 })

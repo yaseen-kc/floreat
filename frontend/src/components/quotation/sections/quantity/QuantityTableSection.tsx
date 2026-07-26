@@ -40,7 +40,7 @@ export function QuantityTableSection({ sectionKey, title, icon, rows, calculated
   const [draft, setDraft] = useState<Record<string, string>>({})
   const [saving, setSaving] = useState(false)
   const queryClient = useQueryClient()
-  const seeded = useRef(false)
+  const seededDataRef = useRef<unknown>(null)
 
   const pebRoofMut = useUpsertQuantityPebRoof()
   const claddingMut = useUpsertQuantityCladding()
@@ -51,11 +51,22 @@ export function QuantityTableSection({ sectionKey, title, icon, rows, calculated
   const additionalBoltsMut = useUpsertQuantityAdditionalBolts()
 
   useEffect(() => {
-    if (seeded.current || initialData === undefined) return
-    seeded.current = true
+    if (initialData === undefined) return
+    if (seededDataRef.current === initialData && Object.keys(draft).length > 0) return
+
+    seededDataRef.current = initialData
     const seededDraft = seedDrafts(initialData as unknown as Record<string, unknown> | null, rows)
-    setDraft(seededDraft)
-    onDraftChange?.(sectionKey, seededDraft)
+
+    setDraft((prev) => {
+      const merged: Record<string, string> = { ...prev }
+      for (const [k, v] of Object.entries(seededDraft)) {
+        if (v !== '' || !merged[k]) {
+          merged[k] = v
+        }
+      }
+      onDraftChange?.(sectionKey, merged)
+      return merged
+    })
   }, [initialData, rows, sectionKey, onDraftChange])
 
   const onEdit = (field: string, value: string) => {
