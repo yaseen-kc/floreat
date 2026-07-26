@@ -262,7 +262,7 @@ export function flattenMezzanineCalc(calc: any): Record<string, unknown> {
     totalMezzanineAreaQuantity: toNum(calc.totalMezzanineAreaQuantity),
     materialConsumption: toNum(calc.materialConsumption),
     deckSheetQuantity: toNum(calc.deckSheetQuantity),
-    deckSheetPurchaseQuantity: toNum(calc.deckSheetPurcahseQuantity ?? calc.deckSheetPurchaseQuantity),
+    deckSheetPurchaseQuantity: toNum(calc.deckSheetPurchaseQuantity),
     deckSheetQuantityAdditional: toNum(calc.deckSheetQuantityAdditional),
     shearStudsQuantity: toNum(calc.shearStudsQuantity),
     shearStudsPurchaseQuantity: toNum(calc.shearStudsPurchaseQuantity),

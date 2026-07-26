@@ -202,7 +202,7 @@ export const getMezzanineRows = (calc: MezzanineCalc): RowDef[] => [
   {
     "sl": "5.2", "label": "Deck sheet", "spec": "", "unit": "SQM", "qtyField": "deckSheetQuantity", "unitField": "", "calcValue": calc.deckSheetQuantity,
     "subRows": [
-      { "sl": "", "desc": "", "spec": "PURCHASE QUANTITY", "unit": "SQM", "purchField": "deckSheetPurchaseQuantity", "calcPurchValue": calc.deckSheetPurcahseQuantity, "isCalculated": true },
+      { "sl": "", "desc": "", "spec": "PURCHASE QUANTITY", "unit": "SQM", "purchField": "deckSheetPurchaseQuantity", "calcPurchValue": calc.deckSheetPurchaseQuantity, "isCalculated": true },
       { "sl": "", "desc": "", "spec": "", "unit": "", "addlSpec": "ADDITIONAL=", "addlUnit": "SQM", "addlField": "deckSheetQuantityAdditional", "defaultQty": "" }
     ],
     "isCalculated": true
