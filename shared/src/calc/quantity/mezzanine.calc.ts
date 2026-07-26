@@ -75,17 +75,17 @@ export function calculateMezzanineQuantities(job: MezzanineCalculationInput) {
     return {
         mezzanineStructureQuantity,
         totalMezzanineArea,
-        totalMezzanineAreaQuantity: "User Input",
+        totalMezzanineAreaQuantity: 0,
         materialConsumption: matCons,
         deckSheetQuantity,
         deckSheetPurcahseQuantity,
-        deckSheetQuantityAdditional: "User Input",
+        deckSheetQuantityAdditional: 0,
         shearStudsQuantity,
-        shearStudsQuantityAdditional: "User Input",
+        shearStudsQuantityAdditional: 0,
         concreteFlashing,
-        concreteFlashingAdditional: "User Input",
+        concreteFlashingAdditional: 0,
         jointBolts: `${boltDiameter} MM DIA HSFG BOLTS`,
         jointBoltsQuantity,
-        foundationBoltsQuantity: "NA"
+        foundationBoltsQuantity: 0
     };
 }

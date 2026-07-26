@@ -6,12 +6,12 @@ export interface AdditionalBoltsCalculationInput {
 
 export function calculateAdditionalBoltsQuantities(job: AdditionalBoltsCalculationInput) {
     return {
-        jointBolt1Quantity: "User Input",
-        jointBolt2Quantity: "User Input",
-        jointBolt3Quantity: "User Input",
-        purlinBolt: "User Input",
-        purlinBoltQuantity: "User Input",
-        anchorBoltQuantity: "User Input",
-        foundationBoltQuantity: "User Input"
+        jointBolt1Quantity: 0,
+        jointBolt2Quantity: 0,
+        jointBolt3Quantity: 0,
+        purlinBolt: null,
+        purlinBoltQuantity: 0,
+        anchorBoltQuantity: 0,
+        foundationBoltQuantity: 0
     };
 }

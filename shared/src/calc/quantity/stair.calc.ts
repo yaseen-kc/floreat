@@ -18,6 +18,6 @@ export function calculateStairQuantities(job: StairCalculationInput) {
         totalWeightofStringerBeamsQuantity: (SQRT(n(stairItem.height) / (n(stairItem.numberOfMidLanding) + 1) * n(stairItem.height) / (n(stairItem.numberOfMidLanding) + 1) + (n(stairItem.length) - 2) * (n(stairItem.length) - 2)) + 2 + n(stairItem.numberOfMidLanding)) * (2 + n(stairItem.numberOfMidLanding) * 2) * n(stairItem.unitWeightOfStringer),
         totalWeightofSteps: stairItem.typeOfStep,
         totalWeightofStepsQuantity: n(stairItem.height) / 0.15 * n(stairItem.width) / 2 * 0.006 * 0.45 * 7850,
-        totalWeightofStepsAdditional: "User Input"
+        totalWeightofStepsAdditional: 0
     };
 }

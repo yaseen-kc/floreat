@@ -41,7 +41,7 @@ export function calculateCladdingQuantities(job: CladdingCalculationInput) {
             (n(roof?.eaveHeight) - rightHeight) * n(roof?.buildingOverallLength)) *
             10.76),
         claddingEaveHeightFront: n(roof?.eaveHeight) - frontHeight,
-        claddingEaveHeightFrontAdditional: "User Input",
+        claddingEaveHeightFrontAdditional: 0,
         claddingEaveHeightBack: n(roof?.eaveHeight) - backHeight,
         claddingEaveHeightRight: n(roof?.eaveHeight) - rightHeight,
         claddingEaveHeightLeft: n(roof?.eaveHeight) - leftHeight,
@@ -81,7 +81,7 @@ export function calculateCladdingQuantities(job: CladdingCalculationInput) {
             (n(roof?.eaveHeight) - rightHeight) * n(roof?.buildingOverallLength) -
             (n(roof?.frontCladdingOpeningArea) + n(roof?.backCladdingOpeningArea) + n(roof?.rightCladdingOpeningArea) + n(roof?.leftCladdingOpeningArea)) -
             n(roof?.fasciaBoardArea),
-        claddingSheetAdditional: "User Input",
+        claddingSheetAdditional: 0,
         claddingSheetPurchase:
             ((n(roof?.eaveHeight) - frontHeight + (n(roof?.buildingOverallWidth) / 2) * TAN((n(roof?.roofSlope) * PI()) / 180) + n(roof?.eaveHeight) - frontHeight) / 2 * n(roof?.buildingOverallWidth) +
             (n(roof?.eaveHeight) - leftHeight + n(roof?.eaveHeight) - n(roof?.claddingExtensionWidthHeight) * TAN((n(roof?.roofSlope) * PI()) / 180) - leftHeight) / 2 * n(roof?.claddingExtensionWidthHeight) +
@@ -94,7 +94,7 @@ export function calculateCladdingQuantities(job: CladdingCalculationInput) {
             1.1,
         columnWindBracings:
             n(roof?.columnWindBracingSegments) * 2 * 2 * n(roof?.columnWindBracingProvidedBays) * SQRT((n(roof?.windBracingColumnHeight) / n(roof?.columnWindBracingSegments)) ** 2 + n(roof?.buildingOverallLength) / (n(roof?.mainRoofFrames) + n(roof?.endRoofFrames) - 1) * n(roof?.buildingOverallLength) / (n(roof?.mainRoofFrames) + n(roof?.endRoofFrames) - 1)) * n(roof?.windBracingUnitWeight),
-        columnWindBracingsAdditional: "User Input",
+        columnWindBracingsAdditional: 0,
         claddingSagRod:
             ((n(roof?.eaveHeight) - frontHeight + (n(roof?.buildingOverallWidth) / 2) * TAN((n(roof?.roofSlope) * PI()) / 180) + n(roof?.eaveHeight) - frontHeight) / 2 * n(roof?.buildingOverallWidth) +
             (n(roof?.eaveHeight) - leftHeight + n(roof?.eaveHeight) - n(roof?.claddingExtensionWidthHeight) * TAN((n(roof?.roofSlope) * PI()) / 180) - leftHeight) / 2 * n(roof?.claddingExtensionWidthHeight) +
@@ -117,17 +117,17 @@ export function calculateCladdingQuantities(job: CladdingCalculationInput) {
             (n(roof?.eaveHeight) - leftHeight) * n(roof?.buildingOverallLength) +
             (n(roof?.eaveHeight) - rightHeight) * n(roof?.buildingOverallLength)) *
             10.76),
-        claddingSagRodAdditional: "User Input",
+        claddingSagRodAdditional: 0,
         claddingFlangeBrace:
             ((n(roof?.mainRoofFrames) + n(roof?.endRoofFrames)) * n(roof?.claddingPurlins) * 2 + (n(roof?.internalColumnsForEndRoofFrames) + 2) * (n(roof?.claddingPurlins) + 1) * 2 + n(roof?.claddingPurlins) * 2) *
             n(roof?.claddingFlangeBraceAverageLength) *
             1.57 *
             2,
-        claddingFlangeBraceAdditional: "User Input",
+        claddingFlangeBraceAdditional: 0,
         numberOfCladdingPurlinBolts:
             ((n(roof?.mainRoofFrames) + n(roof?.endRoofFrames)) * n(roof?.claddingPurlins) * 2 + (n(roof?.internalColumnsForEndRoofFrames) + 2) * (n(roof?.claddingPurlins) + 1) * 2 + n(roof?.claddingPurlins) * 2) *
             4,
-        numberOfCladdingPurlinBoltsAdditional: "User Input"
+        numberOfCladdingPurlinBoltsAdditional: 0
     };
 
     return {

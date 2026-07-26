@@ -83,7 +83,7 @@ export function calculatePebQuantities(job: PebCalculationInput) {
             10.76 *
             n(roof?.materialConsumptionExcludingPurlin),
         lengthOfBuilding: n(roof?.buildingOverallLength),
-        lengthOfBuildingQuantity: "User Input",
+        lengthOfBuildingQuantity: 0,
         inclinedLengthInOneHalf:
             n(roof?.buildingOverallWidth) / COS((n(roof?.roofSlope) * PI()) / 180) / 2 + 0.14,
         roofArea:
@@ -114,7 +114,7 @@ export function calculatePebQuantities(job: PebCalculationInput) {
             (n(roof?.roofExtensionEndFrameCount) + n(roof?.roofExtensionMidFrameCount) - 1),
         lengthOfOnePurlin:
             n(roof?.buildingOverallLength) / (n(roof?.mainRoofFrames) + n(roof?.endRoofFrames) - 1) + 0.4,
-        lengthOfOnePurlinQuantity: "User Input",
+        lengthOfOnePurlinQuantity: 0,
         noOfPurlinsInOneFrame:
             ((n(roof?.buildingOverallWidth) / COS((n(roof?.roofSlope) * PI()) / 180) / 2 + 0.14) /
                 n(roof?.roofPurlinSpacing) +
@@ -176,7 +176,7 @@ export function calculatePebQuantities(job: PebCalculationInput) {
             n(roof?.polycarbonateRoofCount),
         polyCarbonateSheetPurchaseQuantity: 0,
         lengthOfpolyCarbonateSheet: n(roof?.polycarbonateRoofLength),
-        lengthOfpolyCarbonateSheetAdditional: "User Input",
+        lengthOfpolyCarbonateSheetAdditional: 0,
         widthOfpolyCarbonateSheet: n(roof?.polycarbonateRoofWidth),
         NosOfpolyCarbonateSheet: n(roof?.polycarbonateRoofCount),
     };
@@ -200,7 +200,7 @@ export function calculatePebQuantities(job: PebCalculationInput) {
             n(roof?.roofWindBracingProvidedBays) *
             n(roof?.windBracingUnitWeight),
         lengthOfSinlgeWindBracing: n(roof?.roofWindBracingLength),
-        lengthOfSinlgeWindBracingAdditional: "User Input",
+        lengthOfSinlgeWindBracingAdditional: 0,
         totalNumberOfWindBracing:
             n(roof?.roofWindBracingSegmentsInOneHalf) * 2 * 2 * n(roof?.roofWindBracingProvidedBays),
         unitWeightOfRoofWindBracing: n(roof?.windBracingUnitWeight),
@@ -229,7 +229,7 @@ export function calculatePebQuantities(job: PebCalculationInput) {
             n(roof?.diaOfRoofSagRod) /
             162,
         lengthOfSingleSagRoad: n(roof?.roofPurlinSpacing) + 0.2,
-        lengthOfSingleSagRoadAdditional: "User Input",
+        lengthOfSingleSagRoadAdditional: 0,
         noOfSagRodInASingleFrame:
             (n(roof?.buildingOverallWidth) / COS((n(roof?.roofSlope) * PI()) / 180) / 2 + 0.14) /
             n(roof?.roofPurlinSpacing) *
@@ -269,7 +269,7 @@ export function calculatePebQuantities(job: PebCalculationInput) {
                 n(roof?.roofExtensionEndFrameCount)) *
             1.57,
         lengthOfMidFrameFlangeBrace: n(roof?.roofFlangeBraceAverageLength),
-        lengthOfMidFrameFlangeBraceAdditional: "User Input",
+        lengthOfMidFrameFlangeBraceAdditional: 0,
         noOfFlangeBraceInMidFrame:
             ((n(roof?.buildingOverallWidth) / COS((n(roof?.roofSlope) * PI()) / 180) / 2 + 0.14) /
                 n(roof?.roofPurlinSpacing) +
