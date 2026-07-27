@@ -1,44 +1,26 @@
 import { describe, it, expect } from 'vitest'
 import '../../../tests/mocks/prisma.js'
 import { prismaMock } from '../../mocks/prisma.js'
-import { makeAmount, makeAmountItem } from '../../helpers/factories.js'
+import { makeAmount, makeAmountInput } from '../../helpers/factories.js'
 import {
   upsertAmount, getAmounts, getAmountByJobId, updateAmount, deleteAmount,
 } from '../../../services/amount.service.js'
 
-const INCLUDE = { items: true }
-
 describe('amount.service', () => {
   describe('upsertAmount', () => {
-    it('creates with items on first save', async () => {
-      const item = makeAmountItem()
-      const amount = makeAmount({ jobId: 'job-1', items: [item] })
+    it('creates or updates amount with flat fields', async () => {
+      const input = makeAmountInput()
+      const amount = makeAmount({ jobId: 'job-1', ...input })
       prismaMock.amount.upsert.mockResolvedValue(amount as any)
 
-      const result = await upsertAmount('job-1', { items: [item] })
+      const result = await upsertAmount('job-1', input)
 
       expect(result).toEqual(amount)
-      expect(prismaMock.amount.upsert).toHaveBeenCalledWith(
-        expect.objectContaining({
-          where: { jobId: 'job-1' },
-          create: expect.objectContaining({ jobId: 'job-1' }),
-          include: INCLUDE,
-        }),
-      )
-    })
-
-    it('replaces items on subsequent save', async () => {
-      const amount = makeAmount({ jobId: 'job-1' })
-      prismaMock.amount.upsert.mockResolvedValue(amount as any)
-
-      await upsertAmount('job-1', { items: [] })
-
-      expect(prismaMock.amount.upsert).toHaveBeenCalledWith(
-        expect.objectContaining({
-          update: { items: { deleteMany: {}, createMany: { data: [] } } },
-          include: INCLUDE,
-        }),
-      )
+      expect(prismaMock.amount.upsert).toHaveBeenCalledWith({
+        where: { jobId: 'job-1' },
+        create: { jobId: 'job-1', ...input },
+        update: { ...input },
+      })
     })
 
     it('accepts empty payload', async () => {
@@ -58,7 +40,7 @@ describe('amount.service', () => {
 
       expect(result).toEqual({ data: amounts, total: 2, page: 2, pageSize: 10 })
       expect(prismaMock.amount.findMany).toHaveBeenCalledWith({
-        where: { job: { userId: 'user_1' } }, skip: 10, take: 10, orderBy: { createdAt: 'desc' }, include: INCLUDE,
+        where: { job: { userId: 'user_1' } }, skip: 10, take: 10, orderBy: { createdAt: 'desc' },
       })
     })
   })
@@ -71,7 +53,7 @@ describe('amount.service', () => {
       const result = await getAmountByJobId('job-1')
 
       expect(result).toEqual(amount)
-      expect(prismaMock.amount.findUnique).toHaveBeenCalledWith({ where: { jobId: 'job-1' }, include: INCLUDE })
+      expect(prismaMock.amount.findUnique).toHaveBeenCalledWith({ where: { jobId: 'job-1' } })
     })
 
     it('returns null when not found', async () => {
@@ -81,28 +63,17 @@ describe('amount.service', () => {
   })
 
   describe('updateAmount', () => {
-    it('replaces items wholesale', async () => {
-      const item = makeAmountItem()
-      const amount = makeAmount({ jobId: 'job-1', items: [item] })
+    it('updates flat fields', async () => {
+      const input = makeAmountInput()
+      const amount = makeAmount({ jobId: 'job-1', ...input })
       prismaMock.amount.update.mockResolvedValue(amount as any)
 
-      const result = await updateAmount('job-1', { items: [item] })
+      const result = await updateAmount('job-1', input)
 
       expect(result).toEqual(amount)
       expect(prismaMock.amount.update).toHaveBeenCalledWith({
         where: { jobId: 'job-1' },
-        data: { items: { deleteMany: {}, createMany: { data: [item] } } },
-        include: INCLUDE,
-      })
-    })
-
-    it('clears items when empty array provided', async () => {
-      prismaMock.amount.update.mockResolvedValue(makeAmount({ jobId: 'job-1' }) as any)
-      await updateAmount('job-1', { items: [] })
-      expect(prismaMock.amount.update).toHaveBeenCalledWith({
-        where: { jobId: 'job-1' },
-        data: { items: { deleteMany: {}, createMany: { data: [] } } },
-        include: INCLUDE,
+        data: input,
       })
     })
   })

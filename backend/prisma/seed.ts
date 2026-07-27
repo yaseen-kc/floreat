@@ -36,9 +36,9 @@ import {
   RoofJointId,
   MezzanineJointId,
   FoundationBoltJointId,
-  AmountUnit,
   MezzanineFloorCode,
   CanopyCode,
+  StairCode,
 } from '../generated/prisma/client.js'
 
 async function main() {
@@ -416,13 +416,13 @@ async function main() {
       jobId: 'seed_job_1',
       stairs: [
         {
-          code: 'STR-1', typeOfStep: StairStepType.CHQ_PLATE_6MM, location: 'Bay 3 - Main access',
+          code: StairCode.STAIR_1, typeOfStep: StairStepType.CHQ_PLATE_6MM, location: 'Bay 3 - Main access',
           startingFrom: StairFloorLevel.GROUND, endingUpTo: StairFloorLevel.FIRST_FLOOR,
           length: 4.5, width: 1.2, height: 4.5, numberOfMidLanding: 1,
           typeOfStringer: StairStringerType.HR_SECTION, unitWeightOfStringer: 28.5,
         },
         {
-          code: 'STR-2', typeOfStep: StairStepType.TUBE, location: 'Bay 7 - Emergency exit',
+          code: StairCode.STAIR_2, typeOfStep: StairStepType.TUBE, location: 'Bay 7 - Emergency exit',
           startingFrom: StairFloorLevel.FIRST_FLOOR, endingUpTo: StairFloorLevel.SECOND_FLOOR,
           length: 5.0, width: 1.0, height: 4.0, numberOfMidLanding: 2,
           typeOfStringer: StairStringerType.FAB_SECTION, unitWeightOfStringer: 32.0,
@@ -437,7 +437,7 @@ async function main() {
       jobId: 'seed_job_2',
       stairs: [
         {
-          code: 'STR-1', typeOfStep: StairStepType.CHQ_PLATE_4MM, location: 'Front entrance',
+          code: StairCode.STAIR_1, typeOfStep: StairStepType.CHQ_PLATE_4MM, location: 'Front entrance',
           startingFrom: StairFloorLevel.GROUND, endingUpTo: StairFloorLevel.FIRST_FLOOR,
           length: 3.5, width: 1.0, height: 3.5,
         },
@@ -450,13 +450,13 @@ async function main() {
       jobId: 'seed_job_3',
       stairs: [
         {
-          code: 'STR-1', typeOfStep: StairStepType.CHQ_PLATE_6MM, location: 'Block A - West',
+          code: StairCode.STAIR_1, typeOfStep: StairStepType.CHQ_PLATE_6MM, location: 'Block A - West',
           startingFrom: StairFloorLevel.GROUND, endingUpTo: StairFloorLevel.FIRST_FLOOR,
           length: 4.0, width: 1.2, height: 4.0, numberOfMidLanding: 1,
           typeOfStringer: StairStringerType.HR_SECTION, unitWeightOfStringer: 26.0,
         },
         {
-          code: 'STR-2', typeOfStep: StairStepType.TUBE, location: 'Block A - East',
+          code: StairCode.STAIR_2, typeOfStep: StairStepType.TUBE, location: 'Block A - East',
           startingFrom: StairFloorLevel.GROUND, endingUpTo: StairFloorLevel.SECOND_FLOOR,
           length: 8.0, width: 1.1, height: 8.0, numberOfMidLanding: 3,
           typeOfStringer: StairStringerType.FAB_SECTION, unitWeightOfStringer: 35.0,
@@ -467,7 +467,7 @@ async function main() {
       jobId: 'seed_job_4',
       stairs: [
         {
-          code: 'STR-1', length: 3.0, width: 0.9, height: 3.0,
+          code: StairCode.STAIR_1, length: 3.0, width: 0.9, height: 3.0,
         },
       ],
     },
@@ -475,13 +475,13 @@ async function main() {
       jobId: 'seed_job_5',
       stairs: [
         {
-          code: 'STR-1', typeOfStep: StairStepType.CHQ_PLATE_6MM, location: 'Mezzanine access - North',
+          code: StairCode.STAIR_1, typeOfStep: StairStepType.CHQ_PLATE_6MM, location: 'Mezzanine access - North',
           startingFrom: StairFloorLevel.GROUND, endingUpTo: StairFloorLevel.FIRST_FLOOR,
           length: 5.0, width: 1.2, height: 5.0, numberOfMidLanding: 1,
           typeOfStringer: StairStringerType.HR_SECTION, unitWeightOfStringer: 30.0,
         },
         {
-          code: 'STR-2', typeOfStep: StairStepType.CHQ_PLATE_4MM, location: 'Loading dock side',
+          code: StairCode.STAIR_2, typeOfStep: StairStepType.CHQ_PLATE_4MM, location: 'Loading dock side',
           startingFrom: StairFloorLevel.GROUND, endingUpTo: StairFloorLevel.FIRST_FLOOR,
           length: 3.8, width: 1.0, height: 5.0,
           typeOfStringer: StairStringerType.HR_SECTION, unitWeightOfStringer: 28.0,
@@ -1077,22 +1077,35 @@ async function main() {
   const amounts = [
     {
       jobId: 'seed_job_1',
-      items: [
-        { description: 'PEB Roof Structure', unit: AmountUnit.KG, quantity: 8500, rateFabrication: 85, rateErection: 12, rateLoading: 3, amountFabrication: 722500, amountErection: 102000, amountLoading: 25500 },
-        { description: 'Roof Cladding Sheet', unit: AmountUnit.SQM, quantity: 460, rateFabrication: 0, rateErection: 45, rateLoading: 5, amountFabrication: 0, amountErection: 20700, amountLoading: 2300 },
-        { description: 'Mezzanine Structure', unit: AmountUnit.KG, quantity: 3200, rateFabrication: 88, rateErection: 14, rateLoading: 3, amountFabrication: 281600, amountErection: 44800, amountLoading: 9600 },
-      ],
+      steelStructuresQuantity: 8500,
+      steelStructuresFabricationRate: 85,
+      steelStructuresErrectionRate: 12,
+      steelStructuresLoadingRate: 3,
+      steelStructuresFabricationAmount: 722500,
+      steelStructuresErrectionAmount: 102000,
+      steelStructuresLoadingAmount: 25500,
+      roofSheetQuantity: 460,
+      roofSheetFabricationRate: 0,
+      roofSheetErrectionRate: 45,
+      roofSheetLoadingRate: 5,
+      roofSheetFabricationAmount: 0,
+      roofSheetErrectionAmount: 20700,
+      roofSheetLoadingAmount: 2300,
     },
     {
       jobId: 'seed_job_3',
-      items: [
-        { description: 'PEB Roof Structure', unit: AmountUnit.KG, quantity: 5200, rateFabrication: 85, rateErection: 12, rateLoading: 3, amountFabrication: 442000, amountErection: 62400, amountLoading: 15600 },
-      ],
+      steelStructuresQuantity: 5200,
+      steelStructuresFabricationRate: 85,
+      steelStructuresErrectionRate: 12,
+      steelStructuresLoadingRate: 3,
+      steelStructuresFabricationAmount: 442000,
+      steelStructuresErrectionAmount: 62400,
+      steelStructuresLoadingAmount: 15600,
     },
   ]
-  for (const { jobId, items } of amounts) {
+  for (const { jobId, ...data } of amounts) {
     await prisma.amount.deleteMany({ where: { jobId } })
-    await prisma.amount.create({ data: { jobId, items: { createMany: { data: items } } } })
+    await prisma.amount.create({ data: { jobId, ...data } })
   }
   console.log('✓ Amounts seeded')
 

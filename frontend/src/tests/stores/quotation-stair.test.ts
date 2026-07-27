@@ -10,7 +10,7 @@ describe('buildStairPayload', () => {
     const draft: StairDraft = {
       stairs: [
         // A real staircase: code + a couple of populated fields, the rest undefined.
-        { code: 'STAIR-1', typeOfStep: 'TUBE', length: 12, width: undefined, height: undefined },
+        { code: 'STAIR_1', typeOfStep: 'TUBE', length: 12, width: undefined, height: undefined },
         // Fully-empty row (all undefined) — must be dropped.
         { typeOfStep: undefined, length: undefined },
       ],
@@ -20,7 +20,7 @@ describe('buildStairPayload', () => {
 
     const payload = buildStairPayload(draft)
 
-    expect(payload.stairs).toEqual([{ code: 'STAIR-1', typeOfStep: 'TUBE', length: 12 }])
+    expect(payload.stairs).toEqual([{ code: 'STAIR_1', typeOfStep: 'TUBE', length: 12 }])
     expect('areaDeductions' in payload).toBe(false)
   })
 
@@ -36,7 +36,7 @@ describe('setStair', () => {
   })
 
   it('patches the stair draft via setStair', () => {
-    useQuotationStore.getState().setStair({ stairs: [{ code: 'STAIR-1', length: 3 }] })
-    expect(useQuotationStore.getState().stair.stairs[0]).toEqual({ code: 'STAIR-1', length: 3 })
+    useQuotationStore.getState().setStair({ stairs: [{ code: 'STAIR_1', length: 3 }] })
+    expect(useQuotationStore.getState().stair.stairs[0]).toEqual({ code: 'STAIR_1', length: 3 })
   })
 })

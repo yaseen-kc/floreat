@@ -45,11 +45,14 @@ export function StairItems() {
 
   const groups = stairGroups(buildLocationOptions(mezzanine))
 
-  // ponytail: codes are reassigned STAIR-1..STAIR-n by position on every add/remove.
+  // ponytail: codes are reassigned STAIR_1..STAIR_n by position on every add/remove.
   const withCodes = (rows: StairItemDraft[]): StairItemDraft[] =>
-    rows.map((row, i) => ({ ...row, code: `STAIR-${i + 1}` }))
+    rows.map((row, i) => ({ ...row, code: `STAIR_${i + 1}` as StairItemDraft['code'] }))
 
-  const addRow = () => setStair({ stairs: withCodes([...stairs, {}]) })
+  const addRow = () => {
+    if (stairs.length >= 12) return
+    setStair({ stairs: withCodes([...stairs, {}]) })
+  }
   const removeRow = (index: number) => setStair({ stairs: withCodes(stairs.filter((_, i) => i !== index)) })
   const updateRow = (index: number, patch: Partial<StairItemDraft>) =>
     setStair({ stairs: stairs.map((row, i) => (i === index ? { ...row, ...patch } : row)) })
@@ -78,7 +81,7 @@ export function StairItems() {
         ))}
 
         <div>
-          <Button type="button" variant="outline" size="sm" onClick={addRow}>
+          <Button type="button" variant="outline" size="sm" onClick={addRow} disabled={stairs.length >= 12}>
             <Plus /> Add staircase
           </Button>
         </div>

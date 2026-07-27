@@ -100,6 +100,51 @@ describe('quantityPayload', () => {
     expect(result.success).toBe(true)
   })
 
+  it('buildPebRoofPayload preserves initial user input overrides when draft is empty', () => {
+    const calc = calculatePebQuantities({ roof: sampleRoof })
+    const initialData = {
+      lengthOfBuildingQuantity: 15.5,
+      lengthOfOnePurlinQuantity: 22.4,
+    }
+
+    const payload = buildPebRoofPayload(calc, initialData, {})
+
+    expect(payload.lengthOfBuildingQuantity).toBe(15.5)
+    expect(payload.lengthOfOnePurlinQuantity).toBe(22.4)
+  })
+
+  it('buildFullQuantityPayload applies active sectionDrafts across all 7 sections', () => {
+    const calcs = {
+      pebRoof: calculatePebQuantities({ roof: sampleRoof }),
+      cladding: calculateCladdingQuantities({ roof: sampleRoof }),
+      canopy: calculateCanopyQuantities({}),
+      accessories: calculateAccessoriesQuantities({}),
+      mezzanine: calculateMezzanineQuantities({}),
+      stair: calculateStairQuantities({}),
+      additionalBolts: calculateAdditionalBoltsQuantities({}),
+    }
+
+    const sectionDrafts = {
+      pebRoof: { lengthOfBuildingQuantity: '15.5' },
+      cladding: { claddingSheetAdditional: '100' },
+      canopy: { canopyArea: '250' },
+      accessories: { doors: '2' },
+      mezzanine: { totalMezzanineAreaQuantity: '150' },
+      stair: { totalWeightofStringerBeamsAdditional: '50' },
+      additionalBolts: { jointBolt1Quantity: '42' },
+    }
+
+    const fullPayload = buildFullQuantityPayload(calcs, null, sectionDrafts)
+
+    expect(fullPayload.pebRoof?.lengthOfBuildingQuantity).toBe(15.5)
+    expect(fullPayload.cladding?.claddingSheetAdditional).toBe(100)
+    expect(fullPayload.canopy?.canopyArea).toBe(250)
+    expect(fullPayload.accessories?.doors).toBe('2')
+    expect(fullPayload.mezzanine?.totalMezzanineAreaQuantity).toBe(150)
+    expect(fullPayload.stair?.totalWeightofStringerBeamsAdditional).toBe(50)
+    expect(fullPayload.additionalBolts?.jointBolt1Quantity).toBe(42)
+  })
+
   it('validates the user payload with numeric user inputs against createQuantitySchema', () => {
     const userPayloadWithNumericInputs = {
       pebRoof: {

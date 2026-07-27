@@ -3,7 +3,7 @@ import '../../mocks/clerk.js'
 import '../../mocks/prisma.js'
 import { mockGetAuth } from '../../mocks/clerk.js'
 import { prismaMock } from '../../mocks/prisma.js'
-import { makeJob, makeAmount, makeAmountItem } from '../../helpers/factories.js'
+import { makeJob, makeAmount, makeAmountInput } from '../../helpers/factories.js'
 import { buildApp } from '../../helpers/app.js'
 import { FastifyInstance } from 'fastify'
 
@@ -24,14 +24,14 @@ describe('Amount routes integration', () => {
   })
 
   describe('POST /api/jobs/:jobId/amount', () => {
-    it('upserts an amount with items', async () => {
-      const item = makeAmountItem()
-      const amount = makeAmount({ jobId: 'job-1', items: [item] })
+    it('upserts an amount with flat fields', async () => {
+      const input = makeAmountInput()
+      const amount = makeAmount({ jobId: 'job-1', ...input })
       prismaMock.amount.upsert.mockResolvedValue(amount as any)
 
       const res = await app.inject({
         method: 'POST', url: '/api/jobs/job-1/amount',
-        payload: { items: [item] },
+        payload: input,
       })
 
       expect(res.statusCode).toBe(200)
@@ -44,17 +44,17 @@ describe('Amount routes integration', () => {
       expect(res.statusCode).toBe(200)
     })
 
-    it('rejects an invalid unit enum', async () => {
+    it('rejects invalid field type', async () => {
       const res = await app.inject({
         method: 'POST', url: '/api/jobs/job-1/amount',
-        payload: { items: [{ unit: 'TONNES' }] },
+        payload: { steelStructuresQuantity: 'not-a-number' },
       })
       expect(res.statusCode).toBe(400)
     })
   })
 
   describe('GET /api/jobs/:jobId/amount', () => {
-    it('returns the amount with items', async () => {
+    it('returns the amount', async () => {
       const amount = makeAmount({ jobId: 'job-1' })
       prismaMock.amount.findUnique.mockResolvedValue(amount as any)
 
@@ -89,7 +89,7 @@ describe('Amount routes integration', () => {
       prismaMock.amount.update.mockResolvedValue(makeAmount({ jobId: 'job-1' }) as any)
       const res = await app.inject({
         method: 'PUT', url: '/api/jobs/job-1/amount',
-        payload: { items: [makeAmountItem()] },
+        payload: makeAmountInput(),
       })
       expect(res.statusCode).toBe(200)
     })

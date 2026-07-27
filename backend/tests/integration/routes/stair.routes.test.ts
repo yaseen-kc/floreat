@@ -64,7 +64,7 @@ describe('Stair routes integration', () => {
     it('rejects an invalid stair code', async () => {
       const res = await app.inject({
         method: 'POST', url: '/api/jobs/job-1/stair',
-        payload: { stairs: [makeStairItem({ code: 'STAIR-0' })] },
+        payload: { stairs: [makeStairItem({ code: 'INVALID_STAIR' })] },
       })
       expect(res.statusCode).toBe(400)
     })
@@ -129,7 +129,7 @@ describe('Stair routes integration', () => {
 
       const res = await app.inject({
         method: 'PUT', url: '/api/jobs/job-1/stair',
-        payload: { stairs: [makeStairItem({ code: 'STAIR-2', startingFrom: 'FIRST_FLOOR' })] },
+        payload: { stairs: [makeStairItem({ code: 'STAIR_2', startingFrom: 'FIRST_FLOOR' })] },
       })
 
       expect(res.statusCode).toBe(200)

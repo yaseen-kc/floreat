@@ -27,6 +27,10 @@ vi.mock('react-router-dom', () => ({
   useNavigate: () => mocks.navigate,
 }))
 
+vi.mock('@clerk/react', () => ({
+  useAuth: () => ({ getToken: async () => 'test-token' }),
+}))
+
 vi.mock('sonner', () => ({
   toast: { success: mocks.toastSuccess, error: mocks.toastError },
 }))
@@ -77,6 +81,10 @@ vi.mock('@/api/quotation/spec/postSpec', () => ({
 
 vi.mock('@/api/quotation/amount/postAmount', () => ({
   useUpsertAmount: () => ({ mutateAsync: mocks.upsertAmountMutateAsync, isPending: false }),
+}))
+
+vi.mock('@/api/quotation/rate/getRate', () => ({
+  useRates: () => ({ data: { data: [] } }),
 }))
 
 import { WizardActionBar, successToast } from '@/components/quotation/WizardActionBar'
@@ -320,7 +328,7 @@ describe('WizardActionBar Step 4 stair persistence', () => {
 
   it('upserts the stair with populated rows and advances to step 5', async () => {
     mocks.upsertStairMutateAsync.mockResolvedValueOnce({ id: 'stair-1' })
-    useQuotationStore.getState().setStair({ stairs: [{ code: 'STAIR-1', length: 12 }] })
+    useQuotationStore.getState().setStair({ stairs: [{ code: 'STAIR_1', length: 12 }] })
     render(<WizardActionBar />)
 
     await userEvent.click(screen.getByRole('button', { name: /continue/i }))
@@ -328,7 +336,7 @@ describe('WizardActionBar Step 4 stair persistence', () => {
     await waitFor(() => expect(useQuotationStore.getState().currentStep).toBe(5))
     expect(mocks.upsertStairMutateAsync).toHaveBeenCalledWith({
       jobId: 'job-1',
-      payload: { stairs: [{ code: 'STAIR-1', length: 12 }] },
+      payload: { stairs: [{ code: 'STAIR_1', length: 12 }] },
     })
   })
 
@@ -531,6 +539,46 @@ describe('WizardActionBar Step 9 spec advance', () => {
 
     await waitFor(() => expect(mocks.toastError).toHaveBeenCalledWith('Failed to save spec'))
     expect(useQuotationStore.getState().currentStep).toBe(9)
+    expect(mocks.navigate).not.toHaveBeenCalled()
+  })
+})
+
+
+describe('WizardActionBar Step 11 amount persistence', () => {
+  beforeEach(() => {
+    localStorage.clear()
+    useQuotationStore.getState().resetQuotation()
+    mocks.navigate.mockReset()
+    mocks.toastSuccess.mockReset()
+    mocks.toastError.mockReset()
+    mocks.upsertAmountMutateAsync.mockReset()
+    useQuotationStore.getState().setJobId('job-1')
+    useQuotationStore.setState({ currentStep: 11 })
+  })
+
+  it('upserts the amount and advances to step 12 (Quantity) without finalising', async () => {
+    mocks.upsertAmountMutateAsync.mockResolvedValueOnce({ id: 'amount-1' })
+    render(<WizardActionBar />)
+
+    await userEvent.click(screen.getByRole('button', { name: /continue/i }))
+
+    await waitFor(() => expect(useQuotationStore.getState().currentStep).toBe(12))
+    expect(mocks.upsertAmountMutateAsync).toHaveBeenCalledWith({
+      jobId: 'job-1',
+      payload: {},
+    })
+
+    expect(mocks.navigate).not.toHaveBeenCalled()
+  })
+
+  it('stays on step 11 when the amount upsert fails', async () => {
+    mocks.upsertAmountMutateAsync.mockRejectedValueOnce(new Error('API error: 500'))
+    render(<WizardActionBar />)
+
+    await userEvent.click(screen.getByRole('button', { name: /continue/i }))
+
+    await waitFor(() => expect(mocks.toastError).toHaveBeenCalledWith('Failed to save amount'))
+    expect(useQuotationStore.getState().currentStep).toBe(11)
     expect(mocks.navigate).not.toHaveBeenCalled()
   })
 })

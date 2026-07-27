@@ -1724,7 +1724,20 @@
               "properties": {
                 "code": {
                   "type": "string",
-                  "pattern": "^STAIR-[1-9][0-9]*$"
+                  "enum": [
+                    "STAIR_1",
+                    "STAIR_2",
+                    "STAIR_3",
+                    "STAIR_4",
+                    "STAIR_5",
+                    "STAIR_6",
+                    "STAIR_7",
+                    "STAIR_8",
+                    "STAIR_9",
+                    "STAIR_10",
+                    "STAIR_11",
+                    "STAIR_12"
+                  ]
                 },
                 "typeOfStep": {
                   "type": "string",
@@ -1845,7 +1858,20 @@
               "properties": {
                 "code": {
                   "type": "string",
-                  "pattern": "^STAIR-[1-9][0-9]*$"
+                  "enum": [
+                    "STAIR_1",
+                    "STAIR_2",
+                    "STAIR_3",
+                    "STAIR_4",
+                    "STAIR_5",
+                    "STAIR_6",
+                    "STAIR_7",
+                    "STAIR_8",
+                    "STAIR_9",
+                    "STAIR_10",
+                    "STAIR_11",
+                    "STAIR_12"
+                  ]
                 },
                 "typeOfStep": {
                   "type": "string",
@@ -3389,112 +3415,2026 @@
       "CreateAmountRequest": {
         "type": "object",
         "properties": {
-          "items": {
-            "type": "array",
-            "items": {
-              "type": "object",
-              "properties": {
-                "description": {
-                  "type": "string",
-                  "nullable": true
-                },
-                "unit": {
-                  "type": "string",
-                  "nullable": true,
-                  "enum": [
-                    "KG",
-                    "RM",
-                    "SQM",
-                    "NOS",
-                    null
-                  ]
-                },
-                "quantity": {
-                  "type": "number",
-                  "nullable": true
-                },
-                "rateFabrication": {
-                  "type": "number",
-                  "nullable": true
-                },
-                "rateErection": {
-                  "type": "number",
-                  "nullable": true
-                },
-                "rateLoading": {
-                  "type": "number",
-                  "nullable": true
-                },
-                "amountFabrication": {
-                  "type": "number",
-                  "nullable": true
-                },
-                "amountErection": {
-                  "type": "number",
-                  "nullable": true
-                },
-                "amountLoading": {
-                  "type": "number",
-                  "nullable": true
-                }
-              }
-            }
+          "steelStructuresQuantity": {
+            "type": "number",
+            "nullable": true
+          },
+          "steelStructuresFabricationRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "steelStructuresErrectionRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "steelStructuresLoadingRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "steelStructuresFabricationAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "steelStructuresErrectionAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "steelStructuresLoadingAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "windBracingsQuantity": {
+            "type": "number",
+            "nullable": true
+          },
+          "windBracingsFabricationRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "windBracingsErrectionRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "windBracingsLoadingRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "windBracingsFabricationAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "windBracingsErrectionAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "windBracingsLoadingAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "sagRodQuantity": {
+            "type": "number",
+            "nullable": true
+          },
+          "sagRodFabricationRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "sagRodErrectionRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "sagRodLoadingRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "sagRodFabricationAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "sagRodErrectionAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "sagRodLoadingAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "flangeBraceQuantity": {
+            "type": "number",
+            "nullable": true
+          },
+          "flangeBraceFabricationRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "flangeBraceErrectionRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "flangeBraceLoadingRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "flangeBraceFabricationAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "flangeBraceErrectionAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "flangeBraceLoadingAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "zCPurlinsQuantity": {
+            "type": "number",
+            "nullable": true
+          },
+          "zCPurlinsFabricationRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "zCPurlinsErrectionRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "zCPurlinsLoadingRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "zCPurlinsFabricationAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "zCPurlinsErrectionAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "zCPurlinsLoadingAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "roofSheetQuantity": {
+            "type": "number",
+            "nullable": true
+          },
+          "roofSheetFabricationRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "roofSheetErrectionRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "roofSheetLoadingRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "roofSheetFabricationAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "roofSheetErrectionAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "roofSheetLoadingAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "claddingSheetQuantity": {
+            "type": "number",
+            "nullable": true
+          },
+          "claddingSheetFabricationRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "claddingSheetErrectionRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "claddingSheetLoadingRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "claddingSheetFabricationAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "claddingSheetErrectionAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "claddingSheetLoadingAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "canopySheetQuantity": {
+            "type": "number",
+            "nullable": true
+          },
+          "canopySheetFabricationRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "canopySheetErrectionRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "canopySheetLoadingRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "canopySheetFabricationAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "canopySheetErrectionAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "canopySheetLoadingAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "purlinBoltsQuantity": {
+            "type": "number",
+            "nullable": true
+          },
+          "purlinBoltsFabricationRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "purlinBoltsErrectionRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "purlinBoltsLoadingRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "purlinBoltsFabricationAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "purlinBoltsErrectionAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "purlinBoltsLoadingAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "jointBoltsQuantity": {
+            "type": "number",
+            "nullable": true
+          },
+          "jointBoltsFabricationRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "jointBoltsErrectionRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "jointBoltsLoadingRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "jointBoltsFabricationAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "jointBoltsErrectionAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "jointBoltsLoadingAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "foundationBoltsQuantity": {
+            "type": "number",
+            "nullable": true
+          },
+          "foundationBoltsFabricationRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "foundationBoltsErrectionRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "foundationBoltsLoadingRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "foundationBoltsFabricationAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "foundationBoltsErrectionAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "foundationBoltsLoadingAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "anchorBoltsQuantity": {
+            "type": "number",
+            "nullable": true
+          },
+          "anchorBoltsFabricationRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "anchorBoltsErrectionRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "anchorBoltsLoadingRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "anchorBoltsFabricationAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "anchorBoltsErrectionAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "anchorBoltsLoadingAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "ridgeQuantity": {
+            "type": "number",
+            "nullable": true
+          },
+          "ridgeFabricationRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "ridgeErrectionRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "ridgeLoadingRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "ridgeFabricationAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "ridgeErrectionAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "ridgeLoadingAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "gutterQuantity": {
+            "type": "number",
+            "nullable": true
+          },
+          "gutterFabricationRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "gutterErrectionRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "gutterLoadingRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "gutterFabricationAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "gutterErrectionAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "gutterLoadingAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "downtakeQuantity": {
+            "type": "number",
+            "nullable": true
+          },
+          "downtakeFabricationRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "downtakeErrectionRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "downtakeLoadingRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "downtakeFabricationAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "downtakeErrectionAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "downtakeLoadingAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "dripTrimQuantity": {
+            "type": "number",
+            "nullable": true
+          },
+          "dripTrimFabricationRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "dripTrimErrectionRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "dripTrimLoadingRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "dripTrimFabricationAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "dripTrimErrectionAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "dripTrimLoadingAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "flashingQuantity": {
+            "type": "number",
+            "nullable": true
+          },
+          "flashingFabricationRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "flashingErrectionRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "flashingLoadingRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "flashingFabricationAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "flashingErrectionAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "flashingLoadingAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "rollingShutterQuantity": {
+            "type": "number",
+            "nullable": true
+          },
+          "rollingShutterFabricationRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "rollingShutterErrectionRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "rollingShutterLoadingRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "rollingShutterFabricationAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "rollingShutterErrectionAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "rollingShutterLoadingAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "louversQuantity": {
+            "type": "number",
+            "nullable": true
+          },
+          "louversFabricationRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "louversErrectionRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "louversLoadingRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "louversFabricationAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "louversErrectionAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "louversLoadingAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "skyLightQuantity": {
+            "type": "number",
+            "nullable": true
+          },
+          "skyLightFabricationRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "skyLightErrectionRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "skyLightLoadingRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "skyLightFabricationAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "skyLightErrectionAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "skyLightLoadingAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "wallLightQuantity": {
+            "type": "number",
+            "nullable": true
+          },
+          "wallLightFabricationRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "wallLightErrectionRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "wallLightLoadingRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "wallLightFabricationAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "wallLightErrectionAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "wallLightLoadingAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "roofInsulationQuantity": {
+            "type": "number",
+            "nullable": true
+          },
+          "roofInsulationFabricationRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "roofInsulationErrectionRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "roofInsulationLoadingRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "roofInsulationFabricationAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "roofInsulationErrectionAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "roofInsulationLoadingAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "wallInsulationQuantity": {
+            "type": "number",
+            "nullable": true
+          },
+          "wallInsulationFabricationRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "wallInsulationErrectionRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "wallInsulationLoadingRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "wallInsulationFabricationAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "wallInsulationErrectionAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "wallInsulationLoadingAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "turboVentilatorsQuantity": {
+            "type": "number",
+            "nullable": true
+          },
+          "turboVentilatorsFabricationRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "turboVentilatorsErrectionRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "turboVentilatorsLoadingRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "turboVentilatorsFabricationAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "turboVentilatorsErrectionAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "turboVentilatorsLoadingAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "deckingSheetQuantity": {
+            "type": "number",
+            "nullable": true
+          },
+          "deckingSheetFabricationRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "deckingSheetErrectionRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "deckingSheetLoadingRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "deckingSheetFabricationAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "deckingSheetErrectionAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "deckingSheetLoadingAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "shearStudsQuantity": {
+            "type": "number",
+            "nullable": true
+          },
+          "shearStudsFabricationRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "shearStudsErrectionRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "shearStudsLoadingRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "shearStudsFabricationAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "shearStudsErrectionAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "shearStudsLoadingAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "polyCarbonateSheetQuantity": {
+            "type": "number",
+            "nullable": true
+          },
+          "polyCarbonateSheetFabricationRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "polyCarbonateSheetErrectionRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "polyCarbonateSheetLoadingRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "polyCarbonateSheetFabricationAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "polyCarbonateSheetErrectionAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "polyCarbonateSheetLoadingAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "stair1Quantity": {
+            "type": "number",
+            "nullable": true
+          },
+          "stair1FabricationRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "stair1ErrectionRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "stair1LoadingRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "stair1FabricationAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "stair1ErrectionAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "stair1LoadingAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "stair2Quantity": {
+            "type": "number",
+            "nullable": true
+          },
+          "stair2FabricationRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "stair2ErrectionRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "stair2LoadingRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "stair2FabricationAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "stair2ErrectionAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "stair2LoadingAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "handrailQuantity": {
+            "type": "number",
+            "nullable": true
+          },
+          "handrailFabricationRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "handrailErrectionRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "handrailLoadingRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "handrailFabricationAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "handrailErrectionAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "handrailLoadingAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "canopySideCoveringQuantity": {
+            "type": "number",
+            "nullable": true
+          },
+          "canopySideCoveringFabricationRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "canopySideCoveringErrectionRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "canopySideCoveringLoadingRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "canopySideCoveringFabricationAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "canopySideCoveringErrectionAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "canopySideCoveringLoadingAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "doorsQuantity": {
+            "type": "number",
+            "nullable": true
+          },
+          "doorsFabricationRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "doorsErrectionRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "doorsLoadingRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "doorsFabricationAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "doorsErrectionAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "doorsLoadingAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "windowsQuantity": {
+            "type": "number",
+            "nullable": true
+          },
+          "windowsFabricationRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "windowsErrectionRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "windowsLoadingRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "windowsFabricationAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "windowsErrectionAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "windowsLoadingAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "fasciaStructureQuantity": {
+            "type": "number",
+            "nullable": true
+          },
+          "fasciaStructureFabricationRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "fasciaStructureErrectionRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "fasciaStructureLoadingRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "fasciaStructureFabricationAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "fasciaStructureErrectionAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "fasciaStructureLoadingAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "fasciaCoveringSheetBoardQuantity": {
+            "type": "number",
+            "nullable": true
+          },
+          "fasciaCoveringSheetBoardFabricationRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "fasciaCoveringSheetBoardErrectionRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "fasciaCoveringSheetBoardLoadingRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "fasciaCoveringSheetBoardFabricationAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "fasciaCoveringSheetBoardErrectionAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "fasciaCoveringSheetBoardLoadingAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "internalPartitionsQuantity": {
+            "type": "number",
+            "nullable": true
+          },
+          "internalPartitionsFabricationRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "internalPartitionsErrectionRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "internalPartitionsLoadingRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "internalPartitionsFabricationAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "internalPartitionsErrectionAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "internalPartitionsLoadingAmount": {
+            "type": "number",
+            "nullable": true
           }
         }
       },
       "UpdateAmountRequest": {
         "type": "object",
         "properties": {
-          "items": {
-            "type": "array",
-            "items": {
-              "type": "object",
-              "properties": {
-                "description": {
-                  "type": "string",
-                  "nullable": true
-                },
-                "unit": {
-                  "type": "string",
-                  "nullable": true,
-                  "enum": [
-                    "KG",
-                    "RM",
-                    "SQM",
-                    "NOS",
-                    null
-                  ]
-                },
-                "quantity": {
-                  "type": "number",
-                  "nullable": true
-                },
-                "rateFabrication": {
-                  "type": "number",
-                  "nullable": true
-                },
-                "rateErection": {
-                  "type": "number",
-                  "nullable": true
-                },
-                "rateLoading": {
-                  "type": "number",
-                  "nullable": true
-                },
-                "amountFabrication": {
-                  "type": "number",
-                  "nullable": true
-                },
-                "amountErection": {
-                  "type": "number",
-                  "nullable": true
-                },
-                "amountLoading": {
-                  "type": "number",
-                  "nullable": true
-                }
-              }
-            }
+          "steelStructuresQuantity": {
+            "type": "number",
+            "nullable": true
+          },
+          "steelStructuresFabricationRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "steelStructuresErrectionRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "steelStructuresLoadingRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "steelStructuresFabricationAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "steelStructuresErrectionAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "steelStructuresLoadingAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "windBracingsQuantity": {
+            "type": "number",
+            "nullable": true
+          },
+          "windBracingsFabricationRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "windBracingsErrectionRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "windBracingsLoadingRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "windBracingsFabricationAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "windBracingsErrectionAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "windBracingsLoadingAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "sagRodQuantity": {
+            "type": "number",
+            "nullable": true
+          },
+          "sagRodFabricationRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "sagRodErrectionRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "sagRodLoadingRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "sagRodFabricationAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "sagRodErrectionAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "sagRodLoadingAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "flangeBraceQuantity": {
+            "type": "number",
+            "nullable": true
+          },
+          "flangeBraceFabricationRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "flangeBraceErrectionRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "flangeBraceLoadingRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "flangeBraceFabricationAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "flangeBraceErrectionAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "flangeBraceLoadingAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "zCPurlinsQuantity": {
+            "type": "number",
+            "nullable": true
+          },
+          "zCPurlinsFabricationRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "zCPurlinsErrectionRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "zCPurlinsLoadingRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "zCPurlinsFabricationAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "zCPurlinsErrectionAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "zCPurlinsLoadingAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "roofSheetQuantity": {
+            "type": "number",
+            "nullable": true
+          },
+          "roofSheetFabricationRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "roofSheetErrectionRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "roofSheetLoadingRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "roofSheetFabricationAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "roofSheetErrectionAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "roofSheetLoadingAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "claddingSheetQuantity": {
+            "type": "number",
+            "nullable": true
+          },
+          "claddingSheetFabricationRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "claddingSheetErrectionRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "claddingSheetLoadingRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "claddingSheetFabricationAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "claddingSheetErrectionAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "claddingSheetLoadingAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "canopySheetQuantity": {
+            "type": "number",
+            "nullable": true
+          },
+          "canopySheetFabricationRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "canopySheetErrectionRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "canopySheetLoadingRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "canopySheetFabricationAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "canopySheetErrectionAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "canopySheetLoadingAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "purlinBoltsQuantity": {
+            "type": "number",
+            "nullable": true
+          },
+          "purlinBoltsFabricationRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "purlinBoltsErrectionRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "purlinBoltsLoadingRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "purlinBoltsFabricationAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "purlinBoltsErrectionAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "purlinBoltsLoadingAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "jointBoltsQuantity": {
+            "type": "number",
+            "nullable": true
+          },
+          "jointBoltsFabricationRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "jointBoltsErrectionRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "jointBoltsLoadingRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "jointBoltsFabricationAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "jointBoltsErrectionAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "jointBoltsLoadingAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "foundationBoltsQuantity": {
+            "type": "number",
+            "nullable": true
+          },
+          "foundationBoltsFabricationRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "foundationBoltsErrectionRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "foundationBoltsLoadingRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "foundationBoltsFabricationAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "foundationBoltsErrectionAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "foundationBoltsLoadingAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "anchorBoltsQuantity": {
+            "type": "number",
+            "nullable": true
+          },
+          "anchorBoltsFabricationRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "anchorBoltsErrectionRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "anchorBoltsLoadingRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "anchorBoltsFabricationAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "anchorBoltsErrectionAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "anchorBoltsLoadingAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "ridgeQuantity": {
+            "type": "number",
+            "nullable": true
+          },
+          "ridgeFabricationRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "ridgeErrectionRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "ridgeLoadingRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "ridgeFabricationAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "ridgeErrectionAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "ridgeLoadingAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "gutterQuantity": {
+            "type": "number",
+            "nullable": true
+          },
+          "gutterFabricationRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "gutterErrectionRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "gutterLoadingRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "gutterFabricationAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "gutterErrectionAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "gutterLoadingAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "downtakeQuantity": {
+            "type": "number",
+            "nullable": true
+          },
+          "downtakeFabricationRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "downtakeErrectionRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "downtakeLoadingRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "downtakeFabricationAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "downtakeErrectionAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "downtakeLoadingAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "dripTrimQuantity": {
+            "type": "number",
+            "nullable": true
+          },
+          "dripTrimFabricationRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "dripTrimErrectionRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "dripTrimLoadingRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "dripTrimFabricationAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "dripTrimErrectionAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "dripTrimLoadingAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "flashingQuantity": {
+            "type": "number",
+            "nullable": true
+          },
+          "flashingFabricationRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "flashingErrectionRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "flashingLoadingRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "flashingFabricationAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "flashingErrectionAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "flashingLoadingAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "rollingShutterQuantity": {
+            "type": "number",
+            "nullable": true
+          },
+          "rollingShutterFabricationRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "rollingShutterErrectionRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "rollingShutterLoadingRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "rollingShutterFabricationAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "rollingShutterErrectionAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "rollingShutterLoadingAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "louversQuantity": {
+            "type": "number",
+            "nullable": true
+          },
+          "louversFabricationRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "louversErrectionRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "louversLoadingRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "louversFabricationAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "louversErrectionAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "louversLoadingAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "skyLightQuantity": {
+            "type": "number",
+            "nullable": true
+          },
+          "skyLightFabricationRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "skyLightErrectionRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "skyLightLoadingRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "skyLightFabricationAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "skyLightErrectionAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "skyLightLoadingAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "wallLightQuantity": {
+            "type": "number",
+            "nullable": true
+          },
+          "wallLightFabricationRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "wallLightErrectionRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "wallLightLoadingRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "wallLightFabricationAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "wallLightErrectionAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "wallLightLoadingAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "roofInsulationQuantity": {
+            "type": "number",
+            "nullable": true
+          },
+          "roofInsulationFabricationRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "roofInsulationErrectionRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "roofInsulationLoadingRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "roofInsulationFabricationAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "roofInsulationErrectionAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "roofInsulationLoadingAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "wallInsulationQuantity": {
+            "type": "number",
+            "nullable": true
+          },
+          "wallInsulationFabricationRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "wallInsulationErrectionRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "wallInsulationLoadingRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "wallInsulationFabricationAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "wallInsulationErrectionAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "wallInsulationLoadingAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "turboVentilatorsQuantity": {
+            "type": "number",
+            "nullable": true
+          },
+          "turboVentilatorsFabricationRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "turboVentilatorsErrectionRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "turboVentilatorsLoadingRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "turboVentilatorsFabricationAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "turboVentilatorsErrectionAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "turboVentilatorsLoadingAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "deckingSheetQuantity": {
+            "type": "number",
+            "nullable": true
+          },
+          "deckingSheetFabricationRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "deckingSheetErrectionRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "deckingSheetLoadingRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "deckingSheetFabricationAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "deckingSheetErrectionAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "deckingSheetLoadingAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "shearStudsQuantity": {
+            "type": "number",
+            "nullable": true
+          },
+          "shearStudsFabricationRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "shearStudsErrectionRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "shearStudsLoadingRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "shearStudsFabricationAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "shearStudsErrectionAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "shearStudsLoadingAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "polyCarbonateSheetQuantity": {
+            "type": "number",
+            "nullable": true
+          },
+          "polyCarbonateSheetFabricationRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "polyCarbonateSheetErrectionRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "polyCarbonateSheetLoadingRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "polyCarbonateSheetFabricationAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "polyCarbonateSheetErrectionAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "polyCarbonateSheetLoadingAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "stair1Quantity": {
+            "type": "number",
+            "nullable": true
+          },
+          "stair1FabricationRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "stair1ErrectionRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "stair1LoadingRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "stair1FabricationAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "stair1ErrectionAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "stair1LoadingAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "stair2Quantity": {
+            "type": "number",
+            "nullable": true
+          },
+          "stair2FabricationRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "stair2ErrectionRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "stair2LoadingRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "stair2FabricationAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "stair2ErrectionAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "stair2LoadingAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "handrailQuantity": {
+            "type": "number",
+            "nullable": true
+          },
+          "handrailFabricationRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "handrailErrectionRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "handrailLoadingRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "handrailFabricationAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "handrailErrectionAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "handrailLoadingAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "canopySideCoveringQuantity": {
+            "type": "number",
+            "nullable": true
+          },
+          "canopySideCoveringFabricationRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "canopySideCoveringErrectionRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "canopySideCoveringLoadingRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "canopySideCoveringFabricationAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "canopySideCoveringErrectionAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "canopySideCoveringLoadingAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "doorsQuantity": {
+            "type": "number",
+            "nullable": true
+          },
+          "doorsFabricationRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "doorsErrectionRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "doorsLoadingRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "doorsFabricationAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "doorsErrectionAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "doorsLoadingAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "windowsQuantity": {
+            "type": "number",
+            "nullable": true
+          },
+          "windowsFabricationRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "windowsErrectionRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "windowsLoadingRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "windowsFabricationAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "windowsErrectionAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "windowsLoadingAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "fasciaStructureQuantity": {
+            "type": "number",
+            "nullable": true
+          },
+          "fasciaStructureFabricationRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "fasciaStructureErrectionRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "fasciaStructureLoadingRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "fasciaStructureFabricationAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "fasciaStructureErrectionAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "fasciaStructureLoadingAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "fasciaCoveringSheetBoardQuantity": {
+            "type": "number",
+            "nullable": true
+          },
+          "fasciaCoveringSheetBoardFabricationRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "fasciaCoveringSheetBoardErrectionRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "fasciaCoveringSheetBoardLoadingRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "fasciaCoveringSheetBoardFabricationAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "fasciaCoveringSheetBoardErrectionAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "fasciaCoveringSheetBoardLoadingAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "internalPartitionsQuantity": {
+            "type": "number",
+            "nullable": true
+          },
+          "internalPartitionsFabricationRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "internalPartitionsErrectionRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "internalPartitionsLoadingRate": {
+            "type": "number",
+            "nullable": true
+          },
+          "internalPartitionsFabricationAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "internalPartitionsErrectionAmount": {
+            "type": "number",
+            "nullable": true
+          },
+          "internalPartitionsLoadingAmount": {
+            "type": "number",
+            "nullable": true
           }
         }
       },

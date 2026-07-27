@@ -327,19 +327,18 @@ function mergeSectionPayload(
   const cleanedInitial = cleanSectionPayload(initialData) ?? {}
   const merged: Record<string, unknown> = {}
 
-  for (const [key, val] of Object.entries(cleanedInitial)) {
-    if (val !== null && val !== undefined && val !== '') {
-      if (numericFields.has(key)) {
-        merged[key] = toNum(val)
-      } else {
-        merged[key] = toStr(val)
-      }
-    }
-  }
-
   for (const [key, val] of Object.entries(flattened)) {
     if (val !== null && val !== undefined) {
       merged[key] = val
+    }
+  }
+
+  for (const [key, val] of Object.entries(cleanedInitial)) {
+    if (val !== null && val !== undefined && val !== '') {
+      const parsedVal = numericFields.has(key) ? toNum(val) : toStr(val)
+      if (parsedVal !== null && parsedVal !== undefined) {
+        merged[key] = parsedVal
+      }
     }
   }
 

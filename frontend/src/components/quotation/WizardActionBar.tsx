@@ -24,10 +24,9 @@ import {
   calculateAdditionalBoltsQuantities,
 } from '@floreat/shared/calc'
 import { buildFullQuantityPayload } from '@/lib/quantity-payload'
-import { DEFAULT_AMOUNT_ITEMS } from '@/schemas/amount.schema'
 import { useNavigate } from 'react-router-dom'
+
 import { useRates } from '@/api/quotation/rate/getRate'
-import { deriveAmountItemRates } from '@floreat/shared/calc'
 import { Button } from '@/components/ui/button'
 import { Spinner } from '@/components/ui/spinner'
 import { cn } from '@/lib/utils'
@@ -321,8 +320,7 @@ export function WizardActionBar() {
   }
 
   /**
-   * Persists Step 11 amount data by upserting the 36 canonical line items for
-   * the job. All numeric fields are null until equations are implemented.
+   * Triggers server-authoritative calculation of Step 11 amount data.
    * Requires the Step 1 `jobId`.
    */
   const submitAmount = async () => {
@@ -332,15 +330,8 @@ export function WizardActionBar() {
     }
     try {
       setSaving()
-      const rateByItem = new Map((ratesPage?.data ?? []).map((r) => [r.item, r]))
-      const items = DEFAULT_AMOUNT_ITEMS.map((item) => {
-        const rates = deriveAmountItemRates(item.rateItem ? rateByItem.get(item.rateItem) : null)
-        return {
-          ...item,
-          ...rates,
-        }
-      })
-      await upsertAmount.mutateAsync({ jobId, payload: { items } })
+      const updatedAmount = await upsertAmount.mutateAsync({ jobId, payload: {} })
+      useQuotationStore.setState({ amount: updatedAmount })
       setSaved()
       successToast('Amount saved successfully')
     } catch (err) {
@@ -377,7 +368,7 @@ export function WizardActionBar() {
         additionalBolts: calculateAdditionalBoltsQuantities({}),
       }
 
-      const payload = buildFullQuantityPayload(calcs, storeState.quantity)
+      const payload = buildFullQuantityPayload(calcs, storeState.quantity, storeState.quantityDrafts)
 
       const updatedQuantity = await upsertQuantity.mutateAsync({ jobId, payload })
       useQuotationStore.setState({ quantity: updatedQuantity })

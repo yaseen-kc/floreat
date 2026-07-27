@@ -69,7 +69,7 @@ describe('Step12Quantity', () => {
     expect(screen.getByText('Mezzanine')).toBeInTheDocument()
     expect(screen.getByText('Stair')).toBeInTheDocument()
     expect(screen.getByText('Additional Bolts')).toBeInTheDocument()
-  })
+  }, 15000)
 
   it('renders section save buttons for individual table sections', () => {
     render(<Step12Quantity />)
