@@ -6,16 +6,17 @@ import { prisma } from '../lib/prisma.js'
 import type { CreateAmountInput, UpdateAmountInput } from '../schemas/amount.schema.js'
 import { computeJobAmount } from './amount-calc.helper.js'
 
-/** Creates or updates the Amount for a job, merging server-side defaults. */
+/** Creates or updates the Amount for a job, deriving server-authoritative calculations. */
 export async function upsertAmount(jobId: string, data: CreateAmountInput) {
   const computed = await computeJobAmount(jobId)
-  const merged = { ...(computed ?? {}), ...data }
+  const merged = { ...data, ...(computed ?? {}) }
   return prisma.amount.upsert({
     where: { jobId },
     create: { jobId, ...merged },
     update: { ...merged },
   })
 }
+
 
 /** Returns a paginated list of the user's amounts ordered by most recent first. */
 export async function getAmounts(userId: string, page: number, pageSize: number) {

@@ -1,48 +1,12 @@
 import type { CreateAmountInput } from '@floreat/shared/schemas'
-import { DEFAULT_AMOUNT_ITEMS } from '@floreat/shared/schemas'
+import { DEFAULT_AMOUNT_ITEMS, ITEM_PREFIX_MAP } from '@floreat/shared/schemas'
 import { deriveAmountItemRates, type CalculatedAmountQuantities } from '@floreat/shared/calc'
 import type { Rate } from '@/api/quotation/rate/getRate'
 import type { Amount } from '@/api/quotation/amount/getAmount'
 
-/** Prefix map connecting line item descriptions to flat schema field prefixes. */
-export const ITEM_PREFIX_MAP: Record<string, string> = {
-  'STEEL STRUCTURES': 'steelStructures',
-  'WIND BRACINGS': 'windBracings',
-  'SAG ROD': 'sagRod',
-  'FLANGE BRACE': 'flangeBrace',
-  'Z/C PURLINS': 'zCPurlins',
-  'ROOF SHEET': 'roofSheet',
-  'CLADDING SHEET': 'claddingSheet',
-  'CANOPY SHEET': 'canopySheet',
-  'PURLIN BOLTS': 'purlinBolts',
-  'JOINT BOLTS': 'jointBolts',
-  'FOUNDATION BOLTS': 'foundationBolts',
-  'ANCHOR BOLTS': 'anchorBolts',
-  'RIDGE': 'ridge',
-  'GUTTER': 'gutter',
-  'DOWNTAKE': 'downtake',
-  'DRIP TRIM': 'dripTrim',
-  'FLASHING': 'flashing',
-  'ROLLING SHUTTER': 'rollingShutter',
-  'LOUVERS': 'louvers',
-  'SKY LIGHT': 'skyLight',
-  'WALL LIGHT': 'wallLight',
-  'ROOF INSULATION': 'roofInsulation',
-  'WALL INSULATION': 'wallInsulation',
-  'TURBO VENTILATORS': 'turboVentilators',
-  'DECKING SHEET': 'deckingSheet',
-  'SHEAR STUDS': 'shearStuds',
-  'POLY CARBONATE SHEET': 'polyCarbonateSheet',
-  'STAIR - HR SECTION': 'stair1',
-  'STAIR 6MM CHQ PLATE STEPS': 'stair2',
-  'HANDRAIL': 'handrail',
-  'CANOPY SIDE COVERING': 'canopySideCovering',
-  'DOORS': 'doors',
-  'WINDOWS': 'windows',
-  'FASCIA STRUCTURE': 'fasciaStructure',
-  'FASCIA COVERING SHEET/ BOARD': 'fasciaCoveringSheetBoard',
-  'INTERNAL PARTITIONS': 'internalPartitions',
-}
+export { ITEM_PREFIX_MAP }
+
+
 
 const parseNum = (v?: string | number | null): number | undefined => {
   if (v == null || v === '') return undefined

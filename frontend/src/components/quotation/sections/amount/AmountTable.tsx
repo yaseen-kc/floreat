@@ -1,6 +1,6 @@
 import { useQuotationStore } from '@/stores/quotation-store'
 import { useShallow } from 'zustand/react/shallow'
-import { DEFAULT_AMOUNT_ITEMS } from '@/schemas/amount.schema'
+import { DEFAULT_AMOUNT_ITEMS, ITEM_PREFIX_MAP } from '@floreat/shared/schemas'
 import { SectionCard } from '@/components/quotation/shared/SectionCard'
 import { Badge } from '@/components/ui/badge'
 import { Num } from '@/components/ui/num'
@@ -17,7 +17,7 @@ const parseNum = (v?: string | number | null): number | undefined => (v == null 
  * amount line items with quantities derived from earlier steps via shared calc.
  */
 export function AmountTable() {
-  const { roof, canopy, mezzanine, stair, joint, accessories, quantity } = useQuotationStore(
+  const { roof, canopy, mezzanine, stair, joint, accessories, quantity, amount } = useQuotationStore(
     useShallow((s) => ({
       roof: s.roof,
       canopy: s.canopy,
@@ -26,8 +26,10 @@ export function AmountTable() {
       joint: s.joint,
       accessories: s.accessories,
       quantity: s.quantity,
+      amount: s.amount,
     })),
   )
+
 
   const { data: ratesPage } = useRates(1, 100)
   const rateByItem = new Map((ratesPage?.data ?? []).map((r) => [r.item, r]))
@@ -275,13 +277,22 @@ export function AmountTable() {
         </TableHeader>
         <TableBody>
           {DEFAULT_AMOUNT_ITEMS.map((item, index) => {
-            const qty = quantities[item.description] ?? 0
-            const { rateFabrication, rateErection, rateLoading } = deriveAmountItemRates(
-              item.rateItem ? rateByItem.get(item.rateItem) : null,
-            )
-            const amtFab = qty * rateFabrication
-            const amtErec = qty * rateErection
-            const amtLoad = qty * rateLoading
+            const prefix = ITEM_PREFIX_MAP[item.description]
+
+            // Quantities: prefer hydrated server amount, fall back to live preview calculated quantity
+            const savedQty = prefix ? parseNum(amount?.[`${prefix}Quantity` as keyof typeof amount]) : undefined
+            const qty = savedQty ?? quantities[item.description] ?? 0
+
+            // Rates: prefer hydrated server amount rates, fall back to rate master lookup
+            const ratesFromMaster = deriveAmountItemRates(item.rateItem ? rateByItem.get(item.rateItem) : null)
+            const rateFab = prefix ? (parseNum(amount?.[`${prefix}FabricationRate` as keyof typeof amount]) ?? ratesFromMaster.rateFabrication) : ratesFromMaster.rateFabrication
+            const rateErec = prefix ? (parseNum(amount?.[`${prefix}ErrectionRate` as keyof typeof amount]) ?? ratesFromMaster.rateErection) : ratesFromMaster.rateErection
+            const rateLoad = prefix ? (parseNum(amount?.[`${prefix}LoadingRate` as keyof typeof amount]) ?? ratesFromMaster.rateLoading) : ratesFromMaster.rateLoading
+
+            // Amounts: prefer hydrated server amount, fall back to qty * rate calculation
+            const amtFab = prefix ? (parseNum(amount?.[`${prefix}FabricationAmount` as keyof typeof amount]) ?? (qty * rateFab)) : (qty * rateFab)
+            const amtErec = prefix ? (parseNum(amount?.[`${prefix}ErrectionAmount` as keyof typeof amount]) ?? (qty * rateErec)) : (qty * rateErec)
+            const amtLoad = prefix ? (parseNum(amount?.[`${prefix}LoadingAmount` as keyof typeof amount]) ?? (qty * rateLoad)) : (qty * rateLoad)
 
             return (
               <TableRow key={item.description}>
@@ -296,13 +307,13 @@ export function AmountTable() {
                   <Num>{qty.toFixed(0)}</Num>
                 </TableCell>
                 <TableCell className="text-right text-muted-foreground">
-                  <Num>{rateFabrication}</Num>
+                  <Num>{rateFab}</Num>
                 </TableCell>
                 <TableCell className="text-right text-muted-foreground">
-                  <Num>{rateErection}</Num>
+                  <Num>{rateErec}</Num>
                 </TableCell>
                 <TableCell className="text-right text-muted-foreground">
-                  <Num>{rateLoading}</Num>
+                  <Num>{rateLoad}</Num>
                 </TableCell>
                 <TableCell className="text-right text-muted-foreground">
                   <Num>{amtFab.toFixed(2)}</Num>
@@ -321,3 +332,4 @@ export function AmountTable() {
     </SectionCard>
   )
 }
+

@@ -563,14 +563,11 @@ describe('WizardActionBar Step 11 amount persistence', () => {
     await userEvent.click(screen.getByRole('button', { name: /continue/i }))
 
     await waitFor(() => expect(useQuotationStore.getState().currentStep).toBe(12))
-    expect(mocks.upsertAmountMutateAsync).toHaveBeenCalledWith(
-      expect.objectContaining({
-        jobId: 'job-1',
-        payload: expect.objectContaining({
-          steelStructuresQuantity: expect.any(Number),
-        }),
-      }),
-    )
+    expect(mocks.upsertAmountMutateAsync).toHaveBeenCalledWith({
+      jobId: 'job-1',
+      payload: {},
+    })
+
     expect(mocks.navigate).not.toHaveBeenCalled()
   })
 

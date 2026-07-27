@@ -5,7 +5,7 @@
  */
 import { prisma } from '../lib/prisma.js'
 import { calculateAmountQuantities, deriveAmountItemRates, type AmountCalcInput } from '@floreat/shared/calc'
-import { DEFAULT_AMOUNT_ITEMS, type CreateAmountInput } from '@floreat/shared/schemas'
+import { DEFAULT_AMOUNT_ITEMS, ITEM_PREFIX_MAP, type CreateAmountInput } from '@floreat/shared/schemas'
 
 const parseNum = (v: unknown): number | undefined => {
   if (v == null || v === '' || v === 'User Input' || v === 'NA') return undefined
@@ -13,45 +13,8 @@ const parseNum = (v: unknown): number | undefined => {
   return isNaN(n) ? undefined : n
 }
 
-/** Prefix map connecting line item descriptions to flat schema field prefixes. */
-export const ITEM_PREFIX_MAP: Record<string, string> = {
-  'STEEL STRUCTURES': 'steelStructures',
-  'WIND BRACINGS': 'windBracings',
-  'SAG ROD': 'sagRod',
-  'FLANGE BRACE': 'flangeBrace',
-  'Z/C PURLINS': 'zCPurlins',
-  'ROOF SHEET': 'roofSheet',
-  'CLADDING SHEET': 'claddingSheet',
-  'CANOPY SHEET': 'canopySheet',
-  'PURLIN BOLTS': 'purlinBolts',
-  'JOINT BOLTS': 'jointBolts',
-  'FOUNDATION BOLTS': 'foundationBolts',
-  'ANCHOR BOLTS': 'anchorBolts',
-  'RIDGE': 'ridge',
-  'GUTTER': 'gutter',
-  'DOWNTAKE': 'downtake',
-  'DRIP TRIM': 'dripTrim',
-  'FLASHING': 'flashing',
-  'ROLLING SHUTTER': 'rollingShutter',
-  'LOUVERS': 'louvers',
-  'SKY LIGHT': 'skyLight',
-  'WALL LIGHT': 'wallLight',
-  'ROOF INSULATION': 'roofInsulation',
-  'WALL INSULATION': 'wallInsulation',
-  'TURBO VENTILATORS': 'turboVentilators',
-  'DECKING SHEET': 'deckingSheet',
-  'SHEAR STUDS': 'shearStuds',
-  'POLY CARBONATE SHEET': 'polyCarbonateSheet',
-  'STAIR - HR SECTION': 'stair1',
-  'STAIR 6MM CHQ PLATE STEPS': 'stair2',
-  'HANDRAIL': 'handrail',
-  'CANOPY SIDE COVERING': 'canopySideCovering',
-  'DOORS': 'doors',
-  'WINDOWS': 'windows',
-  'FASCIA STRUCTURE': 'fasciaStructure',
-  'FASCIA COVERING SHEET/ BOARD': 'fasciaCoveringSheetBoard',
-  'INTERNAL PARTITIONS': 'internalPartitions',
-}
+export { ITEM_PREFIX_MAP }
+
 
 /**
  * Computes baseline amount fields for a job from database job inputs & rate master data.

@@ -22,11 +22,10 @@ import {
   calculateMezzanineQuantities,
   calculateStairQuantities,
   calculateAdditionalBoltsQuantities,
-  calculateAmountQuantities,
 } from '@floreat/shared/calc'
 import { buildFullQuantityPayload } from '@/lib/quantity-payload'
-import { buildAmountPayload } from '@/lib/amount-payload'
 import { useNavigate } from 'react-router-dom'
+
 import { useRates } from '@/api/quotation/rate/getRate'
 import { Button } from '@/components/ui/button'
 import { Spinner } from '@/components/ui/spinner'
@@ -321,8 +320,7 @@ export function WizardActionBar() {
   }
 
   /**
-   * Persists Step 11 amount data by upserting the canonical flat amount fields for
-   * the job. Calculated quantities and rate master values are derived client-side.
+   * Triggers server-authoritative calculation of Step 11 amount data.
    * Requires the Step 1 `jobId`.
    */
   const submitAmount = async () => {
@@ -332,194 +330,7 @@ export function WizardActionBar() {
     }
     try {
       setSaving()
-      const storeState = useQuotationStore.getState()
-      const calculatedQuantities = calculateAmountQuantities({
-        buildingOverallLength: storeState.roof.buildingOverallLength,
-        buildingOverallWidth: storeState.roof.buildingOverallWidth,
-        roofSlope: storeState.roof.roofSlope,
-        materialConsumptionExcludingPurlin: storeState.roof.materialConsumptionExcludingPurlin,
-        mainRoofFrames: storeState.roof.mainRoofFrames,
-        endRoofFrames: storeState.roof.endRoofFrames,
-        roofWindBracingSegmentsInOneHalf: storeState.roof.roofWindBracingSegmentsInOneHalf,
-        roofWindBracingProvidedBays: storeState.roof.roofWindBracingProvidedBays,
-        windBracingUnitWeight: storeState.roof.windBracingUnitWeight,
-        columnWindBracingSegments: storeState.roof.columnWindBracingSegments,
-        columnWindBracingProvidedBays: storeState.roof.columnWindBracingProvidedBays,
-        windBracingColumnHeight: storeState.roof.windBracingColumnHeight,
-        roofPurlinSpacing: storeState.roof.roofPurlinSpacing,
-        roofExtensionWidthHeight: storeState.roof.roofExtensionWidthHeight,
-        roofExtensionEndFrameCount: storeState.roof.roofExtensionEndFrameCount,
-        roofExtensionMidFrameCount: storeState.roof.roofExtensionMidFrameCount,
-        diaOfRoofSagRod: storeState.roof.diaOfRoofSagRod,
-        eaveHeight: storeState.roof.eaveHeight,
-        claddingExtensionWidthHeight: storeState.roof.claddingExtensionWidthHeight,
-        frontCladdingOpeningArea: storeState.roof.frontCladdingOpeningArea,
-        backCladdingOpeningArea: storeState.roof.backCladdingOpeningArea,
-        rightCladdingOpeningArea: storeState.roof.rightCladdingOpeningArea,
-        leftCladdingOpeningArea: storeState.roof.leftCladdingOpeningArea,
-        fasciaBoardArea: storeState.roof.fasciaBoardArea,
-        claddingPurlins: storeState.roof.claddingPurlins,
-        internalColumnsForEndRoofFrames: storeState.roof.internalColumnsForEndRoofFrames,
-        diaOfCladdingSagRod: storeState.roof.diaOfCladdingSagRod,
-        roofFlangeBraceAverageLength: storeState.roof.roofFlangeBraceAverageLength,
-        endFrameFlangeBraceAverageLength: storeState.roof.endFrameFlangeBraceAverageLength,
-        claddingFlangeBraceAverageLength: storeState.roof.claddingFlangeBraceAverageLength,
-        roofPurlinUnitWeight: storeState.roof.roofPurlinUnitWeight,
-        claddingPurlinUnitWeight: storeState.roof.claddingPurlinUnitWeight,
-        roofAreaDeduction: storeState.roof.roofAreaDeduction,
-        polycarbonateRoofLength: storeState.roof.polycarbonateRoofLength,
-        polycarbonateRoofWidth: storeState.roof.polycarbonateRoofWidth,
-        polycarbonateRoofCount: storeState.roof.polycarbonateRoofCount,
-        raftersInOneHalfOfMainFrame: storeState.roof.raftersInOneHalfOfMainFrame,
-        raftersInOneHalfOfEndFrame: storeState.roof.raftersInOneHalfOfEndFrame,
-        fasciaMaterialWeightPerSqft: storeState.roof.fasciaMaterialWeightPerSqft,
-
-        // Sidewalls
-        sidewallFrontHeight: storeState.roof.sidewalls?.find((s) => s.side === 'FRONT')?.height,
-        sidewallBackHeight: storeState.roof.sidewalls?.find((s) => s.side === 'BACK')?.height,
-        sidewallLeftHeight: storeState.roof.sidewalls?.find((s) => s.side === 'LEFT')?.height,
-        sidewallRightHeight: storeState.roof.sidewalls?.find((s) => s.side === 'RIGHT')?.height,
-
-        // QuantityPebRoof fields
-        pebLengthOfBuildingQuantity: storeState.quantity?.pebRoof?.lengthOfBuildingQuantity ? Number(storeState.quantity.pebRoof.lengthOfBuildingQuantity) : undefined,
-        pebLengthOfSinlgeWindBracingAdditional: storeState.quantity?.pebRoof?.lengthOfSinlgeWindBracingAdditional ? Number(storeState.quantity.pebRoof.lengthOfSinlgeWindBracingAdditional) : undefined,
-        pebLengthOfSingleSagRoadAdditional: storeState.quantity?.pebRoof?.lengthOfSingleSagRoadAdditional ? Number(storeState.quantity.pebRoof.lengthOfSingleSagRoadAdditional) : undefined,
-        pebLengthOfMidFrameFlangeBraceAdditional: storeState.quantity?.pebRoof?.lengthOfMidFrameFlangeBraceAdditional ? Number(storeState.quantity.pebRoof.lengthOfMidFrameFlangeBraceAdditional) : undefined,
-        pebLengthOfOnePurlinQuantity: storeState.quantity?.pebRoof?.lengthOfOnePurlinQuantity ? Number(storeState.quantity.pebRoof.lengthOfOnePurlinQuantity) : undefined,
-        pebExtendedRoofWidthAdditonal: storeState.quantity?.pebRoof?.extendedRoofWidthAdditonal ? Number(storeState.quantity.pebRoof.extendedRoofWidthAdditonal) : undefined,
-        pebLengthOfpolyCarbonateSheetAdditional: storeState.quantity?.pebRoof?.lengthOfpolyCarbonateSheetAdditional ? Number(storeState.quantity.pebRoof.lengthOfpolyCarbonateSheetAdditional) : undefined,
-
-        // QuantityCladding fields
-        claddingColumnWindBracingsAdditional: storeState.quantity?.cladding?.columnWindBracingsAdditional ? Number(storeState.quantity.cladding.columnWindBracingsAdditional) : undefined,
-        claddingSagRodAdditional: storeState.quantity?.cladding?.claddingSagRodAdditional ? Number(storeState.quantity.cladding.claddingSagRodAdditional) : undefined,
-        claddingFlangeBraceAdditional: storeState.quantity?.cladding?.claddingFlangeBraceAdditional ? Number(storeState.quantity.cladding.claddingFlangeBraceAdditional) : undefined,
-        claddingEaveHeightFrontAdditional: storeState.quantity?.cladding?.claddingStructureFrontEaveHeight ? Number(storeState.quantity.cladding.claddingStructureFrontEaveHeight) : undefined,
-        claddingSheetAdditional: storeState.quantity?.cladding?.claddingSheetAdditional ? Number(storeState.quantity.cladding.claddingSheetAdditional) : undefined,
-        claddingNumberOfCladdingPurlinBoltsAdditional: storeState.quantity?.cladding?.numberOfCladdingPurlinBoltsAdditional ? Number(storeState.quantity.cladding.numberOfCladdingPurlinBoltsAdditional) : undefined,
-
-        // QuantityMezzanine fields
-        mezzanineTotalMezzanineAreaQuantity: storeState.quantity?.mezzanine?.totalMezzanineAreaQuantity ? Number(storeState.quantity.mezzanine.totalMezzanineAreaQuantity) : undefined,
-        mezzanineConcreteFlashingAdditional: storeState.quantity?.mezzanine?.concreteFlashingAdditional ? Number(storeState.quantity.mezzanine.concreteFlashingAdditional) : undefined,
-        mezzanineDeckSheetQuantityAdditional: storeState.quantity?.mezzanine?.deckSheetQuantityAdditional ? Number(storeState.quantity.mezzanine.deckSheetQuantityAdditional) : undefined,
-        mezzanineShearStudsQuantityAdditional: storeState.quantity?.mezzanine?.shearStudsQuantityAdditional ? Number(storeState.quantity.mezzanine.shearStudsQuantityAdditional) : undefined,
-
-        // QuantityStair fields
-        stairTotalWeightofStringerBeamsAdditional: storeState.quantity?.stair?.totalWeightofStringerBeamsAdditional ? Number(storeState.quantity.stair.totalWeightofStringerBeamsAdditional) : undefined,
-        stairTotalWeightofStepsAdditional: storeState.quantity?.stair?.totalWeightofStepsAdditional ? Number(storeState.quantity.stair.totalWeightofStepsAdditional) : undefined,
-
-        // QuantityAdditionalBolts fields
-        additionalPurlinBoltQuantity: storeState.quantity?.additionalBolts?.purlinBoltQuantity ? Number(storeState.quantity.additionalBolts.purlinBoltQuantity) : undefined,
-        additionalJointBolt1Quantity: storeState.quantity?.additionalBolts?.jointBolt1Quantity ? Number(storeState.quantity.additionalBolts.jointBolt1Quantity) : undefined,
-        additionalJointBolt2Quantity: storeState.quantity?.additionalBolts?.jointBolt2Quantity ? Number(storeState.quantity.additionalBolts.jointBolt2Quantity) : undefined,
-        additionalJointBolt3Quantity: storeState.quantity?.additionalBolts?.jointBolt3Quantity ? Number(storeState.quantity.additionalBolts.jointBolt3Quantity) : undefined,
-        additionalFoundationBoltQuantity: storeState.quantity?.additionalBolts?.foundationBoltQuantity ? Number(storeState.quantity.additionalBolts.foundationBoltQuantity) : undefined,
-        additionalAnchorBoltQuantity: storeState.quantity?.additionalBolts?.anchorBoltQuantity ? Number(storeState.quantity.additionalBolts.anchorBoltQuantity) : undefined,
-
-        // CanopyItem fields
-        canopy0Length: storeState.canopy.canopies[0]?.length,
-        canopy0Width: storeState.canopy.canopies[0]?.width,
-        canopy0MaterialConsumptionKgPerSqft: storeState.canopy.canopies[0]?.materialConsumptionKgPerSqft,
-        canopy0NumberOfPurlins: storeState.canopy.canopies[0]?.numberOfPurlins,
-        canopy0NumberOfBeams: storeState.canopy.canopies[0]?.numberOfBeams,
-        canopy0Height: storeState.canopy.canopies[0]?.height,
-        canopy0CanopySideCoveringHeight: storeState.canopy.canopies[0]?.canopySideCoveringHeight,
-
-        // MezzanineFloor fields (MEZ_1)
-        mez0LengthM: storeState.mezzanine.floors[0]?.lengthM,
-        mez0WidthM: storeState.mezzanine.floors[0]?.widthM,
-        mezzanineMaterialConsumptionKgPerSqft: storeState.mezzanine.floors[0]?.materialConsumptionKgPerSqft,
-        mez0BeamsMidPrimary: storeState.mezzanine.floors[0]?.beamsMidPrimary,
-        mez0JointsMidPrimary: storeState.mezzanine.floors[0]?.jointsMidPrimary,
-        mez0BeamsEndPrimary: storeState.mezzanine.floors[0]?.beamsEndPrimary,
-        mez0JointsEndPrimary: storeState.mezzanine.floors[0]?.jointsEndPrimary,
-        mez0InternalColumnsMidPrimary: storeState.mezzanine.floors[0]?.internalColumnsMidPrimary,
-        mez0InternalColumnsEndPrimary: storeState.mezzanine.floors[0]?.internalColumnsEndPrimary,
-        mez0BeamsSecondary: storeState.mezzanine.floors[0]?.beamsSecondary,
-
-        // MezzanineFloorExt fields (EXT_1)
-        mezExt0LengthM: storeState.mezzanine.extensions[0]?.lengthM,
-        mezExt0WidthM: storeState.mezzanine.extensions[0]?.widthM,
-        mezExt0BeamsMidPrimary: storeState.mezzanine.extensions[0]?.beamsMidPrimary,
-        mezExt0JointsMidPrimary: storeState.mezzanine.extensions[0]?.jointsMidPrimary,
-        mezExt0BeamsEndPrimary: storeState.mezzanine.extensions[0]?.beamsEndPrimary,
-        mezExt0JointsEndPrimary: storeState.mezzanine.extensions[0]?.jointsEndPrimary,
-        mezExt0ExtendedColumnsMidPrimary: storeState.mezzanine.extensions[0]?.extendedColumnsMidPrimary,
-        mezExt0ExtendedColumnsEndPrimary: storeState.mezzanine.extensions[0]?.extendedColumnsEndPrimary,
-        mezExt0BeamsSecondary: storeState.mezzanine.extensions[0]?.beamsSecondary,
-
-        // AreaDeduction
-        areaDeduction0AreaM2: storeState.stair.areaDeductions[0]?.areaM2,
-        areaDeduction0Numbers: storeState.stair.areaDeductions[0]?.numbers,
-
-        // StairItem fields (STAIR_1)
-        stair0Length: storeState.stair.stairs[0]?.length,
-        stair0Width: storeState.stair.stairs[0]?.width,
-        stair0Height: storeState.stair.stairs[0]?.height,
-        stair0NumberOfMidLanding: storeState.stair.stairs[0]?.numberOfMidLanding,
-        stair0UnitWeightOfStringer: storeState.stair.stairs[0]?.unitWeightOfStringer,
-
-        // BoltType fields
-        boltTypePurlinFlangeBraceNumberOfBolts: storeState.joint.purlinFlangeBraceNumberOfBolts,
-        boltTypeCladdingPurlinsNumberOfBolts: storeState.joint.claddingPurlinsNumberOfBolts,
-        boltTypeCanopyNumberOfBolts: storeState.joint.canopyNumberOfBolts,
-        boltTypeSecondaryBeamsNumberOfBolts: storeState.joint.secondaryBeamsNumberOfBolts,
-
-        // Roof Joint Bolts
-        jointHNumberOfBolts: storeState.joint.jointBoltRoof?.find((j) => j.roofJointId === 'H')?.numberOfBolts,
-        jointLNumberOfBolts: storeState.joint.jointBoltRoof?.find((j) => j.roofJointId === 'L')?.numberOfBolts,
-        jointH1NumberOfBolts: storeState.joint.jointBoltRoof?.find((j) => j.roofJointId === 'H_1')?.numberOfBolts,
-        jointINumberOfBolts: storeState.joint.jointBoltRoof?.find((j) => j.roofJointId === 'I')?.numberOfBolts,
-        jointI1NumberOfBolts: storeState.joint.jointBoltRoof?.find((j) => j.roofJointId === 'I_1')?.numberOfBolts,
-        jointBNumberOfBolts: storeState.joint.jointBoltRoof?.find((j) => j.roofJointId === 'B')?.numberOfBolts,
-        jointB1NumberOfBolts: storeState.joint.jointBoltRoof?.find((j) => j.roofJointId === 'B_1')?.numberOfBolts,
-        jointB2NumberOfBolts: storeState.joint.jointBoltRoof?.find((j) => j.roofJointId === 'B_2')?.numberOfBolts,
-        jointANumberOfBolts: storeState.joint.jointBoltRoof?.find((j) => j.roofJointId === 'A')?.numberOfBolts,
-        jointA1NumberOfBolts: storeState.joint.jointBoltRoof?.find((j) => j.roofJointId === 'A_1')?.numberOfBolts,
-        jointCNumberOfBolts: storeState.joint.jointBoltRoof?.find((j) => j.roofJointId === 'C')?.numberOfBolts,
-        jointC1NumberOfBolts: storeState.joint.jointBoltRoof?.find((j) => j.roofJointId === 'C_1')?.numberOfBolts,
-
-        // Mezzanine Joint Bolts
-        jointMNumberOfBolts: storeState.joint.jointBoltMezzanine?.find((j) => j.mezzanineJointId === 'M')?.numberOfBolts,
-        jointONumberOfBolts: storeState.joint.jointBoltMezzanine?.find((j) => j.mezzanineJointId === 'O')?.numberOfBolts,
-
-        // Foundation Bolts
-        foundationFB4NumberOfBolts: storeState.joint.foundationBoltRoof?.find((j) => j.foundationJointId === 'FB4')?.numberOfBolts,
-        foundationFB5NumberOfBolts: storeState.joint.foundationBoltRoof?.find((j) => j.foundationJointId === 'FB5')?.numberOfBolts,
-        foundationFB6NumberOfBolts: storeState.joint.foundationBoltRoof?.find((j) => j.foundationJointId === 'FB6')?.numberOfBolts,
-
-        // Accessories fields
-        ridgeQuantityManual: storeState.accessories.ridgeQuantityManual ? storeState.accessories.ridgeQuantity : undefined,
-        gutterQuantityManual: storeState.accessories.gutterQuantityManual ? storeState.accessories.gutterQuantity : undefined,
-        downTakeQuantityManual: storeState.accessories.downTakeQuantityManual ? storeState.accessories.downTakeQuantity : undefined,
-        dripTrimQuantityManual: storeState.accessories.dripTrimQuantityManual ? storeState.accessories.dripTrimQuantity : undefined,
-        gableEndFlashingQuantityManual: storeState.accessories.gableEndFlashingQuantityManual ? storeState.accessories.gableEndFlashingQuantity : undefined,
-        cornerFlashQuantityManual: storeState.accessories.cornerFlashQuantityManual ? storeState.accessories.cornerFlashQuantity : undefined,
-        rollingShutterLength: storeState.accessories.rollingShutterLength,
-        rollingShutterWidth: storeState.accessories.rollingShutterWidth,
-        rollingShutterNos: storeState.accessories.rollingShutterNos,
-        louverLength: storeState.accessories.louverLength,
-        louverWidth: storeState.accessories.louverWidth,
-        louverNos: storeState.accessories.louverNos,
-        skyLightLength: storeState.accessories.skyLightLength,
-        skyLightWidth: storeState.accessories.skyLightWidth,
-        skyLightNos: storeState.accessories.skyLightNos,
-        wallLightLength: storeState.accessories.wallLightLength,
-        wallLightWidth: storeState.accessories.wallLightWidth,
-        wallLightNos: storeState.accessories.wallLightNos,
-        turboVentilatorNos: storeState.accessories.turboVentilatorNos,
-        handrailWeightKg: storeState.accessories.handrailWeightKg,
-        doorHeight: storeState.accessories.doorHeight,
-        doorWidth: storeState.accessories.doorWidth,
-        doorNos: storeState.accessories.doorNos,
-        windowHeight: storeState.accessories.windowHeight,
-        windowWidth: storeState.accessories.windowWidth,
-        windowNos: storeState.accessories.windowNos,
-        partitionQuantity: storeState.accessories.partitionQuantity,
-      })
-
-      const rateByItem = new Map((ratesPage?.data ?? []).map((r) => [r.item, r]))
-      const payload = buildAmountPayload(calculatedQuantities, rateByItem, storeState.amount)
-      const updatedAmount = await upsertAmount.mutateAsync({ jobId, payload })
+      const updatedAmount = await upsertAmount.mutateAsync({ jobId, payload: {} })
       useQuotationStore.setState({ amount: updatedAmount })
       setSaved()
       successToast('Amount saved successfully')
