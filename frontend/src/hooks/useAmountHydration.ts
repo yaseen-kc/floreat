@@ -3,7 +3,7 @@ import { useAmount } from '@/api/quotation/amount/getAmount'
 import { useQuotationStore } from '@/stores/quotation-store'
 
 /**
- * Hydrates the Step 11 amount data from the server.
+ * Hydrates the Step 12 amount data from the server.
  *
  * Fetches the job's amount record and writes it to the store the first
  * time it arrives.

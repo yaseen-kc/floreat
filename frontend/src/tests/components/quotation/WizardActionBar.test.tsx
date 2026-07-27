@@ -544,7 +544,7 @@ describe('WizardActionBar Step 9 spec advance', () => {
 })
 
 
-describe('WizardActionBar Step 11 amount persistence', () => {
+describe('WizardActionBar Step 11 quantity persistence', () => {
   beforeEach(() => {
     localStorage.clear()
     useQuotationStore.getState().resetQuotation()
@@ -552,50 +552,54 @@ describe('WizardActionBar Step 11 amount persistence', () => {
     mocks.toastSuccess.mockReset()
     mocks.toastError.mockReset()
     mocks.upsertAmountMutateAsync.mockReset()
+    mocks.upsertQuantityMutateAsync.mockReset()
     useQuotationStore.getState().setJobId('job-1')
     useQuotationStore.setState({ currentStep: 11 })
   })
 
-  it('upserts the amount and advances to step 12 (Quantity) without finalising', async () => {
-    mocks.upsertAmountMutateAsync.mockResolvedValueOnce({ id: 'amount-1' })
+  it('upserts the quantity and advances to step 12 (Amount) without finalising', async () => {
+    mocks.upsertQuantityMutateAsync.mockResolvedValueOnce({ id: 'quantity-1' })
     render(<WizardActionBar />)
 
     await userEvent.click(screen.getByRole('button', { name: /continue/i }))
 
     await waitFor(() => expect(useQuotationStore.getState().currentStep).toBe(12))
-    expect(mocks.upsertAmountMutateAsync).toHaveBeenCalledWith({
+    expect(mocks.upsertQuantityMutateAsync).toHaveBeenCalledWith({
       jobId: 'job-1',
-      payload: {},
+      payload: expect.any(Object),
     })
 
     expect(mocks.navigate).not.toHaveBeenCalled()
   })
 
-  it('stays on step 11 when the amount upsert fails', async () => {
-    mocks.upsertAmountMutateAsync.mockRejectedValueOnce(new Error('API error: 500'))
+  it('stays on step 11 when the quantity upsert fails', async () => {
+    mocks.upsertQuantityMutateAsync.mockRejectedValueOnce(new Error('API error: 500'))
     render(<WizardActionBar />)
 
     await userEvent.click(screen.getByRole('button', { name: /continue/i }))
 
-    await waitFor(() => expect(mocks.toastError).toHaveBeenCalledWith('Failed to save amount'))
+    await waitFor(() => expect(mocks.toastError).toHaveBeenCalledWith('Failed to save quantity'))
     expect(useQuotationStore.getState().currentStep).toBe(11)
     expect(mocks.navigate).not.toHaveBeenCalled()
   })
 })
 
 
-describe('WizardActionBar Step 12 finalise', () => {
+describe('WizardActionBar Step 12 amount finalise', () => {
   beforeEach(() => {
     localStorage.clear()
     useQuotationStore.getState().resetQuotation()
     mocks.navigate.mockReset()
     mocks.toastSuccess.mockReset()
     mocks.toastError.mockReset()
+    mocks.upsertAmountMutateAsync.mockReset()
+    mocks.upsertQuantityMutateAsync.mockReset()
     useQuotationStore.getState().setJobId('job-1')
     useQuotationStore.setState({ currentStep: 12 })
   })
 
   it('finalises and navigates home on Finish & save', async () => {
+    mocks.upsertAmountMutateAsync.mockResolvedValueOnce({ id: 'amount-1' })
     render(<WizardActionBar />)
 
     await userEvent.click(screen.getByRole('button', { name: /finish & save/i }))

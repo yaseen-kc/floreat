@@ -3,7 +3,7 @@ import { useQuantity } from '@/api/quotation/quantity/getQuantity'
 import { useQuotationStore } from '@/stores/quotation-store'
 
 /**
- * Hydrates the Step 12 quantity data from the server.
+ * Hydrates the Step 11 quantity data from the server.
  *
  * Fetches the job's computed quantity and writes it to the store the first
  * time it arrives. No draft-guard needed — quantity is server-computed, not

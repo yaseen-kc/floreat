@@ -13,7 +13,7 @@ import { useRates } from '@/api/quotation/rate/getRate'
 const parseNum = (v?: string | number | null): number | undefined => (v == null ? undefined : Number(v))
 
 /**
- * Read-only bill-of-quantities table for Step 11. Displays the 36 canonical
+ * Read-only bill-of-quantities table for Step 12. Displays the 36 canonical
  * amount line items with quantities derived from earlier steps via shared calc.
  */
 export function AmountTable() {

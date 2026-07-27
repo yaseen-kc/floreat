@@ -46,10 +46,10 @@ vi.mock('@tanstack/react-query', async (importOriginal) => {
   }
 })
 
-import { Step12Quantity } from '@/components/quotation/steps/Step12Quantity'
+import { Step11Quantity } from '@/components/quotation/steps/Step11Quantity'
 import { useQuotationStore } from '@/stores/quotation-store'
 
-describe('Step12Quantity', () => {
+describe('Step11Quantity', () => {
   beforeEach(() => {
     localStorage.clear()
     useQuotationStore.getState().resetQuotation()
@@ -59,7 +59,7 @@ describe('Step12Quantity', () => {
   })
 
   it('renders the quantity heading and section headings', () => {
-    render(<Step12Quantity />)
+    render(<Step11Quantity />)
 
     expect(screen.getByRole('heading', { name: 'Quantity' })).toBeInTheDocument()
     expect(screen.getByText('PEB Roof')).toBeInTheDocument()
@@ -72,7 +72,7 @@ describe('Step12Quantity', () => {
   }, 15000)
 
   it('renders section save buttons for individual table sections', () => {
-    render(<Step12Quantity />)
+    render(<Step11Quantity />)
 
     const saveButtons = screen.getAllByRole('button', { name: /Save/i })
     expect(saveButtons.length).toBe(7)
@@ -88,7 +88,7 @@ describe('Step12Quantity', () => {
       },
     }
 
-    render(<Step12Quantity />)
+    render(<Step11Quantity />)
 
     const buildingLenInput = screen.getByRole('spinbutton', { name: /LENGTH OF BUILDING additional/i })
     expect(buildingLenInput).toHaveValue(15.5)

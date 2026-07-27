@@ -22,7 +22,7 @@ import {
 import { useQuotationStore } from '@/stores/quotation-store'
 import { useShallow } from 'zustand/react/shallow'
 
-export function Step12Quantity() {
+export function Step11Quantity() {
   useQuantityHydration()
 
   const setQuantityDraft = useQuotationStore((s) => s.setQuantityDraft)

@@ -1,7 +1,7 @@
 import { AmountTable } from '@/components/quotation/sections/amount/AmountTable'
 import { useAmountHydration } from '@/hooks/useAmountHydration'
 
-export function Step11Amount() {
+export function Step12Amount() {
   useAmountHydration()
 
   return (

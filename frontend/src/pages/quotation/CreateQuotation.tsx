@@ -14,8 +14,8 @@ import { Step7Load } from '@/components/quotation/steps/Step7Load'
 import { Step8Joint } from '@/components/quotation/steps/Step8Joint'
 import { Step9Spec } from '@/components/quotation/steps/Step9Spec'
 import { Step10Rate } from '@/components/quotation/steps/Step10Rate'
-import { Step11Amount } from '@/components/quotation/steps/Step11Amount'
-import { Step12Quantity } from '@/components/quotation/steps/Step12Quantity'
+import { Step11Quantity } from '@/components/quotation/steps/Step11Quantity'
+import { Step12Amount } from '@/components/quotation/steps/Step12Amount'
 
 
 export default function CreateQuotation() {
@@ -54,8 +54,8 @@ export default function CreateQuotation() {
           {currentStep === 8 && <Step8Joint />}
           {currentStep === 9 && <Step9Spec />}
           {currentStep === 10 && <Step10Rate />}
-          {currentStep === 11 && <Step11Amount />}
-          {currentStep === 12 && <Step12Quantity />}
+          {currentStep === 11 && <Step11Quantity />}
+          {currentStep === 12 && <Step12Amount />}
 
         </div>
       </div>

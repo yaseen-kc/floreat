@@ -317,7 +317,7 @@ export function WizardActionBar() {
   }
 
   /**
-   * Triggers server-authoritative calculation of Step 11 amount data.
+   * Triggers server-authoritative calculation of Step 12 amount data.
    * Requires the Step 1 `jobId`.
    */
   const submitAmount = async () => {
@@ -339,7 +339,7 @@ export function WizardActionBar() {
   }
 
   /**
-   * Persists Step 12 quantity data via an idempotent upsert.
+   * Persists Step 11 quantity data via an idempotent upsert.
    * Requires the Step 1 `jobId`.
    */
   const submitQuantity = async () => {
@@ -489,16 +489,16 @@ export function WizardActionBar() {
     }
 
     // Step 10 (Rate Master): no wizard-level persistence — rows are saved
-    // independently in the table. Just advance to the Amount step.
+    // independently in the table. Just advance to the Quantity step.
     if (currentStep === 10) {
       goStep(11)
       return
     }
 
-    // Step 11 (Amount): upsert the canonical 36 items then advance to Quantity.
+    // Step 11 (Quantity): upsert all quantity sections then advance to Amount.
     if (currentStep === 11) {
       try {
-        await submitAmount()
+        await submitQuantity()
         goStep(12)
       } catch {
         // Error toast already shown; stay on Step 11.
@@ -506,10 +506,10 @@ export function WizardActionBar() {
       return
     }
 
-    // Final step (Quantity): upsert all quantity sections then finalise.
+    // Final step (Amount): upsert the canonical 36 items then finalise.
     if (isLast) {
       try {
-        await submitQuantity()
+        await submitAmount()
         resetQuotation()
         navigate('/')
       } catch {
@@ -545,9 +545,9 @@ export function WizardActionBar() {
     } else if (currentStep === 9) {
       try { await submitSpec() } catch { /* error toast already shown */ }
     } else if (currentStep === 11) {
-      try { await submitAmount() } catch { /* error toast already shown */ }
-    } else if (currentStep === 12) {
       try { await submitQuantity() } catch { /* error toast already shown */ }
+    } else if (currentStep === 12) {
+      try { await submitAmount() } catch { /* error toast already shown */ }
     } else {
       successToast('Draft saved')
     }
