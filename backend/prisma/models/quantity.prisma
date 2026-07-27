@@ -8,6 +8,11 @@ model Quantity {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  calculationVersion String @default("quantity-v1")
+  sourceUpdatedAt   DateTime?
+  rateVersion       Int?
+  isStale            Boolean  @default(false)
+
   pebRoof         QuantityPebRoof?
   cladding        QuantityCladding?
   canopy          QuantityCanopy?

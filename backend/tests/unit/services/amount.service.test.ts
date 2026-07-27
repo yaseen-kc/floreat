@@ -1,10 +1,16 @@
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, beforeEach } from 'vitest'
 import '../../../tests/mocks/prisma.js'
 import { prismaMock } from '../../mocks/prisma.js'
 import { makeAmount, makeAmountInput } from '../../helpers/factories.js'
 import {
   upsertAmount, getAmounts, getAmountByJobId, updateAmount, deleteAmount,
 } from '../../../services/amount.service.js'
+import { DEFAULT_AMOUNT_ITEMS } from '@floreat/shared/schemas'
+
+beforeEach(() => {
+  prismaMock.job.findUnique.mockResolvedValue({ id: 'job-1', roof: null, mezzanine: null, stair: null, canopy: null, accessories: null, joint: null, quantity: null } as any)
+  prismaMock.rate.findMany.mockResolvedValue(DEFAULT_AMOUNT_ITEMS.map((item) => ({ item: item.rateItem ?? item.description, fabricationRate: 50, erectionRate: 20, loadingRate: 5 })) as any)
+})
 
 describe('amount.service', () => {
   describe('upsertAmount', () => {
@@ -16,11 +22,11 @@ describe('amount.service', () => {
       const result = await upsertAmount('job-1', input)
 
       expect(result).toEqual(amount)
-      expect(prismaMock.amount.upsert).toHaveBeenCalledWith({
+      expect(prismaMock.amount.upsert).toHaveBeenCalledWith(expect.objectContaining({
         where: { jobId: 'job-1' },
-        create: { jobId: 'job-1', ...input },
-        update: { ...input },
-      })
+        create: expect.objectContaining({ jobId: 'job-1', calculationVersion: 'amount-v1', isStale: false }),
+        update: expect.objectContaining({ calculationVersion: 'amount-v1', isStale: false }),
+      }))
     })
 
     it('accepts empty payload', async () => {
@@ -71,10 +77,7 @@ describe('amount.service', () => {
       const result = await updateAmount('job-1', input)
 
       expect(result).toEqual(amount)
-      expect(prismaMock.amount.update).toHaveBeenCalledWith({
-        where: { jobId: 'job-1' },
-        data: input,
-      })
+      expect(prismaMock.amount.update).toHaveBeenCalledWith(expect.objectContaining({ where: { jobId: 'job-1' }, data: expect.objectContaining({ calculationVersion: 'amount-v1' }) }))
     })
   })
 

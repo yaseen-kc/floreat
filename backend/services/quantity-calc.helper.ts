@@ -33,16 +33,16 @@ export async function computeJobQuantities(jobId: string) {
   const job = await prisma.job.findUnique({
     where: { id: jobId },
     include: {
-      roof: { include: { sidewalls: true } },
-      mezzanine: { include: { floors: true, extensions: true } },
-      stair: { include: { stairs: true, areaDeductions: true } },
-      canopy: { include: { canopies: true } },
+      roof: { include: { sidewalls: { orderBy: [{ side: 'asc' }, { id: 'asc' }] } } },
+      mezzanine: { include: { floors: { orderBy: [{ code: 'asc' }, { id: 'asc' }] }, extensions: { orderBy: [{ code: 'asc' }, { id: 'asc' }] } } },
+      stair: { include: { stairs: { orderBy: [{ code: 'asc' }, { id: 'asc' }] }, areaDeductions: { orderBy: { id: 'asc' } } } },
+      canopy: { include: { canopies: { orderBy: { id: 'asc' } } } },
       accessories: true,
       joint: {
         include: {
-          jointBoltRoof: true,
-          jointBoltMezzanine: true,
-          foundationBoltRoof: true,
+          jointBoltRoof: { orderBy: [{ roofJointId: 'asc' }, { id: 'asc' }] },
+          jointBoltMezzanine: { orderBy: [{ mezzanineJointId: 'asc' }, { id: 'asc' }] },
+          foundationBoltRoof: { orderBy: [{ foundationJointId: 'asc' }, { id: 'asc' }] },
         },
       },
     },

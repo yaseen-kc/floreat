@@ -2,6 +2,7 @@ import { describe, it, expect } from 'vitest'
 import '../../../tests/mocks/prisma.js'
 import { prismaMock } from '../../mocks/prisma.js'
 import { computeJobAmount, ITEM_PREFIX_MAP } from '../../../services/amount-calc.helper.js'
+import { DEFAULT_AMOUNT_ITEMS } from '@floreat/shared/schemas'
 
 describe('amount-calc.helper', () => {
   it('returns null if job is not found', async () => {
@@ -22,14 +23,12 @@ describe('amount-calc.helper', () => {
       quantity: null,
     } as any)
 
-    prismaMock.rate.findMany.mockResolvedValue([
-      {
-        item: 'STEEL STRUCTURE',
-        fabricationRate: 50,
-        erectionRate: 20,
-        loadingRate: 10,
-      },
-    ] as any)
+    prismaMock.rate.findMany.mockResolvedValue(DEFAULT_AMOUNT_ITEMS.map((item) => ({
+      item: item.rateItem ?? item.description,
+      fabricationRate: item.description === 'STEEL STRUCTURES' ? 50 : 1,
+      erectionRate: item.description === 'STEEL STRUCTURES' ? 20 : 1,
+      loadingRate: item.description === 'STEEL STRUCTURES' ? 10 : 1,
+    })) as any)
 
     const result = await computeJobAmount('job-1')
     expect(result).not.toBeNull()

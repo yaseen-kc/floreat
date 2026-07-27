@@ -8,6 +8,23 @@ import type {
   CreateQuantityAdditionalBoltsInput,
   CreateQuantityInput,
 } from '@floreat/shared/schemas'
+import type {
+  calculatePebQuantities,
+  calculateCladdingQuantities,
+  calculateCanopyQuantities,
+  calculateAccessoriesQuantities,
+  calculateMezzanineQuantities,
+  calculateStairQuantities,
+  calculateAdditionalBoltsQuantities,
+} from '@floreat/shared/calc'
+
+type PebCalc = ReturnType<typeof calculatePebQuantities>
+type CladdingCalc = ReturnType<typeof calculateCladdingQuantities>
+type CanopyCalc = ReturnType<typeof calculateCanopyQuantities>
+type AccessoriesCalc = ReturnType<typeof calculateAccessoriesQuantities>
+type MezzanineCalc = ReturnType<typeof calculateMezzanineQuantities>
+type StairCalc = ReturnType<typeof calculateStairQuantities>
+type AdditionalBoltsCalc = ReturnType<typeof calculateAdditionalBoltsQuantities>
 
 const toNum = (v: unknown): number | null => {
   if (v == null || v === '' || v === 'User Input' || v === 'NA') return null
@@ -20,9 +37,9 @@ const toStr = (v: unknown): string | null => {
   return String(v)
 }
 
-export function cleanSectionPayload<T extends Record<string, unknown>>(section: T | null | undefined): Record<string, unknown> | undefined {
+export function cleanSectionPayload(section: unknown): Record<string, unknown> | undefined {
   if (!section || typeof section !== 'object') return undefined
-  const { id, quantityId, createdAt, updatedAt, ...rest } = section
+  const rest = Object.fromEntries(Object.entries(section as Record<string, unknown>).filter(([key]) => !new Set(['id', 'quantityId', 'createdAt', 'updatedAt']).has(key)))
   return Object.fromEntries(
     Object.entries(rest).filter(([, v]) => v !== undefined)
   )
@@ -90,7 +107,7 @@ const ADDITIONAL_BOLTS_NUMERIC_FIELDS = new Set([
   'anchorBoltQuantity', 'foundationBoltQuantity',
 ])
 
-export function flattenPebCalc(calc: any): Record<string, unknown> {
+export function flattenPebCalc(calc: PebCalc | null | undefined): Record<string, unknown> {
   if (!calc) return {}
   return {
     pebRoofValue: toStr(calc.pebRoof?.pebRoofValue),
@@ -168,7 +185,7 @@ export function flattenPebCalc(calc: any): Record<string, unknown> {
   }
 }
 
-export function flattenCladdingCalc(calc: any): Record<string, unknown> {
+export function flattenCladdingCalc(calc: CladdingCalc | null | undefined): Record<string, unknown> {
   if (!calc) return {}
   return {
     claddingStructureQuantity: toNum(calc.claddingStructure?.claddingStructureQuantity),
@@ -201,7 +218,7 @@ export function flattenCladdingCalc(calc: any): Record<string, unknown> {
   }
 }
 
-export function flattenCanopyCalc(calc: any): Record<string, unknown> {
+export function flattenCanopyCalc(calc: CanopyCalc | null | undefined): Record<string, unknown> {
   if (!calc) return {}
   return {
     canopyStructureQuantity: toNum(calc.canopyStructureQuantity),
@@ -218,7 +235,7 @@ export function flattenCanopyCalc(calc: any): Record<string, unknown> {
   }
 }
 
-export function flattenAccessoriesCalc(calc: any): Record<string, unknown> {
+export function flattenAccessoriesCalc(calc: AccessoriesCalc | null | undefined): Record<string, unknown> {
   if (!calc) return {}
   return {
     doors: toStr(calc.doors),
@@ -253,7 +270,7 @@ export function flattenAccessoriesCalc(calc: any): Record<string, unknown> {
   }
 }
 
-export function flattenMezzanineCalc(calc: any): Record<string, unknown> {
+export function flattenMezzanineCalc(calc: MezzanineCalc | null | undefined): Record<string, unknown> {
   if (!calc) return {}
   return {
     mezzanineStructure: toStr(calc.mezzanineStructure),
@@ -275,7 +292,7 @@ export function flattenMezzanineCalc(calc: any): Record<string, unknown> {
   }
 }
 
-export function flattenStairCalc(calc: any): Record<string, unknown> {
+export function flattenStairCalc(calc: StairCalc | null | undefined): Record<string, unknown> {
   if (!calc) return {}
   return {
     totalAreaOfStairQuantity: toNum(calc.totalAreaOfStairQuantity),
@@ -288,7 +305,7 @@ export function flattenStairCalc(calc: any): Record<string, unknown> {
   }
 }
 
-export function flattenAdditionalBoltsCalc(calc: any): Record<string, unknown> {
+export function flattenAdditionalBoltsCalc(calc: AdditionalBoltsCalc | null | undefined): Record<string, unknown> {
   if (!calc) return {}
   return {
     jointBolt1: toStr(calc.jointBolt1),
@@ -320,7 +337,7 @@ function processDraft(draft: Record<string, string>, numericFields: Set<string>)
 
 function mergeSectionPayload(
   flattened: Record<string, unknown>,
-  initialData: Record<string, unknown> | null | undefined,
+  initialData: unknown,
   processedDraft: Record<string, unknown>,
   numericFields: Set<string>
 ): Record<string, unknown> {
@@ -351,43 +368,43 @@ function mergeSectionPayload(
   return cleanSectionPayload(merged) ?? {}
 }
 
-export function buildPebRoofPayload(calc: any, initialData: any, draft: Record<string, string> = {}): CreateQuantityPebRoofInput {
+export function buildPebRoofPayload(calc: PebCalc | null | undefined, initialData: unknown, draft: Record<string, string> = {}): CreateQuantityPebRoofInput {
   const flattened = flattenPebCalc(calc)
   const processedDraft = processDraft(draft, PEB_ROOF_NUMERIC_FIELDS)
   return mergeSectionPayload(flattened, initialData, processedDraft, PEB_ROOF_NUMERIC_FIELDS) as CreateQuantityPebRoofInput
 }
 
-export function buildCladdingPayload(calc: any, initialData: any, draft: Record<string, string> = {}): CreateQuantityCladdingInput {
+export function buildCladdingPayload(calc: CladdingCalc | null | undefined, initialData: unknown, draft: Record<string, string> = {}): CreateQuantityCladdingInput {
   const flattened = flattenCladdingCalc(calc)
   const processedDraft = processDraft(draft, CLADDING_NUMERIC_FIELDS)
   return mergeSectionPayload(flattened, initialData, processedDraft, CLADDING_NUMERIC_FIELDS) as CreateQuantityCladdingInput
 }
 
-export function buildCanopyPayload(calc: any, initialData: any, draft: Record<string, string> = {}): CreateQuantityCanopyInput {
+export function buildCanopyPayload(calc: CanopyCalc | null | undefined, initialData: unknown, draft: Record<string, string> = {}): CreateQuantityCanopyInput {
   const flattened = flattenCanopyCalc(calc)
   const processedDraft = processDraft(draft, CANOPY_NUMERIC_FIELDS)
   return mergeSectionPayload(flattened, initialData, processedDraft, CANOPY_NUMERIC_FIELDS) as CreateQuantityCanopyInput
 }
 
-export function buildAccessoriesPayload(calc: any, initialData: any, draft: Record<string, string> = {}): CreateQuantityAccessoriesInput {
+export function buildAccessoriesPayload(calc: AccessoriesCalc | null | undefined, initialData: unknown, draft: Record<string, string> = {}): CreateQuantityAccessoriesInput {
   const flattened = flattenAccessoriesCalc(calc)
   const processedDraft = processDraft(draft, ACCESSORIES_NUMERIC_FIELDS)
   return mergeSectionPayload(flattened, initialData, processedDraft, ACCESSORIES_NUMERIC_FIELDS) as CreateQuantityAccessoriesInput
 }
 
-export function buildMezzaninePayload(calc: any, initialData: any, draft: Record<string, string> = {}): CreateQuantityMezzanineInput {
+export function buildMezzaninePayload(calc: MezzanineCalc | null | undefined, initialData: unknown, draft: Record<string, string> = {}): CreateQuantityMezzanineInput {
   const flattened = flattenMezzanineCalc(calc)
   const processedDraft = processDraft(draft, MEZZANINE_NUMERIC_FIELDS)
   return mergeSectionPayload(flattened, initialData, processedDraft, MEZZANINE_NUMERIC_FIELDS) as CreateQuantityMezzanineInput
 }
 
-export function buildStairPayload(calc: any, initialData: any, draft: Record<string, string> = {}): CreateQuantityStairInput {
+export function buildStairPayload(calc: StairCalc | null | undefined, initialData: unknown, draft: Record<string, string> = {}): CreateQuantityStairInput {
   const flattened = flattenStairCalc(calc)
   const processedDraft = processDraft(draft, STAIR_NUMERIC_FIELDS)
   return mergeSectionPayload(flattened, initialData, processedDraft, STAIR_NUMERIC_FIELDS) as CreateQuantityStairInput
 }
 
-export function buildAdditionalBoltsPayload(calc: any, initialData: any, draft: Record<string, string> = {}): CreateQuantityAdditionalBoltsInput {
+export function buildAdditionalBoltsPayload(calc: AdditionalBoltsCalc | null | undefined, initialData: unknown, draft: Record<string, string> = {}): CreateQuantityAdditionalBoltsInput {
   const flattened = flattenAdditionalBoltsCalc(calc)
   const processedDraft = processDraft(draft, ADDITIONAL_BOLTS_NUMERIC_FIELDS)
   return mergeSectionPayload(flattened, initialData, processedDraft, ADDITIONAL_BOLTS_NUMERIC_FIELDS) as CreateQuantityAdditionalBoltsInput
@@ -395,24 +412,25 @@ export function buildAdditionalBoltsPayload(calc: any, initialData: any, draft: 
 
 export function buildFullQuantityPayload(
   calcs: {
-    pebRoof?: any
-    cladding?: any
-    canopy?: any
-    accessories?: any
-    mezzanine?: any
-    stair?: any
-    additionalBolts?: any
+    pebRoof?: PebCalc
+    cladding?: CladdingCalc
+    canopy?: CanopyCalc
+    accessories?: AccessoriesCalc
+    mezzanine?: MezzanineCalc
+    stair?: StairCalc
+    additionalBolts?: AdditionalBoltsCalc
   },
-  quantityStoreState: any,
+  quantityStoreState: unknown,
   sectionDrafts: Record<string, Record<string, string>> = {}
 ): CreateQuantityInput {
+  const store = (quantityStoreState ?? {}) as Record<string, unknown>
   return {
-    pebRoof: buildPebRoofPayload(calcs.pebRoof, quantityStoreState?.pebRoof, sectionDrafts.pebRoof),
-    cladding: buildCladdingPayload(calcs.cladding, quantityStoreState?.cladding, sectionDrafts.cladding),
-    canopy: buildCanopyPayload(calcs.canopy, quantityStoreState?.canopy, sectionDrafts.canopy),
-    accessories: buildAccessoriesPayload(calcs.accessories, quantityStoreState?.accessories, sectionDrafts.accessories),
-    mezzanine: buildMezzaninePayload(calcs.mezzanine, quantityStoreState?.mezzanine, sectionDrafts.mezzanine),
-    stair: buildStairPayload(calcs.stair, quantityStoreState?.stair, sectionDrafts.stair),
-    additionalBolts: buildAdditionalBoltsPayload(calcs.additionalBolts, quantityStoreState?.additionalBolts, sectionDrafts.additionalBolts),
+    pebRoof: buildPebRoofPayload(calcs.pebRoof, store.pebRoof, sectionDrafts.pebRoof),
+    cladding: buildCladdingPayload(calcs.cladding, store.cladding, sectionDrafts.cladding),
+    canopy: buildCanopyPayload(calcs.canopy, store.canopy, sectionDrafts.canopy),
+    accessories: buildAccessoriesPayload(calcs.accessories, store.accessories, sectionDrafts.accessories),
+    mezzanine: buildMezzaninePayload(calcs.mezzanine, store.mezzanine, sectionDrafts.mezzanine),
+    stair: buildStairPayload(calcs.stair, store.stair, sectionDrafts.stair),
+    additionalBolts: buildAdditionalBoltsPayload(calcs.additionalBolts, store.additionalBolts, sectionDrafts.additionalBolts),
   }
 }

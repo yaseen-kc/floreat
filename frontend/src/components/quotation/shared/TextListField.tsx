@@ -35,7 +35,11 @@ export function TextListField({ label, value, onChange, hint, rows = 3, classNam
   // in-progress trailing newline.
   useEffect(() => {
     const external = (value ?? []).join('\n')
-    if (external !== toList(text).join('\n')) setText(external)
+    if (external !== toList(text).join('\n')) {
+      // Hydration is an external synchronization boundary, not user input.
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setText(external)
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [value])
 

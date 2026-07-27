@@ -329,51 +329,6 @@
           }
         },
         {
-          "name": "Get all job data by ID",
-          "request": {
-            "name": "Get all job data by ID",
-            "description": {
-              "content": "Returns all data of a specific job including all nested relations.",
-              "type": "text/plain"
-            },
-            "url": {
-              "path": [
-                "api",
-                "all",
-                ":jobId"
-              ],
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "query": [],
-              "variable": [
-                {
-                  "type": "any",
-                  "value": "job_cuid_123",
-                  "key": "jobId",
-                  "disabled": false,
-                  "description": {
-                    "content": "(Required) ",
-                    "type": "text/plain"
-                  }
-                }
-              ]
-            },
-            "header": [
-              {
-                "key": "Accept",
-                "value": "application/json"
-              }
-            ],
-            "method": "GET",
-            "body": {}
-          },
-          "event": [],
-          "protocolProfileBehavior": {
-            "disableBodyPruning": true
-          }
-        },
-        {
           "name": "Get all job data by ID (canonical alias)",
           "request": {
             "name": "Get all job data by ID (canonical alias)",

@@ -68,6 +68,12 @@
         "in": "header",
         "name": "x-dev-user-id",
         "description": "Development-only user ID used when BYPASS_AUTH=true."
+      },
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "Clerk session token",
+        "description": "Clerk bearer session token. The x-dev-user-id bypass is development-only and is not part of production authentication."
       }
     },
     "schemas": {
@@ -9236,7 +9242,7 @@
         "description": "Returns the local profile for the authenticated Clerk user.",
         "security": [
           {
-            "LocalDevUserId": []
+            "BearerAuth": []
           }
         ],
         "responses": {
@@ -9283,7 +9289,7 @@
         "description": "Creates a new structural quotation job.",
         "security": [
           {
-            "LocalDevUserId": []
+            "BearerAuth": []
           }
         ],
         "requestBody": {
@@ -9356,7 +9362,7 @@
         "description": "Returns a paginated list of jobs.",
         "security": [
           {
-            "LocalDevUserId": []
+            "BearerAuth": []
           }
         ],
         "parameters": [
@@ -9428,7 +9434,7 @@
         "description": "Returns one job by its identifier.",
         "security": [
           {
-            "LocalDevUserId": []
+            "BearerAuth": []
           }
         ],
         "parameters": [
@@ -9484,7 +9490,7 @@
         "description": "Partially updates a job by its identifier.",
         "security": [
           {
-            "LocalDevUserId": []
+            "BearerAuth": []
           }
         ],
         "parameters": [
@@ -9555,7 +9561,7 @@
         "description": "Deletes a job by its identifier.",
         "security": [
           {
-            "LocalDevUserId": []
+            "BearerAuth": []
           }
         ],
         "parameters": [
@@ -9596,74 +9602,6 @@
         }
       }
     },
-    "/api/all/{jobId}": {
-      "get": {
-        "operationId": "getJobWithAllData",
-        "tags": [
-          "Jobs"
-        ],
-        "summary": "Get all job data by ID",
-        "description": "Returns all data of a specific job including all nested relations.",
-        "security": [
-          {
-            "LocalDevUserId": []
-          }
-        ],
-        "parameters": [
-          {
-            "schema": {
-              "type": "string",
-              "example": "job_cuid_123"
-            },
-            "required": true,
-            "name": "jobId",
-            "in": "path"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Full job data returned.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/JobResponse"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Validation error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiError"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Authentication required",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiError"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Resource not found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiError"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
     "/api/jobs/{jobId}/all": {
       "get": {
         "operationId": "getJobWithAllDataAlias",
@@ -9674,7 +9612,7 @@
         "description": "Returns all data of a specific job including all nested relations.",
         "security": [
           {
-            "LocalDevUserId": []
+            "BearerAuth": []
           }
         ],
         "parameters": [
@@ -9742,7 +9680,7 @@
         "description": "Creates a new rate master item in the global rate table.",
         "security": [
           {
-            "LocalDevUserId": []
+            "BearerAuth": []
           }
         ],
         "requestBody": {
@@ -9819,7 +9757,7 @@
         "description": "Returns a paginated list of rate master items.",
         "security": [
           {
-            "LocalDevUserId": []
+            "BearerAuth": []
           }
         ],
         "parameters": [
@@ -9891,7 +9829,7 @@
         "description": "Returns one rate master item by its identifier.",
         "security": [
           {
-            "LocalDevUserId": []
+            "BearerAuth": []
           }
         ],
         "parameters": [
@@ -9957,7 +9895,7 @@
         "description": "Partially updates a rate master item by its identifier.",
         "security": [
           {
-            "LocalDevUserId": []
+            "BearerAuth": []
           }
         ],
         "parameters": [
@@ -10046,7 +9984,7 @@
         "description": "Deletes a rate master item by its identifier.",
         "security": [
           {
-            "LocalDevUserId": []
+            "BearerAuth": []
           }
         ],
         "parameters": [
@@ -10107,7 +10045,7 @@
         "description": "Creates or replaces the roof configuration for the specified job.",
         "security": [
           {
-            "LocalDevUserId": []
+            "BearerAuth": []
           }
         ],
         "parameters": [
@@ -10209,7 +10147,7 @@
         "description": "Returns the roof configuration belonging to the specified job.",
         "security": [
           {
-            "LocalDevUserId": []
+            "BearerAuth": []
           }
         ],
         "parameters": [
@@ -10265,7 +10203,7 @@
         "description": "Partially updates the roof configuration for the specified job.",
         "security": [
           {
-            "LocalDevUserId": []
+            "BearerAuth": []
           }
         ],
         "parameters": [
@@ -10367,7 +10305,7 @@
         "description": "Deletes the roof configuration for the specified job.",
         "security": [
           {
-            "LocalDevUserId": []
+            "BearerAuth": []
           }
         ],
         "parameters": [
@@ -10418,7 +10356,7 @@
         "description": "Returns a paginated list of roofs.",
         "security": [
           {
-            "LocalDevUserId": []
+            "BearerAuth": []
           }
         ],
         "parameters": [
@@ -10490,7 +10428,7 @@
         "description": "Creates or replaces the mezzanine configuration for the specified job.",
         "security": [
           {
-            "LocalDevUserId": []
+            "BearerAuth": []
           }
         ],
         "parameters": [
@@ -10596,7 +10534,7 @@
         "description": "Returns the mezzanine configuration belonging to the specified job.",
         "security": [
           {
-            "LocalDevUserId": []
+            "BearerAuth": []
           }
         ],
         "parameters": [
@@ -10652,7 +10590,7 @@
         "description": "Partially updates the mezzanine configuration for the specified job.",
         "security": [
           {
-            "LocalDevUserId": []
+            "BearerAuth": []
           }
         ],
         "parameters": [
@@ -10758,7 +10696,7 @@
         "description": "Deletes the mezzanine configuration for the specified job.",
         "security": [
           {
-            "LocalDevUserId": []
+            "BearerAuth": []
           }
         ],
         "parameters": [
@@ -10809,7 +10747,7 @@
         "description": "Returns a paginated list of mezzanines.",
         "security": [
           {
-            "LocalDevUserId": []
+            "BearerAuth": []
           }
         ],
         "parameters": [
@@ -10881,7 +10819,7 @@
         "description": "Creates or replaces the stair configuration for the specified job.",
         "security": [
           {
-            "LocalDevUserId": []
+            "BearerAuth": []
           }
         ],
         "parameters": [
@@ -10973,7 +10911,7 @@
         "description": "Returns the stair configuration belonging to the specified job.",
         "security": [
           {
-            "LocalDevUserId": []
+            "BearerAuth": []
           }
         ],
         "parameters": [
@@ -11029,7 +10967,7 @@
         "description": "Partially updates the stair configuration for the specified job.",
         "security": [
           {
-            "LocalDevUserId": []
+            "BearerAuth": []
           }
         ],
         "parameters": [
@@ -11121,7 +11059,7 @@
         "description": "Deletes the stair configuration for the specified job.",
         "security": [
           {
-            "LocalDevUserId": []
+            "BearerAuth": []
           }
         ],
         "parameters": [
@@ -11172,7 +11110,7 @@
         "description": "Returns a paginated list of stairs.",
         "security": [
           {
-            "LocalDevUserId": []
+            "BearerAuth": []
           }
         ],
         "parameters": [
@@ -11244,7 +11182,7 @@
         "description": "Creates or replaces the canopy configuration for the specified job.",
         "security": [
           {
-            "LocalDevUserId": []
+            "BearerAuth": []
           }
         ],
         "parameters": [
@@ -11332,7 +11270,7 @@
         "description": "Returns the canopy configuration belonging to the specified job.",
         "security": [
           {
-            "LocalDevUserId": []
+            "BearerAuth": []
           }
         ],
         "parameters": [
@@ -11388,7 +11326,7 @@
         "description": "Partially updates the canopy configuration for the specified job.",
         "security": [
           {
-            "LocalDevUserId": []
+            "BearerAuth": []
           }
         ],
         "parameters": [
@@ -11476,7 +11414,7 @@
         "description": "Deletes the canopy configuration for the specified job.",
         "security": [
           {
-            "LocalDevUserId": []
+            "BearerAuth": []
           }
         ],
         "parameters": [
@@ -11527,7 +11465,7 @@
         "description": "Returns a paginated list of canopies.",
         "security": [
           {
-            "LocalDevUserId": []
+            "BearerAuth": []
           }
         ],
         "parameters": [
@@ -11599,7 +11537,7 @@
         "description": "Creates or replaces the load configuration for the specified job.",
         "security": [
           {
-            "LocalDevUserId": []
+            "BearerAuth": []
           }
         ],
         "parameters": [
@@ -11683,7 +11621,7 @@
         "description": "Returns the load configuration belonging to the specified job.",
         "security": [
           {
-            "LocalDevUserId": []
+            "BearerAuth": []
           }
         ],
         "parameters": [
@@ -11739,7 +11677,7 @@
         "description": "Partially updates the load configuration for the specified job.",
         "security": [
           {
-            "LocalDevUserId": []
+            "BearerAuth": []
           }
         ],
         "parameters": [
@@ -11823,7 +11761,7 @@
         "description": "Deletes the load configuration for the specified job.",
         "security": [
           {
-            "LocalDevUserId": []
+            "BearerAuth": []
           }
         ],
         "parameters": [
@@ -11874,7 +11812,7 @@
         "description": "Returns a paginated list of loads.",
         "security": [
           {
-            "LocalDevUserId": []
+            "BearerAuth": []
           }
         ],
         "parameters": [
@@ -11946,7 +11884,7 @@
         "description": "Creates or replaces the accessories configuration for the specified job.",
         "security": [
           {
-            "LocalDevUserId": []
+            "BearerAuth": []
           }
         ],
         "parameters": [
@@ -12076,7 +12014,7 @@
         "description": "Returns the accessories configuration belonging to the specified job.",
         "security": [
           {
-            "LocalDevUserId": []
+            "BearerAuth": []
           }
         ],
         "parameters": [
@@ -12132,7 +12070,7 @@
         "description": "Partially updates the accessories configuration for the specified job.",
         "security": [
           {
-            "LocalDevUserId": []
+            "BearerAuth": []
           }
         ],
         "parameters": [
@@ -12262,7 +12200,7 @@
         "description": "Deletes the accessories configuration for the specified job.",
         "security": [
           {
-            "LocalDevUserId": []
+            "BearerAuth": []
           }
         ],
         "parameters": [
@@ -12313,7 +12251,7 @@
         "description": "Returns a paginated list of accessories.",
         "security": [
           {
-            "LocalDevUserId": []
+            "BearerAuth": []
           }
         ],
         "parameters": [
@@ -12385,7 +12323,7 @@
         "description": "Creates or replaces the amount configuration for the specified job.",
         "security": [
           {
-            "LocalDevUserId": []
+            "BearerAuth": []
           }
         ],
         "parameters": [
@@ -12464,7 +12402,7 @@
         "description": "Returns the amount configuration belonging to the specified job.",
         "security": [
           {
-            "LocalDevUserId": []
+            "BearerAuth": []
           }
         ],
         "parameters": [
@@ -12520,7 +12458,7 @@
         "description": "Partially updates the amount configuration for the specified job.",
         "security": [
           {
-            "LocalDevUserId": []
+            "BearerAuth": []
           }
         ],
         "parameters": [
@@ -12599,7 +12537,7 @@
         "description": "Deletes the amount configuration for the specified job.",
         "security": [
           {
-            "LocalDevUserId": []
+            "BearerAuth": []
           }
         ],
         "parameters": [
@@ -12650,7 +12588,7 @@
         "description": "Returns a paginated list of amounts.",
         "security": [
           {
-            "LocalDevUserId": []
+            "BearerAuth": []
           }
         ],
         "parameters": [
@@ -12722,7 +12660,7 @@
         "description": "Creates or replaces the joint configuration for the specified job.",
         "security": [
           {
-            "LocalDevUserId": []
+            "BearerAuth": []
           }
         ],
         "parameters": [
@@ -12828,7 +12766,7 @@
         "description": "Returns the joint configuration belonging to the specified job.",
         "security": [
           {
-            "LocalDevUserId": []
+            "BearerAuth": []
           }
         ],
         "parameters": [
@@ -12884,7 +12822,7 @@
         "description": "Partially updates the joint configuration for the specified job.",
         "security": [
           {
-            "LocalDevUserId": []
+            "BearerAuth": []
           }
         ],
         "parameters": [
@@ -12990,7 +12928,7 @@
         "description": "Deletes the joint configuration for the specified job.",
         "security": [
           {
-            "LocalDevUserId": []
+            "BearerAuth": []
           }
         ],
         "parameters": [
@@ -13041,7 +12979,7 @@
         "description": "Returns a paginated list of joints.",
         "security": [
           {
-            "LocalDevUserId": []
+            "BearerAuth": []
           }
         ],
         "parameters": [
@@ -13113,7 +13051,7 @@
         "description": "Creates or replaces the spec configuration for the specified job.",
         "security": [
           {
-            "LocalDevUserId": []
+            "BearerAuth": []
           }
         ],
         "parameters": [
@@ -13192,7 +13130,7 @@
         "description": "Returns the spec configuration belonging to the specified job.",
         "security": [
           {
-            "LocalDevUserId": []
+            "BearerAuth": []
           }
         ],
         "parameters": [
@@ -13248,7 +13186,7 @@
         "description": "Partially updates the spec configuration for the specified job.",
         "security": [
           {
-            "LocalDevUserId": []
+            "BearerAuth": []
           }
         ],
         "parameters": [
@@ -13327,7 +13265,7 @@
         "description": "Deletes the spec configuration for the specified job.",
         "security": [
           {
-            "LocalDevUserId": []
+            "BearerAuth": []
           }
         ],
         "parameters": [
@@ -13378,7 +13316,7 @@
         "description": "Returns a paginated list of specs.",
         "security": [
           {
-            "LocalDevUserId": []
+            "BearerAuth": []
           }
         ],
         "parameters": [
@@ -13450,7 +13388,7 @@
         "description": "Creates or replaces the quantity configuration for the specified job.",
         "security": [
           {
-            "LocalDevUserId": []
+            "BearerAuth": []
           }
         ],
         "parameters": [
@@ -13529,7 +13467,7 @@
         "description": "Returns the quantity configuration belonging to the specified job.",
         "security": [
           {
-            "LocalDevUserId": []
+            "BearerAuth": []
           }
         ],
         "parameters": [
@@ -13585,7 +13523,7 @@
         "description": "Partially updates the quantity configuration for the specified job.",
         "security": [
           {
-            "LocalDevUserId": []
+            "BearerAuth": []
           }
         ],
         "parameters": [
@@ -13664,7 +13602,7 @@
         "description": "Deletes the quantity configuration for the specified job.",
         "security": [
           {
-            "LocalDevUserId": []
+            "BearerAuth": []
           }
         ],
         "parameters": [
@@ -13715,7 +13653,7 @@
         "description": "Returns a paginated list of quantities.",
         "security": [
           {
-            "LocalDevUserId": []
+            "BearerAuth": []
           }
         ],
         "parameters": [
@@ -13787,7 +13725,7 @@
         "description": "Creates or replaces the quantitypebroof configuration for the specified job.",
         "security": [
           {
-            "LocalDevUserId": []
+            "BearerAuth": []
           }
         ],
         "parameters": [
@@ -13854,7 +13792,7 @@
         "description": "Returns the quantitypebroof configuration belonging to the specified job.",
         "security": [
           {
-            "LocalDevUserId": []
+            "BearerAuth": []
           }
         ],
         "parameters": [
@@ -13910,7 +13848,7 @@
         "description": "Partially updates the quantitypebroof configuration for the specified job.",
         "security": [
           {
-            "LocalDevUserId": []
+            "BearerAuth": []
           }
         ],
         "parameters": [
@@ -13977,7 +13915,7 @@
         "description": "Deletes the quantitypebroof configuration for the specified job.",
         "security": [
           {
-            "LocalDevUserId": []
+            "BearerAuth": []
           }
         ],
         "parameters": [
@@ -14028,7 +13966,7 @@
         "description": "Returns a paginated list of quantity-peb-roofs.",
         "security": [
           {
-            "LocalDevUserId": []
+            "BearerAuth": []
           }
         ],
         "parameters": [
@@ -14100,7 +14038,7 @@
         "description": "Creates or replaces the quantitycladding configuration for the specified job.",
         "security": [
           {
-            "LocalDevUserId": []
+            "BearerAuth": []
           }
         ],
         "parameters": [
@@ -14167,7 +14105,7 @@
         "description": "Returns the quantitycladding configuration belonging to the specified job.",
         "security": [
           {
-            "LocalDevUserId": []
+            "BearerAuth": []
           }
         ],
         "parameters": [
@@ -14223,7 +14161,7 @@
         "description": "Partially updates the quantitycladding configuration for the specified job.",
         "security": [
           {
-            "LocalDevUserId": []
+            "BearerAuth": []
           }
         ],
         "parameters": [
@@ -14290,7 +14228,7 @@
         "description": "Deletes the quantitycladding configuration for the specified job.",
         "security": [
           {
-            "LocalDevUserId": []
+            "BearerAuth": []
           }
         ],
         "parameters": [
@@ -14341,7 +14279,7 @@
         "description": "Returns a paginated list of quantity-claddings.",
         "security": [
           {
-            "LocalDevUserId": []
+            "BearerAuth": []
           }
         ],
         "parameters": [
@@ -14413,7 +14351,7 @@
         "description": "Creates or replaces the quantitycanopy configuration for the specified job.",
         "security": [
           {
-            "LocalDevUserId": []
+            "BearerAuth": []
           }
         ],
         "parameters": [
@@ -14480,7 +14418,7 @@
         "description": "Returns the quantitycanopy configuration belonging to the specified job.",
         "security": [
           {
-            "LocalDevUserId": []
+            "BearerAuth": []
           }
         ],
         "parameters": [
@@ -14536,7 +14474,7 @@
         "description": "Partially updates the quantitycanopy configuration for the specified job.",
         "security": [
           {
-            "LocalDevUserId": []
+            "BearerAuth": []
           }
         ],
         "parameters": [
@@ -14603,7 +14541,7 @@
         "description": "Deletes the quantitycanopy configuration for the specified job.",
         "security": [
           {
-            "LocalDevUserId": []
+            "BearerAuth": []
           }
         ],
         "parameters": [
@@ -14654,7 +14592,7 @@
         "description": "Returns a paginated list of quantity-canopies.",
         "security": [
           {
-            "LocalDevUserId": []
+            "BearerAuth": []
           }
         ],
         "parameters": [
@@ -14726,7 +14664,7 @@
         "description": "Creates or replaces the quantityaccessories configuration for the specified job.",
         "security": [
           {
-            "LocalDevUserId": []
+            "BearerAuth": []
           }
         ],
         "parameters": [
@@ -14793,7 +14731,7 @@
         "description": "Returns the quantityaccessories configuration belonging to the specified job.",
         "security": [
           {
-            "LocalDevUserId": []
+            "BearerAuth": []
           }
         ],
         "parameters": [
@@ -14849,7 +14787,7 @@
         "description": "Partially updates the quantityaccessories configuration for the specified job.",
         "security": [
           {
-            "LocalDevUserId": []
+            "BearerAuth": []
           }
         ],
         "parameters": [
@@ -14916,7 +14854,7 @@
         "description": "Deletes the quantityaccessories configuration for the specified job.",
         "security": [
           {
-            "LocalDevUserId": []
+            "BearerAuth": []
           }
         ],
         "parameters": [
@@ -14967,7 +14905,7 @@
         "description": "Returns a paginated list of quantity-accessories.",
         "security": [
           {
-            "LocalDevUserId": []
+            "BearerAuth": []
           }
         ],
         "parameters": [
@@ -15039,7 +14977,7 @@
         "description": "Creates or replaces the quantitymezzanine configuration for the specified job.",
         "security": [
           {
-            "LocalDevUserId": []
+            "BearerAuth": []
           }
         ],
         "parameters": [
@@ -15106,7 +15044,7 @@
         "description": "Returns the quantitymezzanine configuration belonging to the specified job.",
         "security": [
           {
-            "LocalDevUserId": []
+            "BearerAuth": []
           }
         ],
         "parameters": [
@@ -15162,7 +15100,7 @@
         "description": "Partially updates the quantitymezzanine configuration for the specified job.",
         "security": [
           {
-            "LocalDevUserId": []
+            "BearerAuth": []
           }
         ],
         "parameters": [
@@ -15229,7 +15167,7 @@
         "description": "Deletes the quantitymezzanine configuration for the specified job.",
         "security": [
           {
-            "LocalDevUserId": []
+            "BearerAuth": []
           }
         ],
         "parameters": [
@@ -15280,7 +15218,7 @@
         "description": "Returns a paginated list of quantity-mezzanines.",
         "security": [
           {
-            "LocalDevUserId": []
+            "BearerAuth": []
           }
         ],
         "parameters": [
@@ -15352,7 +15290,7 @@
         "description": "Creates or replaces the quantitystair configuration for the specified job.",
         "security": [
           {
-            "LocalDevUserId": []
+            "BearerAuth": []
           }
         ],
         "parameters": [
@@ -15419,7 +15357,7 @@
         "description": "Returns the quantitystair configuration belonging to the specified job.",
         "security": [
           {
-            "LocalDevUserId": []
+            "BearerAuth": []
           }
         ],
         "parameters": [
@@ -15475,7 +15413,7 @@
         "description": "Partially updates the quantitystair configuration for the specified job.",
         "security": [
           {
-            "LocalDevUserId": []
+            "BearerAuth": []
           }
         ],
         "parameters": [
@@ -15542,7 +15480,7 @@
         "description": "Deletes the quantitystair configuration for the specified job.",
         "security": [
           {
-            "LocalDevUserId": []
+            "BearerAuth": []
           }
         ],
         "parameters": [
@@ -15593,7 +15531,7 @@
         "description": "Returns a paginated list of quantity-stairs.",
         "security": [
           {
-            "LocalDevUserId": []
+            "BearerAuth": []
           }
         ],
         "parameters": [
@@ -15665,7 +15603,7 @@
         "description": "Creates or replaces the quantityadditionalbolts configuration for the specified job.",
         "security": [
           {
-            "LocalDevUserId": []
+            "BearerAuth": []
           }
         ],
         "parameters": [
@@ -15732,7 +15670,7 @@
         "description": "Returns the quantityadditionalbolts configuration belonging to the specified job.",
         "security": [
           {
-            "LocalDevUserId": []
+            "BearerAuth": []
           }
         ],
         "parameters": [
@@ -15788,7 +15726,7 @@
         "description": "Partially updates the quantityadditionalbolts configuration for the specified job.",
         "security": [
           {
-            "LocalDevUserId": []
+            "BearerAuth": []
           }
         ],
         "parameters": [
@@ -15855,7 +15793,7 @@
         "description": "Deletes the quantityadditionalbolts configuration for the specified job.",
         "security": [
           {
-            "LocalDevUserId": []
+            "BearerAuth": []
           }
         ],
         "parameters": [
@@ -15906,7 +15844,7 @@
         "description": "Returns a paginated list of quantity-additional-bolts.",
         "security": [
           {
-            "LocalDevUserId": []
+            "BearerAuth": []
           }
         ],
         "parameters": [

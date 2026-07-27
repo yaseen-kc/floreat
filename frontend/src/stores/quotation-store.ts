@@ -758,7 +758,7 @@ export function buildJointPayload(joint: JointDraft): CreateJointInput {
  */
 export function buildSpecPayload(spec: SpecDraft): CreateSpecInput {
   const products = spec.products
-    .map(({ code: _code, ...rest }) => compactRow(rest))
+    .map((product) => compactRow(Object.fromEntries(Object.entries(product).filter(([key]) => key !== 'code'))))
     .filter((r) => Object.keys(r).length > 0)
     .map((r, i) => ({ ...r, code: `PRODUCT-${i + 1}` }))
 

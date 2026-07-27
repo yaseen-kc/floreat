@@ -94,6 +94,12 @@ registry.registerComponent('securitySchemes', 'LocalDevUserId', {
   name: 'x-dev-user-id',
   description: 'Development-only user ID used when BYPASS_AUTH=true.',
 })
+registry.registerComponent('securitySchemes', 'BearerAuth', {
+  type: 'http',
+  scheme: 'bearer',
+  bearerFormat: 'Clerk session token',
+  description: 'Clerk bearer session token. The x-dev-user-id bypass is development-only and is not part of production authentication.',
+})
 
 const resourceResponseSchema = z.object({}).catchall(z.unknown())
 const decimalStringSchema = z.string().regex(/^-?\d+(\.\d+)?$/).meta({
@@ -425,7 +431,7 @@ function registerOperation(options: {
     tags: [options.tag],
     summary: options.summary,
     description: options.description,
-    security: options.auth === false ? [] : [{ LocalDevUserId: [] }],
+    security: options.auth === false ? [] : [{ BearerAuth: [] }],
     request,
     responses,
   })
@@ -493,11 +499,6 @@ registerOperation({
   method: 'get', path: '/api/jobs/{id}', operationId: 'getJobById', tag: 'Jobs', auth: true,
   summary: 'Get a job by ID', description: 'Returns one job by its identifier.', params: idParams(),
   responseSchema: responseSchemas.JobResponse, responseDescription: 'Job returned.',
-})
-registerOperation({
-  method: 'get', path: '/api/all/{jobId}', operationId: 'getJobWithAllData', tag: 'Jobs', auth: true,
-  summary: 'Get all job data by ID', description: 'Returns all data of a specific job including all nested relations.', params: jobIdParams(),
-  responseSchema: responseSchemas.JobResponse, responseDescription: 'Full job data returned.', notFound: true,
 })
 registerOperation({
   method: 'get', path: '/api/jobs/{jobId}/all', operationId: 'getJobWithAllDataAlias', tag: 'Jobs', auth: true,

@@ -21,12 +21,12 @@ describe('quantity.service', () => {
       const result = await upsertQuantity('job-1', { pebRoof })
 
       expect(result).toEqual(quantity)
-      expect(prismaMock.quantity.upsert).toHaveBeenCalledWith({
+      expect(prismaMock.quantity.upsert).toHaveBeenCalledWith(expect.objectContaining({
         where: { jobId: 'job-1' },
-        create: { jobId: 'job-1', pebRoof: { create: pebRoof } },
-        update: { pebRoof: { upsert: { create: pebRoof, update: pebRoof } } },
+        create: expect.objectContaining({ jobId: 'job-1', calculationVersion: 'quantity-v1', pebRoof: { create: pebRoof } }),
+        update: expect.objectContaining({ calculationVersion: 'quantity-v1', pebRoof: { upsert: { create: pebRoof, update: pebRoof } } }),
         include: INCLUDE,
-      })
+      }))
     })
 
     it('omits sections that were not provided', async () => {
@@ -35,12 +35,12 @@ describe('quantity.service', () => {
 
       await upsertQuantity('job-2', {})
 
-      expect(prismaMock.quantity.upsert).toHaveBeenCalledWith({
+      expect(prismaMock.quantity.upsert).toHaveBeenCalledWith(expect.objectContaining({
         where: { jobId: 'job-2' },
-        create: { jobId: 'job-2' },
-        update: {},
+        create: expect.objectContaining({ jobId: 'job-2', calculationVersion: 'quantity-v1' }),
+        update: expect.objectContaining({ calculationVersion: 'quantity-v1' }),
         include: INCLUDE,
-      })
+      }))
     })
   })
 
@@ -86,11 +86,11 @@ describe('quantity.service', () => {
       const result = await updateQuantity('job-1', { mezzanine })
 
       expect(result).toEqual(quantity)
-      expect(prismaMock.quantity.update).toHaveBeenCalledWith({
+      expect(prismaMock.quantity.update).toHaveBeenCalledWith(expect.objectContaining({
         where: { jobId: 'job-1' },
-        data: { mezzanine: { upsert: { create: mezzanine, update: mezzanine } } },
+        data: expect.objectContaining({ calculationVersion: 'quantity-v1', mezzanine: { upsert: { create: mezzanine, update: mezzanine } } }),
         include: INCLUDE,
-      })
+      }))
     })
 
     it('sends an empty data object when no sections are provided', async () => {
@@ -98,9 +98,9 @@ describe('quantity.service', () => {
 
       await updateQuantity('job-1', {})
 
-      expect(prismaMock.quantity.update).toHaveBeenCalledWith({
-        where: { jobId: 'job-1' }, data: {}, include: INCLUDE,
-      })
+      expect(prismaMock.quantity.update).toHaveBeenCalledWith(expect.objectContaining({
+        where: { jobId: 'job-1' }, data: expect.objectContaining({ calculationVersion: 'quantity-v1' }), include: INCLUDE,
+      }))
     })
   })
 

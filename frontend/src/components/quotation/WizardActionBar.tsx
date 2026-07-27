@@ -26,7 +26,6 @@ import {
 import { buildFullQuantityPayload } from '@/lib/quantity-payload'
 import { useNavigate } from 'react-router-dom'
 
-import { useRates } from '@/api/quotation/rate/getRate'
 import { Button } from '@/components/ui/button'
 import { Spinner } from '@/components/ui/spinner'
 import { cn } from '@/lib/utils'
@@ -67,8 +66,6 @@ export function WizardActionBar() {
   const setSaved = useSaveStatusStore((s) => s.saved)
   const resetSaveStatus = useSaveStatusStore((s) => s.reset)
   
-  const { data: ratesPage } = useRates(1, 100)
-
   const createJob = useCreateJob()
   const updateJob = useUpdateJob()
   const upsertRoof = useUpsertRoof()

@@ -24,16 +24,16 @@ export async function computeJobAmount(jobId: string): Promise<CreateAmountInput
     prisma.job.findUnique({
       where: { id: jobId },
       include: {
-        roof: { include: { sidewalls: true } },
-        mezzanine: { include: { floors: true, extensions: true } },
-        stair: { include: { stairs: true, areaDeductions: true } },
-        canopy: { include: { canopies: true } },
+        roof: { include: { sidewalls: { orderBy: [{ side: 'asc' }, { id: 'asc' }] } } },
+        mezzanine: { include: { floors: { orderBy: [{ code: 'asc' }, { id: 'asc' }] }, extensions: { orderBy: [{ code: 'asc' }, { id: 'asc' }] } } },
+        stair: { include: { stairs: { orderBy: [{ code: 'asc' }, { id: 'asc' }] }, areaDeductions: { orderBy: { id: 'asc' } } } },
+        canopy: { include: { canopies: { orderBy: { id: 'asc' } } } },
         accessories: true,
         joint: {
           include: {
-            jointBoltRoof: true,
-            jointBoltMezzanine: true,
-            foundationBoltRoof: true,
+            jointBoltRoof: { orderBy: [{ roofJointId: 'asc' }, { id: 'asc' }] },
+            jointBoltMezzanine: { orderBy: [{ mezzanineJointId: 'asc' }, { id: 'asc' }] },
+            foundationBoltRoof: { orderBy: [{ foundationJointId: 'asc' }, { id: 'asc' }] },
           },
         },
         quantity: {
@@ -248,6 +248,13 @@ export async function computeJobAmount(jobId: string): Promise<CreateAmountInput
 
   const calculatedQuantities = calculateAmountQuantities(input)
   const rateByItem = new Map(rates.map((r) => [r.item, r]))
+
+  const missingRates = DEFAULT_AMOUNT_ITEMS
+    .map((item) => item.rateItem)
+    .filter((item): item is string => Boolean(item && !rateByItem.has(item)))
+  if (missingRates.length) {
+    throw new Error(`Missing required rate items: ${missingRates.join(', ')}`)
+  }
 
   const payload: Record<string, number | null> = {}
 

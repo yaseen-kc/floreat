@@ -13,7 +13,7 @@ declare module 'fastify' {
 }
 
 export async function authMiddleware(request: FastifyRequest, reply: FastifyReply) {
-  // Dev-only bypass: set BYPASS_AUTH=true and pass x-dev-user-id header in Postman
+  // Development-only local bypass. Production startup rejects this setting.
   if (process.env.BYPASS_AUTH === 'true') {
     const devUserId = request.headers['x-dev-user-id'] as string
     if (devUserId) {

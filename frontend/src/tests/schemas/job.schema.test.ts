@@ -48,7 +48,7 @@ describe('jobSchema', () => {
   })
 
   it('rejects a missing required field', () => {
-    const { projectNo: _omit, ...rest } = validJob
+    const rest = Object.fromEntries(Object.entries(validJob).filter(([key]) => key !== 'projectNo'))
     expect(jobSchema.safeParse(rest).success).toBe(false)
   })
 

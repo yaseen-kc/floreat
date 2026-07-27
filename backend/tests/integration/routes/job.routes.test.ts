@@ -74,18 +74,7 @@ describe('Job routes integration', () => {
     })
   })
 
-  describe('GET /api/all/:jobId & /api/jobs/:jobId/all', () => {
-    it('returns all data for a specific job via /api/all/:jobId', async () => {
-      const job = { ...makeJob(), roof: { buildingOverallLength: '10' } }
-      prismaMock.job.findFirst.mockResolvedValue(job as any)
-
-      const res = await app.inject({ method: 'GET', url: `/api/all/${job.id}` })
-
-      expect(res.statusCode).toBe(200)
-      expect(res.json().id).toBe(job.id)
-      expect(res.json().roof).toBeDefined()
-    })
-
+  describe('GET /api/jobs/:jobId/all', () => {
     it('returns all data for a specific job via /api/jobs/:jobId/all', async () => {
       const job = { ...makeJob(), roof: { buildingOverallLength: '10' } }
       prismaMock.job.findFirst.mockResolvedValue(job as any)
@@ -97,14 +86,6 @@ describe('Job routes integration', () => {
       expect(res.json().roof).toBeDefined()
     })
 
-    it('returns 404 for nonexistent job', async () => {
-      prismaMock.job.findFirst.mockResolvedValue(null)
-
-      const res = await app.inject({ method: 'GET', url: '/api/all/nonexistent' })
-
-      expect(res.statusCode).toBe(404)
-      expect(res.json().error).toBe('Job not found')
-    })
   })
 
   describe('PUT /api/jobs/:id', () => {

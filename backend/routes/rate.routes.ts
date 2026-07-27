@@ -3,7 +3,8 @@
  * (`/rates`, `/rates/:id`). Rate is top-level reference data (not job-scoped),
  * so routes require authentication but no per-job ownership check.
  *
- * NOTE: any authenticated user can mutate this global pricing master-data —
+ * NOTE: rate write authorization is intentionally deferred; any authenticated
+ * user can currently mutate this global pricing master-data —
  * there is no admin/role gate in the current standards. Add one here if rate
  * writes should be restricted.
  */

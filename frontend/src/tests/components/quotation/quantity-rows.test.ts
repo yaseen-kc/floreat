@@ -12,9 +12,9 @@ describe('getPebRoofRows', () => {
         numberOfAnchorBolts: '20 MM DIA ANCHOR BOLTS',
         numberOfAnchorBoltsQuantity: 416,
       },
-    } as any
+    }
 
-    const rows = getPebRoofRows(mockCalc)
+    const rows = getPebRoofRows(mockCalc as Parameters<typeof getPebRoofRows>[0])
     const r1_9 = rows.find((r) => r.sl === '1.9')
     const r1_9_1 = rows.find((r) => r.sl === '1.9.1')
     const r1_9_2 = rows.find((r) => r.sl === '1.9.2')

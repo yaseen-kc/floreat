@@ -6,13 +6,23 @@ import { prismaMock } from '../../mocks/prisma.js'
 import { makeJob, makeAmount, makeAmountInput } from '../../helpers/factories.js'
 import { buildApp } from '../../helpers/app.js'
 import { FastifyInstance } from 'fastify'
+import { DEFAULT_AMOUNT_ITEMS } from '@floreat/shared/schemas'
 
 let app: FastifyInstance
 
 beforeAll(async () => { app = await buildApp() })
 afterAll(async () => { await app.close() })
 
-beforeEach(() => { prismaMock.job.findFirst.mockResolvedValue(makeJob() as any) })
+beforeEach(() => {
+  prismaMock.job.findFirst.mockResolvedValue(makeJob() as any)
+  prismaMock.job.findUnique.mockResolvedValue(makeJob() as any)
+  prismaMock.rate.findMany.mockResolvedValue(DEFAULT_AMOUNT_ITEMS.map((item) => ({
+    item: item.rateItem ?? item.description,
+    fabricationRate: 50,
+    erectionRate: 20,
+    loadingRate: 5,
+  })) as any)
+})
 
 describe('Amount routes integration', () => {
   describe('authentication', () => {
@@ -95,7 +105,7 @@ describe('Amount routes integration', () => {
     })
 
     it('returns 404 when not found', async () => {
-      prismaMock.amount.update.mockRejectedValue(new Error('Not found'))
+      prismaMock.job.findUnique.mockResolvedValue(null)
       const res = await app.inject({
         method: 'PUT', url: '/api/jobs/nope/amount', payload: {},
       })

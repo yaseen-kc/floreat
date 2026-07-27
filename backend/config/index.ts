@@ -21,6 +21,12 @@ export function resolveCorsOrigin(env: NodeJS.ProcessEnv): string[] {
   return origins
 }
 
+export function assertSafeAuthConfig(env: NodeJS.ProcessEnv): void {
+  if (env.NODE_ENV === 'production' && env.BYPASS_AUTH === 'true') {
+    throw new Error('BYPASS_AUTH is development-only and must be disabled in production.')
+  }
+}
+
 /**
  * Centralized app configuration.
  * Reads from environment variables with sensible defaults for local development.
@@ -39,3 +45,5 @@ export const config = {
     enabled: process.env.NODE_ENV !== 'production' && process.env.SWAGGER_UI !== 'false',
   },
 }
+
+assertSafeAuthConfig(process.env)

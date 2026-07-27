@@ -7,13 +7,16 @@ import type { CreateAmountInput, UpdateAmountInput } from '../schemas/amount.sch
 import { computeJobAmount } from './amount-calc.helper.js'
 
 /** Creates or updates the Amount for a job, deriving server-authoritative calculations. */
-export async function upsertAmount(jobId: string, data: CreateAmountInput) {
+export async function upsertAmount(jobId: string, _data: CreateAmountInput) {
   const computed = await computeJobAmount(jobId)
-  const merged = { ...data, ...(computed ?? {}) }
+  if (!computed) return null
+  // Amount fields are derived from the canonical job/rate snapshot. Accepting
+  // client values here would let a caller replace quantities, rates, or totals.
+  const merged = computed
   return prisma.amount.upsert({
     where: { jobId },
-    create: { jobId, ...merged },
-    update: { ...merged },
+    create: { jobId, ...merged, calculationVersion: 'amount-v1', sourceUpdatedAt: new Date(), rateVersion: 1, isStale: false },
+    update: { ...merged, calculationVersion: 'amount-v1', sourceUpdatedAt: new Date(), rateVersion: 1, isStale: false },
   })
 }
 
@@ -28,26 +31,18 @@ export async function getAmounts(userId: string, page: number, pageSize: number)
   return { data, total, page, pageSize }
 }
 
-/** Finds an amount by its associated job ID. Calculates & provisions defaults server-side if absent. */
+/** Finds an amount by its associated job ID without creating or recalculating rows. */
 export async function getAmountByJobId(jobId: string) {
-  const amt = await prisma.amount.findUnique({ where: { jobId } })
-  if (amt) return amt
-
-  const computed = await computeJobAmount(jobId)
-  if (!computed) return null
-
-  return prisma.amount.upsert({
-    where: { jobId },
-    create: { jobId, ...computed },
-    update: { ...computed },
-  })
+  return prisma.amount.findUnique({ where: { jobId } })
 }
 
 /** Updates an amount by job ID. Throws P2025 if not found. */
 export async function updateAmount(jobId: string, data: UpdateAmountInput) {
+  const computed = await computeJobAmount(jobId)
+  if (!computed) return null
   return prisma.amount.update({
     where: { jobId },
-    data,
+    data: { ...computed, calculationVersion: 'amount-v1', sourceUpdatedAt: new Date(), rateVersion: 1, isStale: false },
   })
 }
 

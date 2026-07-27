@@ -30,7 +30,7 @@ export interface QuantityTableSectionProps {
   title: string
   icon: React.ReactNode
   rows: RowDef[]
-  calculatedData?: Record<string, any>
+  calculatedData?: Record<string, unknown>
   onDraftChange?: (sectionKey: QuantitySectionKey, draft: Record<string, string>) => void
 }
 
@@ -67,6 +67,8 @@ export function QuantityTableSection({ sectionKey, title, icon, rows, calculated
       onDraftChange?.(sectionKey, merged)
       return merged
     })
+  // Hydration intentionally seeds local draft state once per server snapshot.
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [initialData, rows, sectionKey, onDraftChange])
 
   const onEdit = (field: string, value: string) => {
@@ -85,37 +87,37 @@ export function QuantityTableSection({ sectionKey, title, icon, rows, calculated
       let result: unknown
       switch (sectionKey) {
         case 'pebRoof': {
-          const payload = buildPebRoofPayload(calculatedData, initialData, draft)
+          const payload = buildPebRoofPayload(calculatedData as Parameters<typeof buildPebRoofPayload>[0], initialData, draft)
           result = await pebRoofMut.mutateAsync({ jobId, payload })
           break
         }
         case 'cladding': {
-          const payload = buildCladdingPayload(calculatedData, initialData, draft)
+          const payload = buildCladdingPayload(calculatedData as Parameters<typeof buildCladdingPayload>[0], initialData, draft)
           result = await claddingMut.mutateAsync({ jobId, payload })
           break
         }
         case 'canopy': {
-          const payload = buildCanopyPayload(calculatedData, initialData, draft)
+          const payload = buildCanopyPayload(calculatedData as Parameters<typeof buildCanopyPayload>[0], initialData, draft)
           result = await canopyMut.mutateAsync({ jobId, payload })
           break
         }
         case 'accessories': {
-          const payload = buildAccessoriesPayload(calculatedData, initialData, draft)
+          const payload = buildAccessoriesPayload(calculatedData as Parameters<typeof buildAccessoriesPayload>[0], initialData, draft)
           result = await accessoriesMut.mutateAsync({ jobId, payload })
           break
         }
         case 'mezzanine': {
-          const payload = buildMezzaninePayload(calculatedData, initialData, draft)
+          const payload = buildMezzaninePayload(calculatedData as Parameters<typeof buildMezzaninePayload>[0], initialData, draft)
           result = await mezzanineMut.mutateAsync({ jobId, payload })
           break
         }
         case 'stair': {
-          const payload = buildStairPayload(calculatedData, initialData, draft)
+          const payload = buildStairPayload(calculatedData as Parameters<typeof buildStairPayload>[0], initialData, draft)
           result = await stairMut.mutateAsync({ jobId, payload })
           break
         }
         case 'additionalBolts': {
-          const payload = buildAdditionalBoltsPayload(calculatedData, initialData, draft)
+          const payload = buildAdditionalBoltsPayload(calculatedData as Parameters<typeof buildAdditionalBoltsPayload>[0], initialData, draft)
           result = await additionalBoltsMut.mutateAsync({ jobId, payload })
           break
         }
@@ -140,7 +142,7 @@ export function QuantityTableSection({ sectionKey, title, icon, rows, calculated
       title={title}
       rows={rows}
       sectionData={initialData as unknown as Record<string, string | number | boolean | null | undefined> | null}
-      calculatedData={calculatedData}
+      calculatedData={calculatedData as Record<string, string | number | boolean | null | undefined> | undefined}
       draft={draft}
       onEdit={onEdit}
       onSave={onSave}

@@ -39,7 +39,12 @@ describe('Quantity routes integration', () => {
       expect(res.statusCode).toBe(200)
       expect(res.json().id).toBe(quantity.id)
       expect(prismaMock.quantity.upsert).toHaveBeenCalledWith(
-        expect.objectContaining({ create: { jobId: 'job-1', pebRoof: { create: expect.any(Object) } } }),
+        expect.objectContaining({
+          create: expect.objectContaining({
+            jobId: 'job-1',
+            pebRoof: { create: expect.any(Object) },
+          }),
+        }),
       )
     })
 

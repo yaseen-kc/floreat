@@ -301,7 +301,56 @@ Read-only local runtime on backend `3100` and Vite `5173`:
 6. **Reduce structural debt:** normalize amount line items and quantity sections behind compatibility DTOs, eliminate repeated services/API modules with established generic factories only where behavior is truly identical, and add calculation/rate versioning.
 7. **Repair repository/documentation hygiene:** select one lockfile/package manager, remove scratch/extraction artifacts, restore or supersede design assets, update known deviations, and publish production-safe deployment guidance.
 
+## Remediation status - 2026-07-28
+
+This section supersedes the implementation and verification claims in sections 8-14 where they describe the pre-remediation code. The original findings remain useful as the audit baseline.
+
+### Completed
+
+- Amount and quantity `GET` handlers are read-only; they no longer create or recalculate database rows.
+- Amount and quantity writes calculate from canonical job data. Client-provided derived quantities, rates, and amounts cannot replace server calculations.
+- Calculation relation loads use deterministic ordering and stable keyed lookups where the equations require indexed records.
+- Missing required amount rates now fail clearly instead of silently producing zero-rate lines.
+- Amount and quantity rows now expose `calculationVersion`, `sourceUpdatedAt`, `rateVersion`, and `isStale` provenance fields.
+- Stair and mezzanine migrations preserve existing identifiers/data and add coded-child uniqueness where supported.
+- The legacy `/api/all/:jobId` route was removed. OpenAPI and Postman artifacts were regenerated and checked.
+- API authentication documentation now describes Clerk bearer tokens and labels `BYPASS_AUTH` as local development only. Production startup rejects the bypass flag.
+- Frontend quantity payloads use schema-derived types. The frontend lint, hook dependency, effect, Fast Refresh, and unused-value issues found in the audit were corrected.
+- Hydration/save behavior and related frontend API invalidation contracts were updated, and stale integration expectations were brought in line with server-authoritative behavior.
+- Repository hygiene was improved by retaining npm as the package manager, removing the duplicate pnpm lockfile, and removing scratch/diagnostic artifacts.
+
+### Deferred or not yet implemented
+
+These are intentionally not claimed as complete:
+
+1. **Clerk/admin authorization for rate mutations is deferred.** Authenticated users can still mutate the global rate master. Add role/organization authorization before production use.
+2. **Official workbook parity is still pending.** The original workbook and equation attachment were unavailable. Current calculator fixtures are provisional and based on checked-in reference equations; replace them with the official workbook oracle, including the documented N14 quirk, when supplied.
+3. **Disposable PostgreSQL migration rehearsal was not run.** `prisma validate` passes, but the complete migration chain still needs to be replayed against representative legacy data and checked for preservation, constraints, and decimal values.
+4. **Source-change invalidation is incomplete.** The provenance columns exist, but all upstream roof/mezzanine/stair/canopy/accessory/joint/rate writes do not yet atomically recompute or mark dependent amount/quantity rows stale. This must be completed before treating stored quotations as continuously current.
+5. **The calculation write path is not fully transactional.** Source snapshot reads, rate reads, calculation, and derived-row persistence are not yet one Prisma transaction with a consistent source/rate snapshot.
+6. **Storage normalization is incomplete.** Amounts remain a compatibility flat model. Stable line-item codes, explicit units/order, manual/source flags, immutable rate codes, and a real rate-book/version snapshot still need a normalized persistence model and DTO migration.
+7. **CI and production deployment gates are not fully added.** The checks pass locally, but CI still needs enforced build, typecheck, lint, tests, docs, Prisma validation, and migration-rehearsal jobs, along with separate production TLS/secrets/backup/rollback guidance.
+
+### Current verification
+
+| Check | Result |
+|---|---|
+| Shared tests | PASS - 99 tests |
+| Backend tests | PASS - 357 tests |
+| Frontend tests | PASS - 618 tests |
+| Frontend lint | PASS |
+| Workspace typecheck | PASS |
+| Production build | PASS |
+| OpenAPI documentation check | PASS - 98 operations |
+| Prisma validation | PASS |
+| Migration rehearsal | NOT RUN |
+| Official workbook parity | PENDING |
+
+The application is materially safer than the baseline audit state, but rate authorization, authoritative freshness after source changes, transactional snapshotting, official calculation parity, migration rehearsal, and CI enforcement remain release-blocking follow-up work.
+
 ## 14. Final assessment
+
+The assessment below records the pre-remediation baseline. For the current implementation status and remaining release blockers, see the remediation status section above.
 
 Architectural fidelity is mixed: the repository follows the intended workspace, route/controller/service, shared-schema, React Query, Zustand, and design-token direction, but the most important invariant - server-authoritative, reproducible quotation math - is not currently enforced end to end. Scalability is acceptable for a small internal tool but not for multi-tenant financial workflows because pricing is global and mutable, derived snapshots have no provenance, and the flat schema/API surface is expanding rapidly.
 

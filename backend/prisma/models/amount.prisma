@@ -5,6 +5,11 @@ model Amount {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  calculationVersion String @default("amount-v1")
+  sourceUpdatedAt   DateTime?
+  rateVersion       Int?
+  isStale           Boolean  @default(false)
+
   steelStructuresQuantity          Decimal? @db.Decimal(10, 3)
   steelStructuresFabricationRate   Decimal? @db.Decimal(10, 3)
   steelStructuresErrectionRate     Decimal? @db.Decimal(10, 3)

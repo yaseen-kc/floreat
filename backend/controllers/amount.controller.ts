@@ -13,6 +13,7 @@ export async function upsert(request: FastifyRequest, reply: FastifyReply) {
   const result = createAmountSchema.safeParse(request.body)
   if (!result.success) return reply.status(400).send({ error: result.error.flatten() })
   const amount = await amountService.upsertAmount(jobId, result.data)
+  if (!amount) return sendError(reply, 404, 'Job not found')
   return reply.status(200).send(amount)
 }
 
@@ -38,9 +39,13 @@ export async function update(request: FastifyRequest, reply: FastifyReply) {
   if (!result.success) return reply.status(400).send({ error: result.error.flatten() })
   try {
     const amount = await amountService.updateAmount(jobId, result.data)
+    if (!amount) return sendError(reply, 404, 'Job not found')
     return reply.send(amount)
-  } catch {
-    return sendError(reply, 404, 'Amount not found')
+  } catch (err: unknown) {
+    if (err && typeof err === 'object' && 'code' in err && err.code === 'P2025') {
+      return sendError(reply, 404, 'Amount not found')
+    }
+    throw err
   }
 }
 

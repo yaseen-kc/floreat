@@ -23,7 +23,9 @@ function mergeSectionData(computed: Record<string, any> | null, data: CreateQuan
     const computedSec = computed?.[key]
     const dataSec = data[key]
     if (computedSec || dataSec) {
-      merged[key] = { ...(computedSec ?? {}), ...(dataSec ?? {}) }
+      // Server calculations win. Manual fields are represented explicitly by
+      // the section schemas and are the only client values retained here.
+      merged[key] = { ...(dataSec ?? {}), ...(computedSec ?? {}) }
     }
   }
   return merged
@@ -54,8 +56,8 @@ export async function upsertQuantity(jobId: string, data: CreateQuantityInput) {
 
   return prisma.quantity.upsert({
     where: { jobId },
-    create: { jobId, ...buildCreateSections(merged) } as Prisma.QuantityUncheckedCreateInput,
-    update: buildUpsertSections(merged) as Prisma.QuantityUpdateInput,
+    create: { jobId, calculationVersion: 'quantity-v1', sourceUpdatedAt: new Date(), rateVersion: 1, isStale: false, ...buildCreateSections(merged) } as Prisma.QuantityUncheckedCreateInput,
+    update: { calculationVersion: 'quantity-v1', sourceUpdatedAt: new Date(), rateVersion: 1, isStale: false, ...buildUpsertSections(merged) } as Prisma.QuantityUpdateInput,
     include: includeSections,
   })
 }
@@ -70,21 +72,10 @@ export async function getQuantities(userId: string, page: number, pageSize: numb
   return { data, total, page, pageSize }
 }
 
-/** Finds a quantity by its associated job ID. Calculates & provisions defaults server-side if absent. */
+/** Finds a quantity by its associated job ID without creating rows on GET. */
 export async function getQuantityByJobId(jobId: string) {
   const q = await prisma.quantity.findUnique({ where: { jobId }, include: includeSections })
-  if (q) return q
-
-  const computed = await computeJobQuantities(jobId)
-  if (!computed) return null
-
-  const merged = mergeSectionData(computed, {})
-  return prisma.quantity.upsert({
-    where: { jobId },
-    create: { jobId, ...buildCreateSections(merged) } as Prisma.QuantityUncheckedCreateInput,
-    update: buildUpsertSections(merged) as Prisma.QuantityUpdateInput,
-    include: includeSections,
-  })
+  return q
 }
 
 /** Updates a quantity by job ID. Replaces each provided section wholesale. Throws P2025 if not found. */
@@ -94,7 +85,7 @@ export async function updateQuantity(jobId: string, data: UpdateQuantityInput) {
 
   return prisma.quantity.update({
     where: { jobId },
-    data: buildUpsertSections(merged) as Prisma.QuantityUpdateInput,
+    data: { calculationVersion: 'quantity-v1', sourceUpdatedAt: new Date(), rateVersion: 1, isStale: false, ...buildUpsertSections(merged) } as Prisma.QuantityUpdateInput,
     include: includeSections,
   })
 }
