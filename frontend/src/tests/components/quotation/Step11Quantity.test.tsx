@@ -10,31 +10,31 @@ vi.mock('@/api/quotation/quantity/getQuantity', () => ({
   useQuantity: () => ({ data: mocks.quantityData }),
 }))
 
-vi.mock('@/api/quotation/quantity-peb-roof/postQuantityPebRoof', () => ({
+vi.mock('@/api/quotation/quantity/quantity-peb-roof/postQuantityPebRoof', () => ({
   useUpsertQuantityPebRoof: () => ({ mutateAsync: mocks.upsertPebRoofMutateAsync, isPending: false }),
 }))
 
-vi.mock('@/api/quotation/quantity-cladding/postQuantityCladding', () => ({
+vi.mock('@/api/quotation/quantity/quantity-cladding/postQuantityCladding', () => ({
   useUpsertQuantityCladding: () => ({ mutateAsync: vi.fn(), isPending: false }),
 }))
 
-vi.mock('@/api/quotation/quantity-canopy/postQuantityCanopy', () => ({
+vi.mock('@/api/quotation/quantity/quantity-canopy/postQuantityCanopy', () => ({
   useUpsertQuantityCanopy: () => ({ mutateAsync: vi.fn(), isPending: false }),
 }))
 
-vi.mock('@/api/quotation/quantity-accessories/postQuantityAccessories', () => ({
+vi.mock('@/api/quotation/quantity/quantity-accessories/postQuantityAccessories', () => ({
   useUpsertQuantityAccessories: () => ({ mutateAsync: vi.fn(), isPending: false }),
 }))
 
-vi.mock('@/api/quotation/quantity-mezzanine/postQuantityMezzanine', () => ({
+vi.mock('@/api/quotation/quantity/quantity-mezzanine/postQuantityMezzanine', () => ({
   useUpsertQuantityMezzanine: () => ({ mutateAsync: vi.fn(), isPending: false }),
 }))
 
-vi.mock('@/api/quotation/quantity-stair/postQuantityStair', () => ({
+vi.mock('@/api/quotation/quantity/quantity-stair/postQuantityStair', () => ({
   useUpsertQuantityStair: () => ({ mutateAsync: vi.fn(), isPending: false }),
 }))
 
-vi.mock('@/api/quotation/quantity-additional-bolts/postQuantityAdditionalBolts', () => ({
+vi.mock('@/api/quotation/quantity/quantity-additional-bolts/postQuantityAdditionalBolts', () => ({
   useUpsertQuantityAdditionalBolts: () => ({ mutateAsync: vi.fn(), isPending: false }),
 }))
 

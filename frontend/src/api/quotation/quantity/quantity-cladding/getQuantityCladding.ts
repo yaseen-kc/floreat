@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query'
 import { useAuth } from '@clerk/react'
 import { apiFetch } from '@/lib/api'
-import type { QuantityCladding } from '../quantity/getQuantity'
+import type { QuantityCladding } from '../getQuantity'
 import { quantityCladdingKeys } from './queryKeys'
 
 export type { QuantityCladding }

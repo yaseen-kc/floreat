@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query'
 import { useAuth } from '@clerk/react'
 import { apiFetch } from '@/lib/api'
-import type { QuantityAccessories } from '../quantity/getQuantity'
+import type { QuantityAccessories } from '../getQuantity'
 import { quantityAccessoriesKeys } from './queryKeys'
 
 export type { QuantityAccessories }
