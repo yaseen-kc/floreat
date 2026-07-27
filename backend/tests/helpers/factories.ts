@@ -170,7 +170,7 @@ export function makeMezzanine(overrides = {}) {
 
 export function makeStairItem(overrides = {}) {
   return {
-    code: 'STAIR-1',
+    code: 'STAIR_1',
     typeOfStep: 'CHQ_PLATE_6MM' as const,
     location: 'MEZ_1',
     startingFrom: 'GROUND' as const,
@@ -530,14 +530,15 @@ export function makeQuantity(overrides = {}) {
   }
 }
 
-export function makeAmountItem(overrides = {}) {
+export function makeAmountInput(overrides = {}) {
   return {
-    description: 'Fabrication',
-    unit: 'KG' as const,
-    quantity: 1000,
-    amountFabrication: 85000,
-    amountErection: 12000,
-    amountLoading: 3000,
+    steelStructuresQuantity: 100,
+    steelStructuresFabricationRate: 50,
+    steelStructuresErrectionRate: 20,
+    steelStructuresLoadingRate: 5,
+    steelStructuresFabricationAmount: 5000,
+    steelStructuresErrectionAmount: 2000,
+    steelStructuresLoadingAmount: 500,
     ...overrides,
   }
 }
@@ -546,26 +547,10 @@ export function makeAmount(overrides = {}) {
   return {
     id: faker.string.uuid(),
     jobId: faker.string.uuid(),
-    // Server-derived quantity columns (Decimal → serialised as strings over the
-    // wire). Default to null; override per test to assert derived values.
-    gutterQuantity: null,
-    downTakeQuantity: null,
-    dripTrimQuantity: null,
-    gableEndFlashingQuantity: null,
-    cornerFlashQuantity: null,
-    ridgeQuantity: null,
-    // Per-field manual-override flags (default false → server-derived).
-    gutterQuantityManual: false,
-    downTakeQuantityManual: false,
-    dripTrimQuantityManual: false,
-    gableEndFlashingQuantityManual: false,
-    cornerFlashQuantityManual: false,
-    ridgeQuantityManual: false,
-    doors: [],
-    windows: [],
-    foldedPlates: [],
+    ...makeAmountInput(),
     createdAt: new Date(),
     updatedAt: new Date(),
     ...overrides,
   }
 }
+

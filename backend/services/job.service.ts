@@ -62,7 +62,7 @@ export function getJobWithAllData(id: string, userId: string) {
           additionalBolts: true,
         },
       },
-      amount: { include: { items: true } },
+      amount: true,
     },
   })
 }

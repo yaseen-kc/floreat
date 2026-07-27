@@ -12,7 +12,7 @@ const serverStair = (): Stair => ({
     {
       id: 'item-1',
       stairId: 'stair-1',
-      code: 'STAIR-1',
+      code: 'STAIR_1',
       typeOfStep: 'TUBE',
       location: 'MEZ_1',
       startingFrom: 'GROUND',
@@ -36,7 +36,7 @@ describe('mapStairResponseToDraft', () => {
     expect(item.numberOfMidLanding).toBe(2)
     expect(item.width).toBeUndefined()
     expect(item.unitWeightOfStringer).toBeUndefined()
-    expect(item.code).toBe('STAIR-1')
+    expect(item.code).toBe('STAIR_1')
     expect(item.typeOfStep).toBe('TUBE')
     expect(item.location).toBe('MEZ_1')
   })

@@ -25,6 +25,8 @@ import { useShallow } from 'zustand/react/shallow'
 export function Step12Quantity() {
   useQuantityHydration()
 
+  const setQuantityDraft = useQuotationStore((s) => s.setQuantityDraft)
+
   const { roof, joint, canopy, accessories, mezzanine, stair } = useQuotationStore(
     useShallow((s) => ({
       roof: s.roof,
@@ -75,13 +77,13 @@ export function Step12Quantity() {
         </p>
       </div>
       <div className="space-y-6">
-        <QuantityTableSection sectionKey="pebRoof" title="PEB Roof" icon={<Layers />} rows={pebRoofRows} calculatedData={pebCalculatedNested} />
-        <QuantityTableSection sectionKey="cladding" title="Cladding" icon={<LayoutGrid />} rows={claddingRows} calculatedData={claddingCalc} />
-        <QuantityTableSection sectionKey="canopy" title="Canopy" icon={<Umbrella />} rows={canopyRows} calculatedData={canopyCalc} />
-        <QuantityTableSection sectionKey="accessories" title="Accessories" icon={<Wrench />} rows={accessoriesRows} calculatedData={accessoriesCalc} />
-        <QuantityTableSection sectionKey="mezzanine" title="Mezzanine" icon={<Layers2 />} rows={mezzanineRows} calculatedData={mezzanineCalc} />
-        <QuantityTableSection sectionKey="stair" title="Stair" icon={<MoveUpRight />} rows={stairRows} calculatedData={stairCalc} />
-        <QuantityTableSection sectionKey="additionalBolts" title="Additional Bolts" icon={<Nut />} rows={additionalBoltsRows} calculatedData={additionalBoltsCalc} />
+        <QuantityTableSection sectionKey="pebRoof" title="PEB Roof" icon={<Layers />} rows={pebRoofRows} calculatedData={pebCalculatedNested} onDraftChange={setQuantityDraft} />
+        <QuantityTableSection sectionKey="cladding" title="Cladding" icon={<LayoutGrid />} rows={claddingRows} calculatedData={claddingCalc} onDraftChange={setQuantityDraft} />
+        <QuantityTableSection sectionKey="canopy" title="Canopy" icon={<Umbrella />} rows={canopyRows} calculatedData={canopyCalc} onDraftChange={setQuantityDraft} />
+        <QuantityTableSection sectionKey="accessories" title="Accessories" icon={<Wrench />} rows={accessoriesRows} calculatedData={accessoriesCalc} onDraftChange={setQuantityDraft} />
+        <QuantityTableSection sectionKey="mezzanine" title="Mezzanine" icon={<Layers2 />} rows={mezzanineRows} calculatedData={mezzanineCalc} onDraftChange={setQuantityDraft} />
+        <QuantityTableSection sectionKey="stair" title="Stair" icon={<MoveUpRight />} rows={stairRows} calculatedData={stairCalc} onDraftChange={setQuantityDraft} />
+        <QuantityTableSection sectionKey="additionalBolts" title="Additional Bolts" icon={<Nut />} rows={additionalBoltsRows} calculatedData={additionalBoltsCalc} onDraftChange={setQuantityDraft} />
       </div>
     </section>
   )

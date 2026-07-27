@@ -95,7 +95,7 @@ describe('job.service', () => {
               additionalBolts: true,
             },
           },
-          amount: { include: { items: true } },
+          amount: true,
         },
       })
     })

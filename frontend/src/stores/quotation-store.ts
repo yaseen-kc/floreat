@@ -23,6 +23,7 @@ import {
   type CreateAccessoriesInput,
 } from '@/schemas/accessories.schema'
 import type { Quantity } from '@/api/quotation/quantity/getQuantity'
+import type { Amount } from '@/api/quotation/amount/getAmount'
 import {
   type CreateJointInput,
   jointBoltRoofItemSchema,
@@ -291,6 +292,10 @@ interface QuotationState {
   joint: JointDraft
   spec: SpecDraft
   quantity: Quantity | null
+  amount: Amount | null
+  quantityDrafts: Record<string, Record<string, string>>
+  setQuantityDraft: (sectionKey: string, draft: Record<string, string>) => void
+  setAmount: (amount: Amount | null) => void
   showValidation: boolean
   jobId: string | null
   setProjectInfo: (v: Partial<ProjectInfo>) => void
@@ -433,6 +438,8 @@ export const useQuotationStore = create<QuotationState>()(
       showValidation: false,
       jobId: null,
       quantity: null,
+      amount: null,
+      quantityDrafts: {},
       projectInfo: createDefaultProjectInfo(),
       roof: createDefaultRoof(),
       roofSectionsEnabled: createDefaultRoofSections(),
@@ -444,7 +451,16 @@ export const useQuotationStore = create<QuotationState>()(
       joint: createDefaultJoint(),
       spec: createDefaultSpec(),
 
+      setAmount: (amount) => set({ amount }),
+
       setProjectInfo: (v) => set((s) => ({ projectInfo: { ...s.projectInfo, ...v } })),
+      setQuantityDraft: (sectionKey, draft) =>
+        set((s) => ({
+          quantityDrafts: {
+            ...s.quantityDrafts,
+            [sectionKey]: draft,
+          },
+        })),
 
       // `sideColumnsWidthHeight`, `sideColumnsMidFrameCount` and
       // `sideColumnsEndFrameCount` are derived, never user-entered: recompute
@@ -521,6 +537,8 @@ export const useQuotationStore = create<QuotationState>()(
         showValidation: false,
         jobId: null,
         quantity: null,
+        amount: null,
+        quantityDrafts: {},
         projectInfo: createDefaultProjectInfo(),
         roof: createDefaultRoof(),
         roofSectionsEnabled: createDefaultRoofSections(),

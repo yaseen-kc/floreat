@@ -1,6 +1,9 @@
 import { AmountTable } from '@/components/quotation/sections/amount/AmountTable'
+import { useAmountHydration } from '@/hooks/useAmountHydration'
 
 export function Step11Amount() {
+  useAmountHydration()
+
   return (
     <section>
       <div className="mb-5">
@@ -14,3 +17,4 @@ export function Step11Amount() {
     </section>
   )
 }
+

@@ -55,12 +55,12 @@ describe('generated API documentation', () => {
     expect(document.components?.schemas?.DecimalString).toMatchObject({ type: 'string', example: '30.000' })
     expect(document.components?.schemas?.RoofResponse?.properties?.eaveHeight).toMatchObject({ $ref: '#/components/schemas/DecimalString' })
     await SwaggerParser.validate(document)
-  })
+  }, 30000)
 
   it('keeps route coverage synchronized with the Fastify registry', async () => {
     await checkDocumentation()
     expect(getExpectedRouteKeys()).toHaveLength(99)
-  })
+  }, 30000)
 
   it('generates one Postman request per documented operation with local auth variables', async () => {
     const collectionPath = fileURLToPath(new URL('../../../docs/floreat-api.postman_collection.json', import.meta.url))

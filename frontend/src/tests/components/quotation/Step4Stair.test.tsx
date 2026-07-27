@@ -36,6 +36,6 @@ describe('Step4Stair', () => {
     await user.click(screen.getByRole('button', { name: /add staircase/i }))
     expect(screen.getByText('Staircase 1')).toBeInTheDocument()
     await waitFor(() => expect(useQuotationStore.getState().stair.stairs).toHaveLength(1))
-    expect(useQuotationStore.getState().stair.stairs[0].code).toBe('STAIR-1')
+    expect(useQuotationStore.getState().stair.stairs[0].code).toBe('STAIR_1')
   })
 })
