@@ -25,7 +25,7 @@ import { STEPS, STEP_COUNT } from '@/components/quotation/steps'
 // Static per-step fill widths for the mobile progress bar. Kept as literal
 // class strings (not built at runtime) so Tailwind's JIT emits them. Indexed by
 // currentStep - 1; the last step fills the track completely.
-const PROGRESS_WIDTHS = ['w-[9%]', 'w-[18%]', 'w-[27%]', 'w-[36%]', 'w-[45%]', 'w-[54%]', 'w-[63%]', 'w-[72%]', 'w-[81%]', 'w-[90%]', 'w-full']
+const PROGRESS_WIDTHS = ['w-[8%]', 'w-[15%]', 'w-[23%]', 'w-[31%]', 'w-[38%]', 'w-[46%]', 'w-[54%]', 'w-[62%]', 'w-[69%]', 'w-[77%]', 'w-[85%]', 'w-[92%]', 'w-full']
 
 export function WizardStepper() {
   const { currentStep, goStep, validateStep, resetQuotation } = useQuotationStore(

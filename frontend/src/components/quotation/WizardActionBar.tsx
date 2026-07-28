@@ -506,15 +506,21 @@ export function WizardActionBar() {
       return
     }
 
-    // Final step (Amount): upsert the canonical 36 items then finalise.
-    if (isLast) {
+    // Step 12 (Amount): upsert the canonical 36 items then advance to Quotation.
+    if (currentStep === 12) {
       try {
         await submitAmount()
-        resetQuotation()
-        navigate('/')
+        goStep(13)
       } catch {
         // Error toast already shown; stay on Step 12.
       }
+      return
+    }
+
+    // Final step (Quotation): the document is read-only, so finalise the draft.
+    if (isLast) {
+      resetQuotation()
+      navigate('/')
       return
     }
 

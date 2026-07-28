@@ -23,6 +23,7 @@ export const STEPS: WizardStep[] = [
   { label: 'Rate Master', sub: 'RATE' },
   { label: 'Quantity', sub: 'QTY' },
   { label: 'Amount', sub: 'AMOUNT' },
+  { label: 'Quotation', sub: 'QUOTE' },
 ]
 
 /** Total number of wizard steps. */

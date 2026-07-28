@@ -585,7 +585,7 @@ describe('WizardActionBar Step 11 quantity persistence', () => {
 })
 
 
-describe('WizardActionBar Step 12 amount finalise', () => {
+describe('WizardActionBar Step 12 amount advance', () => {
   beforeEach(() => {
     localStorage.clear()
     useQuotationStore.getState().resetQuotation()
@@ -598,14 +598,47 @@ describe('WizardActionBar Step 12 amount finalise', () => {
     useQuotationStore.setState({ currentStep: 12 })
   })
 
-  it('finalises and navigates home on Finish & save', async () => {
+  it('saves the amount then advances to the quotation step', async () => {
     mocks.upsertAmountMutateAsync.mockResolvedValueOnce({ id: 'amount-1' })
+    render(<WizardActionBar />)
+
+    await userEvent.click(screen.getByRole('button', { name: /continue/i }))
+
+    await waitFor(() => expect(useQuotationStore.getState().currentStep).toBe(13))
+    expect(mocks.upsertAmountMutateAsync).toHaveBeenCalled()
+    expect(mocks.navigate).not.toHaveBeenCalled()
+  })
+
+  it('stays on Step 12 when the amount upsert fails', async () => {
+    mocks.upsertAmountMutateAsync.mockRejectedValueOnce(new Error('boom'))
+    render(<WizardActionBar />)
+
+    await userEvent.click(screen.getByRole('button', { name: /continue/i }))
+
+    await waitFor(() => expect(mocks.toastError).toHaveBeenCalled())
+    expect(useQuotationStore.getState().currentStep).toBe(12)
+  })
+})
+
+
+describe('WizardActionBar Step 13 quotation finalise', () => {
+  beforeEach(() => {
+    localStorage.clear()
+    useQuotationStore.getState().resetQuotation()
+    mocks.navigate.mockReset()
+    mocks.upsertAmountMutateAsync.mockReset()
+    useQuotationStore.getState().setJobId('job-1')
+    useQuotationStore.setState({ currentStep: 13 })
+  })
+
+  it('finalises and navigates home on Finish & save', async () => {
     render(<WizardActionBar />)
 
     await userEvent.click(screen.getByRole('button', { name: /finish & save/i }))
 
     await waitFor(() => expect(mocks.navigate).toHaveBeenCalledWith('/'))
     expect(useQuotationStore.getState().currentStep).toBe(1)
+    expect(mocks.upsertAmountMutateAsync).not.toHaveBeenCalled()
   })
 })
 
