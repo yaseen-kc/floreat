@@ -1,23 +1,14 @@
 import { useQuotationStore } from '@/stores/quotation-store'
-import type { RoofDraft } from '@/stores/quotation-store'
+import { normalizeSidewalls, SIDEWALL_SIDES, type RoofDraft } from '@/stores/quotation-store'
 import { useShallow } from 'zustand/react/shallow'
 import { CollapsibleSection } from '@/components/quotation/shared/CollapsibleSection'
 import { NumberField } from '@/components/quotation/shared/NumberField'
 import { SelectField, type SelectFieldOption } from '@/components/quotation/shared/SelectField'
-import { Button } from '@/components/ui/button'
-import { EmptyState } from '@/components/ui/empty-state'
-import { Fence, Plus, Trash2 } from 'lucide-react'
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
+import { Fence } from 'lucide-react'
 
 /** A single sidewall row in the draft (inline `sidewalls` array element). */
 type SidewallRow = NonNullable<RoofDraft['sidewalls']>[number]
-
-/** Human-readable labels for the sidewall side enum. */
-const SIDE_OPTIONS: SelectFieldOption[] = [
-  { value: 'FRONT', label: 'Front' },
-  { value: 'BACK', label: 'Back' },
-  { value: 'RIGHT', label: 'Right' },
-  { value: 'LEFT', label: 'Left' },
-]
 
 /** Human-readable labels for the wall-type enum. */
 const WALL_TYPE_OPTIONS: SelectFieldOption[] = [
@@ -29,7 +20,12 @@ const WALL_TYPE_OPTIONS: SelectFieldOption[] = [
 ]
 
 /** A fresh sidewall row — numeric fields start at 0 so validation flags them. */
-const newRow = (): SidewallRow => ({ side: 'FRONT', wallType: 'BRICK', thickness: 0, height: 0 })
+const SIDE_LABELS: Record<(typeof SIDEWALL_SIDES)[number], string> = {
+  FRONT: 'Front',
+  BACK: 'Back',
+  RIGHT: 'Right',
+  LEFT: 'Left',
+}
 
 export function Sidewalls() {
   const { roof, setRoof, enabled, toggleRoofSection, showValidation } = useQuotationStore(
@@ -41,10 +37,8 @@ export function Sidewalls() {
       showValidation: s.showValidation,
     })),
   )
-  const rows = roof.sidewalls ?? []
+  const rows = normalizeSidewalls(roof.sidewalls)
 
-  const addRow = () => setRoof({ sidewalls: [...rows, newRow()] })
-  const removeRow = (index: number) => setRoof({ sidewalls: rows.filter((_, i) => i !== index) })
   const updateRow = (index: number, patch: Partial<SidewallRow>) =>
     setRoof({ sidewalls: rows.map((row, i) => (i === index ? { ...row, ...patch } : row)) })
 
@@ -56,38 +50,28 @@ export function Sidewalls() {
       onToggle={(e) => toggleRoofSection('sidewalls', e)}
     >
       <div className="flex flex-col gap-[18px] desktop:gap-6">
-        {rows.length === 0 && (
-          <EmptyState
-            icon={<Fence />}
-            title="No sidewalls added yet."
-            description="Add a sidewall to include it in the roof."
-          />
-        )}
-
-        {rows.map((row, index) => (
-          <div key={index} className="border border-border rounded-[12px] p-[18px] max-[640px]:p-3">
-            <div className="flex items-center justify-between mb-3">
-              <span className="text-xs font-semibold text-muted-foreground">Sidewall {index + 1}</span>
-              <Button
-                type="button"
-                variant="destructive"
-                size="icon-sm"
-                aria-label={`Remove sidewall ${index + 1}`}
-                onClick={() => removeRow(index)}
-              >
-                <Trash2 />
-              </Button>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-[18px] desktop:gap-6">
+        <Table className="min-w-[720px]">
+            <TableHeader>
+              <TableRow>
+                <TableHead scope="col" className="w-20">No</TableHead>
+                <TableHead scope="col">Side</TableHead>
+                <TableHead scope="col">Type</TableHead>
+                <TableHead scope="col">Thick</TableHead>
+                <TableHead scope="col">Height</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {rows.map((row, index) => (
+                <TableRow key={row.side}>
+                  <TableCell>
+                    <span>{index + 1}</span>
+                  </TableCell>
+                  <TableCell className="min-w-36">
+                    <span className="font-medium">{SIDE_LABELS[row.side]}</span>
+                  </TableCell>
+                  <TableCell className="min-w-40">
               <SelectField
-                label="Side"
-                options={SIDE_OPTIONS}
-                required
-                error={false}
-                value={row.side}
-                onChange={(v) => updateRow(index, { side: v as SidewallRow['side'] })}
-              />
-              <SelectField
+                className="[&>label]:sr-only"
                 label="Wall Type"
                 options={WALL_TYPE_OPTIONS}
                 required
@@ -95,7 +79,10 @@ export function Sidewalls() {
                 value={row.wallType}
                 onChange={(v) => updateRow(index, { wallType: v as SidewallRow['wallType'] })}
               />
+                  </TableCell>
+                  <TableCell className="min-w-36">
               <NumberField
+                className="[&>label]:sr-only"
                 label="Thickness"
                 unit="mm"
                 required
@@ -103,7 +90,10 @@ export function Sidewalls() {
                 value={row.thickness}
                 onChange={(v) => updateRow(index, { thickness: v ?? 0 })}
               />
+                  </TableCell>
+                  <TableCell className="min-w-36">
               <NumberField
+                className="[&>label]:sr-only"
                 label="Height"
                 unit="m"
                 required
@@ -111,15 +101,11 @@ export function Sidewalls() {
                 value={row.height}
                 onChange={(v) => updateRow(index, { height: v ?? 0 })}
               />
-            </div>
-          </div>
-        ))}
-
-        <div>
-          <Button type="button" variant="outline" size="sm" onClick={addRow}>
-            <Plus /> Add sidewall
-          </Button>
-        </div>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
       </div>
     </CollapsibleSection>
   )

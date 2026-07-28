@@ -78,6 +78,20 @@ export type RoofDraft = Omit<CreateRoofInput, 'roofFrameBaseFixing' | RoofSectio
     roofFrameBaseFixing: CreateRoofInput['roofFrameBaseFixing'] | ''
   }
 
+export const SIDEWALL_SIDES = ['FRONT', 'BACK', 'RIGHT', 'LEFT'] as const
+type SidewallDraft = NonNullable<RoofDraft['sidewalls']>[number]
+
+const createDefaultSidewall = (side: SidewallDraft['side']): SidewallDraft => ({
+  side,
+  wallType: 'BRICK',
+  thickness: 0,
+  height: 0,
+})
+
+/** Keeps sidewalls addressable by the four fixed building sides. */
+export const normalizeSidewalls = (sidewalls?: readonly SidewallDraft[] | null): SidewallDraft[] =>
+  SIDEWALL_SIDES.map((side) => sidewalls?.find((row) => row.side === side) ?? createDefaultSidewall(side))
+
 /**
  * The optional, toggleable roof sections (Step 2). Each maps to a group of
  * roof fields that are only part of the payload while the section is enabled.
@@ -346,24 +360,24 @@ const createDefaultRoof = (): RoofDraft => ({
   internalColumnsForMainRoofFrames: 0,
   internalColumnsForEndRoofFrames: 0,
   roofFrameBaseFixing: '',
-  sidewalls: [],
+  sidewalls: normalizeSidewalls(),
 })
 
 /** Factory for the per-section enabled flags — every optional section starts off. */
 const createDefaultRoofSections = (): RoofSectionsEnabled => ({
-  members: false,
-  purlins: false,
-  coverings: false,
-  flangeBrace: false,
-  polycarbonate: false,
-  windBracing: false,
-  claddingOpenings: false,
-  fasciaBoard: false,
-  sideExtension: false,
-  materialGrade: false,
-  materialConsumption: false,
-  sagRod: false,
-  sidewalls: false,
+  members: true,
+  purlins: true,
+  coverings: true,
+  flangeBrace: true,
+  polycarbonate: true,
+  windBracing: true,
+  claddingOpenings: true,
+  fasciaBoard: true,
+  sideExtension: true,
+  materialGrade: true,
+  materialConsumption: true,
+  sagRod: true,
+  sidewalls: true,
 })
 
 /** Factory for a fresh mezzanine draft — no floors or extensions to start. */
@@ -469,7 +483,11 @@ export const useQuotationStore = create<QuotationState>()(
       // `claddingExtensionMidFrameCount` / `claddingExtensionEndFrameCount`.
       setRoof: (v) =>
         set((s) => {
-          const roof = { ...s.roof, ...v }
+          const roof = {
+            ...s.roof,
+            ...v,
+            ...(v.sidewalls ? { sidewalls: normalizeSidewalls(v.sidewalls) } : {}),
+          }
           roof.sideColumnsWidthHeight = deriveSideColumnsWidthHeight(roof)
           roof.sideColumnsMidFrameCount = roof.claddingExtensionMidFrameCount
           roof.sideColumnsEndFrameCount = roof.claddingExtensionEndFrameCount
@@ -484,7 +502,10 @@ export const useQuotationStore = create<QuotationState>()(
       toggleRoofSection: (key, enabled) =>
         set((s) => {
           const roofSectionsEnabled = { ...s.roofSectionsEnabled, [key]: enabled }
-          if (enabled) return { roofSectionsEnabled }
+          if (enabled) {
+            if (key !== 'sidewalls') return { roofSectionsEnabled }
+            return { roofSectionsEnabled, roof: { ...s.roof, sidewalls: normalizeSidewalls(s.roof.sidewalls) } }
+          }
           // Disabling a section clears its fields so they drop from the payload.
           const roof = { ...s.roof } as Record<string, unknown>
           for (const field of ROOF_SECTION_FIELDS[key]) {
@@ -608,7 +629,9 @@ export function buildRoofPayload(roof: RoofDraft): CreateRoofInput {
 
   const entries = Object.entries(roof).filter(([key, value]) => {
     if (value === undefined) return false
-    if (key === 'sidewalls') return Array.isArray(value) && value.length > 0
+    if (key === 'sidewalls') {
+      return Array.isArray(value) && value.some((row) => row.thickness > 0 || row.height > 0)
+    }
     return true
   })
 

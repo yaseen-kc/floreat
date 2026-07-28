@@ -7,6 +7,7 @@ import { SelectField, type SelectFieldOption } from '@/components/quotation/shar
 import { Columns3 } from 'lucide-react'
 import { isRequired, getFieldErrors } from '@/schemas/roof.schema'
 import { ROOF_SECTION_FIELDS } from '@/stores/quotation-store'
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 
 /** Human-readable labels for the purlin material-type enum. */
 const PURLIN_TYPE_OPTIONS: SelectFieldOption[] = [
@@ -15,19 +16,6 @@ const PURLIN_TYPE_OPTIONS: SelectFieldOption[] = [
 ]
 
 type PurlinTypeField = 'roofPurlinType' | 'claddingPurlinType'
-type PurlinNumberField =
-  | 'roofPurlinDepth'
-  | 'roofPurlinUnitWeight'
-  | 'claddingPurlinDepth'
-  | 'claddingPurlinUnitWeight'
-
-const NUMBER_FIELDS: { name: PurlinNumberField; label: string; unit: string }[] = [
-  { name: 'roofPurlinDepth', label: 'Roof Purlin Depth', unit: 'mm' },
-  { name: 'roofPurlinUnitWeight', label: 'Roof Purlin Unit Weight', unit: 'kg/m' },
-  { name: 'claddingPurlinDepth', label: 'Cladding Purlin Depth', unit: 'mm' },
-  { name: 'claddingPurlinUnitWeight', label: 'Cladding Purlin Unit Weight', unit: 'kg/m' },
-]
-
 export function Purlins() {
   const { roof, setRoof, enabled, toggleRoofSection, showValidation } = useQuotationStore(
     useShallow((s) => ({
@@ -55,38 +43,94 @@ export function Purlins() {
       onToggle={(e) => toggleRoofSection('purlins', e)}
       error={sectionError}
     >
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-[18px] desktop:gap-6">
-        <SelectField
-          label="Roof Purlin Type"
-          options={PURLIN_TYPE_OPTIONS}
-          required={isRequired('roofPurlinType')}
-          value={roof.roofPurlinType}
-          error={Boolean(errors.roofPurlinType)}
-          onChange={setType('roofPurlinType')}
-        />
-        <SelectField
-          label="Cladding Purlin Type"
-          options={PURLIN_TYPE_OPTIONS}
-          required={isRequired('claddingPurlinType')}
-          value={roof.claddingPurlinType}
-          error={Boolean(errors.claddingPurlinType)}
-          onChange={setType('claddingPurlinType')}
-        />
-        {NUMBER_FIELDS.map(({ name, label, unit }) => (
-          <NumberField
-            key={name}
-            label={label}
-            unit={unit}
-            required={isRequired(name)}
-            value={roof[name]}
-            error={Boolean(errors[name])}
-            onChange={(v) => {
-              const patch: Partial<RoofDraft> = {}
-              patch[name] = v
-              setRoof(patch)
-            }}
-          />
-        ))}
+      <div className="overflow-x-auto">
+        <Table className="min-w-[720px]">
+          <TableHeader>
+            <TableRow>
+              <TableHead className="w-12">No</TableHead>
+              <TableHead>Description</TableHead>
+              <TableHead>Type</TableHead>
+              <TableHead>Depth</TableHead>
+              <TableHead>Unit</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            <TableRow>
+              <TableCell>1</TableCell>
+              <TableCell className="font-medium">Roof Purlin</TableCell>
+              <TableCell className="min-w-48">
+                <SelectField
+                  label="Roof Purlin Type"
+                  className="[&>label]:sr-only"
+                  options={PURLIN_TYPE_OPTIONS}
+                  required={isRequired('roofPurlinType')}
+                  value={roof.roofPurlinType}
+                  error={Boolean(errors.roofPurlinType)}
+                  onChange={setType('roofPurlinType')}
+                />
+              </TableCell>
+              <TableCell className="min-w-36">
+                <NumberField
+                  label="Roof Purlin Depth"
+                  className="[&>label]:sr-only"
+                  unit="mm"
+                  required={isRequired('roofPurlinDepth')}
+                  value={roof.roofPurlinDepth}
+                  error={Boolean(errors.roofPurlinDepth)}
+                  onChange={(v) => setRoof({ roofPurlinDepth: v })}
+                />
+              </TableCell>
+              <TableCell className="min-w-36">
+                <NumberField
+                  label="Roof Purlin Unit Weight"
+                  className="[&>label]:sr-only"
+                  unit="kg/m"
+                  required={isRequired('roofPurlinUnitWeight')}
+                  value={roof.roofPurlinUnitWeight}
+                  error={Boolean(errors.roofPurlinUnitWeight)}
+                  onChange={(v) => setRoof({ roofPurlinUnitWeight: v })}
+                />
+              </TableCell>
+            </TableRow>
+            <TableRow>
+              <TableCell>2</TableCell>
+              <TableCell className="font-medium">Cladding Purlin</TableCell>
+              <TableCell className="min-w-48">
+                <SelectField
+                  label="Cladding Purlin Type"
+                  className="[&>label]:sr-only"
+                  options={PURLIN_TYPE_OPTIONS}
+                  required={isRequired('claddingPurlinType')}
+                  value={roof.claddingPurlinType}
+                  error={Boolean(errors.claddingPurlinType)}
+                  onChange={setType('claddingPurlinType')}
+                />
+              </TableCell>
+              <TableCell className="min-w-36">
+                <NumberField
+                  label="Cladding Purlin Depth"
+                  className="[&>label]:sr-only"
+                  unit="mm"
+                  required={isRequired('claddingPurlinDepth')}
+                  value={roof.claddingPurlinDepth}
+                  error={Boolean(errors.claddingPurlinDepth)}
+                  onChange={(v) => setRoof({ claddingPurlinDepth: v })}
+                />
+              </TableCell>
+              <TableCell className="min-w-36">
+                <NumberField
+                  label="Cladding Purlin Unit Weight"
+                  className="[&>label]:sr-only"
+                  unit="kg/m"
+                  required={isRequired('claddingPurlinUnitWeight')}
+                  value={roof.claddingPurlinUnitWeight}
+                  error={Boolean(errors.claddingPurlinUnitWeight)}
+                  onChange={(v) => setRoof({ claddingPurlinUnitWeight: v })}
+                />
+              </TableCell>
+            </TableRow>
+          </TableBody>
+        </Table>
       </div>
     </CollapsibleSection>
   )

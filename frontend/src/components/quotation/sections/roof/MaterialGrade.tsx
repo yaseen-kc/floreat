@@ -6,6 +6,7 @@ import { SelectField, type SelectFieldOption } from '@/components/quotation/shar
 import { Grid2x2 } from 'lucide-react'
 import { isRequired, getFieldErrors } from '@/schemas/roof.schema'
 import { ROOF_SECTION_FIELDS } from '@/stores/quotation-store'
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 
 /** Human-readable labels for the plate material grade enum. */
 const GRADE_OPTIONS: SelectFieldOption[] = [
@@ -35,16 +36,32 @@ export function MaterialGrade() {
       onToggle={(e) => toggleRoofSection('materialGrade', e)}
       error={sectionError}
     >
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-[18px] desktop:gap-6">
-        <SelectField
-          label="Grade of Plate Material"
-          options={GRADE_OPTIONS}
-          required={isRequired('gradeOfPlateMaterial')}
-          value={roof.gradeOfPlateMaterial}
-          error={Boolean(errors.gradeOfPlateMaterial)}
-          onChange={(v) => setRoof({ gradeOfPlateMaterial: v as RoofDraft['gradeOfPlateMaterial'] })}
-        />
-      </div>
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead scope="col" className="w-12">No</TableHead>
+            <TableHead scope="col">Description</TableHead>
+            <TableHead scope="col">Value</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          <TableRow>
+            <TableCell>1</TableCell>
+            <TableCell className="font-medium">Grade of Plate Material</TableCell>
+            <TableCell className="min-w-48">
+              <SelectField
+                className="[&>label]:sr-only"
+                label="Grade of Plate Material"
+                options={GRADE_OPTIONS}
+                required={isRequired('gradeOfPlateMaterial')}
+                value={roof.gradeOfPlateMaterial}
+                error={Boolean(errors.gradeOfPlateMaterial)}
+                onChange={(v) => setRoof({ gradeOfPlateMaterial: v as RoofDraft['gradeOfPlateMaterial'] })}
+              />
+            </TableCell>
+          </TableRow>
+        </TableBody>
+      </Table>
     </CollapsibleSection>
   )
 }

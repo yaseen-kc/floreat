@@ -14,6 +14,7 @@ import {
 import { Anchor } from 'lucide-react'
 import { isRequired, getFieldErrors } from '@/schemas/roof.schema'
 import { roofFrameBaseFixingEnum } from '@/schemas/roof.schema'
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 
 /** Human-readable labels for the roof frame base fixing enum. */
 const BASE_FIXING_OPTIONS: { value: (typeof roofFrameBaseFixingEnum.options)[number]; label: string }[] = [
@@ -36,23 +37,40 @@ export function BaseFixing() {
 
   return (
     <SectionCard icon={<Anchor className="w-3.5 h-3.5" />} title="Base Fixing">
-      <div>
-        <Label className="desktop:mb-2">Roof Frame Base Fixing {isRequired('roofFrameBaseFixing') && <span className="text-destructive">*</span>}</Label>
-        <Select
-          value={roof.roofFrameBaseFixing ?? ''}
-          onValueChange={(v) => setRoof({ roofFrameBaseFixing: v as RoofDraft['roofFrameBaseFixing'] })}
-        >
-          <SelectTrigger className="w-full" aria-invalid={Boolean(errors.roofFrameBaseFixing)}>
-            <SelectValue placeholder="Select a fixing" />
-          </SelectTrigger>
-          <SelectContent>
-            {BASE_FIXING_OPTIONS.map((opt) => (
-              <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-        {errors.roofFrameBaseFixing && <ErrMsg>Roof Frame Base Fixing is required</ErrMsg>}
-      </div>
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead scope="col" className="w-12">No</TableHead>
+            <TableHead scope="col">Description</TableHead>
+            <TableHead scope="col">Value</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          <TableRow>
+            <TableCell>1</TableCell>
+            <TableCell className="font-medium">Roof Frame Base Fixing</TableCell>
+            <TableCell className="min-w-48">
+              <div>
+                <Label className="sr-only">Roof Frame Base Fixing {isRequired('roofFrameBaseFixing') && <span className="text-destructive">*</span>}</Label>
+                <Select
+                  value={roof.roofFrameBaseFixing ?? ''}
+                  onValueChange={(v) => setRoof({ roofFrameBaseFixing: v as RoofDraft['roofFrameBaseFixing'] })}
+                >
+                  <SelectTrigger className="w-full" aria-invalid={Boolean(errors.roofFrameBaseFixing)}>
+                    <SelectValue placeholder="Select a fixing" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {BASE_FIXING_OPTIONS.map((opt) => (
+                      <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                {errors.roofFrameBaseFixing && <ErrMsg>Roof Frame Base Fixing is required</ErrMsg>}
+              </div>
+            </TableCell>
+          </TableRow>
+        </TableBody>
+      </Table>
     </SectionCard>
   )
 }

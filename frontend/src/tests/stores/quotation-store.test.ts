@@ -189,13 +189,13 @@ describe('quotation-store optional roof sections', () => {
     useQuotationStore.getState().resetQuotation()
   })
 
-  it('defaults every section to disabled and optional fields to undefined', () => {
+  it('defaults every section to enabled and optional fields to undefined', () => {
     const s = useQuotationStore.getState()
-    expect(s.roofSectionsEnabled.purlins).toBe(false)
-    expect(s.roofSectionsEnabled.windBracing).toBe(false)
+    expect(s.roofSectionsEnabled.purlins).toBe(true)
+    expect(s.roofSectionsEnabled.windBracing).toBe(true)
     expect(s.roof.roofPurlinDepth).toBeUndefined()
     expect(s.roof.gradeOfPlateMaterial).toBeUndefined()
-    expect(s.roof.sidewalls).toEqual([])
+    expect(s.roof.sidewalls?.map((row) => row.side)).toEqual(['FRONT', 'BACK', 'RIGHT', 'LEFT'])
   })
 
   it('toggleRoofSection flips the enabled flag', () => {
@@ -218,7 +218,7 @@ describe('quotation-store optional roof sections', () => {
   it('disabling the sidewalls section empties the array', () => {
     useQuotationStore.getState().toggleRoofSection('sidewalls', true)
     useQuotationStore.getState().setRoof({ sidewalls: [{ side: 'FRONT', wallType: 'BRICK', thickness: 0.2, height: 3 }] })
-    expect(useQuotationStore.getState().roof.sidewalls).toHaveLength(1)
+    expect(useQuotationStore.getState().roof.sidewalls).toHaveLength(4)
 
     useQuotationStore.getState().toggleRoofSection('sidewalls', false)
     expect(useQuotationStore.getState().roof.sidewalls).toEqual([])
@@ -230,10 +230,10 @@ describe('quotation-store optional roof sections', () => {
     expect(persisted.state.roofSectionsEnabled.coverings).toBe(true)
   })
 
-  it('resetQuotation restores all section flags to disabled', () => {
-    useQuotationStore.getState().toggleRoofSection('windBracing', true)
+  it('resetQuotation restores all section flags to enabled', () => {
+    useQuotationStore.getState().toggleRoofSection('windBracing', false)
     useQuotationStore.getState().resetQuotation()
-    expect(useQuotationStore.getState().roofSectionsEnabled.windBracing).toBe(false)
+    expect(useQuotationStore.getState().roofSectionsEnabled.windBracing).toBe(true)
   })
 })
 
@@ -334,7 +334,7 @@ describe('quotation-store rehydrate self-heals missing nested keys', () => {
     expect(s.canopy.canopies).toEqual([])
     // The one persisted section flag is kept; the rest retain their defaults.
     expect(s.roofSectionsEnabled.purlins).toBe(true)
-    expect(s.roofSectionsEnabled.coverings).toBe(false)
+    expect(s.roofSectionsEnabled.coverings).toBe(true)
     // The build helper that maps over products no longer throws.
     expect(() => buildSpecPayload(s.spec)).not.toThrow()
     expect(buildSpecPayload(s.spec)).toEqual({})

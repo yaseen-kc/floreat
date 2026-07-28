@@ -87,8 +87,8 @@ export function DerivedQuantities() {
 /** Builds the calc input from the roof draft (+ FRONT/LEFT sidewall heights) and derives the preview. */
 function derivePreview(roof: RoofDraft): AccessoryQuantities {
   const sidewalls = roof.sidewalls ?? []
-  const front = sidewalls.find((w) => w.side === 'FRONT')
-  const left = sidewalls.find((w) => w.side === 'LEFT')
+  const front = sidewalls.find((w) => w.side === 'FRONT' && w.height > 0)
+  const left = sidewalls.find((w) => w.side === 'LEFT' && w.height > 0)
 
   return deriveAccessoryQuantities({
     buildingOverallLength: roof.buildingOverallLength,
