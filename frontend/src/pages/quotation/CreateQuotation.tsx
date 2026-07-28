@@ -16,6 +16,7 @@ import { Step9Spec } from '@/components/quotation/steps/Step9Spec'
 import { Step10Rate } from '@/components/quotation/steps/Step10Rate'
 import { Step11Quantity } from '@/components/quotation/steps/Step11Quantity'
 import { Step12Amount } from '@/components/quotation/steps/Step12Amount'
+import { Step13Quotation } from '@/components/quotation/steps/Step13Quotation'
 
 
 export default function CreateQuotation() {
@@ -56,6 +57,7 @@ export default function CreateQuotation() {
           {currentStep === 10 && <Step10Rate />}
           {currentStep === 11 && <Step11Quantity />}
           {currentStep === 12 && <Step12Amount />}
+          {currentStep === 13 && <Step13Quotation />}
 
         </div>
       </div>
