@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
-import { render, screen, waitFor } from '@testing-library/react'
+import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 
 const mocks = vi.hoisted(() => ({
@@ -260,6 +260,17 @@ describe('WizardActionBar Step 2 roof persistence', () => {
     render(<WizardActionBar />)
 
     await userEvent.click(screen.getByRole('button', { name: /save draft/i }))
+
+    await waitFor(() => expect(mocks.upsertRoofMutateAsync).toHaveBeenCalledTimes(1))
+    expect(useQuotationStore.getState().currentStep).toBe(2)
+  })
+
+  it('Ctrl+S saves the roof draft without advancing', async () => {
+    mocks.upsertRoofMutateAsync.mockResolvedValueOnce({ id: 'roof-1' })
+    fillCoreRoof()
+    render(<WizardActionBar />)
+
+    fireEvent.keyDown(document, { key: 's', code: 'KeyS', ctrlKey: true })
 
     await waitFor(() => expect(mocks.upsertRoofMutateAsync).toHaveBeenCalledTimes(1))
     expect(useQuotationStore.getState().currentStep).toBe(2)

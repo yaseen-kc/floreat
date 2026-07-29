@@ -1,4 +1,5 @@
 import { useQuotationStore, buildRoofPayload, buildMezzaninePayload, buildStairPayload, buildCanopyPayload, buildLoadPayload, buildAccessoriesPayload, buildJointPayload, buildSpecPayload } from '@/stores/quotation-store'
+import { useHotkeys } from 'react-hotkeys-hook'
 import { useSaveStatusStore } from '@/stores/save-status-store'
 import { useShallow } from 'zustand/react/shallow'
 import { toast } from 'sonner'
@@ -558,6 +559,10 @@ export function WizardActionBar() {
       successToast('Draft saved')
     }
   }
+
+  useHotkeys(['ctrl+s', 'meta+s'], () => {
+    void handleSaveDraft()
+  }, { enableOnFormTags: true, preventDefault: true }, [handleSaveDraft])
 
   return (
     <div className="sticky bottom-0 left-0 right-0 z-15 flex flex-wrap items-center gap-3 border-t border-border bg-card/92 px-8 py-3.5 backdrop-blur-[10px] max-[640px]:gap-2 max-[640px]:px-4 max-[640px]:py-3">
