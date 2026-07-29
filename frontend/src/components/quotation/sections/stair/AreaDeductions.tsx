@@ -2,46 +2,27 @@ import { useQuotationStore } from '@/stores/quotation-store'
 import type { AreaDeductionDraft } from '@/stores/quotation-store'
 import { useShallow } from 'zustand/react/shallow'
 import { SectionCard } from '@/components/quotation/shared/SectionCard'
-import { RowCard, type RowGroup } from '@/components/quotation/shared/RowCard'
 import { EmptyState } from '@/components/ui/empty-state'
 import { Button } from '@/components/ui/button'
-import { Scissors, Plus } from 'lucide-react'
+import { NumberField } from '@/components/quotation/shared/NumberField'
+import { SelectField } from '@/components/quotation/shared/SelectField'
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
+import { Scissors, Plus, Trash2 } from 'lucide-react'
 import {
   AREA_DEDUCTION_TYPE_OPTIONS,
   AREA_DEDUCTION_FOR_OPTIONS,
   buildLocationOptions,
 } from './stairOptions'
-import type { SelectFieldOption } from '@/components/quotation/shared/SelectField'
-
-/** Grouped field layout for an area-deduction row. `location` options are injected per render. */
-const deductionGroups = (locationOptions: SelectFieldOption[]): RowGroup[] => [
-  {
-    title: 'Classification',
-    fields: [
-      { kind: 'select', name: 'type', label: 'Type', options: AREA_DEDUCTION_TYPE_OPTIONS },
-      { kind: 'select', name: 'location', label: 'Location', options: locationOptions },
-      { kind: 'select', name: 'deductionFor', label: 'Deduction For', options: AREA_DEDUCTION_FOR_OPTIONS },
-    ],
-  },
-  {
-    title: 'Measurement',
-    fields: [
-      { kind: 'number', name: 'areaM2', label: 'Area', unit: 'm²' },
-      { kind: 'number', name: 'numbers', label: 'Numbers', unit: 'count', step: 1 },
-    ],
-  },
-]
 
 export function AreaDeductions() {
   const { areaDeductions, mezzanine, setStair } = useQuotationStore(
     useShallow((s) => ({ areaDeductions: s.stair.areaDeductions, mezzanine: s.mezzanine, setStair: s.setStair })),
   )
 
-  const groups = deductionGroups(buildLocationOptions(mezzanine))
+  const locationOptions = buildLocationOptions(mezzanine)
 
   const addRow = () => setStair({ areaDeductions: [...areaDeductions, {}] })
-  const removeRow = (index: number) =>
-    setStair({ areaDeductions: areaDeductions.filter((_, i) => i !== index) })
+  const removeRow = (index: number) => setStair({ areaDeductions: areaDeductions.filter((_, i) => i !== index) })
   const updateRow = (index: number, patch: Partial<AreaDeductionDraft>) =>
     setStair({ areaDeductions: areaDeductions.map((row, i) => (i === index ? { ...row, ...patch } : row)) })
 
@@ -56,16 +37,47 @@ export function AreaDeductions() {
           />
         )}
 
-        {areaDeductions.map((row, index) => (
-          <RowCard
-            key={index}
-            title={`Deduction ${index + 1}`}
-            groups={groups}
-            values={row as Record<string, number | string | undefined>}
-            onChange={(patch) => updateRow(index, patch as Partial<AreaDeductionDraft>)}
-            onRemove={() => removeRow(index)}
-          />
-        ))}
+        {areaDeductions.length > 0 && (
+          <Table className="min-w-[1000px] border-collapse text-sm">
+            <TableHeader>
+              <TableRow className="bg-muted/50">
+                <TableHead scope="col" className="w-12 border-r text-center">SL</TableHead>
+                <TableHead scope="col" className="min-w-36 border-r">Type</TableHead>
+                <TableHead scope="col" className="min-w-32 border-r">Location</TableHead>
+                <TableHead scope="col" className="min-w-32 border-r text-center">Area</TableHead>
+                <TableHead scope="col" className="min-w-32 border-r text-center">Numbers</TableHead>
+                <TableHead scope="col" className="min-w-56" aria-label="Row actions" />
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {areaDeductions.map((row, index) => (
+                <TableRow key={index}>
+                  <TableCell className="border-r text-center text-muted-foreground">{index + 1}</TableCell>
+                  <TableCell className="border-r">
+                    <SelectField className="[&>label]:sr-only" label="Type" options={AREA_DEDUCTION_TYPE_OPTIONS} required={false} error={false} value={row.type} onChange={(value) => updateRow(index, { type: value as AreaDeductionDraft['type'] })} />
+                  </TableCell>
+                  <TableCell className="border-r">
+                    <SelectField className="[&>label]:sr-only" label="Location" options={locationOptions} required={false} error={false} value={row.location} onChange={(value) => updateRow(index, { location: value })} />
+                  </TableCell>
+                  <TableCell className="border-r">
+                    <NumberField className="[&>label]:sr-only" label="Area" unit="m2" required={false} error={false} value={row.areaM2} onChange={(value) => updateRow(index, { areaM2: value })} />
+                  </TableCell>
+                  <TableCell className="border-r">
+                    <NumberField className="[&>label]:sr-only" label="Numbers" unit="count" step={1} required={false} error={false} value={row.numbers} onChange={(value) => updateRow(index, { numbers: value })} />
+                  </TableCell>
+                  <TableCell>
+                    <div className="flex min-w-56 items-end gap-2">
+                      <SelectField className="min-w-44 [&>label]:sr-only" label="Deduction For" options={AREA_DEDUCTION_FOR_OPTIONS} required={false} error={false} value={row.deductionFor} onChange={(value) => updateRow(index, { deductionFor: value as AreaDeductionDraft['deductionFor'] })} />
+                      <Button type="button" variant="ghost" size="icon" className="shrink-0" aria-label={`Remove deduction ${index + 1}`} title={`Remove deduction ${index + 1}`} onClick={() => removeRow(index)}>
+                        <Trash2 />
+                      </Button>
+                    </div>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        )}
 
         <div>
           <Button type="button" variant="outline" size="sm" onClick={addRow}>

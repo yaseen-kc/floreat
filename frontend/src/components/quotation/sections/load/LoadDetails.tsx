@@ -3,6 +3,7 @@ import type { LoadDraft } from '@/stores/quotation-store'
 import { useShallow } from 'zustand/react/shallow'
 import { SectionCard } from '@/components/quotation/shared/SectionCard'
 import { NumberField } from '@/components/quotation/shared/NumberField'
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { Gauge } from 'lucide-react'
 
 /** A numeric Load field — its store key (excluding the enum unit), label and unit suffix. */
@@ -37,20 +38,35 @@ export function LoadDetails() {
 
   return (
     <SectionCard icon={<Gauge className="w-3.5 h-3.5" />} title="Load Details">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 desktop:gap-6">
-        {LOAD_DETAIL_FIELDS.map((f) => (
-          <NumberField
-            key={f.name}
-            label={f.label}
-            value={load[f.name]}
-            unit={f.unit}
-            step={f.step}
-            required={false}
-            error={false}
-            onChange={(v) => setLoad({ [f.name]: v } as Partial<LoadDraft>)}
-          />
-        ))}
-      </div>
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead scope="col" className="w-12">SL</TableHead>
+            <TableHead scope="col">Load Items</TableHead>
+            <TableHead scope="col">Value</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {LOAD_DETAIL_FIELDS.map((field, index) => (
+            <TableRow key={field.name}>
+              <TableCell>{index + 1}</TableCell>
+              <TableCell className="font-medium">{field.label}</TableCell>
+              <TableCell className="min-w-48">
+                <NumberField
+                  className="[&>label]:sr-only"
+                  label={field.label}
+                  value={load[field.name]}
+                  unit={field.unit}
+                  step={field.step}
+                  required={false}
+                  error={false}
+                  onChange={(value) => setLoad({ [field.name]: value } as Partial<LoadDraft>)}
+                />
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
     </SectionCard>
   )
 }

@@ -24,21 +24,21 @@ export function Step8Joint() {
 
             <JointBoltTable
                 group="roof"
-                title="Roof Joints"
+                title="Joint Bolt in Roof - HSFG"
                 icon={<Building2 className="w-3.5 h-3.5" />}
                 columns="diameterAndCount"
                 hint="Bolt diameter and count per roof / rafter joint code (A–L and end-frame A_1…L_1)."
             />
             <JointBoltTable
                 group="mezzanine"
-                title="Mezzanine Joints"
+                title="Joint Bolt In Mezzanine - HSFG"
                 icon={<Layers className="w-3.5 h-3.5" />}
                 columns="diameterAndCount"
                 hint="Bolt diameter and count per mezzanine joint (M–S and SEC)."
             />
             <JointBoltTable
                 group="foundation"
-                title="Foundation Bolts"
+                title="Foundation Bolts -  Roof"
                 icon={<Anchor className="w-3.5 h-3.5" />}
                 columns="diameterAndCount"
                 hint="Bolt diameter and count per foundation bolt group (FB-4 / FB-5 / FB-6)."

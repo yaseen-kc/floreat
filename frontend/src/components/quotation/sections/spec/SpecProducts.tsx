@@ -47,27 +47,29 @@ export function SpecProducts() {
           description="Add a product to include it in this specification."
         />
       ) : (
-        <Table>
+        <Table className="min-w-[980px] border-collapse text-sm">
           <TableHeader>
-            <TableRow>
-              <TableHead>Description</TableHead>
-              <TableHead>Specification</TableHead>
-              <TableHead>Make / Brand</TableHead>
-              <TableHead className="text-right">Yield Strength (MPa)</TableHead>
-              <TableHead className="w-10" aria-label="Actions" />
+            <TableRow className="bg-muted/50">
+              <TableHead scope="col" className="w-12 border-r text-center">SL</TableHead>
+              <TableHead scope="col" className="min-w-40 border-r">Description</TableHead>
+              <TableHead scope="col" className="min-w-56 border-r">Specification</TableHead>
+              <TableHead scope="col" className="min-w-32 border-r">Make / Brand</TableHead>
+              <TableHead scope="col" className="min-w-36 border-r text-center">Yield Strength (MPa)</TableHead>
+              <TableHead scope="col" className="w-12" aria-label="Actions" />
             </TableRow>
           </TableHeader>
           <TableBody>
             {products.map((row, index) => (
               <TableRow key={index}>
-                <TableCell className="min-w-40">
+                <TableCell className="border-r text-center text-muted-foreground">{index + 1}</TableCell>
+                <TableCell className="min-w-40 border-r">
                   <Input
                     aria-label={`Product ${index + 1} description`}
                     value={row.description ?? ''}
                     onChange={(e) => updateRow(index, { description: opt(e.target.value) })}
                   />
                 </TableCell>
-                <TableCell className="min-w-56">
+                <TableCell className="min-w-56 border-r">
                   <Textarea
                     aria-label={`Product ${index + 1} specification`}
                     value={row.specification ?? ''}
@@ -76,14 +78,14 @@ export function SpecProducts() {
                     onChange={(e) => updateRow(index, { specification: opt(e.target.value) })}
                   />
                 </TableCell>
-                <TableCell className="min-w-32">
+                <TableCell className="min-w-32 border-r">
                   <Input
                     aria-label={`Product ${index + 1} make or brand`}
                     value={row.makeOrBrand ?? ''}
                     onChange={(e) => updateRow(index, { makeOrBrand: opt(e.target.value) })}
                   />
                 </TableCell>
-                <TableCell className="min-w-28">
+                <TableCell className="min-w-28 border-r">
                   <Input
                     type="number"
                     inputMode="numeric"

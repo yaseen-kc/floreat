@@ -22,7 +22,7 @@ import { Step13Quotation } from '@/components/quotation/steps/Step13Quotation'
 export default function CreateQuotation() {
   const currentStep = useQuotationStore((s) => s.currentStep)
   const scrollRef = useRef<HTMLDivElement>(null)
-  const isWideStep = currentStep === 3 || currentStep === 10 || currentStep === 11 || currentStep === 12
+  const isWideStep = currentStep === 3 || currentStep === 4 || currentStep === 5 || currentStep === 10 || currentStep === 11 || currentStep === 12
 
   useEffect(() => {
     scrollRef.current?.scrollTo({ top: 0, behavior: 'smooth' })

@@ -260,19 +260,22 @@ export function AmountTable() {
 
   return (
     <SectionCard icon={<Calculator />} title="Amount">
-      <Table className="min-w-[1400px]">
+      <Table className="min-w-[1200px] border-collapse text-sm">
         <TableHeader>
-          <TableRow>
-            <TableHead className="w-8 text-right">#</TableHead>
-            <TableHead className="min-w-52">Description</TableHead>
-            <TableHead>Unit</TableHead>
-            <TableHead className="text-right">Qty</TableHead>
-            <TableHead className="text-right">Rate Fab.</TableHead>
-            <TableHead className="text-right">Rate Erec.</TableHead>
-            <TableHead className="text-right">Rate Load.</TableHead>
-            <TableHead className="text-right">Amt. Fab.</TableHead>
-            <TableHead className="text-right">Amt. Erec.</TableHead>
-            <TableHead className="text-right">Amt. Load.</TableHead>
+          <TableRow className="bg-muted/50">
+            <TableHead rowSpan={2} scope="col" className="w-12 border-r text-center">SL</TableHead>
+            <TableHead rowSpan={2} scope="col" className="min-w-52 border-r">Description</TableHead>
+            <TableHead rowSpan={2} scope="col" className="min-w-24 border-r">Unit</TableHead>
+            <TableHead colSpan={3} scope="colgroup" className="border-r text-center">Rate</TableHead>
+            <TableHead colSpan={3} scope="colgroup" className="text-center">Amount</TableHead>
+          </TableRow>
+          <TableRow className="bg-muted/25">
+            <TableHead scope="col" className="min-w-32 border-r text-center">Fabrication</TableHead>
+            <TableHead scope="col" className="min-w-32 border-r text-center">Errection</TableHead>
+            <TableHead scope="col" className="min-w-32 border-r text-center">Loading</TableHead>
+            <TableHead scope="col" className="min-w-36 border-r text-center">Fabrication</TableHead>
+            <TableHead scope="col" className="min-w-36 border-r text-center">Errection</TableHead>
+            <TableHead scope="col" className="min-w-36 text-center">Loading</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -296,29 +299,26 @@ export function AmountTable() {
 
             return (
               <TableRow key={item.description}>
-                <TableCell className="text-right text-muted-foreground">
+                <TableCell className="border-r text-center text-muted-foreground">
                   <Num>{index + 1}</Num>
                 </TableCell>
-                <TableCell className="font-medium">{item.description}</TableCell>
-                <TableCell>
+                <TableCell className="border-r font-medium">{item.description}</TableCell>
+                <TableCell className="border-r">
                   <Badge variant="outline">{item.unit}</Badge>
                 </TableCell>
-                <TableCell className="text-right text-muted-foreground">
-                  <Num>{qty.toFixed(0)}</Num>
-                </TableCell>
-                <TableCell className="text-right text-muted-foreground">
+                <TableCell className="border-r text-right text-muted-foreground">
                   <Num>{rateFab}</Num>
                 </TableCell>
-                <TableCell className="text-right text-muted-foreground">
+                <TableCell className="border-r text-right text-muted-foreground">
                   <Num>{rateErec}</Num>
                 </TableCell>
-                <TableCell className="text-right text-muted-foreground">
+                <TableCell className="border-r text-right text-muted-foreground">
                   <Num>{rateLoad}</Num>
                 </TableCell>
-                <TableCell className="text-right text-muted-foreground">
+                <TableCell className="border-r text-right text-muted-foreground">
                   <Num>{amtFab.toFixed(2)}</Num>
                 </TableCell>
-                <TableCell className="text-right text-muted-foreground">
+                <TableCell className="border-r text-right text-muted-foreground">
                   <Num>{amtErec.toFixed(2)}</Num>
                 </TableCell>
                 <TableCell className="text-right text-muted-foreground">

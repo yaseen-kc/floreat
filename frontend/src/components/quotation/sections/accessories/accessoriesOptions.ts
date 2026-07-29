@@ -12,13 +12,13 @@ export const DRAINAGE_MATERIAL_OPTIONS: SelectFieldOption[] = [
 
 /** Nominal drainage sizes (inches). */
 export const DRAINAGE_SIZE_OPTIONS: SelectFieldOption[] = [
-  { value: 'IN_4', label: '4"' },
-  { value: 'IN_6', label: '6"' },
-  { value: 'IN_8', label: '8"' },
-  { value: 'IN_10', label: '10"' },
-  { value: 'IN_12', label: '12"' },
-  { value: 'IN_18', label: '18"' },
-  { value: 'IN_24', label: '24"' },
+  { value: 'IN_4', label: '4 Inches' },
+  { value: 'IN_6', label: '6 Inches' },
+  { value: 'IN_8', label: '8 Inches' },
+  { value: 'IN_10', label: '10 Inches' },
+  { value: 'IN_12', label: '12 Inches' },
+  { value: 'IN_18', label: '18 Inches' },
+  { value: 'IN_24', label: '24 Inches' },
 ]
 
 /** Flashing material (drip trim, gable end, corner flash, ridge). */
@@ -81,10 +81,10 @@ export const INSULATION_TYPE_OPTIONS: SelectFieldOption[] = [
 
 /** Turbo ventilator diameter. */
 export const TURBO_VENTILATOR_DIAMETER_OPTIONS: SelectFieldOption[] = [
-  { value: 'IN_6', label: '6"' },
-  { value: 'FT_1', label: '1 ft' },
-  { value: 'IN_18', label: '18"' },
-  { value: 'FT_2', label: '2 ft' },
+  { value: 'IN_6', label: '6 Inches' },
+  { value: 'FT_1', label: '1 Foot' },
+  { value: 'IN_18', label: '18 Inches' },
+  { value: 'FT_2', label: '2 Feet' },
 ]
 
 /** Paint/primer product type for frames. */
