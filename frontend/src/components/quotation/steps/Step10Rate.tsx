@@ -2,7 +2,7 @@ import { RateTable } from '@/components/quotation/sections/rate/RateTable'
 
 export function Step10Rate() {
   return (
-    <section>
+    <section className="min-h-full">
       <div className="mb-5">
         <h2 className="text-xl font-semibold tracking-tight">Rate master</h2>
         <p className="text-muted-foreground text-sm mt-1">

@@ -1,4 +1,5 @@
 import type { SelectFieldOption } from '@/components/quotation/shared/SelectField'
+import type { MezzanineFloorDraft } from '@/stores/quotation-store'
 
 /** Human-readable labels for the mezzanine deck/slab type enum. */
 export const MEZZANINE_TYPE_OPTIONS: SelectFieldOption[] = [
@@ -14,6 +15,11 @@ export const MEZZANINE_FLOOR_LEVEL_OPTIONS: SelectFieldOption[] = Array.from({ l
   value: `FLOOR_${i + 1}`,
   label: `Floor ${i + 1}`,
 }))
+
+/** Returns only floor levels configured on the parent mezzanine floors. */
+export function getAvailableMezzanineFloorOptions(floors: MezzanineFloorDraft[]): SelectFieldOption[] {
+  return MEZZANINE_FLOOR_LEVEL_OPTIONS.filter((option) => floors.some((row) => row.floor === option.value))
+}
 
 /** Human-readable labels for the reference level a mezzanine height is measured from. */
 export const MEZZANINE_HEIGHT_FROM_OPTIONS: SelectFieldOption[] = [

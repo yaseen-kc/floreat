@@ -74,6 +74,7 @@ export interface MezzanineFloorExtension {
   mezzanineId: string
 
   code: MezzanineFloorCodeExt | null
+  floor: MezzanineFloorLevel | null
   type: MezzanineType | null
   heightFrom: MezzanineHeightFrom | null
   typicalTo: MezzanineFloorLevel | null

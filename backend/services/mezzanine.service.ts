@@ -5,6 +5,29 @@
 import { prisma } from '../lib/prisma.js'
 import type { CreateMezzanineInput } from '../schemas/mezzanine.schema.js'
 
+export class InvalidMezzanineExtensionFloorError extends Error {
+  constructor(invalidFloors: string[]) {
+    super(`Extension floor must match a configured mezzanine floor: ${invalidFloors.join(', ')}`)
+    this.name = 'InvalidMezzanineExtensionFloorError'
+  }
+}
+
+function validateExtensionFloors(
+  floors: Array<{ floor?: string | null }> | undefined,
+  extensions: Array<{ floor?: string | null }> | undefined,
+) {
+  if (!extensions?.length) return
+
+  const availableFloors = new Set((floors ?? []).map((row) => row.floor).filter(Boolean))
+  const invalidFloors = [...new Set(
+    extensions
+      .map((row) => row.floor)
+      .filter((floor): floor is string => Boolean(floor) && !availableFloors.has(floor)),
+  )]
+
+  if (invalidFloors.length > 0) throw new InvalidMezzanineExtensionFloorError(invalidFloors)
+}
+
 function mapMezzOutput(mezz: any) {
   if (!mezz) return mezz
   if (mezz.floors) {
@@ -21,6 +44,7 @@ export async function upsertMezzanine(jobId: string, data: CreateMezzanineInput)
   const { floors, extensions, ...rest } = data
   const floorData = floors?.map(f => ({ ...f, code: f.code as any })) ?? []
   const extensionData = extensions?.map(e => ({ ...e, code: e.code as any })) ?? []
+  validateExtensionFloors(floors, extensions)
 
   const result = await prisma.mezzanine.upsert({
     where: { jobId },
@@ -60,6 +84,13 @@ export async function getMezzanineByJobId(jobId: string) {
 export async function updateMezzanine(jobId: string, data: Record<string, any>) {
   const { floors, extensions, ...rest } = data
   const updateData: any = { ...rest }
+
+  let floorsForValidation = floors
+  if (extensions !== undefined && floors === undefined) {
+    const existing = await prisma.mezzanine.findUnique({ where: { jobId }, select: { floors: { select: { floor: true } } } })
+    floorsForValidation = existing?.floors
+  }
+  validateExtensionFloors(floorsForValidation, extensions)
 
   if (floors !== undefined) {
     updateData.floors = { deleteMany: {}, createMany: { data: floors.map((f: any) => ({ ...f, code: f.code as any })) } }

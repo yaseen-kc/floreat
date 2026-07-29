@@ -26,4 +26,13 @@ describe('buildMezzaninePayload', () => {
   it('returns an empty object for an empty draft', () => {
     expect(buildMezzaninePayload({ floors: [], extensions: [] })).toEqual({})
   })
+
+  it('preserves the generated extension code in the submission payload', () => {
+    const payload = buildMezzaninePayload({
+      floors: [],
+      extensions: [{ code: 'EXT_1', floor: 'FLOOR_1' }],
+    })
+
+    expect(payload.extensions).toEqual([{ code: 'EXT_1', floor: 'FLOOR_1' }])
+  })
 })

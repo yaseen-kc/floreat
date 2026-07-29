@@ -137,6 +137,7 @@ export function makeMezzanineFloor(overrides = {}) {
 
 export function makeMezzanineExtension(overrides = {}) {
   return {
+    floor: 'FLOOR_1' as const,
     type: 'DECK_SHEET' as const,
     heightFrom: 'GROUND' as const,
     typicalTo: 'FLOOR_1' as const,

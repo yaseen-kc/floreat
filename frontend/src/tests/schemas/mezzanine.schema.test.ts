@@ -28,6 +28,7 @@ const validFloor = {
 
 /** A valid extension with every optional count omitted. */
 const validExtensionNoCounts = {
+  floor: 'FLOOR_1',
   type: 'PANEL',
   heightFrom: 'FIRST_FLOOR',
   typicalTo: 'FLOOR_3',
@@ -76,6 +77,10 @@ describe('mezzanineFloorExtensionSchema', () => {
     expect(
       mezzanineFloorExtensionSchema.safeParse({ ...validExtensionNoCounts, widthM: 0 }).success,
     ).toBe(false)
+  })
+
+  it('rejects an invalid floor level', () => {
+    expect(mezzanineFloorExtensionSchema.safeParse({ ...validExtensionNoCounts, floor: 'FLOOR_11' }).success).toBe(false)
   })
 })
 

@@ -58,6 +58,7 @@ export const mezzanineFloorSchema = z.object({
 /** Schema for a mezzanine floor extension — all fields optional. */
 export const mezzanineFloorExtensionSchema = z.object({
   code: mezzanineFloorCodeExtEnum.optional(),
+  floor: mezzanineFloorLevelEnum.optional(),
   type: mezzanineTypeEnum.optional(),
   heightFrom: mezzanineHeightFromEnum.optional(),
   typicalTo: mezzanineFloorLevelEnum.optional(),

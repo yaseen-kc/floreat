@@ -51,6 +51,15 @@ describe('mezzanine.service', () => {
         include: { floors: true, extensions: true },
       })
     })
+
+    it('rejects an extension floor that is not configured on a mezzanine floor', async () => {
+      await expect(upsertMezzanine('job-3', {
+        floors: [makeMezzanineFloor({ floor: 'FLOOR_1' })],
+        extensions: [makeMezzanineExtension({ floor: 'FLOOR_2' })],
+      })).rejects.toThrow('FLOOR_2')
+
+      expect(prismaMock.mezzanine.upsert).not.toHaveBeenCalled()
+    })
   })
 
   describe('getMezzanines', () => {
@@ -93,7 +102,7 @@ describe('mezzanine.service', () => {
     it('updates mezzanine and replaces floors and extensions when provided', async () => {
       const mezzanine = makeMezzanine()
       const floors = [makeMezzanineFloor({ code: 'MEZ_2', floor: 'FLOOR_2' })]
-      const extensions = [makeMezzanineExtension()]
+      const extensions = [makeMezzanineExtension({ floor: 'FLOOR_2' })]
       prismaMock.mezzanine.update.mockResolvedValue(mezzanine as any)
 
       const result = await updateMezzanine('job-1', { floors, extensions })

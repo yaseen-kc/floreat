@@ -34,6 +34,8 @@ export function mapMezzanineResponseToDraft(m: Mezzanine): HydratedMezzanine {
     internalColumnsEndPrimary: int(f.internalColumnsEndPrimary),
   }))
   const extensions: MezzanineExtensionDraft[] = m.extensions.map((e) => ({
+    code: (e.code as MezzanineExtensionDraft['code']) ?? undefined,
+    floor: (e.floor as MezzanineExtensionDraft['floor']) ?? undefined,
     type: (e.type as MezzanineExtensionDraft['type']) ?? undefined,
     heightFrom: (e.heightFrom as MezzanineExtensionDraft['heightFrom']) ?? undefined,
     typicalTo: (e.typicalTo as MezzanineExtensionDraft['typicalTo']) ?? undefined,
