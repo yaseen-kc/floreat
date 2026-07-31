@@ -2,7 +2,45 @@ import { cn } from '@/lib/utils'
 import { Num } from '@/components/ui/num'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { DocChapter, DocList, DocSubsection } from './DocPrimitives'
-import { MOCK_PAYMENT_TERMS, MOCK_PRICING, MOCK_PRICING_NOTES } from './quotation-data'
+
+/**
+ * A priced line. `sl` is blank on tax/subtotal rows; `emphasis` marks the
+ * totals the source sets in bold.
+ */
+interface PricingRow {
+  sl?: string
+  item: string
+  amount: string
+  emphasis?: boolean
+}
+
+const MOCK_PRICING: readonly PricingRow[] = [
+  {
+    sl: 'A',
+    item: 'Fabrication and Supply of Pre Engineered Steel Structure including transportation, Loading and Unloading Charges',
+    amount: '₹40,576,333.63',
+  },
+  { item: 'GST @ 18% =', amount: '₹7,303,740.05' },
+  { item: 'Total Amount (Part A) =', amount: '₹47,880,073.68', emphasis: true },
+  { sl: 'B', item: 'Installation of Supplied Pre Engineered Steel Structure', amount: '₹3,376,049.92' },
+  { item: 'GST @ 18% =', amount: '₹607,688.99' },
+  { item: 'Total Amount (Part B) =', amount: '₹3,983,738.90', emphasis: true },
+  { sl: 'C', item: 'Total Amount (Part A) + (Part B) Excluding GST', amount: '₹43,952,383.55' },
+  { item: 'GST 18% =', amount: '₹7,911,429.04' },
+  { item: 'Grand Total =', amount: '₹51,863,812.59', emphasis: true },
+]
+
+const MOCK_PRICING_NOTES: readonly string[] = [
+  'The rate includes the cost of all kinds of materials, loading and unloading, transportation, tools, wastage and labour charges.',
+  'The amount quoted is inclusive of all taxes.',
+]
+
+const MOCK_PAYMENT_TERMS: readonly string[] = [
+  '50% of Total agreement value as advance along with work order',
+  '30% of Total agreement value on supply of fabricated materials',
+  '15% of Total agreement value on pro rata basis',
+  '5% of Total agreement value upon completion of project',
+]
 
 /**
  * Chapter 6 — pricing. Hand-rolled rather than using `DocTable` because the

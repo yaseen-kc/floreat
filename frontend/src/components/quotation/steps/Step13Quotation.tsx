@@ -3,8 +3,8 @@ import { QuotationDocument } from '@/components/quotation/sections/quotation/Quo
 /**
  * Step 13 — the assembled quotation document, read-only.
  *
- * Content is currently placeholder data lifted from a reference quotation; the
- * chapters render from `quotation-data.ts` so swapping in the saved job,
+ * Content is currently placeholder data lifted from a reference quotation, held
+ * in the chapter component that renders it, so swapping in the saved job,
  * quantity, amount and rate records is a change of data source only.
  */
 export function Step13Quotation() {

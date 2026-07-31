@@ -1,9 +1,14 @@
 import { DocChapter, DocList } from './DocPrimitives'
-import {
-  MOCK_APPROVAL_DRAWING_DAYS,
-  MOCK_DELIVERY_DAYS,
-  MOCK_DELIVERY_PREREQUISITES,
-} from './quotation-data'
+
+const MOCK_APPROVAL_DRAWING_DAYS = '7 DAYS'
+const MOCK_DELIVERY_DAYS = '60 DAYS'
+
+/** The prerequisites the second lead-time clause lists as a nested list. */
+const MOCK_DELIVERY_PREREQUISITES: readonly string[] = [
+  'Signed Purchase Order',
+  'Balance payment as specified in payment terms',
+  "Floreat's approval drawings duly signed and approved",
+]
 
 /** Chapter 4 — approval drawing and delivery lead times. */
 export function ChapterApprovalDrawings() {

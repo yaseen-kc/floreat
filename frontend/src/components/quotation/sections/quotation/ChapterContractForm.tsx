@@ -1,5 +1,13 @@
 import { DocBlank, DocChapter, DocList, DocProse, DocSubsection } from './DocPrimitives'
-import { MOCK_CONTRACT, MOCK_META } from './quotation-data'
+
+const MOCK_CONTRACT = {
+  registeredOffice:
+    'FLOREAT BUILDING SYSTEMS PVT LTD, ON THE OTHER HAND, Registered office at 30/56-P, 2nd FLOOR, SK COMPLEX, KOVOOR, MEDICAL COLLEGE ROAD, CALICUT- 673008',
+  documents: [
+    "FLOREAT's Proposal No. __________ Rev. No. __________ Dated __________ with agreed and initial amendments (if any).",
+    "FLOREAT's Standard terms and conditions of sale.",
+  ],
+} as const
 
 /** A label with a rule to sign or date on. */
 function SignatureField({ label }: { label: string }) {
@@ -58,7 +66,7 @@ export function ChapterContractForm() {
       </DocProse>
 
       <div className="grid gap-4 sm:grid-cols-2">
-        {[`FOR: ${MOCK_META.company.toUpperCase()}`, 'FOR:'].map((heading) => (
+        {['FOR: FLOREAT BUILDING SYSTEMS PVT LTD', 'FOR:'].map((heading) => (
           <div key={heading} className="space-y-3 rounded-md border border-border bg-muted/30 p-4">
             <p className="text-sm font-semibold">{heading}</p>
             <SignatureField label="Name" />
