@@ -1,3 +1,5 @@
+import { useLoad, type Load } from '@/api/quotation/load/getLoad'
+import { useQuotationStore } from '@/stores/quotation-store'
 import { DocChapter, DocProse, DocSubsection } from './DocPrimitives'
 import { DocTable, type DocColumn, type Row } from './DocTable'
 
@@ -15,11 +17,11 @@ const LOAD_COLUMNS: readonly DocColumn[] = [
   { header: 'Value', align: 'right', className: 'min-w-32', numeric: true },
 ]
 
-const MOCK_CODES_INTRO =
+const CODES_INTRO =
   'The building was designed according to the following Standard whichever is applicable. The following standards and manuals were used for the design of the proposed steel building.'
 
 /** SL No., Description, Code Number, Title, Country. */
-const MOCK_APPLICABLE_CODES: readonly Row[] = [
+const APPLICABLE_CODES: readonly Row[] = [
   ['1', 'Fabricated Rafters, Columns, Floor Beams, Tie Beams', 'IS : 800 - 1984', 'Code of Practice for General Construction in Steel', 'Indian'],
   ['2', 'Z-Purlins, C-Purlins, Girt', 'IS : 801 - 1975', 'Code of Practice for use of Cold Formed Light Gauge Steel', 'Indian'],
   ['3', 'Z-Purlins, C-Purlins, Girt — Specifications', 'IS : 811 - 1987', 'Specifications for Cold Formed Light Gauge Structural Steel Sections', 'Indian'],
@@ -36,32 +38,41 @@ const MOCK_APPLICABLE_CODES: readonly Row[] = [
   ['14', 'Fabrication Inspection', 'AISC Manual', 'Steel Construction Manual', 'American'],
 ]
 
-/** Design Loads: SL No., Load Type, Value. */
-const MOCK_DESIGN_LOADS: readonly Row[] = [
-  ['1', 'Dead Load on Roof Floor', 'NA'],
-  ['2', 'Live Load on Roof Floor', 'NA'],
-  ['3', 'Collateral Load on Roof Floor', 'NA'],
-  ['4', 'Wind Load (Horizontal)', '140 Kmph'],
-  ['5', 'Wind Load (Upward)', '140 Kmph'],
-  ['6', 'Roof Dead Load on Rafters', '0.15 KN/M²'],
-  ['7', 'Roof Live Load on Rafters', '0.60 KN/M²'],
-  ['8', 'Floor Dead Load', 'NA'],
-  ['9', 'Floor Finish Load', 'NA'],
-  ['10', 'Floor Live Load', 'NA'],
-  ['11', 'Snow Load', 'NA'],
-  ['12', 'Earthquake Load', '0'],
+type LoadRowDef = { label: string; key: keyof Load; unit: string }
+
+const LOAD_ROW_DEFS: readonly LoadRowDef[] = [
+  { label: 'Dead Load on Roof Floor', key: 'deadLoadOnRoofFloor', unit: 'KN/M²' },
+  { label: 'Live Load on Roof Floor', key: 'liveLoadOnRoofFloor', unit: 'KN/M²' },
+  { label: 'Collateral Load on Roof Floor', key: 'collateralLoadOnRoofRafters', unit: 'KN/M²' },
+  { label: 'Wind Load (Horizontal)', key: 'windLoadHorizontal', unit: 'Kmph' },
+  { label: 'Wind Load (Upward)', key: 'windLoadOnRoofRaftersUpward', unit: 'Kmph' },
+  { label: 'Roof Dead Load on Rafters', key: 'deadLoadOnRoofRafters', unit: 'KN/M²' },
+  { label: 'Roof Live Load on Rafters', key: 'liveLoadOnRoofRafters', unit: 'KN/M²' },
+  { label: 'Floor Dead Load', key: 'floorDeadLoad', unit: 'KN/M²' },
+  { label: 'Floor Finish Load', key: 'floorFinishLoad', unit: 'KN/M²' },
+  { label: 'Floor Live Load', key: 'floorLiveLoad', unit: 'KN/M²' },
+  { label: 'Snow Load', key: 'snowLoad', unit: 'KN/M²' },
+  { label: 'Earthquake Load', key: 'earthquakeLoad', unit: 'KN/M²' },
 ]
 
 /** Chapter 3 — design codes the building was engineered against, plus loads. */
 export function ChapterApplicableCodes() {
+  const jobId = useQuotationStore((s) => s.jobId)
+  const { data } = useLoad(jobId ?? '')
+
+  const loadRows: Row[] = LOAD_ROW_DEFS.map((r, i) => {
+    const val = data?.[r.key]
+    return [String(i + 1), r.label, val != null ? `${val} ${r.unit}` : 'NA']
+  })
+
   return (
     <DocChapter eyebrow="Chapter 3" title="Applicable Codes" className="space-y-6">
-      <DocProse>{MOCK_CODES_INTRO}</DocProse>
+      <DocProse>{CODES_INTRO}</DocProse>
 
       <DocTable
         caption="Design standards and manuals applied, with code number and country"
         columns={CODE_COLUMNS}
-        rows={MOCK_APPLICABLE_CODES}
+        rows={APPLICABLE_CODES}
         minWidth="min-w-[960px]"
       />
 
@@ -69,7 +80,7 @@ export function ChapterApplicableCodes() {
         <DocTable
           caption="Design load type and the value used"
           columns={LOAD_COLUMNS}
-          rows={MOCK_DESIGN_LOADS}
+          rows={loadRows}
         />
       </DocSubsection>
     </DocChapter>

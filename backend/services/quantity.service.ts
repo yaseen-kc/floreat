@@ -23,9 +23,9 @@ function mergeSectionData(computed: Record<string, any> | null, data: CreateQuan
     const computedSec = computed?.[key]
     const dataSec = data[key]
     if (computedSec || dataSec) {
-      // Server calculations win. Manual fields are represented explicitly by
-      // the section schemas and are the only client values retained here.
-      merged[key] = { ...(dataSec ?? {}), ...(computedSec ?? {}) }
+      // Server calculations provide baseline defaults, and client-supplied values (manual input fields & overrides) take precedence
+      const cleanDataSec = dataSec ? Object.fromEntries(Object.entries(dataSec).filter(([, v]) => v !== undefined)) : {}
+      merged[key] = { ...(computedSec ?? {}), ...cleanDataSec }
     }
   }
   return merged

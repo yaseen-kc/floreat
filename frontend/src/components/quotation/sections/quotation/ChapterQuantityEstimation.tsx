@@ -21,7 +21,7 @@ interface QuantityRow {
   quantity: string
 }
 
-const MOCK_QUANTITY_ESTIMATION: readonly QuantityRow[] = [
+const QUANTITY_ESTIMATION: readonly QuantityRow[] = [
   { sl: '1', label: 'Roof Structure:', detail: 'Rafters, Columns and Tie Beams', unit: 'Kg', quantity: '7,211.33' },
   { sl: '2', label: 'Roof Purlins', unit: 'Kg', quantity: '28,237.33' },
   { sl: '3', label: 'Mezzanine Structure.', unit: 'Kg', quantity: '11,210.92' },
@@ -51,7 +51,7 @@ const MOCK_QUANTITY_ESTIMATION: readonly QuantityRow[] = [
 
 /** Chapter 5 — estimated quantities per line item. */
 export function ChapterQuantityEstimation() {
-  const rows = MOCK_QUANTITY_ESTIMATION.map((row) => [
+  const rows = QUANTITY_ESTIMATION.map((row) => [
     row.sl,
     <>
       <span className="font-semibold">{row.label}</span>

@@ -266,6 +266,7 @@ export function AmountTable() {
             <TableHead rowSpan={2} scope="col" className="w-12 border-r text-center">SL</TableHead>
             <TableHead rowSpan={2} scope="col" className="min-w-52 border-r">Description</TableHead>
             <TableHead rowSpan={2} scope="col" className="min-w-24 border-r">Unit</TableHead>
+            <TableHead rowSpan={2} scope="col" className="min-w-28 border-r text-right">Quantity</TableHead>
             <TableHead colSpan={3} scope="colgroup" className="border-r text-center">Rate</TableHead>
             <TableHead colSpan={3} scope="colgroup" className="text-center">Amount</TableHead>
           </TableRow>
@@ -305,6 +306,9 @@ export function AmountTable() {
                 <TableCell className="border-r font-medium">{item.description}</TableCell>
                 <TableCell className="border-r">
                   <Badge variant="outline">{item.unit}</Badge>
+                </TableCell>
+                <TableCell className="border-r text-right font-medium">
+                  <Num>{qty.toFixed(2)}</Num>
                 </TableCell>
                 <TableCell className="border-r text-right text-muted-foreground">
                   <Num>{rateFab}</Num>

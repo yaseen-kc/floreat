@@ -24,5 +24,6 @@ describe('Step12Amount', () => {
 
     expect(screen.getAllByRole('heading', { name: 'Amount' })).toHaveLength(2)
     expect(screen.getByRole('columnheader', { name: 'Description' })).toBeInTheDocument()
+    expect(screen.getByRole('columnheader', { name: 'Quantity' })).toBeInTheDocument()
   })
 })

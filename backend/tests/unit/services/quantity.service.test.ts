@@ -29,6 +29,21 @@ describe('quantity.service', () => {
       }))
     })
 
+    it('ensures user-submitted manual overrides take precedence over computed defaults', async () => {
+      const pebRoofOverride = { lengthOfBuildingQuantity: 25 }
+      const quantity = makeQuantity({ jobId: 'job-1' })
+      prismaMock.quantity.upsert.mockResolvedValue(quantity as any)
+
+      await upsertQuantity('job-1', { pebRoof: pebRoofOverride })
+
+      expect(prismaMock.quantity.upsert).toHaveBeenCalledWith(expect.objectContaining({
+        where: { jobId: 'job-1' },
+        create: expect.objectContaining({
+          pebRoof: { create: expect.objectContaining({ lengthOfBuildingQuantity: 25 }) },
+        }),
+      }))
+    })
+
     it('omits sections that were not provided', async () => {
       const quantity = makeQuantity({ jobId: 'job-2' })
       prismaMock.quantity.upsert.mockResolvedValue(quantity as any)
