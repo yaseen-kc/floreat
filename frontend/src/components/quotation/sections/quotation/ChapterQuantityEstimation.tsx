@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import { Badge } from '@/components/ui/badge'
 import { DocChapter } from './DocPrimitives'
 import { DocTable, type DocColumn } from './DocTable'
@@ -26,8 +27,8 @@ function item(label: string, detail?: string) {
 
 /** Chapter 5 — estimated quantities per line item. */
 export function ChapterQuantityEstimation() {
-  const { quantity, amount, roof } = useQuotationStore(
-    useShallow((s) => ({ quantity: s.quantity, amount: s.amount, roof: s.roof })),
+  const { quantity, amount, roof, setQuotation } = useQuotationStore(
+    useShallow((s) => ({ quantity: s.quantity, amount: s.amount, roof: s.roof, setQuotation: s.setQuotation })),
   )
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -43,6 +44,39 @@ export function ChapterQuantityEstimation() {
   const am = amount
 
   const badge = (unit: string) => <Badge variant="outline">{unit}</Badge>
+
+  useEffect(() => {
+    setQuotation({
+      qtyRoofStructure:      n(p?.raftersAndColumnsQuantity) + n(p?.lengthOfBuildingQuantity) + n(ac?.fasciaStructureQuantity),
+      qtyRoofPurlins:        n(p?.roofPurlinsQuantity) + n(p?.lengthOfOnePurlinQuantity),
+      qtyMezzanineStructure: n(mz?.mezzanineStructureQuantity) + n(mz?.totalMezzanineAreaQuantity),
+      qtyCladdingStructure:  n(cl?.claddingStructureQuantity) + n(cl?.claddingEaveHeightFrontAdditional),
+      qtyBracings:           n(am?.windBracingsQuantity) * n(roof.windBracingUnitWeight) + n(am?.sagRodQuantity) * n(p?.unitWeightOfSagRod) + n(am?.flangeBraceQuantity),
+      qtyCanopyStructure:    n(ca?.canopyStructureQuantity),
+      qtyCanopyPurlins:      n(ca?.canopyPurlinQuantity),
+      qtyStair:              n(am?.stair1Quantity) + n(am?.stair2Quantity),
+      qtyPlinthArea:         n(roof.buildingOverallLength) * n(roof.buildingOverallWidth),
+      qtyRoofSheetArea:      n(p?.roofSheetQuantity) + n(p?.extendedRoofWidthAdditonal),
+      qtyDeckingSheet:       n(am?.deckingSheetQuantity),
+      qtyCladdingSheetArea:  n(cl?.claddingSheetAdditional) + n(cl?.claddingSheetQuantity),
+      qtyCanopySheetArea:    n(ca?.canopySheetQuantity),
+      qtySheetAccessories:   n(ca?.canopyGutterQuantity) + n(ca?.canopyDownTakeQuantity) + n(ca?.canopySideCoveringQuantity)
+        + n(ca?.canopyFlashingQuantity) + n(ac?.ridgeQuantity) + n(ac?.gutterQuantity)
+        + n(ac?.downtakeQuantity) + n(ac?.dripTrimQuantity) + n(ac?.gableEndFlashingQuantity) + n(ac?.cornerFlashQuantity),
+      qtyDoors:              n(ac?.doorsQuantity),
+      qtyWindows:            n(ac?.windowsQuantity),
+      qtyRollingShutter:     n(ac?.rollingShutterQuantity),
+      qtyLouvers:            n(ac?.louversQuantity),
+      qtyTurboVentilators:   n(ac?.turboVentilatorsQuantity),
+      qtySkyLights:          n(ac?.skyLightQuantity),
+      qtyWallLights:         n(ac?.wallLightQuantity),
+      qtyRoofInsulation:     n(ac?.roofInsulationQuantity),
+      qtyWallInsulation:     n(ac?.wallInsulationQuantity),
+      qtyPolycarbonateSheet: n(p?.lengthOfpolyCarbonateSheetAdditional) + n(p?.polyCarbonateSheetQuantity),
+      qtyFasciaStructure:    n(p?.lengthOfpolyCarbonateSheetAdditional),
+    })
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [p, cl, ca, mz, am, ac, roof])
 
   const rows = [
     ['1', item('Roof Structure:', 'Rafters, Columns and Tie Beams'), badge('Kg'),

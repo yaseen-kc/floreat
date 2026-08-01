@@ -1,4 +1,7 @@
 import { QuotationDocument } from '@/components/quotation/sections/quotation/QuotationDocument'
+import { useAmountHydration } from '@/hooks/useAmountHydration'
+import { useQuantityHydration } from '@/hooks/useQuantityHydration'
+import { useQuotationHydration } from '@/hooks/useQuotationHydration'
 
 /**
  * Step 13 — the assembled quotation document, read-only.
@@ -8,6 +11,10 @@ import { QuotationDocument } from '@/components/quotation/sections/quotation/Quo
  * quantity, amount and rate records is a change of data source only.
  */
 export function Step13Quotation() {
+  useQuotationHydration()
+  useQuantityHydration()
+  useAmountHydration()
+
   return (
     <section>
       <div className="mb-5">

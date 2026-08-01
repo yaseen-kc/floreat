@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import { useShallow } from 'zustand/react/shallow'
 import { cn } from '@/lib/utils'
 import { Num } from '@/components/ui/num'
@@ -52,7 +53,12 @@ const fmt = (n: number) =>
 
 
 export function ChapterPricing() {
-  const { amount } = useQuotationStore(useShallow((s) => ({ amount: s.amount })))
+  const { amount, setQuotation } = useQuotationStore(
+    useShallow((s) => ({ amount: s.amount, setQuotation: s.setQuotation })),
+  )
+
+  const completionDays = 72
+  const commencementDays = 10
 
   const fab      = parseNum(amount?.totalFabricationAmount)
   const erec     = parseNum(amount?.totalErrectionAmount)
@@ -61,6 +67,10 @@ export function ChapterPricing() {
   const partAGst  = fab * 0.18
   const partBGst  = partBBase * 0.18
   const partCBase = fab + partBBase
+
+  useEffect(() => {
+    setQuotation({ fabricationAmount: fab, installationAmount: partBBase, grandTotal: partCBase * 1.18 })
+  }, [fab, partBBase, partCBase, setQuotation])
 
   const pricing: readonly PricingRow[] = [
     { sl: 'A', item: 'Fabrication and Supply of Pre Engineered Steel Structure including transportation, Loading and Unloading Charges', amount: fmt(fab) },
@@ -147,7 +157,7 @@ export function ChapterPricing() {
         </DocSubsection>
         <DocSubsection title="Completion Time">
           <DocList items={[
-            <>All work within our scope shall be completed within <strong>72 days</strong> from the date of commencement of the project. The project shall commence within <strong>10 days</strong> from the date of receipt of the confirmed Work Order and realization of the advance payment.</>,
+            <>All work within our scope shall be completed within <strong>{completionDays} days</strong> from the date of commencement of the project. The project shall commence within <strong>{commencementDays} days</strong> from the date of receipt of the confirmed Work Order and realization of the advance payment.</>,
             'Every reasonable effort will be made to complete the project within the stipulated period. However, delays arising from circumstances beyond our control—including but not limited to rain, strikes, lockouts, power failures, acts of God, government actions, floods, supplier delays, delayed running bill payments, delays in civil works such as foundations or columns, site clearance issues, or similar unforeseen events—shall not be considered a breach of contract and shall not attract any penalties or deductions.',
           ]} />
         </DocSubsection>
