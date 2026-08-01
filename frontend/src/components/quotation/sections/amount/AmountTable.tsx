@@ -8,6 +8,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Calculator } from 'lucide-react'
 import { calculateAmountQuantities, deriveAmountItemRates } from '@floreat/shared/calc'
 import { useRates } from '@/api/quotation/rate/getRate'
+import { useMemo } from 'react'
 
 /** Coerce a possibly undefined/null Decimal string or number from API/store to a number or undefined. */
 const parseNum = (v?: string | number | null): number | undefined => (v == null ? undefined : Number(v))
@@ -34,8 +35,7 @@ export function AmountTable() {
   const { data: ratesPage } = useRates(1, 100)
   const rateByItem = new Map((ratesPage?.data ?? []).map((r) => [r.item, r]))
 
-  const calculated = calculateAmountQuantities({
-    // Roof fields
+  const calculated = calculateAmountQuantities({    // Roof fields
     buildingOverallLength: roof.buildingOverallLength,
     buildingOverallWidth: roof.buildingOverallWidth,
     roofSlope: roof.roofSlope,
@@ -258,6 +258,25 @@ export function AmountTable() {
     'INTERNAL PARTITIONS': calculated.internalPartitionsQuantity,
   }
 
+  const rows = useMemo(() => DEFAULT_AMOUNT_ITEMS.map((item) => {
+    const prefix = ITEM_PREFIX_MAP[item.description]
+    const savedQty = prefix ? parseNum(amount?.[`${prefix}Quantity` as keyof typeof amount]) : undefined
+    const qty = savedQty ?? quantities[item.description] ?? 0
+    const ratesFromMaster = deriveAmountItemRates(item.rateItem ? rateByItem.get(item.rateItem) : null)
+    const rateFab = prefix ? (parseNum(amount?.[`${prefix}FabricationRate` as keyof typeof amount]) ?? ratesFromMaster.rateFabrication) : ratesFromMaster.rateFabrication
+    const rateErec = prefix ? (parseNum(amount?.[`${prefix}ErrectionRate` as keyof typeof amount]) ?? ratesFromMaster.rateErection) : ratesFromMaster.rateErection
+    const rateLoad = prefix ? (parseNum(amount?.[`${prefix}LoadingRate` as keyof typeof amount]) ?? ratesFromMaster.rateLoading) : ratesFromMaster.rateLoading
+    const amtFab = prefix ? (parseNum(amount?.[`${prefix}FabricationAmount` as keyof typeof amount]) ?? (qty * rateFab)) : (qty * rateFab)
+    const amtErec = prefix ? (parseNum(amount?.[`${prefix}ErrectionAmount` as keyof typeof amount]) ?? (qty * rateErec)) : (qty * rateErec)
+    const amtLoad = prefix ? (parseNum(amount?.[`${prefix}LoadingAmount` as keyof typeof amount]) ?? (qty * rateLoad)) : (qty * rateLoad)
+    return { item, qty, rateFab, rateErec, rateLoad, amtFab, amtErec, amtLoad }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }), [amount, quantities, rateByItem])
+
+  const totalFab = parseNum(amount?.totalFabricationAmount) ?? rows.reduce((s, r) => s + r.amtFab, 0)
+  const totalErec = parseNum(amount?.totalErrectionAmount) ?? rows.reduce((s, r) => s + r.amtErec, 0)
+  const totalLoad = parseNum(amount?.totalLoadingAmount) ?? rows.reduce((s, r) => s + r.amtLoad, 0)
+
   return (
     <SectionCard icon={<Calculator />} title="Amount">
       <Table className="min-w-[1200px] border-collapse text-sm">
@@ -266,6 +285,7 @@ export function AmountTable() {
             <TableHead rowSpan={2} scope="col" className="w-12 border-r text-center">SL</TableHead>
             <TableHead rowSpan={2} scope="col" className="min-w-52 border-r">Description</TableHead>
             <TableHead rowSpan={2} scope="col" className="min-w-24 border-r">Unit</TableHead>
+            <TableHead rowSpan={2} scope="col" className="min-w-28 border-r text-right">Quantity</TableHead>
             <TableHead colSpan={3} scope="colgroup" className="border-r text-center">Rate</TableHead>
             <TableHead colSpan={3} scope="colgroup" className="text-center">Amount</TableHead>
           </TableRow>
@@ -279,54 +299,45 @@ export function AmountTable() {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {DEFAULT_AMOUNT_ITEMS.map((item, index) => {
-            const prefix = ITEM_PREFIX_MAP[item.description]
-
-            // Quantities: prefer hydrated server amount, fall back to live preview calculated quantity
-            const savedQty = prefix ? parseNum(amount?.[`${prefix}Quantity` as keyof typeof amount]) : undefined
-            const qty = savedQty ?? quantities[item.description] ?? 0
-
-            // Rates: prefer hydrated server amount rates, fall back to rate master lookup
-            const ratesFromMaster = deriveAmountItemRates(item.rateItem ? rateByItem.get(item.rateItem) : null)
-            const rateFab = prefix ? (parseNum(amount?.[`${prefix}FabricationRate` as keyof typeof amount]) ?? ratesFromMaster.rateFabrication) : ratesFromMaster.rateFabrication
-            const rateErec = prefix ? (parseNum(amount?.[`${prefix}ErrectionRate` as keyof typeof amount]) ?? ratesFromMaster.rateErection) : ratesFromMaster.rateErection
-            const rateLoad = prefix ? (parseNum(amount?.[`${prefix}LoadingRate` as keyof typeof amount]) ?? ratesFromMaster.rateLoading) : ratesFromMaster.rateLoading
-
-            // Amounts: prefer hydrated server amount, fall back to qty * rate calculation
-            const amtFab = prefix ? (parseNum(amount?.[`${prefix}FabricationAmount` as keyof typeof amount]) ?? (qty * rateFab)) : (qty * rateFab)
-            const amtErec = prefix ? (parseNum(amount?.[`${prefix}ErrectionAmount` as keyof typeof amount]) ?? (qty * rateErec)) : (qty * rateErec)
-            const amtLoad = prefix ? (parseNum(amount?.[`${prefix}LoadingAmount` as keyof typeof amount]) ?? (qty * rateLoad)) : (qty * rateLoad)
-
-            return (
-              <TableRow key={item.description}>
-                <TableCell className="border-r text-center text-muted-foreground">
-                  <Num>{index + 1}</Num>
-                </TableCell>
-                <TableCell className="border-r font-medium">{item.description}</TableCell>
-                <TableCell className="border-r">
-                  <Badge variant="outline">{item.unit}</Badge>
-                </TableCell>
-                <TableCell className="border-r text-right text-muted-foreground">
-                  <Num>{rateFab}</Num>
-                </TableCell>
-                <TableCell className="border-r text-right text-muted-foreground">
-                  <Num>{rateErec}</Num>
-                </TableCell>
-                <TableCell className="border-r text-right text-muted-foreground">
-                  <Num>{rateLoad}</Num>
-                </TableCell>
-                <TableCell className="border-r text-right text-muted-foreground">
-                  <Num>{amtFab.toFixed(2)}</Num>
-                </TableCell>
-                <TableCell className="border-r text-right text-muted-foreground">
-                  <Num>{amtErec.toFixed(2)}</Num>
-                </TableCell>
-                <TableCell className="text-right text-muted-foreground">
-                  <Num>{amtLoad.toFixed(2)}</Num>
-                </TableCell>
-              </TableRow>
-            )
-          })}
+          {rows.map(({ item, qty, rateFab, rateErec, rateLoad, amtFab, amtErec, amtLoad }, index) => (
+            <TableRow key={item.description}>
+              <TableCell className="border-r text-center text-muted-foreground">
+                <Num>{index + 1}</Num>
+              </TableCell>
+              <TableCell className="border-r font-medium">{item.description}</TableCell>
+              <TableCell className="border-r">
+                <Badge variant="outline">{item.unit}</Badge>
+              </TableCell>
+              <TableCell className="border-r text-right font-medium">
+                <Num>{qty.toFixed(2)}</Num>
+              </TableCell>
+              <TableCell className="border-r text-right text-muted-foreground">
+                <Num>{rateFab}</Num>
+              </TableCell>
+              <TableCell className="border-r text-right text-muted-foreground">
+                <Num>{rateErec}</Num>
+              </TableCell>
+              <TableCell className="border-r text-right text-muted-foreground">
+                <Num>{rateLoad}</Num>
+              </TableCell>
+              <TableCell className="border-r text-right text-muted-foreground">
+                <Num>{amtFab.toFixed(2)}</Num>
+              </TableCell>
+              <TableCell className="border-r text-right text-muted-foreground">
+                <Num>{amtErec.toFixed(2)}</Num>
+              </TableCell>
+              <TableCell className="text-right text-muted-foreground">
+                <Num>{amtLoad.toFixed(2)}</Num>
+              </TableCell>
+            </TableRow>
+          ))}
+          <TableRow className="border-t-2 bg-muted/50 font-semibold">
+            <TableCell colSpan={4} className="border-r text-right">TOTAL</TableCell>
+            <TableCell colSpan={3} className="border-r" />
+            <TableCell className="border-r text-right"><Num>{totalFab.toFixed(2)}</Num></TableCell>
+            <TableCell className="border-r text-right"><Num>{totalErec.toFixed(2)}</Num></TableCell>
+            <TableCell className="text-right"><Num>{totalLoad.toFixed(2)}</Num></TableCell>
+          </TableRow>
         </TableBody>
       </Table>
     </SectionCard>

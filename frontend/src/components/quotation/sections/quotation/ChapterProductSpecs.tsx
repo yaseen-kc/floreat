@@ -1,6 +1,7 @@
+import { useSpec } from '@/api/quotation/spec/getSpec'
+import { useQuotationStore } from '@/stores/quotation-store'
 import { DocChapter } from './DocPrimitives'
-import { DocTable, type DocColumn } from './DocTable'
-import { MOCK_PRODUCT_SPECS } from './quotation-data'
+import { DocTable, type DocColumn, type Row } from './DocTable'
 
 const COLUMNS: readonly DocColumn[] = [
   { header: 'SL No.', align: 'right', className: 'w-16', numeric: true },
@@ -12,12 +13,23 @@ const COLUMNS: readonly DocColumn[] = [
 
 /** Chapter 2 — material specifications, brands and yield strengths. */
 export function ChapterProductSpecs() {
+  const jobId = useQuotationStore((s) => s.jobId)
+  const { data } = useSpec(jobId ?? '')
+
+  const rows: Row[] = (data?.products ?? []).map((p, i) => [
+    String(i + 1),
+    p.description ?? '',
+    p.specification ?? '',
+    p.makeOrBrand ?? '',
+    p.yieldStrengthMpa != null ? `Fy = ${p.yieldStrengthMpa} MPa` : '',
+  ])
+
   return (
     <DocChapter eyebrow="Chapter 2" title="Product Specifications">
       <DocTable
         caption="Material specification, make and yield strength per product"
         columns={COLUMNS}
-        rows={MOCK_PRODUCT_SPECS}
+        rows={rows}
         minWidth="min-w-[900px]"
       />
     </DocChapter>

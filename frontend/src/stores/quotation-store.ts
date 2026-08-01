@@ -18,6 +18,7 @@ import {
   canopyItemSchema,
 } from '@/schemas/canopy.schema'
 import { type CreateLoadInput } from '@/schemas/load.schema'
+import { type CreateQuotationInput } from '@/schemas/quotation.schema'
 import { type CreateSpecInput, specProductItemSchema } from '@/schemas/spec.schema'
 import {
   type CreateAccessoriesInput,
@@ -235,6 +236,14 @@ export interface CanopyDraft {
  */
 export type LoadDraft = CreateLoadInput
 
+/**
+ * Step 13 quotation draft. Quotation is a flat, 1:1-per-job resource with NO
+ * child arrays, and the schema is entirely optional — so the draft is just the
+ * create input. Every field can be left blank and is dropped from the payload by
+ * {@link buildQuotationPayload}.
+ */
+export type QuotationDraft = CreateQuotationInput
+
 
 /**
  * The Step 6 accessories draft. Accessories is a flat, always-on 1:1-per-job
@@ -305,6 +314,7 @@ interface QuotationState {
   accessories: AccessoriesDraft
   joint: JointDraft
   spec: SpecDraft
+  quotation: QuotationDraft
   quantity: Quantity | null
   amount: Amount | null
   quantityDrafts: Record<string, Record<string, string>>
@@ -322,6 +332,7 @@ interface QuotationState {
   setAccessories: (v: Partial<AccessoriesDraft>) => void
   setJoint: (v: Partial<JointDraft>) => void
   setSpec: (v: Partial<SpecDraft>) => void
+  setQuotation: (v: Partial<QuotationDraft>) => void
   setJobId: (id: string | null) => void
   resetQuotation: () => void
   goStep: (n: number) => void
@@ -412,6 +423,9 @@ const createDefaultJoint = (): JointDraft => ({
 /** Factory for a fresh spec draft — an empty products table (the schema is all-optional). */
 const createDefaultSpec = (): SpecDraft => ({ products: [] })
 
+/** Factory for a fresh quotation draft — every field blank (the schema is all-optional). */
+const createDefaultQuotation = (): QuotationDraft => ({})
+
 /** True for a plain, non-array object (the shape of every nested draft slice). */
 const isPlainObject = (v: unknown): v is Record<string, unknown> =>
   typeof v === 'object' && v !== null && !Array.isArray(v)
@@ -464,6 +478,7 @@ export const useQuotationStore = create<QuotationState>()(
       accessories: createDefaultAccessories(),
       joint: createDefaultJoint(),
       spec: createDefaultSpec(),
+      quotation: createDefaultQuotation(),
 
       setAmount: (amount) => set({ amount }),
 
@@ -551,6 +566,10 @@ export const useQuotationStore = create<QuotationState>()(
       // are dropped from the payload by buildSpecPayload at save time.
       setSpec: (v) => set((s) => ({ spec: { ...s.spec, ...v } })),
 
+      // Quotation is always-on: blank fields are dropped from the payload by
+      // buildQuotationPayload at save time.
+      setQuotation: (v) => set((s) => ({ quotation: { ...s.quotation, ...v } })),
+
       setJobId: (id) => set({ jobId: id }),
 
       resetQuotation: () => set({
@@ -570,6 +589,7 @@ export const useQuotationStore = create<QuotationState>()(
         accessories: createDefaultAccessories(),
         joint: createDefaultJoint(),
         spec: createDefaultSpec(),
+        quotation: createDefaultQuotation(),
       }),
 
       validateStep: (n) => {
@@ -601,7 +621,7 @@ export const useQuotationStore = create<QuotationState>()(
       // creating a duplicate.
       skipHydration: true,
       merge: (persistedState, currentState) => deepMergeDraft(persistedState, currentState),
-      partialize: (s) => ({ projectInfo: s.projectInfo, roof: s.roof, roofSectionsEnabled: s.roofSectionsEnabled, mezzanine: s.mezzanine, stair: s.stair, canopy: s.canopy, load: s.load, accessories: s.accessories, joint: s.joint, spec: s.spec, currentStep: s.currentStep, jobId: s.jobId }),
+      partialize: (s) => ({ projectInfo: s.projectInfo, roof: s.roof, roofSectionsEnabled: s.roofSectionsEnabled, mezzanine: s.mezzanine, stair: s.stair, canopy: s.canopy, load: s.load, accessories: s.accessories, joint: s.joint, spec: s.spec, quotation: s.quotation, currentStep: s.currentStep, jobId: s.jobId }),
     }
   )
 )
@@ -706,6 +726,16 @@ export function buildCanopyPayload(canopy: CanopyDraft): CreateCanopyInput {
  */
 export function buildLoadPayload(load: LoadDraft): CreateLoadInput {
   return compactRow(load) as CreateLoadInput
+}
+
+/**
+ * Builds the quotation create/upsert payload from the Step 13 draft.
+ *
+ * Quotation is a flat resource with an all-optional schema, so this just drops
+ * every blank (`undefined`) field. An entirely blank draft yields `{}`.
+ */
+export function buildQuotationPayload(quotation: QuotationDraft): CreateQuotationInput {
+  return compactRow(quotation) as CreateQuotationInput
 }
 
 /** The six roof-derived quantity fields; each is only sent when its `*Manual` flag is set. */

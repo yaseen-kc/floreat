@@ -3,6 +3,9 @@ import { cn } from '@/lib/utils'
 import { Num } from '@/components/ui/num'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 
+/** A single table row expressed as ordered cells. */
+export type Row = readonly string[]
+
 export interface DocColumn {
   /** Header text. Rendered as a mono uppercase `<th scope="col">`. */
   header: string

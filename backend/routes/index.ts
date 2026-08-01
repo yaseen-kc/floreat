@@ -28,6 +28,7 @@ import { quantityMezzanineRoutes } from './quantity-mezzanine.routes.js'
 import { quantityStairRoutes } from './quantity-stair.routes.js'
 import { quantityAdditionalBoltsRoutes } from './quantity-additional-bolts.routes.js'
 import { amountRoutes } from './amount.routes.js'
+import { quotationRoutes } from './quotation.routes.js'
 
 export async function registerRoutes(app: FastifyInstance) {
   await app.register(healthRoutes, { prefix: '/api' })
@@ -51,4 +52,5 @@ export async function registerRoutes(app: FastifyInstance) {
   await app.register(quantityStairRoutes, { prefix: '/api' })
   await app.register(quantityAdditionalBoltsRoutes, { prefix: '/api' })
   await app.register(amountRoutes, { prefix: '/api' })
+  await app.register(quotationRoutes, { prefix: '/api' })
 }

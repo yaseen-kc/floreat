@@ -1,4 +1,4 @@
-import { useQuotationStore, buildRoofPayload, buildMezzaninePayload, buildStairPayload, buildCanopyPayload, buildLoadPayload, buildAccessoriesPayload, buildJointPayload, buildSpecPayload } from '@/stores/quotation-store'
+import { useQuotationStore, buildRoofPayload, buildMezzaninePayload, buildStairPayload, buildCanopyPayload, buildLoadPayload, buildAccessoriesPayload, buildJointPayload, buildSpecPayload, buildQuotationPayload } from '@/stores/quotation-store'
 import { useHotkeys } from 'react-hotkeys-hook'
 import { useSaveStatusStore } from '@/stores/save-status-store'
 import { useShallow } from 'zustand/react/shallow'
@@ -15,6 +15,7 @@ import { useUpsertJoint } from '@/api/quotation/joint/postJoint'
 import { useUpsertSpec } from '@/api/quotation/spec/postSpec'
 import { useUpsertAmount } from '@/api/quotation/amount/postAmount'
 import { useUpsertQuantity } from '@/api/quotation/quantity/postQuantity'
+import { useUpsertQuotation } from '@/api/quotation/quotation/postQuotation'
 import {
   calculatePebQuantities,
   calculateCladdingQuantities,
@@ -40,7 +41,7 @@ export const successToast = (message: string) => {
 }
 
 export function WizardActionBar() {
-  const { currentStep, nextStep, prevStep, validateStep, goStep, projectInfo, roof, jobId, setJobId, resetQuotation, mezzanine, stair, canopy, load, accessories, joint, spec } =
+  const { currentStep, nextStep, prevStep, validateStep, goStep, projectInfo, roof, jobId, setJobId, resetQuotation, mezzanine, stair, canopy, load, accessories, joint, spec, quotation } =
     useQuotationStore(
       useShallow((s) => ({
         currentStep: s.currentStep,
@@ -60,6 +61,7 @@ export function WizardActionBar() {
         accessories: s.accessories,
         joint: s.joint,
         spec: s.spec,
+        quotation: s.quotation,
       })),
     )
   const navigate = useNavigate()
@@ -79,6 +81,7 @@ export function WizardActionBar() {
   const upsertSpec = useUpsertSpec()
   const upsertAmount = useUpsertAmount()
   const upsertQuantity = useUpsertQuantity()
+  const upsertQuotation = useUpsertQuotation()
   const isLast = currentStep === STEP_COUNT
   const isSubmitting =
     createJob.isPending ||
@@ -92,7 +95,8 @@ export function WizardActionBar() {
     upsertJoint.isPending ||
     upsertSpec.isPending ||
     upsertAmount.isPending ||
-    upsertQuantity.isPending
+    upsertQuantity.isPending ||
+    upsertQuotation.isPending
 
   /**
    * Persists Step 1 data. Creates the job once (POST) and stores its id;
@@ -379,6 +383,23 @@ export function WizardActionBar() {
     }
   }
 
+  const submitQuotation = async () => {
+    if (!jobId) {
+      toast.error('Save the project details first')
+      throw new Error('Cannot save quotation before the job is created')
+    }
+    try {
+      setSaving()
+      await upsertQuotation.mutateAsync({ jobId, payload: buildQuotationPayload(quotation) })
+      setSaved()
+      successToast('Quotation saved successfully')
+    } catch (err) {
+      resetSaveStatus()
+      toast.error('Failed to save quotation')
+      throw err
+    }
+  }
+
   const handleNext = async () => {
     if (isSubmitting) return
 
@@ -518,10 +539,15 @@ export function WizardActionBar() {
       return
     }
 
-    // Final step (Quotation): the document is read-only, so finalise the draft.
+    // Final step (Quotation): save the snapshot, then finalise the draft.
     if (isLast) {
-      resetQuotation()
-      navigate('/')
+      try {
+        await submitQuotation()
+        resetQuotation()
+        navigate('/')
+      } catch {
+        // Error toast already shown; stay on Step 13.
+      }
       return
     }
 
@@ -555,6 +581,8 @@ export function WizardActionBar() {
       try { await submitQuantity() } catch { /* error toast already shown */ }
     } else if (currentStep === 12) {
       try { await submitAmount() } catch { /* error toast already shown */ }
+    } else if (currentStep === 13) {
+      try { await submitQuotation() } catch { /* error toast already shown */ }
     } else {
       successToast('Draft saved')
     }

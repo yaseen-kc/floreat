@@ -776,7 +776,7 @@ export function qtyN39FasciaCoveringSheetBoard(input: AmountCalcInput): number {
 
 /** Derives INTERNAL PARTITIONS quantity (AMOUNT!N40, unit SQM). */
 export function qtyN40InternalPartitions(input: AmountCalcInput): number {
-  return n(input.partitionQuantityX11)
+  return n(input.partitionQuantity)
 }
 
 /** Shape of all 36 derived Amount line item quantities. */

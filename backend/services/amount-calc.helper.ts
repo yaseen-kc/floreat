@@ -279,5 +279,18 @@ export async function computeJobAmount(jobId: string): Promise<CreateAmountInput
     payload[`${prefix}LoadingAmount`] = amtLoad
   }
 
+  payload.totalFabricationAmount = DEFAULT_AMOUNT_ITEMS.reduce((sum, item) => {
+    const prefix = ITEM_PREFIX_MAP[item.description]
+    return sum + (prefix ? (payload[`${prefix}FabricationAmount`] ?? 0) : 0)
+  }, 0)
+  payload.totalErrectionAmount = DEFAULT_AMOUNT_ITEMS.reduce((sum, item) => {
+    const prefix = ITEM_PREFIX_MAP[item.description]
+    return sum + (prefix ? (payload[`${prefix}ErrectionAmount`] ?? 0) : 0)
+  }, 0)
+  payload.totalLoadingAmount = DEFAULT_AMOUNT_ITEMS.reduce((sum, item) => {
+    const prefix = ITEM_PREFIX_MAP[item.description]
+    return sum + (prefix ? (payload[`${prefix}LoadingAmount`] ?? 0) : 0)
+  }, 0)
+
   return payload as CreateAmountInput
 }
