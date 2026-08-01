@@ -1,15 +1,10 @@
 import { QuotationDocument } from '@/components/quotation/sections/quotation/QuotationDocument'
+import { Button } from '@/components/ui/button'
 import { useAmountHydration } from '@/hooks/useAmountHydration'
 import { useQuantityHydration } from '@/hooks/useQuantityHydration'
 import { useQuotationHydration } from '@/hooks/useQuotationHydration'
+import { Printer } from 'lucide-react'
 
-/**
- * Step 13 — the assembled quotation document, read-only.
- *
- * Content is currently placeholder data lifted from a reference quotation, held
- * in the chapter component that renders it, so swapping in the saved job,
- * quantity, amount and rate records is a change of data source only.
- */
 export function Step13Quotation() {
   useQuotationHydration()
   useQuantityHydration()
@@ -17,15 +12,27 @@ export function Step13Quotation() {
 
   return (
     <section>
-      <div className="mb-5">
-        <h2 className="text-xl font-semibold tracking-tight">Quotation</h2>
-        <p className="text-muted-foreground text-sm mt-1">
-          Final quotation document assembled from the preceding steps. Review each chapter before
-          issuing to the client.
-        </p>
+      <div className="mb-5 flex items-start justify-between">
+        <div>
+          <h2 className="text-xl font-semibold tracking-tight">Quotation</h2>
+          <p className="text-muted-foreground text-sm mt-1">
+            Final quotation document assembled from the preceding steps. Review each chapter before
+            issuing to the client.
+          </p>
+        </div>
+        <Button variant="outline" size="sm" onClick={() => window.print()}>
+          <Printer className="mr-2 h-4 w-4" />
+          Download
+        </Button>
       </div>
 
-      <QuotationDocument />
+      <div id="quotation-print-area">
+        {/* Print-only letterhead. Header is in normal flow so it renders on
+            page 1 only; footer is fixed so Chromium repeats it on every page. */}
+        <img src="/header.jpeg" alt="" aria-hidden className="quotation-print-header" />
+        <QuotationDocument />
+        <img src="/footer.jpeg" alt="" aria-hidden className="quotation-print-footer" />
+      </div>
     </section>
   )
 }
