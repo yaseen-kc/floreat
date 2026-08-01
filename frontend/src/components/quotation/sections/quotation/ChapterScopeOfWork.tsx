@@ -71,7 +71,7 @@ function getBuildingDescription({ projectInfo, roof, accessories, canopy, mezzan
     ['19', 'EOT Crane', yesOrNa(accessories.gantryGirderEnabled === true)],
     ['20', 'Roof Sheet', sheet(roof.roofCoveringType, roof.roofCoveringThickness)],
     ['21', 'Cladding Sheet', sheet(roof.claddingCoveringType, roof.claddingCoveringThickness)],
-    ['22', 'Sheeting accessories', ""],
+    ['22', 'Sheeting accessories', "_"],
     ['A', 'Gutter', yesOrNa(Number(accessories.gutterQuantity) > 0)],
     ['B', 'Down Take', yesOrNa(Number(accessories.downTakeQuantity) > 0)],
     ['C', 'Drip Trim', yesOrNa(Number(accessories.dripTrimQuantity) > 0)],

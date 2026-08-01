@@ -166,11 +166,11 @@ export function ChapterPricing() {
         </DocSubsection>
       </DocSubsection>
 
-      <div className="flex justify-between pt-4 mt-6 border-t">
+      <div className="flex justify-between pt-4 mt-6">
         {SIGNATORIES.map((person) => (
           <table key={person.name} className="text-sm border-collapse">
             <tbody>
-              <tr><td className="pb-2 h-14">{person.signature && <img src={person.signature} alt="Signature" className="h-12 w-auto" />}</td></tr>
+              <tr><td className="pb-2 h-16">{person.signature && <img src={person.signature} alt="Signature" className="h-12 w-auto" />}</td></tr>
               <tr><td className="pb-0.5 font-semibold">{person.name}</td></tr>
               <tr><td className="text-muted-foreground">{person.designation}</td></tr>
               <tr><td className="text-muted-foreground"><Num>{person.phone}</Num></td></tr>

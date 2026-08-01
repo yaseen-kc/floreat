@@ -14,7 +14,10 @@ const COLUMNS: readonly DocColumn[] = [
 
 const n = (v: string | number | null | undefined): number => Number(v ?? 0)
 const fmt = (v: number): string =>
-  v.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+  Math.round(v).toLocaleString('en-US', { maximumFractionDigits: 0 })
+const round3 = (v: number): number => Math.round(v * 1000) / 1000
+const fmt3 = (v: number): string =>
+  round3(v).toLocaleString('en-US', { maximumFractionDigits: 3 })
 
 function item(label: string, detail?: string) {
   return (
@@ -47,33 +50,33 @@ export function ChapterQuantityEstimation() {
 
   useEffect(() => {
     setQuotation({
-      qtyRoofStructure:      n(p?.raftersAndColumnsQuantity) + n(p?.lengthOfBuildingQuantity) + n(ac?.fasciaStructureQuantity),
-      qtyRoofPurlins:        n(p?.roofPurlinsQuantity) + n(p?.lengthOfOnePurlinQuantity),
-      qtyMezzanineStructure: n(mz?.mezzanineStructureQuantity) + n(mz?.totalMezzanineAreaQuantity),
-      qtyCladdingStructure:  n(cl?.claddingStructureQuantity) + n(cl?.claddingEaveHeightFrontAdditional),
-      qtyBracings:           n(am?.windBracingsQuantity) * n(roof.windBracingUnitWeight) + n(am?.sagRodQuantity) * n(p?.unitWeightOfSagRod) + n(am?.flangeBraceQuantity),
-      qtyCanopyStructure:    n(ca?.canopyStructureQuantity),
-      qtyCanopyPurlins:      n(ca?.canopyPurlinQuantity),
-      qtyStair:              n(am?.stair1Quantity) + n(am?.stair2Quantity),
-      qtyPlinthArea:         n(roof.buildingOverallLength) * n(roof.buildingOverallWidth),
-      qtyRoofSheetArea:      n(p?.roofSheetQuantity) + n(p?.extendedRoofWidthAdditonal),
-      qtyDeckingSheet:       n(am?.deckingSheetQuantity),
-      qtyCladdingSheetArea:  n(cl?.claddingSheetAdditional) + n(cl?.claddingSheetQuantity),
-      qtyCanopySheetArea:    n(ca?.canopySheetQuantity),
-      qtySheetAccessories:   n(ca?.canopyGutterQuantity) + n(ca?.canopyDownTakeQuantity) + n(ca?.canopySideCoveringQuantity)
+      qtyRoofStructure:      Math.round(n(p?.raftersAndColumnsQuantity) + n(p?.lengthOfBuildingQuantity) + n(ac?.fasciaStructureQuantity)),
+      qtyRoofPurlins:        Math.round(n(p?.roofPurlinsQuantity) + n(p?.lengthOfOnePurlinQuantity)),
+      qtyMezzanineStructure: Math.round(n(mz?.mezzanineStructureQuantity) + n(mz?.totalMezzanineAreaQuantity)),
+      qtyCladdingStructure:  Math.round(n(cl?.claddingStructureQuantity) + n(cl?.claddingEaveHeightFrontAdditional)),
+      qtyBracings:           Math.round(n(am?.windBracingsQuantity) * n(roof.windBracingUnitWeight) + n(am?.sagRodQuantity) * n(p?.unitWeightOfSagRod) + n(am?.flangeBraceQuantity)),
+      qtyCanopyStructure:    Math.round(n(ca?.canopyStructureQuantity)),
+      qtyCanopyPurlins:      round3(n(ca?.canopyPurlinQuantity)),
+      qtyStair:              Math.round(n(am?.stair1Quantity) + n(am?.stair2Quantity)),
+      qtyPlinthArea:         Math.round(n(roof.buildingOverallLength) * n(roof.buildingOverallWidth)),
+      qtyRoofSheetArea:      Math.round(n(p?.roofSheetQuantity) + n(p?.extendedRoofWidthAdditonal)),
+      qtyDeckingSheet:       Math.round(n(am?.deckingSheetQuantity)),
+      qtyCladdingSheetArea:  Math.round(n(cl?.claddingSheetAdditional) + n(cl?.claddingSheetQuantity)),
+      qtyCanopySheetArea:    Math.round(n(ca?.canopySheetQuantity)),
+      qtySheetAccessories:   Math.round(n(ca?.canopyGutterQuantity) + n(ca?.canopyDownTakeQuantity) + n(ca?.canopySideCoveringQuantity)
         + n(ca?.canopyFlashingQuantity) + n(ac?.ridgeQuantity) + n(ac?.gutterQuantity)
-        + n(ac?.downtakeQuantity) + n(ac?.dripTrimQuantity) + n(ac?.gableEndFlashingQuantity) + n(ac?.cornerFlashQuantity),
-      qtyDoors:              n(ac?.doorsQuantity),
-      qtyWindows:            n(ac?.windowsQuantity),
-      qtyRollingShutter:     n(ac?.rollingShutterQuantity),
-      qtyLouvers:            n(ac?.louversQuantity),
-      qtyTurboVentilators:   n(ac?.turboVentilatorsQuantity),
-      qtySkyLights:          n(ac?.skyLightQuantity),
-      qtyWallLights:         n(ac?.wallLightQuantity),
-      qtyRoofInsulation:     n(ac?.roofInsulationQuantity),
-      qtyWallInsulation:     n(ac?.wallInsulationQuantity),
-      qtyPolycarbonateSheet: n(p?.lengthOfpolyCarbonateSheetAdditional) + n(p?.polyCarbonateSheetQuantity),
-      qtyFasciaStructure:    n(p?.lengthOfpolyCarbonateSheetAdditional),
+        + n(ac?.downtakeQuantity) + n(ac?.dripTrimQuantity) + n(ac?.gableEndFlashingQuantity) + n(ac?.cornerFlashQuantity)),
+      qtyDoors:              Math.round(n(ac?.doorsQuantity)),
+      qtyWindows:            Math.round(n(ac?.windowsQuantity)),
+      qtyRollingShutter:     Math.round(n(ac?.rollingShutterQuantity)),
+      qtyLouvers:            Math.round(n(ac?.louversQuantity)),
+      qtyTurboVentilators:   Math.round(n(ac?.turboVentilatorsQuantity)),
+      qtySkyLights:          Math.round(n(ac?.skyLightQuantity)),
+      qtyWallLights:         Math.round(n(ac?.wallLightQuantity)),
+      qtyRoofInsulation:     Math.round(n(ac?.roofInsulationQuantity)),
+      qtyWallInsulation:     Math.round(n(ac?.wallInsulationQuantity)),
+      qtyPolycarbonateSheet: Math.round(n(p?.lengthOfpolyCarbonateSheetAdditional) + n(p?.polyCarbonateSheetQuantity)),
+      qtyFasciaStructure:    Math.round(n(p?.lengthOfpolyCarbonateSheetAdditional)),
     })
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [p, cl, ca, mz, am, ac, roof])
@@ -92,7 +95,7 @@ export function ChapterQuantityEstimation() {
         + n(am?.sagRodQuantity) * n(p?.unitWeightOfSagRod)
         + n(am?.flangeBraceQuantity))],
     ['6', item('Canopy Structure'), badge('Kg'), fmt(n(ca?.canopyStructureQuantity))],
-    ['7', item('Canopy Purlins'), badge('Kg'), fmt(n(ca?.canopyPurlinQuantity))],
+    ['7', item('Canopy Purlins'), badge('Kg'), fmt3(n(ca?.canopyPurlinQuantity))],
     ['8', item('Stair'), badge('Kg'), fmt(n(am?.stair1Quantity) + n(am?.stair2Quantity))],
     ['9', item('Plinth Area'), badge('Sqm'),
       fmt(n(roof.buildingOverallLength) * n(roof.buildingOverallWidth))],

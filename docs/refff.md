@@ -156,3 +156,13 @@ const PRICING: readonly PricingRow[] = [
   
   { item: 'Grand Total =', amount: '(Amount.totalFabricationAmount) + (Amount.totalFabricationAmount * 0.18) + (Amount.totalErrectionAmount + Amount.totalLoadingAmount)+((Amount.totalErrectionAmount + Amount.totalLoadingAmount) * 0.18')', emphasis: true },
 ]
+
+
+const META = {
+  ref: 'Job.refNo',
+  date: 'Job.date,
+  client: 'Job.firmName',
+  subject: Job.subject,
+  reference: 'Job.refNo',
+  company: 'Floreat Building Systems Pvt Ltd',
+} as const

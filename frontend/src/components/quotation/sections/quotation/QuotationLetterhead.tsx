@@ -2,21 +2,6 @@ import { Num } from '@/components/ui/num'
 import { useQuotationStore, type ProjectInfo } from '@/stores/quotation-store'
 import { DocProse } from './DocPrimitives'
 
-const META = {
-  ref: 'FBS/SM/212/17/12/2020',
-  date: '17 December 2020',
-  client: 'M/S MOCA ARCHITECTS',
-  subject:
-    '20-212 Offer for Supply and Installation of Pre Engineered Steel Hypermarket Building at Wandoor',
-  reference: 'FBS/SM/212/17/12/2020',
-  company: 'Floreat Building Systems Pvt Ltd',
-} as const
-
-const LETTER_BODY: readonly string[] = [
-  'We take this opportunity to thank you for the enquiry and further to the discussion we had with you, we hereby forward our Proposal.',
-  `The Scope of Work, terms and Conditions for the work is enclosed as per our offer no. ${META.ref}.`,
-  'We hope you will find the details furnished as per your requirement. Please feel free to call us for any information.',
-]
 
 type LetterheadInput = Partial<Record<keyof ProjectInfo, unknown>>
 
@@ -56,15 +41,15 @@ export function buildQuotationData(projectInfo: LetterheadInput = {}) {
     META: {
       ref,
       date: formatDate(projectInfo.date),
-      client: provided(projectInfo.clientName),
+      client: provided(projectInfo.firmName),
       subject: provided(projectInfo.subject),
       reference: ref,
-      company: provided(projectInfo.firmName),
+      company: 'Floreat Building Systems Pvt Ltd',
     },
     LETTER_BODY: [
-      LETTER_BODY[0],
+      'We take this opportunity to thank you for the enquiry and further to the discussion we had with you, we hereby forward our Proposal.',
       `The Scope of Work, terms and Conditions for the work is enclosed as per our offer no. ${ref}.`,
-      LETTER_BODY[2],
+      'We hope you will find the details furnished as per your requirement. Please feel free to call us for any information.',
     ] as const,
     SIGNATORIES: [
       { name: provided(projectInfo.estimationEngineerName), role: 'Estimation Engineer', mobile: provided(projectInfo.estimationEngineerMobile) },
@@ -133,7 +118,7 @@ export function QuotationLetterhead() {
         {SIGNATORIES.map((person, index) => (
           <table key={`${person.role}-${index}`} className="text-sm border-collapse">
             <tbody>
-              <tr><td className="pb-0.5 font-semibold">{person.name}</td></tr>
+              <tr><td className="pb-0.5 h-10 font-semibold">{person.name}</td></tr>
               <tr><td className="text-muted-foreground">{person.role}</td></tr>
               <tr><td className="text-muted-foreground"><Num>{person.mobile}</Num></td></tr>
             </tbody>
