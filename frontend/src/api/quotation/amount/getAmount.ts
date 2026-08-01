@@ -305,6 +305,10 @@ export interface Amount {
   internalPartitionsFabricationAmount?: string | null
   internalPartitionsErrectionAmount?: string | null
   internalPartitionsLoadingAmount?: string | null
+
+  totalFabricationAmount?: string | null
+  totalErrectionAmount?: string | null
+  totalLoadingAmount?: string | null
 }
 
 /** Paginated response shape from GET /api/amounts. */

@@ -294,6 +294,10 @@ export const createAmountSchema = z.object({
   internalPartitionsFabricationAmount: num,
   internalPartitionsErrectionAmount: num,
   internalPartitionsLoadingAmount: num,
+
+  totalFabricationAmount: num,
+  totalErrectionAmount: num,
+  totalLoadingAmount: num,
 })
 
 export const updateAmountSchema = createAmountSchema.partial()

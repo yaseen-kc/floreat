@@ -7,6 +7,7 @@ import { prisma } from '../lib/prisma.js'
 import { Prisma } from '../generated/prisma/client.js'
 import type { CreateQuantityInput, UpdateQuantityInput } from '../schemas/quantity.schema.js'
 import { computeJobQuantities } from './quantity-calc.helper.js'
+import { upsertAmount } from './amount.service.js'
 
 const SECTIONS = [
   'pebRoof', 'cladding', 'canopy', 'accessories', 'mezzanine', 'stair', 'additionalBolts',
@@ -54,12 +55,14 @@ export async function upsertQuantity(jobId: string, data: CreateQuantityInput) {
   const computed = await computeJobQuantities(jobId)
   const merged = mergeSectionData(computed, data)
 
-  return prisma.quantity.upsert({
+  const result = await prisma.quantity.upsert({
     where: { jobId },
     create: { jobId, calculationVersion: 'quantity-v1', sourceUpdatedAt: new Date(), rateVersion: 1, isStale: false, ...buildCreateSections(merged) } as Prisma.QuantityUncheckedCreateInput,
     update: { calculationVersion: 'quantity-v1', sourceUpdatedAt: new Date(), rateVersion: 1, isStale: false, ...buildUpsertSections(merged) } as Prisma.QuantityUpdateInput,
     include: includeSections,
   })
+  await upsertAmount(jobId, {} as any)
+  return result
 }
 
 /** Returns a paginated list of the user's quantities ordered by most recent first. */
@@ -83,11 +86,13 @@ export async function updateQuantity(jobId: string, data: UpdateQuantityInput) {
   const computed = await computeJobQuantities(jobId)
   const merged = mergeSectionData(computed, data)
 
-  return prisma.quantity.update({
+  const result = await prisma.quantity.update({
     where: { jobId },
     data: { calculationVersion: 'quantity-v1', sourceUpdatedAt: new Date(), rateVersion: 1, isStale: false, ...buildUpsertSections(merged) } as Prisma.QuantityUpdateInput,
     include: includeSections,
   })
+  await upsertAmount(jobId, {} as any)
+  return result
 }
 
 /** Deletes a quantity by its associated job ID. Throws P2025 if not found. */

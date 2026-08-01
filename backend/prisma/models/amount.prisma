@@ -298,5 +298,9 @@ model Amount {
   internalPartitionsErrectionAmount   Decimal? @db.Decimal(10, 3)
   internalPartitionsLoadingAmount     Decimal? @db.Decimal(10, 3)
 
+  totalFabricationAmount Decimal? @db.Decimal(15, 3)
+  totalErrectionAmount   Decimal? @db.Decimal(15, 3)
+  totalLoadingAmount     Decimal? @db.Decimal(15, 3)
+
   @@index([createdAt])
 }

@@ -96,7 +96,7 @@ export function QuotationLetterhead() {
   return (
     <header className="space-y-5">
       <div className="flex flex-wrap items-start justify-between gap-3">
-        <address className="text-sm font-medium not-italic">{META.client}</address>
+        <address className="text-sm font-medium not-italic">Kind Attendtion: {META.client}</address>
         <div className="space-y-1">
           <MetaItem label="Ref" value={META.ref} />
           <MetaItem label="Date" value={META.date} />
@@ -129,17 +129,17 @@ export function QuotationLetterhead() {
         <p className="font-semibold">For {META.company}</p>
       </div>
 
-      <ul className="grid gap-3 sm:grid-cols-2">
+      <div className="flex justify-between">
         {SIGNATORIES.map((person, index) => (
-          <li key={`${person.role}-${index}`} className="rounded-md border border-border bg-muted/30 p-3">
-            <p className="text-sm font-semibold">{person.name}</p>
-            <p className="text-sm text-muted-foreground">{person.role}</p>
-            <p className="text-sm text-muted-foreground">
-              Mob: <Num>{person.mobile}</Num>
-            </p>
-          </li>
+          <table key={`${person.role}-${index}`} className="text-sm border-collapse">
+            <tbody>
+              <tr><td className="pb-0.5 font-semibold">{person.name}</td></tr>
+              <tr><td className="text-muted-foreground">{person.role}</td></tr>
+              <tr><td className="text-muted-foreground"><Num>{person.mobile}</Num></td></tr>
+            </tbody>
+          </table>
         ))}
-      </ul>
+      </div>
     </header>
   )
 }

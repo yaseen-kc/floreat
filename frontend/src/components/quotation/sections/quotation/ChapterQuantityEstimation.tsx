@@ -1,6 +1,8 @@
 import { Badge } from '@/components/ui/badge'
 import { DocChapter } from './DocPrimitives'
 import { DocTable, type DocColumn } from './DocTable'
+import { useQuotationStore } from '@/stores/quotation-store'
+import { useShallow } from 'zustand/react/shallow'
 
 const COLUMNS: readonly DocColumn[] = [
   { header: 'SL No.', align: 'right', className: 'w-16', numeric: true },
@@ -9,57 +11,80 @@ const COLUMNS: readonly DocColumn[] = [
   { header: 'Quantity', align: 'right', className: 'min-w-32', numeric: true },
 ]
 
-/**
- * SL No., Items, Unit, Quantity. `label` is the bold lead-in and `detail` the
- * plain remainder, mirroring the source's mixed emphasis.
- */
-interface QuantityRow {
-  sl: string
-  label: string
-  detail?: string
-  unit: string
-  quantity: string
-}
+const n = (v: string | number | null | undefined): number => Number(v ?? 0)
+const fmt = (v: number): string =>
+  v.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
 
-const QUANTITY_ESTIMATION: readonly QuantityRow[] = [
-  { sl: '1', label: 'Roof Structure:', detail: 'Rafters, Columns and Tie Beams', unit: 'Kg', quantity: '7,211.33' },
-  { sl: '2', label: 'Roof Purlins', unit: 'Kg', quantity: '28,237.33' },
-  { sl: '3', label: 'Mezzanine Structure.', unit: 'Kg', quantity: '11,210.92' },
-  { sl: '3', label: 'Cladding Structure:', detail: 'Cladding Purlins', unit: 'Kg', quantity: '4,003.15' },
-  { sl: '4', label: 'Bracings:', detail: 'Wind Bracings, Sag Rod, Flange Brace', unit: 'Kg', quantity: '17,686.03' },
-  { sl: '5', label: 'Canopy Structure', unit: 'Kg', quantity: '403.50' },
-  { sl: '6', label: 'Canopy Purlins', unit: 'Kg', quantity: '229.39' },
-  { sl: '7', label: 'Stair', unit: 'Kg', quantity: '726.95' },
-  { sl: '8', label: 'Plinth Area', unit: 'Sqm', quantity: '450.00' },
-  { sl: '9', label: 'Roof Sheet Area', unit: 'Sqm', quantity: '7,019.18' },
-  { sl: '10', label: 'Decking Sheet', unit: 'Sqm', quantity: '234.54' },
-  { sl: '9', label: 'Cladding Sheet Area', unit: 'Sqm', quantity: '157.90' },
-  { sl: '10', label: 'Canopy Sheet Area', unit: 'Sqm', quantity: '30.00' },
-  { sl: '11', label: 'Sheet Accessories: Flashing, Gutter and Downtake', unit: 'Rmtr', quantity: '1,748.68' },
-  { sl: '12', label: 'Doors', unit: 'Sqm', quantity: '21.00' },
-  { sl: '13', label: 'Windows', unit: 'Sqm', quantity: '18.00' },
-  { sl: '14', label: 'Rolling Shutter', unit: 'Sqm', quantity: '100.00' },
-  { sl: '15', label: 'Louvers', unit: 'Sqm', quantity: '100.00' },
-  { sl: '16', label: 'Turbo Ventilators', unit: 'Nos', quantity: '10' },
-  { sl: '17', label: 'Sky Lights', unit: 'Sqm', quantity: '100.00' },
-  { sl: '18', label: 'Wall Lights', unit: 'Sqm', quantity: '100.00' },
-  { sl: '19', label: 'Roof Insulation', unit: 'Sqm', quantity: '6,563.18' },
-  { sl: '20', label: 'Wall Insulation', unit: 'Sqm', quantity: '104.90' },
-  { sl: '21', label: 'Polycarbonate Sheet Area', unit: 'Sqm', quantity: '4,900.00' },
-  { sl: '22', label: 'Fascia Structure', unit: 'Sqm', quantity: '4,564.00' },
-]
+function item(label: string, detail?: string) {
+  return (
+    <>
+      <span className="font-semibold">{label}</span>
+      {detail && <span className="text-foreground/85"> {detail}</span>}
+    </>
+  )
+}
 
 /** Chapter 5 — estimated quantities per line item. */
 export function ChapterQuantityEstimation() {
-  const rows = QUANTITY_ESTIMATION.map((row) => [
-    row.sl,
-    <>
-      <span className="font-semibold">{row.label}</span>
-      {row.detail && <span className="text-foreground/85"> {row.detail}</span>}
-    </>,
-    <Badge variant="outline">{row.unit}</Badge>,
-    row.quantity,
-  ])
+  const { quantity, amount, roof } = useQuotationStore(
+    useShallow((s) => ({ quantity: s.quantity, amount: s.amount, roof: s.roof })),
+  )
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const p = quantity?.pebRoof as any
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const cl = quantity?.cladding as any
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const ca = quantity?.canopy as any
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const ac = quantity?.accessories as any
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const mz = quantity?.mezzanine as any
+  const am = amount
+
+  const badge = (unit: string) => <Badge variant="outline">{unit}</Badge>
+
+  const rows = [
+    ['1', item('Roof Structure:', 'Rafters, Columns and Tie Beams'), badge('Kg'),
+      fmt(n(p?.raftersAndColumnsQuantity) + n(p?.lengthOfBuildingQuantity) + n(ac?.fasciaStructureQuantity))],
+    ['2', item('Roof Purlins'), badge('Kg'),
+      fmt(n(p?.roofPurlinsQuantity) + n(p?.lengthOfOnePurlinQuantity))],
+    ['3', item('Mezzanine Structure.'), badge('Kg'),
+      fmt(n(mz?.mezzanineStructureQuantity) + n(mz?.totalMezzanineAreaQuantity))],
+    ['4', item('Cladding Structure:', 'Cladding Purlins'), badge('Kg'),
+      fmt(n(cl?.claddingStructureQuantity) + n(cl?.claddingEaveHeightFrontAdditional))],
+    ['5', item('Bracings:', 'Wind Bracings, Sag Rod, Flange Brace'), badge('Kg'),
+      fmt(n(am?.windBracingsQuantity) * n(roof.windBracingUnitWeight)
+        + n(am?.sagRodQuantity) * n(p?.unitWeightOfSagRod)
+        + n(am?.flangeBraceQuantity))],
+    ['6', item('Canopy Structure'), badge('Kg'), fmt(n(ca?.canopyStructureQuantity))],
+    ['7', item('Canopy Purlins'), badge('Kg'), fmt(n(ca?.canopyPurlinQuantity))],
+    ['8', item('Stair'), badge('Kg'), fmt(n(am?.stair1Quantity) + n(am?.stair2Quantity))],
+    ['9', item('Plinth Area'), badge('Sqm'),
+      fmt(n(roof.buildingOverallLength) * n(roof.buildingOverallWidth))],
+    ['10', item('Roof Sheet Area'), badge('Sqm'),
+      fmt(n(p?.roofSheetQuantity) + n(p?.extendedRoofWidthAdditonal))],
+    ['11', item('Decking Sheet'), badge('Sqm'), fmt(n(am?.deckingSheetQuantity))],
+    ['12', item('Cladding Sheet Area'), badge('Sqm'),
+      fmt(n(cl?.claddingSheetAdditional) + n(cl?.claddingSheetQuantity))],
+    ['13', item('Canopy Sheet Area'), badge('Sqm'), fmt(n(ca?.canopySheetQuantity))],
+    ['14', item('Sheet Accessories: Flashing, Gutter and Downtake'), badge('Rmtr'),
+      fmt(n(ca?.canopyGutterQuantity) + n(ca?.canopyDownTakeQuantity) + n(ca?.canopySideCoveringQuantity)
+        + n(ca?.canopyFlashingQuantity) + n(ac?.ridgeQuantity) + n(ac?.gutterQuantity)
+        + n(ac?.downtakeQuantity) + n(ac?.dripTrimQuantity) + n(ac?.gableEndFlashingQuantity) + n(ac?.cornerFlashQuantity))],
+    ['15', item('Doors'), badge('Sqm'), fmt(n(ac?.doorsQuantity))],
+    ['16', item('Windows'), badge('Sqm'), fmt(n(ac?.windowsQuantity))],
+    ['17', item('Rolling Shutter'), badge('Sqm'), fmt(n(ac?.rollingShutterQuantity))],
+    ['18', item('Louvers'), badge('Sqm'), fmt(n(ac?.louversQuantity))],
+    ['19', item('Turbo Ventilators'), badge('Nos'), fmt(n(ac?.turboVentilatorsQuantity))],
+    ['20', item('Sky Lights'), badge('Sqm'), fmt(n(ac?.skyLightQuantity))],
+    ['21', item('Wall Lights'), badge('Sqm'), fmt(n(ac?.wallLightQuantity))],
+    ['22', item('Roof Insulation'), badge('Sqm'), fmt(n(ac?.roofInsulationQuantity))],
+    ['23', item('Wall Insulation'), badge('Sqm'), fmt(n(ac?.wallInsulationQuantity))],
+    ['24', item('Polycarbonate Sheet Area'), badge('Sqm'),
+      fmt(n(p?.lengthOfpolyCarbonateSheetAdditional) + n(p?.polyCarbonateSheetQuantity))],
+    ['25', item('Fascia Structure'), badge('Sqm'), fmt(n(p?.lengthOfpolyCarbonateSheetAdditional))],
+  ]
 
   return (
     <DocChapter eyebrow="Chapter 5" title="Quantity Estimation">

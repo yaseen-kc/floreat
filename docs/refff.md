@@ -111,7 +111,7 @@ const QUANTITY_ESTIMATION: readonly QuantityRow[] = [
 { sl: '8', label: 'Stair', unit: 'Kg', quantity: 'Amount.stair1Quantity+Amount.stair2Quantity' },
 { sl: '9', label: 'Plinth Area', unit: 'Sqm', quantity: 'Roof.buildingOverallLength*Roof.buildingOverallWidth' },
 { sl: '10', label: 'Roof Sheet Area', unit: 'Sqm', quantity: 'QuantityPebRoof.roofSheetQuantity + QuantityPebRoof.extendedRoofWidthAdditonal' },
-{ sl: '11', label: 'Decking Sheet', unit: 'Sqm', quantity: 'Amount.stair2Quantity' },
+{ sl: '11', label: 'Decking Sheet', unit: 'Sqm', quantity: 'Amount.deckingSheetQuantity' },
 { sl: '12', label: 'Cladding Sheet Area', unit: 'Sqm', quantity: 'QuantityCladding.claddingSheetAdditional + QuantityCladding.claddingSheetQuantity' },
 { sl: '13', label: 'Canopy Sheet Area', unit: 'Sqm', quantity: 'QuantityCanopy.canopySheetQuantity' },
 { sl: '14', label: 'Sheet Accessories: Flashing, Gutter and Downtake', unit: 'Rmtr', quantity: 'QuantityCanopy.canopyGutterQuantity + QuantityCanopy.canopyDownTakeQuantity + QuantityCanopy.canopySideCoveringQuantity + QuantityCanopy.canopyFlashingQuantity + QuantityAccessories.ridgeQuantity + QuantityAccessories.gutterQuantity + QuantityAccessories.downtakeQuantity + QuantityAccessories.dripTrimQuantity + QuantityAccessories.gableEndFlashingQuantity + QuantityAccessories.cornerFlashQuantity' },
@@ -121,9 +121,38 @@ const QUANTITY_ESTIMATION: readonly QuantityRow[] = [
 { sl: '18', label: 'Louvers', unit: 'Sqm', quantity: 'QuantityAccessories.louversQuantity' },
 { sl: '19', label: 'Turbo Ventilators', unit: 'Nos', quantity: 'QuantityAccessories.turboVentilatorsQuantity' },
 { sl: '20', label: 'Sky Lights', unit: 'Sqm', quantity: 'QuantityAccessories.skyLightQuantity' },
-{ sl: '21', label: 'Wall Lights', unit: 'Sqm', quantity: 'QuantityAccessories.wallLight' },
+{ sl: '21', label: 'Wall Lights', unit: 'Sqm', quantity: 'QuantityAccessories.wallLightQuantity' },
 { sl: '22', label: 'Roof Insulation', unit: 'Sqm', quantity: 'QuantityAccessories.roofInsulationQuantity' },
 { sl: '23', label: 'Wall Insulation', unit: 'Sqm', quantity: 'QuantityAccessories.wallInsulationQuantity' },
 { sl: '24', label: 'Polycarbonate Sheet Area', unit: 'Sqm', quantity: 'QuantityPebRoof.lengthOfpolyCarbonateSheetAdditional+QuantityPebRoof.polyCarbonateSheetQuantity' },
-{ sl: '25', label: 'Fascia Structure', unit: 'Sqm', quantity: 'QuantityPebRoof.lengthOfpolyCarbonateSheetAdditional' },
+{ sl: '25', label: 'Fascia Structure', unit: 'Sqm', quantity: 'QuantityAccessories.lengthOfpolyCarbonateSheetAdditional' },
+]
+
+
+sl,5,11
+
+
+
+const PRICING: readonly PricingRow[] = [
+  {
+    sl: 'A',
+    item: 'Fabrication and Supply of Pre Engineered Steel Structure including transportation, Loading and Unloading Charges',
+    amount: 'Amount.totalFabricationAmount',
+  },
+  
+  { item: 'GST @ 18% =', amount: 'Amount.totalFabricationAmount * 0.18' },
+  
+  { item: 'Total Amount (Part A) =', amount: '(Amount.totalFabricationAmount) + (Amount.totalFabricationAmount * 0.18)', emphasis: true },
+  
+  { sl: 'B', item: 'Installation of Supplied Pre Engineered Steel Structure', amount: 'Amount.totalErrectionAmount + Amount.totalLoadingAmount' },
+  
+  { item: 'GST @ 18% =', amount: '(Amount.totalErrectionAmount + Amount.totalLoadingAmount) * 0.18' },
+  
+  { item: 'Total Amount (Part B) =', amount: '(Amount.totalErrectionAmount + Amount.totalLoadingAmount)+((Amount.totalErrectionAmount + Amount.totalLoadingAmount) * 0.18')', emphasis: true },
+  
+  { sl: 'C', item: 'Total Amount (Part A) + (Part B) Excluding GST', amount: '(Amount.totalFabricationAmount) + (Amount.totalErrectionAmount + Amount.totalLoadingAmount) ' },
+  
+  { item: 'GST 18% =', amount: '(Amount.totalFabricationAmount * 0.18) + ((Amount.totalErrectionAmount + Amount.totalLoadingAmount) * 0.18')' },
+  
+  { item: 'Grand Total =', amount: '(Amount.totalFabricationAmount) + (Amount.totalFabricationAmount * 0.18) + (Amount.totalErrectionAmount + Amount.totalLoadingAmount)+((Amount.totalErrectionAmount + Amount.totalLoadingAmount) * 0.18')', emphasis: true },
 ]

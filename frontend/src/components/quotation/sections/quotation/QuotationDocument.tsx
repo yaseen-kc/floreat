@@ -1,13 +1,10 @@
 import { QuotationLetterhead } from './QuotationLetterhead'
-// import { QuotationContents } from './QuotationContents'
 import { ChapterScopeOfWork } from './ChapterScopeOfWork'
 import { ChapterProductSpecs } from './ChapterProductSpecs'
 import { ChapterApplicableCodes } from './ChapterApplicableCodes'
 import { ChapterApprovalDrawings } from './ChapterApprovalDrawings'
 import { ChapterQuantityEstimation } from './ChapterQuantityEstimation'
 import { ChapterPricing } from './ChapterPricing'
-import { ChapterCommercialTerms, ChapterExclusions } from './ChapterTerms'
-import { ChapterContractForm } from './ChapterContractForm'
 import { QuotationPanel } from './QuotationPanel'
 
 /**
@@ -21,9 +18,6 @@ export function QuotationDocument() {
       <QuotationPanel>
         <QuotationLetterhead />
       </QuotationPanel>
-      {/* <QuotationPanel>
-        <QuotationContents />
-      </QuotationPanel> */}
       <QuotationPanel>
         <ChapterScopeOfWork />
       </QuotationPanel>
@@ -41,15 +35,6 @@ export function QuotationDocument() {
       </QuotationPanel>
       <QuotationPanel>
         <ChapterPricing />
-      </QuotationPanel>
-      <QuotationPanel>
-        <ChapterExclusions />
-      </QuotationPanel>
-      <QuotationPanel>
-        <ChapterCommercialTerms />
-      </QuotationPanel>
-      <QuotationPanel>
-        <ChapterContractForm />
       </QuotationPanel>
     </article>
   )
