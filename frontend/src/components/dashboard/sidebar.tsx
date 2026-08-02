@@ -5,9 +5,6 @@ import {
   FileText,
   Plus,
   Folder,
-  LayoutGrid,
-  Users,
-  Settings,
   PanelLeftClose,
   PanelLeftOpen,
 } from 'lucide-react'
