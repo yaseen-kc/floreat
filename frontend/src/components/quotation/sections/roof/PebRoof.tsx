@@ -58,7 +58,7 @@ export function PebRoof() {
     unit,
     step,
     required: isRequired(name),
-    value: roof[name],
+    value: roof[name] === 0 ? undefined : roof[name],
     error: Boolean(errors[name]),
     onChange: (v: number | undefined) => {
       // Core dimensions are required: a cleared input collapses to 0, which the

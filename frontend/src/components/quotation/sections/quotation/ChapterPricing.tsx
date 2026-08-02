@@ -1,7 +1,6 @@
 import { useEffect } from 'react'
 import { useShallow } from 'zustand/react/shallow'
 import { cn } from '@/lib/utils'
-import { Num } from '@/components/ui/num'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { useQuotationStore } from '@/stores/quotation-store'
 import { DocChapter, DocList, DocSubsection } from './DocPrimitives'
@@ -111,7 +110,7 @@ export function ChapterPricing() {
                 {row.item}
               </TableCell>
               <TableCell className={cn('align-top text-right', row.emphasis && 'font-semibold')}>
-                <Num>{row.amount}</Num>
+                <span className="font-mono tabular-nums">{row.amount}</span>
               </TableCell>
             </TableRow>
           ))}
@@ -173,7 +172,7 @@ export function ChapterPricing() {
               <tr><td className="pb-2 h-16">{person.signature && <img src={person.signature} alt="Signature" className="h-12 w-auto" />}</td></tr>
               <tr><td className="pb-0.5 font-semibold">{person.name}</td></tr>
               <tr><td className="text-muted-foreground">{person.designation}</td></tr>
-              <tr><td className="text-muted-foreground"><Num>{person.phone}</Num></td></tr>
+              <tr><td className="text-muted-foreground"><span className="font-mono tabular-nums">{person.phone}</span></td></tr>
               <tr><td className="text-muted-foreground">{person.email}</td></tr>
             </tbody>
           </table>

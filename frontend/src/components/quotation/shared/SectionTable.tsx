@@ -4,7 +4,7 @@ import { SectionCard } from '@/components/quotation/shared/SectionCard'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { Spinner } from '@/components/ui/spinner'
+import { Loader2 } from 'lucide-react'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { Save } from 'lucide-react'
 
@@ -119,7 +119,7 @@ export function SectionTable({ icon, title, rows, sectionData, draft, onEdit, on
       title={title}
       action={
         <Button type="button" size="sm" variant={isDirty ? 'default' : 'ghost'} disabled={!isDirty || saving} onClick={onSave}>
-          {saving ? <Spinner /> : <Save className="h-3.5 w-3.5" />}
+          {saving ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Save className="h-3.5 w-3.5" />}
           Save
         </Button>
       }

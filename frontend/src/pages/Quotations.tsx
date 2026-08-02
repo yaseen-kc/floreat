@@ -6,7 +6,7 @@ import { ApiError } from '@/lib/api'
 import { Button } from '@/components/ui/button'
 import { EmptyState } from '@/components/ui/empty-state'
 import { Input } from '@/components/ui/input'
-import { Spinner } from '@/components/ui/spinner'
+import { Loader2 } from 'lucide-react'
 import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
 } from '@/components/ui/table'
@@ -62,7 +62,7 @@ export default function Quotations() {
         </div>
       </div>
 
-      {isLoading && <div className="flex items-center justify-center py-16" role="status" aria-label="Loading quotations"><Spinner className="size-6 text-muted-foreground" /></div>}
+      {isLoading && <div className="flex items-center justify-center py-16" role="status" aria-label="Loading quotations"><Loader2 className="size-6 animate-spin text-muted-foreground" /></div>}
 
       {isError && (
         <div className="rounded-lg border border-danger/30 bg-danger-soft px-6 py-10 text-center">

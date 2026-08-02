@@ -3,7 +3,6 @@ import { useShallow } from 'zustand/react/shallow'
 import { DEFAULT_AMOUNT_ITEMS, ITEM_PREFIX_MAP } from '@floreat/shared/schemas'
 import { SectionCard } from '@/components/quotation/shared/SectionCard'
 import { Badge } from '@/components/ui/badge'
-import { Num } from '@/components/ui/num'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { Calculator } from 'lucide-react'
 import { calculateAmountQuantities, deriveAmountItemRates } from '@floreat/shared/calc'
@@ -303,41 +302,41 @@ export function AmountTable() {
           {rows.map(({ item, qty, rateFab, rateErec, rateLoad, amtFab, amtErec, amtLoad }, index) => (
             <TableRow key={item.description}>
               <TableCell className="border-r text-center text-muted-foreground">
-                <Num>{index + 1}</Num>
+                <span className="font-mono tabular-nums">{index + 1}</span>
               </TableCell>
               <TableCell className="border-r font-medium">{item.description}</TableCell>
               <TableCell className="border-r">
                 <Badge variant="outline">{item.unit}</Badge>
               </TableCell>
               <TableCell className="border-r text-right font-medium">
-                <Num>{qty.toFixed(2)}</Num>
+                <span className="font-mono tabular-nums">{qty.toFixed(2)}</span>
               </TableCell>
               <TableCell className="border-r text-right text-muted-foreground">
-                <Num>{rateFab}</Num>
+                <span className="font-mono tabular-nums">{rateFab}</span>
               </TableCell>
               <TableCell className="border-r text-right text-muted-foreground">
-                <Num>{rateErec}</Num>
+                <span className="font-mono tabular-nums">{rateErec}</span>
               </TableCell>
               <TableCell className="border-r text-right text-muted-foreground">
-                <Num>{rateLoad}</Num>
+                <span className="font-mono tabular-nums">{rateLoad}</span>
               </TableCell>
               <TableCell className="border-r text-right text-muted-foreground">
-                <Num>{amtFab.toFixed(2)}</Num>
+                <span className="font-mono tabular-nums">{amtFab.toFixed(2)}</span>
               </TableCell>
               <TableCell className="border-r text-right text-muted-foreground">
-                <Num>{amtErec.toFixed(2)}</Num>
+                <span className="font-mono tabular-nums">{amtErec.toFixed(2)}</span>
               </TableCell>
               <TableCell className="text-right text-muted-foreground">
-                <Num>{amtLoad.toFixed(2)}</Num>
+                <span className="font-mono tabular-nums">{amtLoad.toFixed(2)}</span>
               </TableCell>
             </TableRow>
           ))}
           <TableRow className="border-t-2 bg-muted/50 font-semibold">
             <TableCell colSpan={4} className="border-r text-right">TOTAL</TableCell>
             <TableCell colSpan={3} className="border-r" />
-            <TableCell className="border-r text-right"><Num>{totalFab.toFixed(2)}</Num></TableCell>
-            <TableCell className="border-r text-right"><Num>{totalErec.toFixed(2)}</Num></TableCell>
-            <TableCell className="text-right"><Num>{totalLoad.toFixed(2)}</Num></TableCell>
+            <TableCell className="border-r text-right"><span className="font-mono tabular-nums">{totalFab.toFixed(2)}</span></TableCell>
+            <TableCell className="border-r text-right"><span className="font-mono tabular-nums">{totalErec.toFixed(2)}</span></TableCell>
+            <TableCell className="text-right"><span className="font-mono tabular-nums">{totalLoad.toFixed(2)}</span></TableCell>
           </TableRow>
         </TableBody>
       </Table>

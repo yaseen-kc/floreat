@@ -87,7 +87,7 @@ export function Sidewalls() {
                 unit="mm"
                 required
                 error={showValidation && !(row.thickness > 0)}
-                value={row.thickness}
+                value={row.thickness === 0 ? undefined : row.thickness}
                 onChange={(v) => updateRow(index, { thickness: v ?? 0 })}
               />
                   </TableCell>
@@ -98,7 +98,7 @@ export function Sidewalls() {
                 unit="m"
                 required
                 error={showValidation && !(row.height > 0)}
-                value={row.height}
+                value={row.height === 0 ? undefined : row.height}
                 onChange={(v) => updateRow(index, { height: v ?? 0 })}
               />
                   </TableCell>

@@ -1,4 +1,3 @@
-import { Num } from '@/components/ui/num'
 import { useQuotationStore, type ProjectInfo } from '@/stores/quotation-store'
 import { DocProse } from './DocPrimitives'
 
@@ -65,7 +64,7 @@ function MetaItem({ label, value }: { label: string; value: string }) {
       <span className="font-mono text-[11.5px] uppercase tracking-wide text-muted-foreground pt-px">
         {label}
       </span>
-      <Num className="text-sm font-medium">{value}</Num>
+      <span className="font-mono tabular-nums text-sm font-medium">{value}</span>
     </div>
   )
 }
@@ -96,7 +95,7 @@ export function QuotationLetterhead() {
         <div className="flex flex-col gap-0.5 sm:flex-row sm:gap-2">
           <dt className="shrink-0 font-semibold">Reference:</dt>
           <dd>
-            <Num>{META.reference}</Num>
+            <span className="font-mono tabular-nums">{META.reference}</span>
           </dd>
         </div>
       </dl>
@@ -120,7 +119,7 @@ export function QuotationLetterhead() {
             <tbody>
               <tr><td className="pb-0.5 h-10 font-semibold">{person.name}</td></tr>
               <tr><td className="text-muted-foreground">{person.role}</td></tr>
-              <tr><td className="text-muted-foreground"><Num>{person.mobile}</Num></td></tr>
+              <tr><td className="text-muted-foreground"><span className="font-mono tabular-nums">{person.mobile}</span></td></tr>
             </tbody>
           </table>
         ))}

@@ -1,5 +1,4 @@
-import { Check } from 'lucide-react'
-import { Spinner } from '@/components/ui/spinner'
+import { Check, Loader2 } from 'lucide-react'
 import { useSaveStatusStore } from '@/stores/save-status-store'
 import { cn } from '@/lib/utils'
 
@@ -25,7 +24,7 @@ export function SaveStatus() {
       )}
     >
       {status === 'saving' ? (
-        <Spinner className="size-3" />
+        <Loader2 className="size-3 animate-spin" />
       ) : (
         <Check className="size-3" />
       )}

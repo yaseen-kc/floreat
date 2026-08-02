@@ -1,6 +1,5 @@
 import type { ReactNode } from 'react'
 import { cn } from '@/lib/utils'
-import { Num } from '@/components/ui/num'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 
 /** A single table row expressed as ordered cells. */
@@ -79,7 +78,7 @@ export function DocTable({ caption, columns, rows, minWidth, className }: DocTab
                     col?.emphasis && 'font-medium',
                   )}
                 >
-                  {col?.numeric ? <Num>{cell}</Num> : cell}
+                  {col?.numeric ? <span className="font-mono tabular-nums">{cell}</span> : cell}
                 </TableCell>
               )
             })}

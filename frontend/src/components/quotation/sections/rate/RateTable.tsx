@@ -8,8 +8,7 @@ import { SectionCard } from '@/components/quotation/shared/SectionCard'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { Num } from '@/components/ui/num'
-import { Spinner } from '@/components/ui/spinner'
+import { Loader2 } from 'lucide-react'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import {
   AlertDialog,
@@ -74,6 +73,8 @@ export function RateTable() {
   useEffect(() => {
     seeded.current = false
     setRateRows([])
+    // Reset local edit state when switching jobs; this is an external store boundary.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setBaseline({})
   }, [jobId, setRateRows])
 
@@ -138,7 +139,7 @@ export function RateTable() {
     <SectionCard icon={<IndianRupee />} title="Rate Master">
       {isLoading ? (
         <div className="flex items-center justify-center gap-2 py-14 text-sm text-muted-foreground">
-          <Spinner /> Loading rates…
+          <Loader2 className="animate-spin" /> Loading rates…
         </div>
       ) : isError ? (
         <p className="py-14 text-center text-sm text-destructive">
@@ -149,7 +150,7 @@ export function RateTable() {
       {!isLoading && (
         <div className="mb-3 flex justify-end">
           <Button type="button" onClick={() => void saveAll()} disabled={saving || !rows.some(isDirty)}>
-            {saving ? <Spinner /> : <Save className="w-4 h-4" />} Save all
+            {saving ? <Loader2 className="animate-spin" /> : <Save className="w-4 h-4" />} Save all
           </Button>
         </div>
       )}
@@ -180,7 +181,7 @@ export function RateTable() {
               return (
                 <TableRow key={row.item}>
                   <TableCell className="text-right text-muted-foreground">
-                    <Num>{index + 1}</Num>
+                    <span className="font-mono tabular-nums">{index + 1}</span>
                   </TableCell>
                   <TableCell className="font-medium">
                     <button
@@ -207,10 +208,10 @@ export function RateTable() {
                       />
                     </TableCell>
                   ))}
-                  <TableCell className="text-right">{priced ? <Num>{derived.fabricationRate}</Num> : <span className="text-muted-foreground">—</span>}</TableCell>
-                  <TableCell className="text-right">{priced ? <Num>{derived.erectionRate}</Num> : <span className="text-muted-foreground">—</span>}</TableCell>
-                  <TableCell className="text-right">{priced ? <Num>{derived.loadingRate}</Num> : <span className="text-muted-foreground">—</span>}</TableCell>
-                  <TableCell className="text-right font-semibold">{priced ? <Num>{derived.totalRate}</Num> : <span className="text-muted-foreground">—</span>}</TableCell>
+                  <TableCell className="text-right">{priced ? <span className="font-mono tabular-nums">{derived.fabricationRate}</span> : <span className="text-muted-foreground">—</span>}</TableCell>
+                  <TableCell className="text-right">{priced ? <span className="font-mono tabular-nums">{derived.erectionRate}</span> : <span className="text-muted-foreground">—</span>}</TableCell>
+                  <TableCell className="text-right">{priced ? <span className="font-mono tabular-nums">{derived.loadingRate}</span> : <span className="text-muted-foreground">—</span>}</TableCell>
+                  <TableCell className="text-right font-semibold">{priced ? <span className="font-mono tabular-nums">{derived.totalRate}</span> : <span className="text-muted-foreground">—</span>}</TableCell>
                   <TableCell />
                 </TableRow>
               )
@@ -306,7 +307,7 @@ export function RateTable() {
                     >
                       <p className="font-mono text-[11px] uppercase text-muted-foreground">{label}</p>
                       <p className="truncate text-right text-lg font-semibold">
-                        {editorPriced ? <Num>{value}</Num> : <span className="text-muted-foreground">—</span>}
+                        {editorPriced ? <span className="font-mono tabular-nums">{value}</span> : <span className="text-muted-foreground">—</span>}
                       </p>
                     </div>
                   ))}

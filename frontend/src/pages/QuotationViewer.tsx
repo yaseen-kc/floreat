@@ -8,7 +8,7 @@ import { useMezzanineHydration } from '@/hooks/useMezzanineHydration'
 import { useRoofHydration } from '@/hooks/useRoofHydration'
 import { useStairHydration } from '@/hooks/useStairHydration'
 import { useQuotationStore } from '@/stores/quotation-store'
-import { Spinner } from '@/components/ui/spinner'
+import { Loader2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Pencil } from 'lucide-react'
 
@@ -60,7 +60,7 @@ export default function QuotationViewer() {
   }
 
   if (!jobId || isLoading || !job) {
-    return <div className="flex min-h-[calc(100vh-var(--topbar-h))] items-center justify-center" role="status" aria-label="Loading quotation"><Spinner className="size-6 text-muted-foreground" /></div>
+    return <div className="flex min-h-[calc(100vh-var(--topbar-h))] items-center justify-center" role="status" aria-label="Loading quotation"><Loader2 className="size-6 animate-spin text-muted-foreground" /></div>
   }
 
   return (

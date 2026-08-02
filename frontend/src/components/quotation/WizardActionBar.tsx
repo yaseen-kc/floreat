@@ -31,7 +31,7 @@ import { buildFullQuantityPayload } from '@/lib/quantity-payload'
 import { useNavigate } from 'react-router-dom'
 
 import { Button } from '@/components/ui/button'
-import { Spinner } from '@/components/ui/spinner'
+import { Loader2 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { ArrowLeft, ArrowRight, Check, Save } from 'lucide-react'
 import { STEPS, STEP_COUNT } from '@/components/quotation/steps'
@@ -668,13 +668,13 @@ export function WizardActionBar() {
         aria-label="Save draft"
         className="max-[640px]:order-4"
       >
-        {isSubmitting ? <Spinner /> : <Save className="w-4 h-4" />}
+        {isSubmitting ? <Loader2 className="animate-spin" /> : <Save className="w-4 h-4" />}
         <span className="max-[640px]:hidden">Save draft</span>
       </Button>
 
       <Button onClick={handleNext} disabled={isSubmitting} className="max-[640px]:order-3 max-[640px]:flex-1">
         {isSubmitting ? (
-          <>Saving <Spinner /></>
+          <>Saving <Loader2 className="animate-spin" /></>
         ) : isLast ? (
           <>Finish & save <Check className="w-4 h-4" /></>
         ) : (

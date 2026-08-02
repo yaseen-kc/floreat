@@ -8,7 +8,7 @@ import { ApiError } from '@/lib/api'
 import { useQuotationStore } from '@/stores/quotation-store'
 import { EmptyState } from '@/components/ui/empty-state'
 import { Button } from '@/components/ui/button'
-import { Spinner } from '@/components/ui/spinner'
+import { Loader2 } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import {
   Table, TableHeader, TableBody, TableHead, TableRow, TableCell,
@@ -124,7 +124,7 @@ export default function SavedDrafts() {
         </div>
       </div>
 
-      {isLoading && <div className="flex items-center justify-center py-16" role="status" aria-label="Loading saved drafts"><Spinner className="size-6 text-muted-foreground" /></div>}
+      {isLoading && <div className="flex items-center justify-center py-16" role="status" aria-label="Loading saved drafts"><Loader2 className="size-6 animate-spin text-muted-foreground" /></div>}
 
       {isError && (
         <div className="rounded-lg border border-danger/30 bg-danger-soft px-6 py-10 text-center">

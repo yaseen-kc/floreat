@@ -26,6 +26,14 @@ describe('Sidewalls section', () => {
     expect(screen.queryByLabelText(/Remove sidewall/)).not.toBeInTheDocument()
   })
 
+  it('renders zero-valued thickness and height defaults as empty inputs', () => {
+    render(<Sidewalls />)
+    const numericInputs = screen.getAllByRole('spinbutton')
+    expect(numericInputs[0]).toHaveValue(null)
+    expect(numericInputs[1]).toHaveValue(null)
+    expect(useQuotationStore.getState().roof.sidewalls?.[0]).toMatchObject({ thickness: 0, height: 0 })
+  })
+
   it('normalizes custom rows to the four fixed sides', () => {
     useQuotationStore.getState().setRoof({
       sidewalls: [{ side: 'LEFT', wallType: 'PANEL', thickness: 0.2, height: 3 }],

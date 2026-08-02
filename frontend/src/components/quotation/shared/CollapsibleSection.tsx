@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react'
-import { SectionCard } from '@/components/quotation/shared/SectionCard'
+import { Card, CardAction, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Switch } from '@/components/ui/switch'
 import { ErrMsg } from '@/components/quotation/shared/FormField'
 import { cn } from '@/lib/utils'
@@ -44,14 +44,18 @@ export function CollapsibleSection({
   className,
 }: CollapsibleSectionProps) {
   return (
-    <SectionCard
-      icon={icon}
-      title={title}
-      className={cn(error && 'border-destructive', className)}
-      action={<Switch checked={enabled} onCheckedChange={onToggle} aria-label={`Toggle ${title}`} />}
-    >
-      {error && <ErrMsg>{errorMessage}</ErrMsg>}
-      {enabled ? children : null}
-    </SectionCard>
+    <Card className={cn('mb-[18px] rounded-[14px] py-0 desktop:mb-6', error && 'border-destructive', className)}>
+      <CardHeader className="px-[22px] pt-[22px] max-[640px]:px-4 max-[640px]:pt-4">
+        <CardTitle className="flex items-center gap-2 text-sm font-semibold">
+          <span className="grid h-6 w-6 place-items-center rounded-[7px] bg-primary/10 text-primary [&_svg]:h-3.5 [&_svg]:w-3.5">{icon}</span>
+          {title}
+          <CardAction><Switch checked={enabled} onCheckedChange={onToggle} aria-label={`Toggle ${title}`} /></CardAction>
+        </CardTitle>
+      </CardHeader>
+      <CardContent className="px-[22px] pb-[22px] max-[640px]:px-4 max-[640px]:pb-4">
+        {error && <ErrMsg>{errorMessage}</ErrMsg>}
+        {enabled ? children : null}
+      </CardContent>
+    </Card>
   )
 }
