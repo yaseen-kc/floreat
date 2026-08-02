@@ -2,6 +2,7 @@
  * Application entry point.
  * Bootstraps Fastify with security headers, CORS, rate limiting, Clerk auth, and API routes.
  */
+import 'dotenv/config';
 import Fastify from 'fastify'
 import cors from '@fastify/cors'
 import helmet from '@fastify/helmet'
