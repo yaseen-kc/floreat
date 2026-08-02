@@ -8,7 +8,7 @@ import type { CreateMezzanineInput } from '@/schemas/mezzanine.schema'
 
 /** A fully-valid floor used as the baseline for the floor assertions. */
 const validFloor = {
-  code: 'MEZ-1',
+  code: 'MEZ_1',
   floor: 'FLOOR_1',
   type: 'DECK_SHEET',
   heightFrom: 'GROUND',
@@ -28,6 +28,7 @@ const validFloor = {
 
 /** A valid extension with every optional count omitted. */
 const validExtensionNoCounts = {
+  floor: 'FLOOR_1',
   type: 'PANEL',
   heightFrom: 'FIRST_FLOOR',
   typicalTo: 'FLOOR_3',
@@ -42,8 +43,8 @@ describe('mezzanineFloorSchema', () => {
     expect(mezzanineFloorSchema.safeParse(validFloor).success).toBe(true)
   })
 
-  it('rejects a code that does not match MEZ-<n>', () => {
-    const result = mezzanineFloorSchema.safeParse({ ...validFloor, code: 'MEZ_1' })
+  it('rejects an invalid code', () => {
+    const result = mezzanineFloorSchema.safeParse({ ...validFloor, code: 'MEZ-1' })
     expect(result.success).toBe(false)
   })
 
@@ -76,6 +77,10 @@ describe('mezzanineFloorExtensionSchema', () => {
     expect(
       mezzanineFloorExtensionSchema.safeParse({ ...validExtensionNoCounts, widthM: 0 }).success,
     ).toBe(false)
+  })
+
+  it('rejects an invalid floor level', () => {
+    expect(mezzanineFloorExtensionSchema.safeParse({ ...validExtensionNoCounts, floor: 'FLOOR_11' }).success).toBe(false)
   })
 })
 

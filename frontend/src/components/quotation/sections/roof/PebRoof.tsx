@@ -5,6 +5,7 @@ import { SectionCard } from '@/components/quotation/shared/SectionCard'
 import { NumberField } from '@/components/quotation/shared/NumberField'
 import { Warehouse } from 'lucide-react'
 import { isRequired, getFieldErrors } from '@/schemas/roof.schema'
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 
 /** The numeric core dimensions, in display order, with their labels and units. */
 type NumericField =
@@ -57,7 +58,7 @@ export function PebRoof() {
     unit,
     step,
     required: isRequired(name),
-    value: roof[name],
+    value: roof[name] === 0 ? undefined : roof[name],
     error: Boolean(errors[name]),
     onChange: (v: number | undefined) => {
       // Core dimensions are required: a cleared input collapses to 0, which the
@@ -69,12 +70,27 @@ export function PebRoof() {
   })
 
   return (
-      <SectionCard icon={<Warehouse className="w-3.5 h-3.5" />} title="Pre-Engineered Building Roof">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-[18px] desktop:gap-6">
-        {NUMERIC_FIELDS.map((field) => (
-          <NumberField key={field.name} {...fieldProps(field)} />
-        ))}
-      </div>
+    <SectionCard icon={<Warehouse className="w-3.5 h-3.5" />} title="Pre-Engineered Building Roof">
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead scope="col" className="w-12">No</TableHead>
+            <TableHead scope="col">Description</TableHead>
+            <TableHead scope="col">Value</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {NUMERIC_FIELDS.map((field, index) => (
+            <TableRow key={field.name}>
+              <TableCell>{index + 1}</TableCell>
+              <TableCell className="font-medium">{field.label}</TableCell>
+              <TableCell className="min-w-48">
+                <NumberField className="[&>label]:sr-only" {...fieldProps(field)} />
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
     </SectionCard>
   )
 }

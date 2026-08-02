@@ -1,0 +1,44 @@
+// ── Quotation Model ───────────────────────────────
+
+model Quotation {
+    id    String @id @default(cuid())
+    jobId String @unique
+    job   Job    @relation(fields: [jobId], references: [id], onDelete: Cascade)
+
+    // ── Pricing snapshot ──
+    fabricationAmount  Float?
+    installationAmount Float?
+    grandTotal         Float?
+
+    // ── Quantity estimation snapshot (rows 1–25) ──
+    qtyRoofStructure      Float?
+    qtyRoofPurlins        Float?
+    qtyMezzanineStructure Float?
+    qtyCladdingStructure  Float?
+    qtyBracings           Float?
+    qtyCanopyStructure    Float?
+    qtyCanopyPurlins      Float?
+    qtyStair              Float?
+    qtyPlinthArea         Float?
+    qtyRoofSheetArea      Float?
+    qtyDeckingSheet       Float?
+    qtyCladdingSheetArea  Float?
+    qtyCanopySheetArea    Float?
+    qtySheetAccessories   Float?
+    qtyDoors              Float?
+    qtyWindows            Float?
+    qtyRollingShutter     Float?
+    qtyLouvers            Float?
+    qtyTurboVentilators   Float?
+    qtySkyLights          Float?
+    qtyWallLights         Float?
+    qtyRoofInsulation     Float?
+    qtyWallInsulation     Float?
+    qtyPolycarbonateSheet Float?
+    qtyFasciaStructure    Float?
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    @@index([createdAt])
+}

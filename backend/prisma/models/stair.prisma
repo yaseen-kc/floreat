@@ -1,5 +1,20 @@
 // ── Stair Enums ───────────────────────────────────
 
+enum StairCode {
+  STAIR_1  @map("STAIR-1")
+  STAIR_2  @map("STAIR-2")
+  STAIR_3  @map("STAIR-3")
+  STAIR_4  @map("STAIR-4")
+  STAIR_5  @map("STAIR-5")
+  STAIR_6  @map("STAIR-6")
+  STAIR_7  @map("STAIR-7")
+  STAIR_8  @map("STAIR-8")
+  STAIR_9  @map("STAIR-9")
+  STAIR_10 @map("STAIR-10")
+  STAIR_11 @map("STAIR-11")
+  STAIR_12 @map("STAIR-12")
+}
+
 enum StairStepType {
   CHQ_PLATE_6MM @map("6MM CHQ PLATE")
   CHQ_PLATE_4MM @map("4MM CHQ PLATE")
@@ -24,7 +39,7 @@ enum StairStringerType {
 enum AreaDeductionType {
   LIFT
   DUCT
-  CUT_OUT @map("CUT-OUT")
+  CUT_OUT
 }
 
 enum AreaDeductionFor {
@@ -54,7 +69,7 @@ model StairItem {
   stairId String
   stair   Stair  @relation(fields: [stairId], references: [id], onDelete: Cascade)
 
-  code         String?
+  code         StairCode?
   typeOfStep   StairStepType?
   location     String?
   startingFrom StairFloorLevel?

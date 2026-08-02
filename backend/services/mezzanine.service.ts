@@ -5,13 +5,48 @@
 import { prisma } from '../lib/prisma.js'
 import type { CreateMezzanineInput } from '../schemas/mezzanine.schema.js'
 
-/** Creates or updates a mezzanine for a given job. Floors and extensions are replaced entirely on update. */
-export function upsertMezzanine(jobId: string, data: CreateMezzanineInput) {
-  const { floors, extensions, ...rest } = data
-  const floorData = floors ?? []
-  const extensionData = extensions ?? []
+export class InvalidMezzanineExtensionFloorError extends Error {
+  constructor(invalidFloors: string[]) {
+    super(`Extension floor must match a configured mezzanine floor: ${invalidFloors.join(', ')}`)
+    this.name = 'InvalidMezzanineExtensionFloorError'
+  }
+}
 
-  return prisma.mezzanine.upsert({
+function validateExtensionFloors(
+  floors: Array<{ floor?: string | null }> | undefined,
+  extensions: Array<{ floor?: string | null }> | undefined,
+) {
+  if (!extensions?.length) return
+
+  const availableFloors = new Set((floors ?? []).map((row) => row.floor).filter(Boolean))
+  const invalidFloors = [...new Set(
+    extensions
+      .map((row) => row.floor)
+      .filter((floor): floor is string => Boolean(floor) && !availableFloors.has(floor)),
+  )]
+
+  if (invalidFloors.length > 0) throw new InvalidMezzanineExtensionFloorError(invalidFloors)
+}
+
+function mapMezzOutput(mezz: any) {
+  if (!mezz) return mezz
+  if (mezz.floors) {
+    mezz.floors = mezz.floors.map((f: any) => ({ ...f, code: f.code }))
+  }
+  if (mezz.extensions) {
+    mezz.extensions = mezz.extensions.map((e: any) => ({ ...e, code: e.code }))
+  }
+  return mezz
+}
+
+/** Creates or updates a mezzanine for a given job. Floors and extensions are replaced entirely on update. */
+export async function upsertMezzanine(jobId: string, data: CreateMezzanineInput) {
+  const { floors, extensions, ...rest } = data
+  const floorData = floors?.map(f => ({ ...f, code: f.code as any })) ?? []
+  const extensionData = extensions?.map(e => ({ ...e, code: e.code as any })) ?? []
+  validateExtensionFloors(floors, extensions)
+
+  const result = await prisma.mezzanine.upsert({
     where: { jobId },
     create: {
       jobId,
@@ -26,6 +61,7 @@ export function upsertMezzanine(jobId: string, data: CreateMezzanineInput) {
     },
     include: { floors: true, extensions: true },
   })
+  return mapMezzOutput(result)
 }
 
 /** Returns a paginated list of the user's mezzanines ordered by most recent first. */
@@ -35,27 +71,36 @@ export async function getMezzanines(userId: string, page: number, pageSize: numb
     prisma.mezzanine.findMany({ where, skip: (page - 1) * pageSize, take: pageSize, orderBy: { createdAt: 'desc' }, include: { floors: true, extensions: true } }),
     prisma.mezzanine.count({ where }),
   ])
-  return { data, total, page, pageSize }
+  return { data: data.map(mapMezzOutput), total, page, pageSize }
 }
 
 /** Finds a mezzanine by its associated job ID. Returns null if not found. */
-export function getMezzanineByJobId(jobId: string) {
-  return prisma.mezzanine.findUnique({ where: { jobId }, include: { floors: true, extensions: true } })
+export async function getMezzanineByJobId(jobId: string) {
+  const mezz = await prisma.mezzanine.findUnique({ where: { jobId }, include: { floors: true, extensions: true } })
+  return mapMezzOutput(mezz)
 }
 
 /** Updates a mezzanine by job ID. Replaces floors and/or extensions entirely if provided. */
-export function updateMezzanine(jobId: string, data: Record<string, any>) {
+export async function updateMezzanine(jobId: string, data: Record<string, any>) {
   const { floors, extensions, ...rest } = data
   const updateData: any = { ...rest }
 
+  let floorsForValidation = floors
+  if (extensions !== undefined && floors === undefined) {
+    const existing = await prisma.mezzanine.findUnique({ where: { jobId }, select: { floors: { select: { floor: true } } } })
+    floorsForValidation = existing?.floors
+  }
+  validateExtensionFloors(floorsForValidation, extensions)
+
   if (floors !== undefined) {
-    updateData.floors = { deleteMany: {}, createMany: { data: floors } }
+    updateData.floors = { deleteMany: {}, createMany: { data: floors.map((f: any) => ({ ...f, code: f.code as any })) } }
   }
   if (extensions !== undefined) {
-    updateData.extensions = { deleteMany: {}, createMany: { data: extensions } }
+    updateData.extensions = { deleteMany: {}, createMany: { data: extensions.map((e: any) => ({ ...e, code: e.code as any })) } }
   }
 
-  return prisma.mezzanine.update({ where: { jobId }, data: updateData, include: { floors: true, extensions: true } })
+  const result = await prisma.mezzanine.update({ where: { jobId }, data: updateData, include: { floors: true, extensions: true } })
+  return mapMezzOutput(result)
 }
 
 /** Deletes a mezzanine by its associated job ID. Throws if not found. */

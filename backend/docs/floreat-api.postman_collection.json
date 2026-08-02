@@ -327,6 +327,52 @@
           "protocolProfileBehavior": {
             "disableBodyPruning": true
           }
+        },
+        {
+          "name": "Get all job data by ID (canonical alias)",
+          "request": {
+            "name": "Get all job data by ID (canonical alias)",
+            "description": {
+              "content": "Returns all data of a specific job including all nested relations.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "jobs",
+                ":jobId",
+                "all"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "type": "any",
+                  "value": "job_cuid_123",
+                  "key": "jobId",
+                  "disabled": false,
+                  "description": {
+                    "content": "(Required) ",
+                    "type": "text/plain"
+                  }
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "body": {}
+          },
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
         }
       ]
     },
@@ -647,7 +693,7 @@
             "method": "POST",
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"floors\": [\n    {\n      \"code\": \"MEZ-1\",\n      \"floor\": \"FLOOR_1\",\n      \"type\": \"DECK_SHEET\",\n      \"heightFrom\": \"GROUND\",\n      \"thicknessMm\": 150,\n      \"lengthM\": 12,\n      \"widthM\": 8,\n      \"heightM\": 3.5,\n      \"materialConsumptionKgPerSqft\": 4.5,\n      \"beamsMidPrimary\": 4,\n      \"beamsEndPrimary\": 2,\n      \"beamsSecondary\": 6,\n      \"jointsMidPrimary\": 2,\n      \"jointsEndPrimary\": 1,\n      \"internalColumnsMidPrimary\": 2,\n      \"internalColumnsEndPrimary\": 1\n    }\n  ],\n  \"extensions\": [\n    {\n      \"type\": \"RCC_SLAB\",\n      \"heightFrom\": \"FIRST_FLOOR\",\n      \"typicalTo\": \"FLOOR_3\",\n      \"thicknessMm\": 120,\n      \"lengthM\": 10,\n      \"widthM\": 6,\n      \"heightM\": 3,\n      \"beamsMidPrimary\": 3,\n      \"beamsEndPrimary\": 1,\n      \"beamsSecondary\": 4,\n      \"jointsMidPrimary\": 1,\n      \"jointsEndPrimary\": 1,\n      \"extendedColumnsMidPrimary\": 2,\n      \"extendedColumnsEndPrimary\": 1\n    }\n  ]\n}",
+              "raw": "{\n  \"floors\": [\n    {\n      \"code\": \"MEZ_1\",\n      \"floor\": \"FLOOR_1\",\n      \"type\": \"DECK_SHEET\",\n      \"heightFrom\": \"GROUND\",\n      \"thicknessMm\": 150,\n      \"lengthM\": 12,\n      \"widthM\": 8,\n      \"heightM\": 3.5,\n      \"materialConsumptionKgPerSqft\": 4.5,\n      \"beamsMidPrimary\": 4,\n      \"beamsEndPrimary\": 2,\n      \"beamsSecondary\": 6,\n      \"jointsMidPrimary\": 2,\n      \"jointsEndPrimary\": 1,\n      \"internalColumnsMidPrimary\": 2,\n      \"internalColumnsEndPrimary\": 1\n    }\n  ],\n  \"extensions\": [\n    {\n      \"type\": \"RCC_SLAB\",\n      \"heightFrom\": \"FIRST_FLOOR\",\n      \"typicalTo\": \"FLOOR_3\",\n      \"thicknessMm\": 120,\n      \"lengthM\": 10,\n      \"widthM\": 6,\n      \"heightM\": 3,\n      \"beamsMidPrimary\": 3,\n      \"beamsEndPrimary\": 1,\n      \"beamsSecondary\": 4,\n      \"jointsMidPrimary\": 1,\n      \"jointsEndPrimary\": 1,\n      \"extendedColumnsMidPrimary\": 2,\n      \"extendedColumnsEndPrimary\": 1\n    }\n  ]\n}",
               "options": {
                 "raw": {
                   "headerFamily": "json",
@@ -752,7 +798,7 @@
             "method": "PUT",
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"floors\": [\n    {\n      \"code\": \"MEZ-1\",\n      \"floor\": \"FLOOR_1\",\n      \"type\": \"DECK_SHEET\",\n      \"heightFrom\": \"GROUND\",\n      \"thicknessMm\": 150,\n      \"lengthM\": 12,\n      \"widthM\": 8,\n      \"heightM\": 3.5,\n      \"materialConsumptionKgPerSqft\": 4.5,\n      \"beamsMidPrimary\": 4,\n      \"beamsEndPrimary\": 2,\n      \"beamsSecondary\": 6,\n      \"jointsMidPrimary\": 2,\n      \"jointsEndPrimary\": 1,\n      \"internalColumnsMidPrimary\": 2,\n      \"internalColumnsEndPrimary\": 1\n    }\n  ],\n  \"extensions\": [\n    {\n      \"type\": \"RCC_SLAB\",\n      \"heightFrom\": \"FIRST_FLOOR\",\n      \"typicalTo\": \"FLOOR_3\",\n      \"thicknessMm\": 120,\n      \"lengthM\": 10,\n      \"widthM\": 6,\n      \"heightM\": 3,\n      \"beamsMidPrimary\": 3,\n      \"beamsEndPrimary\": 1,\n      \"beamsSecondary\": 4,\n      \"jointsMidPrimary\": 1,\n      \"jointsEndPrimary\": 1,\n      \"extendedColumnsMidPrimary\": 2,\n      \"extendedColumnsEndPrimary\": 1\n    }\n  ]\n}",
+              "raw": "{\n  \"floors\": [\n    {\n      \"code\": \"MEZ_1\",\n      \"floor\": \"FLOOR_1\",\n      \"type\": \"DECK_SHEET\",\n      \"heightFrom\": \"GROUND\",\n      \"thicknessMm\": 150,\n      \"lengthM\": 12,\n      \"widthM\": 8,\n      \"heightM\": 3.5,\n      \"materialConsumptionKgPerSqft\": 4.5,\n      \"beamsMidPrimary\": 4,\n      \"beamsEndPrimary\": 2,\n      \"beamsSecondary\": 6,\n      \"jointsMidPrimary\": 2,\n      \"jointsEndPrimary\": 1,\n      \"internalColumnsMidPrimary\": 2,\n      \"internalColumnsEndPrimary\": 1\n    }\n  ],\n  \"extensions\": [\n    {\n      \"type\": \"RCC_SLAB\",\n      \"heightFrom\": \"FIRST_FLOOR\",\n      \"typicalTo\": \"FLOOR_3\",\n      \"thicknessMm\": 120,\n      \"lengthM\": 10,\n      \"widthM\": 6,\n      \"heightM\": 3,\n      \"beamsMidPrimary\": 3,\n      \"beamsEndPrimary\": 1,\n      \"beamsSecondary\": 4,\n      \"jointsMidPrimary\": 1,\n      \"jointsEndPrimary\": 1,\n      \"extendedColumnsMidPrimary\": 2,\n      \"extendedColumnsEndPrimary\": 1\n    }\n  ]\n}",
               "options": {
                 "raw": {
                   "headerFamily": "json",
@@ -915,7 +961,7 @@
             "method": "POST",
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"stairs\": [\n    {\n      \"code\": \"STAIR-1\",\n      \"typeOfStep\": \"CHQ_PLATE_6MM\",\n      \"location\": \"MEZ-1\",\n      \"startingFrom\": \"GROUND\",\n      \"endingUpTo\": \"FIRST_FLOOR\",\n      \"length\": 4.2,\n      \"width\": 1.2,\n      \"height\": 3.5,\n      \"numberOfMidLanding\": 1,\n      \"typeOfStringer\": \"FAB_SECTION\",\n      \"unitWeightOfStringer\": 18\n    }\n  ],\n  \"areaDeductions\": [\n    {\n      \"type\": \"LIFT\",\n      \"location\": \"EXT-1\",\n      \"areaM2\": 8,\n      \"numbers\": 1,\n      \"deductionFor\": \"BOTH\"\n    }\n  ]\n}",
+              "raw": "{\n  \"stairs\": [\n    {\n      \"code\": \"STAIR-1\",\n      \"typeOfStep\": \"CHQ_PLATE_6MM\",\n      \"location\": \"MEZ_1\",\n      \"startingFrom\": \"GROUND\",\n      \"endingUpTo\": \"FIRST_FLOOR\",\n      \"length\": 4.2,\n      \"width\": 1.2,\n      \"height\": 3.5,\n      \"numberOfMidLanding\": 1,\n      \"typeOfStringer\": \"FAB_SECTION\",\n      \"unitWeightOfStringer\": 18\n    }\n  ],\n  \"areaDeductions\": [\n    {\n      \"type\": \"LIFT\",\n      \"location\": \"EXT_1\",\n      \"areaM2\": 8,\n      \"numbers\": 1,\n      \"deductionFor\": \"BOTH\"\n    }\n  ]\n}",
               "options": {
                 "raw": {
                   "headerFamily": "json",
@@ -1020,7 +1066,7 @@
             "method": "PUT",
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"stairs\": [\n    {\n      \"code\": \"STAIR-1\",\n      \"typeOfStep\": \"CHQ_PLATE_6MM\",\n      \"location\": \"MEZ-1\",\n      \"startingFrom\": \"GROUND\",\n      \"endingUpTo\": \"FIRST_FLOOR\",\n      \"length\": 4.2,\n      \"width\": 1.2,\n      \"height\": 3.5,\n      \"numberOfMidLanding\": 1,\n      \"typeOfStringer\": \"FAB_SECTION\",\n      \"unitWeightOfStringer\": 18\n    }\n  ],\n  \"areaDeductions\": [\n    {\n      \"type\": \"LIFT\",\n      \"location\": \"EXT-1\",\n      \"areaM2\": 8,\n      \"numbers\": 1,\n      \"deductionFor\": \"BOTH\"\n    }\n  ]\n}",
+              "raw": "{\n  \"stairs\": [\n    {\n      \"code\": \"STAIR-1\",\n      \"typeOfStep\": \"CHQ_PLATE_6MM\",\n      \"location\": \"MEZ_1\",\n      \"startingFrom\": \"GROUND\",\n      \"endingUpTo\": \"FIRST_FLOOR\",\n      \"length\": 4.2,\n      \"width\": 1.2,\n      \"height\": 3.5,\n      \"numberOfMidLanding\": 1,\n      \"typeOfStringer\": \"FAB_SECTION\",\n      \"unitWeightOfStringer\": 18\n    }\n  ],\n  \"areaDeductions\": [\n    {\n      \"type\": \"LIFT\",\n      \"location\": \"EXT_1\",\n      \"areaM2\": 8,\n      \"numbers\": 1,\n      \"deductionFor\": \"BOTH\"\n    }\n  ]\n}",
               "options": {
                 "raw": {
                   "headerFamily": "json",
@@ -1183,7 +1229,7 @@
             "method": "POST",
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"canopies\": [\n    {\n      \"code\": \"CANOPY-1\",\n      \"heightFrom\": \"GROUND\",\n      \"length\": 6,\n      \"width\": 3,\n      \"height\": 3.5,\n      \"materialConsumptionKgPerSqft\": 9.5,\n      \"numberOfBeams\": 4,\n      \"numberOfPurlins\": 6,\n      \"purlinDepth\": 150,\n      \"unitWeightOfPurlin\": 5.2,\n      \"canopySheet\": \"PPGL\",\n      \"sheetThick\": 0.5,\n      \"canopySideCoveringHeight\": 1.2,\n      \"gutter\": true,\n      \"downTake\": false,\n      \"flashing\": true\n    }\n  ]\n}",
+              "raw": "{\n  \"canopies\": [\n    {\n      \"code\": \"CANOPY_1\",\n      \"heightFrom\": \"GROUND\",\n      \"length\": 6,\n      \"width\": 3,\n      \"height\": 3.5,\n      \"materialConsumptionKgPerSqft\": 9.5,\n      \"numberOfBeams\": 4,\n      \"numberOfPurlins\": 6,\n      \"purlinDepth\": 150,\n      \"unitWeightOfPurlin\": 5.2,\n      \"canopySheet\": \"PPGL\",\n      \"sheetThick\": 0.5,\n      \"canopySideCoveringHeight\": 1.2,\n      \"gutter\": true,\n      \"downTake\": false,\n      \"flashing\": true\n    }\n  ]\n}",
               "options": {
                 "raw": {
                   "headerFamily": "json",
@@ -1288,7 +1334,7 @@
             "method": "PUT",
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"canopies\": [\n    {\n      \"code\": \"CANOPY-1\",\n      \"heightFrom\": \"GROUND\",\n      \"length\": 6,\n      \"width\": 3,\n      \"height\": 3.5,\n      \"materialConsumptionKgPerSqft\": 9.5,\n      \"numberOfBeams\": 4,\n      \"numberOfPurlins\": 6,\n      \"purlinDepth\": 150,\n      \"unitWeightOfPurlin\": 5.2,\n      \"canopySheet\": \"PPGL\",\n      \"sheetThick\": 0.5,\n      \"canopySideCoveringHeight\": 1.2,\n      \"gutter\": true,\n      \"downTake\": false,\n      \"flashing\": true\n    }\n  ]\n}",
+              "raw": "{\n  \"canopies\": [\n    {\n      \"code\": \"CANOPY_1\",\n      \"heightFrom\": \"GROUND\",\n      \"length\": 6,\n      \"width\": 3,\n      \"height\": 3.5,\n      \"materialConsumptionKgPerSqft\": 9.5,\n      \"numberOfBeams\": 4,\n      \"numberOfPurlins\": 6,\n      \"purlinDepth\": 150,\n      \"unitWeightOfPurlin\": 5.2,\n      \"canopySheet\": \"PPGL\",\n      \"sheetThick\": 0.5,\n      \"canopySideCoveringHeight\": 1.2,\n      \"gutter\": true,\n      \"downTake\": false,\n      \"flashing\": true\n    }\n  ]\n}",
               "options": {
                 "raw": {
                   "headerFamily": "json",
@@ -2476,26 +2522,99 @@
     },
     {
       "name": "Rates",
-      "description": "Global rate master-data endpoints.",
+      "description": "Job-specific rate endpoints.",
       "item": [
         {
-          "name": "Create a rate",
+          "name": "Replace all job rates",
           "request": {
-            "name": "Create a rate",
+            "name": "Replace all job rates",
             "description": {
-              "content": "Creates a new rate master item in the global rate table.",
+              "content": "Atomically replaces the complete rate set for the specified job. Derived rates are recalculated server-side; an empty array clears the set.",
               "type": "text/plain"
             },
             "url": {
               "path": [
                 "api",
+                "jobs",
+                ":jobId",
+                "rates",
+                "bulk"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "type": "any",
+                  "value": "job_cuid_123",
+                  "key": "jobId",
+                  "disabled": false,
+                  "description": {
+                    "content": "(Required) ",
+                    "type": "text/plain"
+                  }
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "PUT",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"rates\": [\n    {\n      \"item\": \"STEEL STRUCTURE\",\n      \"unit\": \"KG\",\n      \"material\": 63,\n      \"fabrication\": 15,\n      \"transportation\": 1.5,\n      \"installation\": 8,\n      \"loadingUnloading\": 3,\n      \"overheads\": 0,\n      \"others\": 0,\n      \"marginPercentage\": 15\n    }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "headerFamily": "json",
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "name": "Create a job rate",
+          "request": {
+            "name": "Create a job rate",
+            "description": {
+              "content": "Creates a new rate item owned by the specified job.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "jobs",
+                ":jobId",
                 "rates"
               ],
               "host": [
                 "{{baseUrl}}"
               ],
               "query": [],
-              "variable": []
+              "variable": [
+                {
+                  "type": "any",
+                  "value": "job_cuid_123",
+                  "key": "jobId",
+                  "disabled": false,
+                  "description": {
+                    "content": "(Required) ",
+                    "type": "text/plain"
+                  }
+                }
+              ]
             },
             "header": [
               {
@@ -2525,17 +2644,1018 @@
           }
         },
         {
-          "name": "List rates",
+          "name": "List job rates",
           "request": {
-            "name": "List rates",
+            "name": "List job rates",
             "description": {
-              "content": "Returns a paginated list of rate master items.",
+              "content": "Returns the specified job's paginated rate items.",
               "type": "text/plain"
             },
             "url": {
               "path": [
                 "api",
+                "jobs",
+                ":jobId",
                 "rates"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "description": {
+                    "content": "",
+                    "type": "text/plain"
+                  },
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "disabled": false,
+                  "description": {
+                    "content": "",
+                    "type": "text/plain"
+                  },
+                  "key": "pageSize",
+                  "value": "10"
+                }
+              ],
+              "variable": [
+                {
+                  "type": "any",
+                  "value": "job_cuid_123",
+                  "key": "jobId",
+                  "disabled": false,
+                  "description": {
+                    "content": "(Required) ",
+                    "type": "text/plain"
+                  }
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "body": {}
+          },
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "name": "Get a job rate by ID",
+          "request": {
+            "name": "Get a job rate by ID",
+            "description": {
+              "content": "Returns one rate owned by the specified job.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "jobs",
+                ":jobId",
+                "rates",
+                ":id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "type": "any",
+                  "value": "job_cuid_123",
+                  "key": "jobId",
+                  "disabled": false,
+                  "description": {
+                    "content": "(Required) ",
+                    "type": "text/plain"
+                  }
+                },
+                {
+                  "type": "any",
+                  "value": "cuid_123",
+                  "key": "id",
+                  "disabled": false,
+                  "description": {
+                    "content": "(Required) ",
+                    "type": "text/plain"
+                  }
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "body": {}
+          },
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "name": "Update a job rate",
+          "request": {
+            "name": "Update a job rate",
+            "description": {
+              "content": "Partially updates a rate owned by the specified job.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "jobs",
+                ":jobId",
+                "rates",
+                ":id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "type": "any",
+                  "value": "job_cuid_123",
+                  "key": "jobId",
+                  "disabled": false,
+                  "description": {
+                    "content": "(Required) ",
+                    "type": "text/plain"
+                  }
+                },
+                {
+                  "type": "any",
+                  "value": "cuid_123",
+                  "key": "id",
+                  "disabled": false,
+                  "description": {
+                    "content": "(Required) ",
+                    "type": "text/plain"
+                  }
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "PUT",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"marginPercentage\": 20\n}",
+              "options": {
+                "raw": {
+                  "headerFamily": "json",
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "name": "Delete a job rate",
+          "request": {
+            "name": "Delete a job rate",
+            "description": {
+              "content": "Deletes a rate owned by the specified job.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "jobs",
+                ":jobId",
+                "rates",
+                ":id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "type": "any",
+                  "value": "job_cuid_123",
+                  "key": "jobId",
+                  "disabled": false,
+                  "description": {
+                    "content": "(Required) ",
+                    "type": "text/plain"
+                  }
+                },
+                {
+                  "type": "any",
+                  "value": "cuid_123",
+                  "key": "id",
+                  "disabled": false,
+                  "description": {
+                    "content": "(Required) ",
+                    "type": "text/plain"
+                  }
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "DELETE",
+            "body": {}
+          },
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ]
+    },
+    {
+      "name": "Quotation",
+      "description": "Quotation snapshot endpoints.",
+      "item": [
+        {
+          "name": "Create or replace a job's quotation",
+          "request": {
+            "name": "Create or replace a job's quotation",
+            "description": {
+              "content": "Creates or replaces the quotation configuration for the specified job.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "jobs",
+                ":jobId",
+                "quotation"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "type": "any",
+                  "value": "job_cuid_123",
+                  "key": "jobId",
+                  "disabled": false,
+                  "description": {
+                    "content": "(Required) ",
+                    "type": "text/plain"
+                  }
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": {
+                "raw": {
+                  "headerFamily": "json",
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "name": "Get a job's quotation",
+          "request": {
+            "name": "Get a job's quotation",
+            "description": {
+              "content": "Returns the quotation configuration belonging to the specified job.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "jobs",
+                ":jobId",
+                "quotation"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "type": "any",
+                  "value": "job_cuid_123",
+                  "key": "jobId",
+                  "disabled": false,
+                  "description": {
+                    "content": "(Required) ",
+                    "type": "text/plain"
+                  }
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "body": {}
+          },
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "name": "Update a job's quotation",
+          "request": {
+            "name": "Update a job's quotation",
+            "description": {
+              "content": "Partially updates the quotation configuration for the specified job.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "jobs",
+                ":jobId",
+                "quotation"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "type": "any",
+                  "value": "job_cuid_123",
+                  "key": "jobId",
+                  "disabled": false,
+                  "description": {
+                    "content": "(Required) ",
+                    "type": "text/plain"
+                  }
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "PUT",
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": {
+                "raw": {
+                  "headerFamily": "json",
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "name": "Delete a job's quotation",
+          "request": {
+            "name": "Delete a job's quotation",
+            "description": {
+              "content": "Deletes the quotation configuration for the specified job.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "jobs",
+                ":jobId",
+                "quotation"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "type": "any",
+                  "value": "job_cuid_123",
+                  "key": "jobId",
+                  "disabled": false,
+                  "description": {
+                    "content": "(Required) ",
+                    "type": "text/plain"
+                  }
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "DELETE",
+            "body": {}
+          },
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "name": "List quotations",
+          "request": {
+            "name": "List quotations",
+            "description": {
+              "content": "Returns a paginated list of quotations.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "quotations"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "description": {
+                    "content": "",
+                    "type": "text/plain"
+                  },
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "disabled": false,
+                  "description": {
+                    "content": "",
+                    "type": "text/plain"
+                  },
+                  "key": "pageSize",
+                  "value": "10"
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "body": {}
+          },
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ]
+    },
+    {
+      "name": "Amount",
+      "description": "",
+      "item": [
+        {
+          "name": "Create or replace a job's amount",
+          "request": {
+            "name": "Create or replace a job's amount",
+            "description": {
+              "content": "Creates or replaces the amount configuration for the specified job.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "jobs",
+                ":jobId",
+                "amount"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "type": "any",
+                  "value": "job_cuid_123",
+                  "key": "jobId",
+                  "disabled": false,
+                  "description": {
+                    "content": "(Required) ",
+                    "type": "text/plain"
+                  }
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"pebRoof\": {\n    \"materialWithPurlinRate\": 15,\n    \"materialWithPurlinAmount\": 187500,\n    \"roofSheetSpecification\": \"0.50 MM PPGL\",\n    \"roofSheetRate\": 12,\n    \"roofSheetAmount\": 5403\n  },\n  \"mezzanine\": {\n    \"structureRate\": 16.5,\n    \"structureAmount\": 52812.375\n  }\n}",
+              "options": {
+                "raw": {
+                  "headerFamily": "json",
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "name": "Get a job's amount",
+          "request": {
+            "name": "Get a job's amount",
+            "description": {
+              "content": "Returns the amount configuration belonging to the specified job.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "jobs",
+                ":jobId",
+                "amount"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "type": "any",
+                  "value": "job_cuid_123",
+                  "key": "jobId",
+                  "disabled": false,
+                  "description": {
+                    "content": "(Required) ",
+                    "type": "text/plain"
+                  }
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "body": {}
+          },
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "name": "Update a job's amount",
+          "request": {
+            "name": "Update a job's amount",
+            "description": {
+              "content": "Partially updates the amount configuration for the specified job.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "jobs",
+                ":jobId",
+                "amount"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "type": "any",
+                  "value": "job_cuid_123",
+                  "key": "jobId",
+                  "disabled": false,
+                  "description": {
+                    "content": "(Required) ",
+                    "type": "text/plain"
+                  }
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "PUT",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"pebRoof\": {\n    \"materialWithPurlinRate\": 15,\n    \"materialWithPurlinAmount\": 187500,\n    \"roofSheetSpecification\": \"0.50 MM PPGL\",\n    \"roofSheetRate\": 12,\n    \"roofSheetAmount\": 5403\n  },\n  \"mezzanine\": {\n    \"structureRate\": 16.5,\n    \"structureAmount\": 52812.375\n  }\n}",
+              "options": {
+                "raw": {
+                  "headerFamily": "json",
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "name": "Delete a job's amount",
+          "request": {
+            "name": "Delete a job's amount",
+            "description": {
+              "content": "Deletes the amount configuration for the specified job.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "jobs",
+                ":jobId",
+                "amount"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "type": "any",
+                  "value": "job_cuid_123",
+                  "key": "jobId",
+                  "disabled": false,
+                  "description": {
+                    "content": "(Required) ",
+                    "type": "text/plain"
+                  }
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "DELETE",
+            "body": {}
+          },
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "name": "List amounts",
+          "request": {
+            "name": "List amounts",
+            "description": {
+              "content": "Returns a paginated list of amounts.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "amounts"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "description": {
+                    "content": "",
+                    "type": "text/plain"
+                  },
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "disabled": false,
+                  "description": {
+                    "content": "",
+                    "type": "text/plain"
+                  },
+                  "key": "pageSize",
+                  "value": "10"
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "body": {}
+          },
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ]
+    },
+    {
+      "name": "Quantity",
+      "description": "",
+      "item": [
+        {
+          "name": "Create or replace a job's quantity",
+          "request": {
+            "name": "Create or replace a job's quantity",
+            "description": {
+              "content": "Creates or replaces the quantity configuration for the specified job.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "jobs",
+                ":jobId",
+                "quantity"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "type": "any",
+                  "value": "job_cuid_123",
+                  "key": "jobId",
+                  "disabled": false,
+                  "description": {
+                    "content": "(Required) ",
+                    "type": "text/plain"
+                  }
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"pebRoof\": {\n    \"materialWithPurlinUnit\": \"KG\",\n    \"materialWithPurlinQuantity\": 12500.5,\n    \"roofSheetSpecification\": \"0.50 MM PPGL\",\n    \"roofSheetUnit\": \"SQM\",\n    \"roofSheetQuantity\": 450.25\n  },\n  \"mezzanine\": {\n    \"structureUnit\": \"KG\",\n    \"structureQuantity\": 3200.75\n  }\n}",
+              "options": {
+                "raw": {
+                  "headerFamily": "json",
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "name": "Get a job's quantity",
+          "request": {
+            "name": "Get a job's quantity",
+            "description": {
+              "content": "Returns the quantity configuration belonging to the specified job.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "jobs",
+                ":jobId",
+                "quantity"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "type": "any",
+                  "value": "job_cuid_123",
+                  "key": "jobId",
+                  "disabled": false,
+                  "description": {
+                    "content": "(Required) ",
+                    "type": "text/plain"
+                  }
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "body": {}
+          },
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "name": "Update a job's quantity",
+          "request": {
+            "name": "Update a job's quantity",
+            "description": {
+              "content": "Partially updates the quantity configuration for the specified job.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "jobs",
+                ":jobId",
+                "quantity"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "type": "any",
+                  "value": "job_cuid_123",
+                  "key": "jobId",
+                  "disabled": false,
+                  "description": {
+                    "content": "(Required) ",
+                    "type": "text/plain"
+                  }
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "PUT",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"pebRoof\": {\n    \"materialWithPurlinUnit\": \"KG\",\n    \"materialWithPurlinQuantity\": 12500.5,\n    \"roofSheetSpecification\": \"0.50 MM PPGL\",\n    \"roofSheetUnit\": \"SQM\",\n    \"roofSheetQuantity\": 450.25\n  },\n  \"mezzanine\": {\n    \"structureUnit\": \"KG\",\n    \"structureQuantity\": 3200.75\n  }\n}",
+              "options": {
+                "raw": {
+                  "headerFamily": "json",
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "name": "Delete a job's quantity",
+          "request": {
+            "name": "Delete a job's quantity",
+            "description": {
+              "content": "Deletes the quantity configuration for the specified job.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "jobs",
+                ":jobId",
+                "quantity"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "type": "any",
+                  "value": "job_cuid_123",
+                  "key": "jobId",
+                  "disabled": false,
+                  "description": {
+                    "content": "(Required) ",
+                    "type": "text/plain"
+                  }
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "DELETE",
+            "body": {}
+          },
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "name": "List quantities",
+          "request": {
+            "name": "List quantities",
+            "description": {
+              "content": "Returns a paginated list of quantities.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "quantities"
               ],
               "host": [
                 "{{baseUrl}}"
@@ -2577,18 +3697,20 @@
           }
         },
         {
-          "name": "Get a rate by ID",
+          "name": "Create or replace a job's quantitypebroof",
           "request": {
-            "name": "Get a rate by ID",
+            "name": "Create or replace a job's quantitypebroof",
             "description": {
-              "content": "Returns one rate master item by its identifier.",
+              "content": "Creates or replaces the quantitypebroof configuration for the specified job.",
               "type": "text/plain"
             },
             "url": {
               "path": [
                 "api",
-                "rates",
-                ":id"
+                "jobs",
+                ":jobId",
+                "quantity",
+                "peb-roof"
               ],
               "host": [
                 "{{baseUrl}}"
@@ -2597,8 +3719,68 @@
               "variable": [
                 {
                   "type": "any",
-                  "value": "cuid_123",
-                  "key": "id",
+                  "value": "job_cuid_123",
+                  "key": "jobId",
+                  "disabled": false,
+                  "description": {
+                    "content": "(Required) ",
+                    "type": "text/plain"
+                  }
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": {
+                "raw": {
+                  "headerFamily": "json",
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "name": "Get a job's quantitypebroof",
+          "request": {
+            "name": "Get a job's quantitypebroof",
+            "description": {
+              "content": "Returns the quantitypebroof configuration belonging to the specified job.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "jobs",
+                ":jobId",
+                "quantity",
+                "peb-roof"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "type": "any",
+                  "value": "job_cuid_123",
+                  "key": "jobId",
                   "disabled": false,
                   "description": {
                     "content": "(Required) ",
@@ -2622,18 +3804,20 @@
           }
         },
         {
-          "name": "Update a rate",
+          "name": "Update a job's quantitypebroof",
           "request": {
-            "name": "Update a rate",
+            "name": "Update a job's quantitypebroof",
             "description": {
-              "content": "Partially updates a rate master item by its identifier.",
+              "content": "Partially updates the quantitypebroof configuration for the specified job.",
               "type": "text/plain"
             },
             "url": {
               "path": [
                 "api",
-                "rates",
-                ":id"
+                "jobs",
+                ":jobId",
+                "quantity",
+                "peb-roof"
               ],
               "host": [
                 "{{baseUrl}}"
@@ -2642,8 +3826,8 @@
               "variable": [
                 {
                   "type": "any",
-                  "value": "cuid_123",
-                  "key": "id",
+                  "value": "job_cuid_123",
+                  "key": "jobId",
                   "disabled": false,
                   "description": {
                     "content": "(Required) ",
@@ -2665,7 +3849,7 @@
             "method": "PUT",
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"marginPercentage\": 20\n}",
+              "raw": "{}",
               "options": {
                 "raw": {
                   "headerFamily": "json",
@@ -2680,18 +3864,20 @@
           }
         },
         {
-          "name": "Delete a rate",
+          "name": "Delete a job's quantitypebroof",
           "request": {
-            "name": "Delete a rate",
+            "name": "Delete a job's quantitypebroof",
             "description": {
-              "content": "Deletes a rate master item by its identifier.",
+              "content": "Deletes the quantitypebroof configuration for the specified job.",
               "type": "text/plain"
             },
             "url": {
               "path": [
                 "api",
-                "rates",
-                ":id"
+                "jobs",
+                ":jobId",
+                "quantity",
+                "peb-roof"
               ],
               "host": [
                 "{{baseUrl}}"
@@ -2700,8 +3886,8 @@
               "variable": [
                 {
                   "type": "any",
-                  "value": "cuid_123",
-                  "key": "id",
+                  "value": "job_cuid_123",
+                  "key": "jobId",
                   "disabled": false,
                   "description": {
                     "content": "(Required) ",
@@ -2717,6 +3903,1654 @@
               }
             ],
             "method": "DELETE",
+            "body": {}
+          },
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "name": "List quantity-peb-roofs",
+          "request": {
+            "name": "List quantity-peb-roofs",
+            "description": {
+              "content": "Returns a paginated list of quantity-peb-roofs.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "quantity-peb-roofs"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "description": {
+                    "content": "",
+                    "type": "text/plain"
+                  },
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "disabled": false,
+                  "description": {
+                    "content": "",
+                    "type": "text/plain"
+                  },
+                  "key": "pageSize",
+                  "value": "10"
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "body": {}
+          },
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "name": "Create or replace a job's quantitycladding",
+          "request": {
+            "name": "Create or replace a job's quantitycladding",
+            "description": {
+              "content": "Creates or replaces the quantitycladding configuration for the specified job.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "jobs",
+                ":jobId",
+                "quantity",
+                "cladding"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "type": "any",
+                  "value": "job_cuid_123",
+                  "key": "jobId",
+                  "disabled": false,
+                  "description": {
+                    "content": "(Required) ",
+                    "type": "text/plain"
+                  }
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": {
+                "raw": {
+                  "headerFamily": "json",
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "name": "Get a job's quantitycladding",
+          "request": {
+            "name": "Get a job's quantitycladding",
+            "description": {
+              "content": "Returns the quantitycladding configuration belonging to the specified job.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "jobs",
+                ":jobId",
+                "quantity",
+                "cladding"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "type": "any",
+                  "value": "job_cuid_123",
+                  "key": "jobId",
+                  "disabled": false,
+                  "description": {
+                    "content": "(Required) ",
+                    "type": "text/plain"
+                  }
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "body": {}
+          },
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "name": "Update a job's quantitycladding",
+          "request": {
+            "name": "Update a job's quantitycladding",
+            "description": {
+              "content": "Partially updates the quantitycladding configuration for the specified job.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "jobs",
+                ":jobId",
+                "quantity",
+                "cladding"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "type": "any",
+                  "value": "job_cuid_123",
+                  "key": "jobId",
+                  "disabled": false,
+                  "description": {
+                    "content": "(Required) ",
+                    "type": "text/plain"
+                  }
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "PUT",
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": {
+                "raw": {
+                  "headerFamily": "json",
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "name": "Delete a job's quantitycladding",
+          "request": {
+            "name": "Delete a job's quantitycladding",
+            "description": {
+              "content": "Deletes the quantitycladding configuration for the specified job.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "jobs",
+                ":jobId",
+                "quantity",
+                "cladding"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "type": "any",
+                  "value": "job_cuid_123",
+                  "key": "jobId",
+                  "disabled": false,
+                  "description": {
+                    "content": "(Required) ",
+                    "type": "text/plain"
+                  }
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "DELETE",
+            "body": {}
+          },
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "name": "List quantity-claddings",
+          "request": {
+            "name": "List quantity-claddings",
+            "description": {
+              "content": "Returns a paginated list of quantity-claddings.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "quantity-claddings"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "description": {
+                    "content": "",
+                    "type": "text/plain"
+                  },
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "disabled": false,
+                  "description": {
+                    "content": "",
+                    "type": "text/plain"
+                  },
+                  "key": "pageSize",
+                  "value": "10"
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "body": {}
+          },
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "name": "Create or replace a job's quantitycanopy",
+          "request": {
+            "name": "Create or replace a job's quantitycanopy",
+            "description": {
+              "content": "Creates or replaces the quantitycanopy configuration for the specified job.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "jobs",
+                ":jobId",
+                "quantity",
+                "canopy"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "type": "any",
+                  "value": "job_cuid_123",
+                  "key": "jobId",
+                  "disabled": false,
+                  "description": {
+                    "content": "(Required) ",
+                    "type": "text/plain"
+                  }
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": {
+                "raw": {
+                  "headerFamily": "json",
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "name": "Get a job's quantitycanopy",
+          "request": {
+            "name": "Get a job's quantitycanopy",
+            "description": {
+              "content": "Returns the quantitycanopy configuration belonging to the specified job.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "jobs",
+                ":jobId",
+                "quantity",
+                "canopy"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "type": "any",
+                  "value": "job_cuid_123",
+                  "key": "jobId",
+                  "disabled": false,
+                  "description": {
+                    "content": "(Required) ",
+                    "type": "text/plain"
+                  }
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "body": {}
+          },
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "name": "Update a job's quantitycanopy",
+          "request": {
+            "name": "Update a job's quantitycanopy",
+            "description": {
+              "content": "Partially updates the quantitycanopy configuration for the specified job.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "jobs",
+                ":jobId",
+                "quantity",
+                "canopy"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "type": "any",
+                  "value": "job_cuid_123",
+                  "key": "jobId",
+                  "disabled": false,
+                  "description": {
+                    "content": "(Required) ",
+                    "type": "text/plain"
+                  }
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "PUT",
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": {
+                "raw": {
+                  "headerFamily": "json",
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "name": "Delete a job's quantitycanopy",
+          "request": {
+            "name": "Delete a job's quantitycanopy",
+            "description": {
+              "content": "Deletes the quantitycanopy configuration for the specified job.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "jobs",
+                ":jobId",
+                "quantity",
+                "canopy"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "type": "any",
+                  "value": "job_cuid_123",
+                  "key": "jobId",
+                  "disabled": false,
+                  "description": {
+                    "content": "(Required) ",
+                    "type": "text/plain"
+                  }
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "DELETE",
+            "body": {}
+          },
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "name": "List quantity-canopies",
+          "request": {
+            "name": "List quantity-canopies",
+            "description": {
+              "content": "Returns a paginated list of quantity-canopies.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "quantity-canopies"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "description": {
+                    "content": "",
+                    "type": "text/plain"
+                  },
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "disabled": false,
+                  "description": {
+                    "content": "",
+                    "type": "text/plain"
+                  },
+                  "key": "pageSize",
+                  "value": "10"
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "body": {}
+          },
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "name": "Create or replace a job's quantityaccessories",
+          "request": {
+            "name": "Create or replace a job's quantityaccessories",
+            "description": {
+              "content": "Creates or replaces the quantityaccessories configuration for the specified job.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "jobs",
+                ":jobId",
+                "quantity",
+                "accessories"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "type": "any",
+                  "value": "job_cuid_123",
+                  "key": "jobId",
+                  "disabled": false,
+                  "description": {
+                    "content": "(Required) ",
+                    "type": "text/plain"
+                  }
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": {
+                "raw": {
+                  "headerFamily": "json",
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "name": "Get a job's quantityaccessories",
+          "request": {
+            "name": "Get a job's quantityaccessories",
+            "description": {
+              "content": "Returns the quantityaccessories configuration belonging to the specified job.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "jobs",
+                ":jobId",
+                "quantity",
+                "accessories"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "type": "any",
+                  "value": "job_cuid_123",
+                  "key": "jobId",
+                  "disabled": false,
+                  "description": {
+                    "content": "(Required) ",
+                    "type": "text/plain"
+                  }
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "body": {}
+          },
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "name": "Update a job's quantityaccessories",
+          "request": {
+            "name": "Update a job's quantityaccessories",
+            "description": {
+              "content": "Partially updates the quantityaccessories configuration for the specified job.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "jobs",
+                ":jobId",
+                "quantity",
+                "accessories"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "type": "any",
+                  "value": "job_cuid_123",
+                  "key": "jobId",
+                  "disabled": false,
+                  "description": {
+                    "content": "(Required) ",
+                    "type": "text/plain"
+                  }
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "PUT",
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": {
+                "raw": {
+                  "headerFamily": "json",
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "name": "Delete a job's quantityaccessories",
+          "request": {
+            "name": "Delete a job's quantityaccessories",
+            "description": {
+              "content": "Deletes the quantityaccessories configuration for the specified job.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "jobs",
+                ":jobId",
+                "quantity",
+                "accessories"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "type": "any",
+                  "value": "job_cuid_123",
+                  "key": "jobId",
+                  "disabled": false,
+                  "description": {
+                    "content": "(Required) ",
+                    "type": "text/plain"
+                  }
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "DELETE",
+            "body": {}
+          },
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "name": "List quantity-accessories",
+          "request": {
+            "name": "List quantity-accessories",
+            "description": {
+              "content": "Returns a paginated list of quantity-accessories.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "quantity-accessories"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "description": {
+                    "content": "",
+                    "type": "text/plain"
+                  },
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "disabled": false,
+                  "description": {
+                    "content": "",
+                    "type": "text/plain"
+                  },
+                  "key": "pageSize",
+                  "value": "10"
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "body": {}
+          },
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "name": "Create or replace a job's quantitymezzanine",
+          "request": {
+            "name": "Create or replace a job's quantitymezzanine",
+            "description": {
+              "content": "Creates or replaces the quantitymezzanine configuration for the specified job.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "jobs",
+                ":jobId",
+                "quantity",
+                "mezzanine"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "type": "any",
+                  "value": "job_cuid_123",
+                  "key": "jobId",
+                  "disabled": false,
+                  "description": {
+                    "content": "(Required) ",
+                    "type": "text/plain"
+                  }
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": {
+                "raw": {
+                  "headerFamily": "json",
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "name": "Get a job's quantitymezzanine",
+          "request": {
+            "name": "Get a job's quantitymezzanine",
+            "description": {
+              "content": "Returns the quantitymezzanine configuration belonging to the specified job.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "jobs",
+                ":jobId",
+                "quantity",
+                "mezzanine"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "type": "any",
+                  "value": "job_cuid_123",
+                  "key": "jobId",
+                  "disabled": false,
+                  "description": {
+                    "content": "(Required) ",
+                    "type": "text/plain"
+                  }
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "body": {}
+          },
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "name": "Update a job's quantitymezzanine",
+          "request": {
+            "name": "Update a job's quantitymezzanine",
+            "description": {
+              "content": "Partially updates the quantitymezzanine configuration for the specified job.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "jobs",
+                ":jobId",
+                "quantity",
+                "mezzanine"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "type": "any",
+                  "value": "job_cuid_123",
+                  "key": "jobId",
+                  "disabled": false,
+                  "description": {
+                    "content": "(Required) ",
+                    "type": "text/plain"
+                  }
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "PUT",
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": {
+                "raw": {
+                  "headerFamily": "json",
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "name": "Delete a job's quantitymezzanine",
+          "request": {
+            "name": "Delete a job's quantitymezzanine",
+            "description": {
+              "content": "Deletes the quantitymezzanine configuration for the specified job.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "jobs",
+                ":jobId",
+                "quantity",
+                "mezzanine"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "type": "any",
+                  "value": "job_cuid_123",
+                  "key": "jobId",
+                  "disabled": false,
+                  "description": {
+                    "content": "(Required) ",
+                    "type": "text/plain"
+                  }
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "DELETE",
+            "body": {}
+          },
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "name": "List quantity-mezzanines",
+          "request": {
+            "name": "List quantity-mezzanines",
+            "description": {
+              "content": "Returns a paginated list of quantity-mezzanines.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "quantity-mezzanines"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "description": {
+                    "content": "",
+                    "type": "text/plain"
+                  },
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "disabled": false,
+                  "description": {
+                    "content": "",
+                    "type": "text/plain"
+                  },
+                  "key": "pageSize",
+                  "value": "10"
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "body": {}
+          },
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "name": "Create or replace a job's quantitystair",
+          "request": {
+            "name": "Create or replace a job's quantitystair",
+            "description": {
+              "content": "Creates or replaces the quantitystair configuration for the specified job.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "jobs",
+                ":jobId",
+                "quantity",
+                "stair"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "type": "any",
+                  "value": "job_cuid_123",
+                  "key": "jobId",
+                  "disabled": false,
+                  "description": {
+                    "content": "(Required) ",
+                    "type": "text/plain"
+                  }
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": {
+                "raw": {
+                  "headerFamily": "json",
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "name": "Get a job's quantitystair",
+          "request": {
+            "name": "Get a job's quantitystair",
+            "description": {
+              "content": "Returns the quantitystair configuration belonging to the specified job.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "jobs",
+                ":jobId",
+                "quantity",
+                "stair"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "type": "any",
+                  "value": "job_cuid_123",
+                  "key": "jobId",
+                  "disabled": false,
+                  "description": {
+                    "content": "(Required) ",
+                    "type": "text/plain"
+                  }
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "body": {}
+          },
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "name": "Update a job's quantitystair",
+          "request": {
+            "name": "Update a job's quantitystair",
+            "description": {
+              "content": "Partially updates the quantitystair configuration for the specified job.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "jobs",
+                ":jobId",
+                "quantity",
+                "stair"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "type": "any",
+                  "value": "job_cuid_123",
+                  "key": "jobId",
+                  "disabled": false,
+                  "description": {
+                    "content": "(Required) ",
+                    "type": "text/plain"
+                  }
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "PUT",
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": {
+                "raw": {
+                  "headerFamily": "json",
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "name": "Delete a job's quantitystair",
+          "request": {
+            "name": "Delete a job's quantitystair",
+            "description": {
+              "content": "Deletes the quantitystair configuration for the specified job.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "jobs",
+                ":jobId",
+                "quantity",
+                "stair"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "type": "any",
+                  "value": "job_cuid_123",
+                  "key": "jobId",
+                  "disabled": false,
+                  "description": {
+                    "content": "(Required) ",
+                    "type": "text/plain"
+                  }
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "DELETE",
+            "body": {}
+          },
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "name": "List quantity-stairs",
+          "request": {
+            "name": "List quantity-stairs",
+            "description": {
+              "content": "Returns a paginated list of quantity-stairs.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "quantity-stairs"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "description": {
+                    "content": "",
+                    "type": "text/plain"
+                  },
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "disabled": false,
+                  "description": {
+                    "content": "",
+                    "type": "text/plain"
+                  },
+                  "key": "pageSize",
+                  "value": "10"
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "body": {}
+          },
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "name": "Create or replace a job's quantityadditionalbolts",
+          "request": {
+            "name": "Create or replace a job's quantityadditionalbolts",
+            "description": {
+              "content": "Creates or replaces the quantityadditionalbolts configuration for the specified job.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "jobs",
+                ":jobId",
+                "quantity",
+                "additional-bolts"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "type": "any",
+                  "value": "job_cuid_123",
+                  "key": "jobId",
+                  "disabled": false,
+                  "description": {
+                    "content": "(Required) ",
+                    "type": "text/plain"
+                  }
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": {
+                "raw": {
+                  "headerFamily": "json",
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "name": "Get a job's quantityadditionalbolts",
+          "request": {
+            "name": "Get a job's quantityadditionalbolts",
+            "description": {
+              "content": "Returns the quantityadditionalbolts configuration belonging to the specified job.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "jobs",
+                ":jobId",
+                "quantity",
+                "additional-bolts"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "type": "any",
+                  "value": "job_cuid_123",
+                  "key": "jobId",
+                  "disabled": false,
+                  "description": {
+                    "content": "(Required) ",
+                    "type": "text/plain"
+                  }
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "body": {}
+          },
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "name": "Update a job's quantityadditionalbolts",
+          "request": {
+            "name": "Update a job's quantityadditionalbolts",
+            "description": {
+              "content": "Partially updates the quantityadditionalbolts configuration for the specified job.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "jobs",
+                ":jobId",
+                "quantity",
+                "additional-bolts"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "type": "any",
+                  "value": "job_cuid_123",
+                  "key": "jobId",
+                  "disabled": false,
+                  "description": {
+                    "content": "(Required) ",
+                    "type": "text/plain"
+                  }
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "PUT",
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": {
+                "raw": {
+                  "headerFamily": "json",
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "name": "Delete a job's quantityadditionalbolts",
+          "request": {
+            "name": "Delete a job's quantityadditionalbolts",
+            "description": {
+              "content": "Deletes the quantityadditionalbolts configuration for the specified job.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "jobs",
+                ":jobId",
+                "quantity",
+                "additional-bolts"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "type": "any",
+                  "value": "job_cuid_123",
+                  "key": "jobId",
+                  "disabled": false,
+                  "description": {
+                    "content": "(Required) ",
+                    "type": "text/plain"
+                  }
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "DELETE",
+            "body": {}
+          },
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "name": "List quantity-additional-bolts",
+          "request": {
+            "name": "List quantity-additional-bolts",
+            "description": {
+              "content": "Returns a paginated list of quantity-additional-bolts.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "quantity-additional-bolts"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "description": {
+                    "content": "",
+                    "type": "text/plain"
+                  },
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "disabled": false,
+                  "description": {
+                    "content": "",
+                    "type": "text/plain"
+                  },
+                  "key": "pageSize",
+                  "value": "10"
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
             "body": {}
           },
           "event": [],

@@ -39,8 +39,6 @@ export const insulationTypeEnum = z.enum(['XLPE', 'ROCK_WOOL', 'GLASS_WOOL', 'AL
 /** Turbo ventilator diameter. */
 export const turboVentilatorDiameterEnum = z.enum(['IN_6', 'FT_1', 'IN_18', 'FT_2'])
 
-/** Kind of a wall/roof opening line item. */
-export const accessoryOpeningKindEnum = z.enum(['ROLLING_SHUTTER', 'LOUVER', 'SKY_LIGHT', 'WALL_LIGHT'])
 
 /** Paint/primer product type for frames. */
 export const paintTypeEnum = z.enum(['EPOXY_PRIMER', 'EPOXY_PAINT'])
@@ -54,42 +52,6 @@ export const purlinsGirtsPaintEnum = z.enum(['UNPAINTED', 'PAINTED'])
 /** Foundation bolt finish. */
 export const foundationBoltFinishEnum = z.enum(['BLACK_UNPAINTED'])
 
-/** A door line item — dimensions and counts, all optional. */
-export const accessoryDoorSchema = z.object({
-  height: z.number().positive().optional(),
-  width: z.number().positive().optional(),
-  nos: z.number().int().nonnegative().optional(),
-  // `quantity` on every line item is SERVER-DERIVED (advisory only): the backend
-  // recomputes it per item as two dimensions × nos via `deriveLineItemQuantity`
-  // (@floreat/shared/calc) and ignores the client value. Accepts a `number`, but
-  // the HTTP response serialises the Decimal column as a `string`.
-  quantity: z.number().nonnegative().optional(),
-})
-
-/** A window line item — dimensions and counts, all optional. */
-export const accessoryWindowSchema = z.object({
-  height: z.number().positive().optional(),
-  width: z.number().positive().optional(),
-  nos: z.number().int().nonnegative().optional(),
-  quantity: z.number().nonnegative().optional(),
-})
-
-/** A folded-plate line item — dimensions and counts, all optional. */
-export const accessoryFoldedPlateSchema = z.object({
-  length: z.number().positive().optional(),
-  width: z.number().positive().optional(),
-  nos: z.number().int().nonnegative().optional(),
-  quantity: z.number().nonnegative().optional(),
-})
-
-/** An opening line item — `kind` is required (matches the non-null DB column). */
-export const accessoryOpeningSchema = z.object({
-  kind: accessoryOpeningKindEnum,
-  length: z.number().positive().optional(),
-  width: z.number().positive().optional(),
-  nos: z.number().int().nonnegative().optional(),
-  quantity: z.number().nonnegative().optional(),
-})
 
 /** Schema for creating/upserting accessories — all scalar/enum fields optional, plus inline arrays. */
 export const createAccessoriesSchema = z.object({
@@ -141,6 +103,27 @@ export const createAccessoriesSchema = z.object({
   partitionThickness: partitionThicknessEnum.optional(),
   partitionQuantity: z.number().int().nonnegative().optional(),
 
+  // ── Openings ──
+  rollingShutterLength: z.number().positive().optional(),
+  rollingShutterWidth: z.number().positive().optional(),
+  rollingShutterNos: z.number().int().nonnegative().optional(),
+  rollingShutterQuantity: z.number().nonnegative().optional(),
+
+  louverLength: z.number().positive().optional(),
+  louverWidth: z.number().positive().optional(),
+  louverNos: z.number().int().nonnegative().optional(),
+  louverQuantity: z.number().nonnegative().optional(),
+
+  skyLightLength: z.number().positive().optional(),
+  skyLightWidth: z.number().positive().optional(),
+  skyLightNos: z.number().int().nonnegative().optional(),
+  skyLightQuantity: z.number().nonnegative().optional(),
+
+  wallLightLength: z.number().positive().optional(),
+  wallLightWidth: z.number().positive().optional(),
+  wallLightNos: z.number().int().nonnegative().optional(),
+  wallLightQuantity: z.number().nonnegative().optional(),
+
   // ── Insulation ──
   roofInsulationType: insulationTypeEnum.optional(),
   wallInsulationType: insulationTypeEnum.optional(),
@@ -171,11 +154,21 @@ export const createAccessoriesSchema = z.object({
   // ── Paint & Primer: Foundation Bolt ──
   foundationBoltFinish: foundationBoltFinishEnum.optional(),
 
-  // ── Inline line-item arrays ──
-  doors: z.array(accessoryDoorSchema).optional(),
-  windows: z.array(accessoryWindowSchema).optional(),
-  foldedPlates: z.array(accessoryFoldedPlateSchema).optional(),
-  openings: z.array(accessoryOpeningSchema).optional(),
+  // ── Doors, Windows, Folded Plates ──
+  doorHeight: z.number().positive().optional(),
+  doorWidth: z.number().positive().optional(),
+  doorNos: z.number().int().nonnegative().optional(),
+  doorQuantity: z.number().nonnegative().optional(),
+
+  windowHeight: z.number().positive().optional(),
+  windowWidth: z.number().positive().optional(),
+  windowNos: z.number().int().nonnegative().optional(),
+  windowQuantity: z.number().nonnegative().optional(),
+
+  foldedPlateLength: z.number().positive().optional(),
+  foldedPlateWidth: z.number().positive().optional(),
+  foldedPlateNos: z.number().int().nonnegative().optional(),
+  foldedPlateQuantity: z.number().nonnegative().optional(),
 })
 
 /** Schema for updating accessories — all fields optional (partial update). */

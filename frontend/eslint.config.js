@@ -18,5 +18,10 @@ export default defineConfig([
     languageOptions: {
       globals: globals.browser,
     },
+    rules: {
+      // UI primitives intentionally export their variants alongside the
+      // component; Fast Refresh remains correct for these stateless helpers.
+      'react-refresh/only-export-components': 'off',
+    },
   },
 ])

@@ -11,7 +11,7 @@ const serverMezzanine = (): Mezzanine => ({
     {
       id: 'floor-1',
       mezzanineId: 'mezz-1',
-      code: 'MEZ-1',
+      code: 'MEZ_1',
       floor: 'FLOOR_1',
       type: 'DECK_SHEET',
       heightFrom: 'GROUND',
@@ -29,7 +29,28 @@ const serverMezzanine = (): Mezzanine => ({
       internalColumnsEndPrimary: null,
     },
   ],
-  extensions: [],
+  extensions: [
+    {
+      id: 'extension-1',
+      mezzanineId: 'mezz-1',
+      code: 'EXT_1',
+      floor: 'FLOOR_1',
+      type: 'DECK_SHEET',
+      heightFrom: 'GROUND',
+      typicalTo: 'FLOOR_1',
+      thicknessMm: '0.8',
+      lengthM: '15',
+      widthM: '6',
+      heightM: '2.75',
+      beamsMidPrimary: 1,
+      beamsEndPrimary: 1,
+      beamsSecondary: 12,
+      jointsMidPrimary: 3,
+      jointsEndPrimary: 3,
+      extendedColumnsMidPrimary: 2,
+      extendedColumnsEndPrimary: 2,
+    },
+  ],
 })
 
 describe('mapMezzanineResponseToDraft', () => {
@@ -41,14 +62,15 @@ describe('mapMezzanineResponseToDraft', () => {
     expect(floor.beamsMidPrimary).toBe(4)
     expect(floor.widthM).toBeUndefined()
     expect(floor.beamsEndPrimary).toBeUndefined()
-    expect(floor.code).toBe('MEZ-1')
+    expect(floor.code).toBe('MEZ_1')
     expect(floor.type).toBe('DECK_SHEET')
   })
 
   it('returns populated floors/extensions when the server record has data', () => {
     const mezzanine = mapMezzanineResponseToDraft(serverMezzanine())
     expect(mezzanine.floors).toHaveLength(1)
-    expect(mezzanine.extensions).toHaveLength(0)
+    expect(mezzanine.extensions).toHaveLength(1)
+    expect(mezzanine.extensions[0].code).toBe('EXT_1')
   })
 
   it('returns empty floors/extensions for an empty server record', () => {

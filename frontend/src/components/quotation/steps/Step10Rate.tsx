@@ -1,12 +1,14 @@
 import { RateTable } from '@/components/quotation/sections/rate/RateTable'
+import { RecentlyUsed } from '@/components/quotation/RecentlyUsed'
 
 export function Step10Rate() {
   return (
-    <section>
+    <section className="min-h-full">
+      <RecentlyUsed step={10} />
       <div className="mb-5">
-        <h2 className="text-xl font-semibold tracking-tight">Rate master</h2>
+        <h2 className="text-xl font-semibold tracking-tight">Job rates</h2>
         <p className="text-muted-foreground text-sm mt-1">
-          The canonical rate master contains 35 default items. Enter pricing for each item and save rows individually to persist the shared rate table. Click an item name to open a popup editor for faster editing on smaller screens.
+          Each job starts with 35 default rate items. Edit the raw pricing fields and save the complete rate set together.
         </p>
       </div>
 

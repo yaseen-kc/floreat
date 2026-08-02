@@ -12,6 +12,13 @@ command does, why it is needed, what output to expect, and how to confirm it wor
 > - We **ignore** domains, DNS, SSL/TLS and HTTPS. The app will be reachable over
 >   plain **HTTP** at your instance's public IP address. You will add HTTPS later.
 
+## Authentication configuration
+
+The API expects a Clerk bearer session on every non-health route. `BYPASS_AUTH=true`
+with `x-dev-user-id` is a local development escape hatch only; startup rejects it
+when `NODE_ENV=production`. Authorization for global rate writes is intentionally
+deferred and must be externally restricted until Clerk role checks are added.
+
 ---
 
 ## Table of contents

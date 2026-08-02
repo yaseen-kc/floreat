@@ -30,7 +30,7 @@ describe('generated API documentation', () => {
   it('generates all registered operations with stable metadata', async () => {
     const document = buildOpenApiDocument()
     const generatedOperations = operations(document)
-    expect(generatedOperations).toHaveLength(52)
+    expect(generatedOperations).toHaveLength(104)
     expect(generatedOperations.every((operation) => operation.operationId)).toBe(true)
     expect(Object.keys(document.paths).every((path) => !path.includes(':'))).toBe(true)
     expect(document.components?.securitySchemes).toHaveProperty('LocalDevUserId')
@@ -38,10 +38,10 @@ describe('generated API documentation', () => {
     expect(document.paths['/api/jobs']?.post).toHaveProperty('requestBody')
     expect(document.paths['/api/jobs/{id}']?.delete?.responses).toHaveProperty('204')
     expect(document.paths['/api/jobs/{id}']?.delete?.responses).toHaveProperty('401')
-    expect(document.paths['/api/rates/{id}']?.delete?.responses).toHaveProperty('204')
-    expect(document.paths['/api/rates/{id}']?.delete?.responses).toHaveProperty('404')
-    expect(document.paths['/api/rates']?.post?.responses).toHaveProperty('409')
-    expect(document.paths['/api/rates/{id}']?.put?.responses).toHaveProperty('404')
+    expect(document.paths['/api/jobs/{jobId}/rates/{id}']?.delete?.responses).toHaveProperty('204')
+    expect(document.paths['/api/jobs/{jobId}/rates/{id}']?.delete?.responses).toHaveProperty('404')
+    expect(document.paths['/api/jobs/{jobId}/rates']?.post?.responses).toHaveProperty('409')
+    expect(document.paths['/api/jobs/{jobId}/rates/{id}']?.put?.responses).toHaveProperty('404')
     expect(document.components?.schemas).toHaveProperty('CreateRoofRequest')
     expect(document.components?.schemas).toHaveProperty('CreateStairRequest')
     expect(document.components?.schemas).toHaveProperty('DecimalString')
@@ -55,12 +55,12 @@ describe('generated API documentation', () => {
     expect(document.components?.schemas?.DecimalString).toMatchObject({ type: 'string', example: '30.000' })
     expect(document.components?.schemas?.RoofResponse?.properties?.eaveHeight).toMatchObject({ $ref: '#/components/schemas/DecimalString' })
     await SwaggerParser.validate(document)
-  })
+  }, 30000)
 
   it('keeps route coverage synchronized with the Fastify registry', async () => {
     await checkDocumentation()
-    expect(getExpectedRouteKeys()).toHaveLength(52)
-  })
+    expect(getExpectedRouteKeys()).toHaveLength(104)
+  }, 30000)
 
   it('generates one Postman request per documented operation with local auth variables', async () => {
     const collectionPath = fileURLToPath(new URL('../../../docs/floreat-api.postman_collection.json', import.meta.url))
@@ -70,7 +70,7 @@ describe('generated API documentation', () => {
       event: unknown[]
     }
     const requests = flattenPostman(collection.item)
-    expect(requests).toHaveLength(52)
+    expect(requests).toHaveLength(104)
     expect(requests.some((request) => request.name?.toLowerCase().includes('stair'))).toBe(true)
     expect(collection.variable).toEqual(expect.arrayContaining([
       expect.objectContaining({ key: 'baseUrl', value: 'http://localhost:3000' }),

@@ -21,7 +21,21 @@ export const STEPS: WizardStep[] = [
   { label: 'Joint', sub: 'JOINT' },
   { label: 'Spec', sub: 'SPEC' },
   { label: 'Rate Master', sub: 'RATE' },
+  { label: 'Quantity', sub: 'QTY' },
+  { label: 'Amount', sub: 'AMOUNT' },
+  { label: 'Quotation', sub: 'QUOTE' },
 ]
 
 /** Total number of wizard steps. */
 export const STEP_COUNT = STEPS.length
+
+/**
+ * Inclusive bounds of the freely-navigable step range.
+ *
+ * Steps 1–2 create the job and roof records every later step upserts against,
+ * so they stay strictly sequential. Step 13 renders the server-calculated
+ * amount, so it stays gated behind Step 12. The steps between are optional and
+ * order-independent, so they can be jumped to directly in any order.
+ */
+export const FREE_NAV_FIRST_STEP = 3
+export const FREE_NAV_LAST_STEP = 12

@@ -89,7 +89,8 @@ describe('mapRoofResponseToDraft', () => {
     expect(roof.gradeOfPlateMaterial).toBeUndefined()
     expect(roofSectionsEnabled.purlins).toBe(false)
     expect(roofSectionsEnabled.windBracing).toBe(false)
-    expect(roofSectionsEnabled.sidewalls).toBe(false)
+    expect(roofSectionsEnabled.sidewalls).toBe(true)
+    expect(roof.sidewalls?.map((row) => row.side)).toEqual(['FRONT', 'BACK', 'RIGHT', 'LEFT'])
   })
 
   it('enables a section when any of its fields is populated', () => {
@@ -109,7 +110,12 @@ describe('mapRoofResponseToDraft', () => {
       { id: 'sw-1', roofId: 'roof-1', side: 'FRONT', wallType: 'BRICK', thickness: '0.2', height: '3' },
     ]
     const { roof, roofSectionsEnabled } = mapRoofResponseToDraft(r)
-    expect(roof.sidewalls).toEqual([{ side: 'FRONT', wallType: 'BRICK', thickness: 0.2, height: 3 }])
+    expect(roof.sidewalls).toEqual([
+      { side: 'FRONT', wallType: 'BRICK', thickness: 0.2, height: 3 },
+      { side: 'BACK', wallType: 'BRICK', thickness: 0, height: 0 },
+      { side: 'RIGHT', wallType: 'BRICK', thickness: 0, height: 0 },
+      { side: 'LEFT', wallType: 'BRICK', thickness: 0, height: 0 },
+    ])
     expect(roofSectionsEnabled.sidewalls).toBe(true)
   })
 

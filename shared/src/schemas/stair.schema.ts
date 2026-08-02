@@ -22,11 +22,15 @@ export const areaDeductionTypeEnum = z.enum(['LIFT', 'DUCT', 'CUT_OUT'])
 /** What an area deduction applies to. */
 export const areaDeductionForEnum = z.enum(['STRUCTURE_DEDUCTION', 'COVERING_DEDUCTION', 'BOTH'])
 
-/** Business code identifier for a stair, e.g. "STAIR-1". */
-export const stairCode = z.string().regex(/^STAIR-[1-9][0-9]*$/, 'code must match STAIR-<n> (e.g. STAIR-1)')
+/** Business code identifier for a stair, e.g. "STAIR_1" to "STAIR_12". */
+export const stairCodeEnum = z.enum([
+  'STAIR_1', 'STAIR_2', 'STAIR_3', 'STAIR_4', 'STAIR_5', 'STAIR_6',
+  'STAIR_7', 'STAIR_8', 'STAIR_9', 'STAIR_10', 'STAIR_11', 'STAIR_12',
+])
+export const stairCode = stairCodeEnum
 
-/** Location code for a stair or deduction, e.g. "MEZ-1" or "EXT-2". */
-export const locationCode = z.string().regex(/^(MEZ|EXT)-[1-9][0-9]*$/, 'location must match MEZ-<n> or EXT-<n>')
+/** Location code for a stair or deduction, e.g. "MEZ_1" or "EXT_2". */
+export const locationCode = z.string().regex(/^(MEZ|EXT)_[1-9][0-9]*$/, 'location must match MEZ_<n> or EXT_<n>')
 
 /** Schema for an individual stair — all fields optional. */
 export const stairItemSchema = z.object({

@@ -74,6 +74,20 @@ describe('Job routes integration', () => {
     })
   })
 
+  describe('GET /api/jobs/:jobId/all', () => {
+    it('returns all data for a specific job via /api/jobs/:jobId/all', async () => {
+      const job = { ...makeJob(), roof: { buildingOverallLength: '10' } }
+      prismaMock.job.findFirst.mockResolvedValue(job as any)
+
+      const res = await app.inject({ method: 'GET', url: `/api/jobs/${job.id}/all` })
+
+      expect(res.statusCode).toBe(200)
+      expect(res.json().id).toBe(job.id)
+      expect(res.json().roof).toBeDefined()
+    })
+
+  })
+
   describe('PUT /api/jobs/:id', () => {
     it('updates a job', async () => {
       const job = makeJob()

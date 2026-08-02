@@ -263,6 +263,110 @@
   }
 }
 
+/* Letterhead images are print-only — never shown on screen. */
+.quotation-print-header,
+.quotation-print-footer { display: none; }
+
+@media print {
+  @page {
+    size: A4 portrait;
+    /* Extra bottom margin reserves the band the fixed footer occupies so
+       flowing content never collides with it. Top is tight because page 1
+       carries the header image and later pages need only breathing room. */
+    margin: 25mm 25mm 25mm;
+  }
+
+  /* Page 1 carries the full-bleed header image, so drop its top margin. */
+  @page :first {
+    margin-top: 0;
+  }
+
+  /* Isolate the quotation area */
+  body * { visibility: hidden; }
+  #quotation-print-area,
+  #quotation-print-area * { visibility: visible; }
+  #quotation-print-area { position: absolute; inset: 0; width: 100%; font-size: 12px; }
+
+  /* Header: normal flow → renders once, on the first page only. */
+  .quotation-print-header {
+    display: block;
+    width: 100%;
+    height: auto;
+    margin-bottom: 10mm;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  /* Footer: fixed → Chromium repeats it at the bottom of every printed page,
+     inside the reserved @page bottom margin. */
+  /* .quotation-print-footer {
+    display: block;
+    position: fixed;
+    bottom: 4mm;
+    left: 0;
+    right: 0;
+    width: 100%;
+    height: auto;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  } */
+
+  /* Override CSS tokens so oklch variables render legibly in print */
+  :root {
+    --foreground:       oklch(10% 0 0);
+    --muted-foreground: oklch(30% 0 0);
+    --primary:          oklch(32% 0.17 256);
+    --muted:            oklch(93% 0 0);
+    --border:           oklch(78% 0 0);
+    --card:             oklch(100% 0 0);
+  }
+
+  /* Strip card chrome from each QuotationPanel */
+  #quotation-print-area [data-testid="quotation-panel"] {
+    border: none !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+    padding: 0 0 28pt 0 !important;
+    break-inside: avoid;
+  }
+
+  /* Tables: remove min-widths, fit A4 width (~165mm usable) */
+  #quotation-print-area table {
+    width: 100% !important;
+    min-width: 0 !important;
+    border-collapse: collapse;
+    table-layout: auto;
+  }
+  #quotation-print-area th,
+  #quotation-print-area td { min-width: 0 !important; }
+
+  /* Grid the data tables (scoped to panels so letterhead signatory tables
+     stay borderless). border-collapse merges cell borders into the outer
+     frame, giving a clean ruled table on paper. */
+  #quotation-print-area [data-testid="quotation-panel"] table {
+    border: 1px solid #000 !important;
+  }
+  #quotation-print-area [data-testid="quotation-panel"] th,
+  #quotation-print-area [data-testid="quotation-panel"] td {
+    border: 1px solid #000 !important;
+  }
+
+  /* Print table header bands (bg-muted/50 is transparent — force solid) */
+  #quotation-print-area thead tr {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+    background-color: #E3EDF8 !important;
+  }
+
+  /* Strip opacity-based row tints from tbody */
+  #quotation-print-area tbody tr { background-color: transparent !important; }
+
+  /* Avoid orphaned rows and heading widows */
+  #quotation-print-area tr { break-inside: avoid; }
+  #quotation-print-area h2,
+  #quotation-print-area h3 { break-after: avoid; }
+}
+
 /* Respect users who opt out of motion (DESIGN.md §9). */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {

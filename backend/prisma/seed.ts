@@ -1,4 +1,5 @@
 import { prisma } from '../lib/prisma.js'
+import { deriveRateBreakdown } from '@floreat/shared/calc'
 import { createSpecSchema } from '../schemas/spec.schema.js'
 import { specSeedData, rateSeedData } from './seed-data.js'
 import {
@@ -28,7 +29,6 @@ import {
   PartitionThickness,
   InsulationType,
   TurboVentilatorDiameter,
-  AccessoryOpeningKind,
   PaintType,
   PurlinsGirtsFinish,
   PurlinsGirtsPaint,
@@ -37,6 +37,9 @@ import {
   RoofJointId,
   MezzanineJointId,
   FoundationBoltJointId,
+  MezzanineFloorCode,
+  CanopyCode,
+  StairCode,
 } from '../generated/prisma/client.js'
 
 async function main() {
@@ -145,6 +148,15 @@ async function main() {
     await prisma.job.upsert({ where: { id }, update: data, create: { id, ...data } })
   }
   console.log('✓ Jobs seeded')
+
+  // Seed rates immediately after jobs so every job owns independent defaults.
+  for (const { id: jobId } of jobs) {
+    for (const rate of rateSeedData) {
+      const data = { ...rate, ...deriveRateBreakdown(rate) }
+      await prisma.rate.upsert({ where: { jobId_item: { jobId, item: rate.item } }, update: data, create: { jobId, ...data } })
+    }
+  }
+  console.log('✓ Job rates seeded')
 
   // ── Job-owned product specifications ───────────────────────
   for (const { jobId, ...data } of specSeedData) {
@@ -284,7 +296,7 @@ async function main() {
       // Full: multiple floors + extensions
       floors: [
         {
-          code: 'MZ-1', floor: MezzanineFloorLevel.FLOOR_1, type: MezzanineType.DECK_SHEET,
+          code: MezzanineFloorCode.MEZ_1, floor: MezzanineFloorLevel.FLOOR_1, type: MezzanineType.DECK_SHEET,
           heightFrom: MezzanineHeightFrom.GROUND,
           thicknessMm: 150.0, lengthM: 36.0, widthM: 18.0, heightM: 4.5, materialConsumptionKgPerSqft: 12.5,
           beamsMidPrimary: 6, beamsEndPrimary: 2, beamsSecondary: 14,
@@ -292,7 +304,7 @@ async function main() {
           internalColumnsMidPrimary: 3, internalColumnsEndPrimary: 1,
         },
         {
-          code: 'MZ-2', floor: MezzanineFloorLevel.FLOOR_2, type: MezzanineType.RCC_SLAB,
+          code: MezzanineFloorCode.MEZ_2, floor: MezzanineFloorLevel.FLOOR_2, type: MezzanineType.RCC_SLAB,
           heightFrom: MezzanineHeightFrom.FIRST_FLOOR,
           thicknessMm: 175.0, lengthM: 36.0, widthM: 18.0, heightM: 4.0, materialConsumptionKgPerSqft: 14.0,
           beamsMidPrimary: 6, beamsEndPrimary: 2, beamsSecondary: 16,
@@ -316,7 +328,7 @@ async function main() {
       // Floors only, no extensions
       floors: [
         {
-          code: 'MZ-1', floor: MezzanineFloorLevel.FLOOR_1, type: MezzanineType.PANEL,
+          code: MezzanineFloorCode.MEZ_1, floor: MezzanineFloorLevel.FLOOR_1, type: MezzanineType.PANEL,
           heightFrom: MezzanineHeightFrom.GROUND,
           thicknessMm: 100.0, lengthM: 30.0, widthM: 15.0, heightM: 4.0, materialConsumptionKgPerSqft: 10.0,
           beamsMidPrimary: 5, beamsEndPrimary: 2, beamsSecondary: 10,
@@ -330,7 +342,7 @@ async function main() {
       // Minimal: single floor, required fields only
       floors: [
         {
-          code: 'MZ-1', floor: MezzanineFloorLevel.FLOOR_1, type: MezzanineType.BOARD,
+          code: MezzanineFloorCode.MEZ_1, floor: MezzanineFloorLevel.FLOOR_1, type: MezzanineType.BOARD,
           heightFrom: MezzanineHeightFrom.GROUND,
           thicknessMm: 80.0, lengthM: 40.0, widthM: 20.0, heightM: 5.0, materialConsumptionKgPerSqft: 8.0,
           beamsMidPrimary: 4, beamsEndPrimary: 2, beamsSecondary: 8,
@@ -360,14 +372,14 @@ async function main() {
       // Full: multiple items + all optional sections
       canopies: [
         {
-          code: 'CANOPY-1', heightFrom: CanopyHeightFrom.GROUND,
+          code: CanopyCode.CANOPY_1, heightFrom: CanopyHeightFrom.GROUND,
           length: 6.0, width: 3.0, height: 3.5, materialConsumptionKgPerSqft: 9.5,
           numberOfBeams: 4, numberOfPurlins: 6, purlinDepth: 150.0, unitWeightOfPurlin: 5.2,
           canopySheet: CanopySheetType.PPGL, sheetThick: 0.5, canopySideCoveringHeight: 1.2,
           gutter: true, downTake: true, flashing: true,
         },
         {
-          code: 'CANOPY-2', heightFrom: CanopyHeightFrom.FF,
+          code: CanopyCode.CANOPY_2, heightFrom: CanopyHeightFrom.FF,
           length: 4.5, width: 2.5, height: 3.0, materialConsumptionKgPerSqft: 8.0,
           numberOfBeams: 3, numberOfPurlins: 5, purlinDepth: 120.0, unitWeightOfPurlin: 4.5,
           canopySheet: CanopySheetType.PUFF, sheetThick: 40.0, canopySideCoveringHeight: 1.0,
@@ -380,7 +392,7 @@ async function main() {
       // Mid: dimensions + members + covering, no accessories
       canopies: [
         {
-          code: 'CANOPY-1', heightFrom: CanopyHeightFrom.SF,
+          code: CanopyCode.CANOPY_1, heightFrom: CanopyHeightFrom.SF,
           length: 5.0, width: 2.8, height: 3.2, materialConsumptionKgPerSqft: 8.5,
           numberOfBeams: 3, numberOfPurlins: 4, purlinDepth: 130.0, unitWeightOfPurlin: 4.8,
           canopySheet: CanopySheetType.NCGL, sheetThick: 0.47,
@@ -392,7 +404,7 @@ async function main() {
       // Minimal: dimensions only
       canopies: [
         {
-          code: 'CANOPY-1', heightFrom: CanopyHeightFrom.GROUND,
+          code: CanopyCode.CANOPY_1, heightFrom: CanopyHeightFrom.GROUND,
           length: 3.5, width: 2.0, height: 2.8,
         },
       ],
@@ -414,13 +426,13 @@ async function main() {
       jobId: 'seed_job_1',
       stairs: [
         {
-          code: 'STR-1', typeOfStep: StairStepType.CHQ_PLATE_6MM, location: 'Bay 3 - Main access',
+          code: StairCode.STAIR_1, typeOfStep: StairStepType.CHQ_PLATE_6MM, location: 'Bay 3 - Main access',
           startingFrom: StairFloorLevel.GROUND, endingUpTo: StairFloorLevel.FIRST_FLOOR,
           length: 4.5, width: 1.2, height: 4.5, numberOfMidLanding: 1,
           typeOfStringer: StairStringerType.HR_SECTION, unitWeightOfStringer: 28.5,
         },
         {
-          code: 'STR-2', typeOfStep: StairStepType.TUBE, location: 'Bay 7 - Emergency exit',
+          code: StairCode.STAIR_2, typeOfStep: StairStepType.TUBE, location: 'Bay 7 - Emergency exit',
           startingFrom: StairFloorLevel.FIRST_FLOOR, endingUpTo: StairFloorLevel.SECOND_FLOOR,
           length: 5.0, width: 1.0, height: 4.0, numberOfMidLanding: 2,
           typeOfStringer: StairStringerType.FAB_SECTION, unitWeightOfStringer: 32.0,
@@ -435,7 +447,7 @@ async function main() {
       jobId: 'seed_job_2',
       stairs: [
         {
-          code: 'STR-1', typeOfStep: StairStepType.CHQ_PLATE_4MM, location: 'Front entrance',
+          code: StairCode.STAIR_1, typeOfStep: StairStepType.CHQ_PLATE_4MM, location: 'Front entrance',
           startingFrom: StairFloorLevel.GROUND, endingUpTo: StairFloorLevel.FIRST_FLOOR,
           length: 3.5, width: 1.0, height: 3.5,
         },
@@ -448,13 +460,13 @@ async function main() {
       jobId: 'seed_job_3',
       stairs: [
         {
-          code: 'STR-1', typeOfStep: StairStepType.CHQ_PLATE_6MM, location: 'Block A - West',
+          code: StairCode.STAIR_1, typeOfStep: StairStepType.CHQ_PLATE_6MM, location: 'Block A - West',
           startingFrom: StairFloorLevel.GROUND, endingUpTo: StairFloorLevel.FIRST_FLOOR,
           length: 4.0, width: 1.2, height: 4.0, numberOfMidLanding: 1,
           typeOfStringer: StairStringerType.HR_SECTION, unitWeightOfStringer: 26.0,
         },
         {
-          code: 'STR-2', typeOfStep: StairStepType.TUBE, location: 'Block A - East',
+          code: StairCode.STAIR_2, typeOfStep: StairStepType.TUBE, location: 'Block A - East',
           startingFrom: StairFloorLevel.GROUND, endingUpTo: StairFloorLevel.SECOND_FLOOR,
           length: 8.0, width: 1.1, height: 8.0, numberOfMidLanding: 3,
           typeOfStringer: StairStringerType.FAB_SECTION, unitWeightOfStringer: 35.0,
@@ -465,7 +477,7 @@ async function main() {
       jobId: 'seed_job_4',
       stairs: [
         {
-          code: 'STR-1', length: 3.0, width: 0.9, height: 3.0,
+          code: StairCode.STAIR_1, length: 3.0, width: 0.9, height: 3.0,
         },
       ],
     },
@@ -473,13 +485,13 @@ async function main() {
       jobId: 'seed_job_5',
       stairs: [
         {
-          code: 'STR-1', typeOfStep: StairStepType.CHQ_PLATE_6MM, location: 'Mezzanine access - North',
+          code: StairCode.STAIR_1, typeOfStep: StairStepType.CHQ_PLATE_6MM, location: 'Mezzanine access - North',
           startingFrom: StairFloorLevel.GROUND, endingUpTo: StairFloorLevel.FIRST_FLOOR,
           length: 5.0, width: 1.2, height: 5.0, numberOfMidLanding: 1,
           typeOfStringer: StairStringerType.HR_SECTION, unitWeightOfStringer: 30.0,
         },
         {
-          code: 'STR-2', typeOfStep: StairStepType.CHQ_PLATE_4MM, location: 'Loading dock side',
+          code: StairCode.STAIR_2, typeOfStep: StairStepType.CHQ_PLATE_4MM, location: 'Loading dock side',
           startingFrom: StairFloorLevel.GROUND, endingUpTo: StairFloorLevel.FIRST_FLOOR,
           length: 3.8, width: 1.0, height: 5.0,
           typeOfStringer: StairStringerType.HR_SECTION, unitWeightOfStringer: 28.0,
@@ -539,12 +551,7 @@ async function main() {
         { length: 6.0, width: 0.6, nos: 8, quantity: 8 },
         { length: 4.5, width: 0.5, nos: 4, quantity: 4 },
       ],
-      openings: [
-        { kind: AccessoryOpeningKind.ROLLING_SHUTTER, length: 4.0, width: 4.0, nos: 2, quantity: 2 },
-        { kind: AccessoryOpeningKind.LOUVER, length: 1.2, width: 0.6, nos: 8, quantity: 8 },
-        { kind: AccessoryOpeningKind.SKY_LIGHT, length: 3.0, width: 1.2, nos: 6, quantity: 6 },
-        { kind: AccessoryOpeningKind.WALL_LIGHT, length: 1.5, width: 0.9, nos: 10, quantity: 10 },
-      ],
+
     },
     {
       jobId: 'seed_job_2',
@@ -578,9 +585,7 @@ async function main() {
       windows: [
         { height: 1.5, width: 1.8, nos: 4, quantity: 4 },
       ],
-      openings: [
-        { kind: AccessoryOpeningKind.ROLLING_SHUTTER, length: 3.5, width: 3.5, nos: 1, quantity: 1 },
-      ],
+
     },
     {
       jobId: 'seed_job_4',
@@ -603,24 +608,20 @@ async function main() {
     },
   ]
 
-  for (const { jobId, doors = [], windows = [], foldedPlates = [], openings = [], ...data } of accessories) {
+  for (const { jobId, doors = [], windows = [], foldedPlates = [], ...data } of accessories) {
+    const door = doors[0]
+    const window = windows[0]
+    const foldedPlate = foldedPlates[0]
+    const flattened = {
+      ...data,
+      ...(door ? { doorHeight: door.height, doorWidth: door.width, doorNos: door.nos, doorQuantity: door.quantity } : {}),
+      ...(window ? { windowHeight: window.height, windowWidth: window.width, windowNos: window.nos, windowQuantity: window.quantity } : {}),
+      ...(foldedPlate ? { foldedPlateLength: foldedPlate.length, foldedPlateWidth: foldedPlate.width, foldedPlateNos: foldedPlate.nos, foldedPlateQuantity: foldedPlate.quantity } : {}),
+    }
     await prisma.accessories.upsert({
       where: { jobId },
-      create: {
-        jobId,
-        ...data,
-        doors: { createMany: { data: doors } },
-        windows: { createMany: { data: windows } },
-        foldedPlates: { createMany: { data: foldedPlates } },
-        openings: { createMany: { data: openings } },
-      },
-      update: {
-        ...data,
-        doors: { deleteMany: {}, createMany: { data: doors } },
-        windows: { deleteMany: {}, createMany: { data: windows } },
-        foldedPlates: { deleteMany: {}, createMany: { data: foldedPlates } },
-        openings: { deleteMany: {}, createMany: { data: openings } },
-      },
+      create: { jobId, ...flattened },
+      update: flattened,
     })
   }
   console.log('✓ Accessories seeded')
@@ -757,10 +758,373 @@ async function main() {
   }
   console.log('✓ Joints seeded')
 
+  // ── Quantities (calculated bill-of-quantities per category) ─
+  // Each category is a 1-to-1 sub-model off Quantity; nested `create` writes
+  // them all in one upsert. Field names mirror the source JSON, prefixed by
+  // section (see prisma/models/quantity.prisma).
+  const quantities = [
+    {
+      jobId: 'seed_job_1',
+      // Full: every category populated from the reference JSON.
+      pebRoof: {
+        quantityPebRoofValue: true,
+        
+        materialWithPurlinQuantity: 0.48,
+        raftersAndColumnsSpecification: 'FE 345',
+        
+        raftersAndColumnsQuantity: 6199,
+        raftersAndColumnsAdditionalQuantity: 456,
+        raftersAndColumnsBuildingLength: 30,
+        
+        raftersAndColumnsInclinedLengthOneHalf: 7.68,
+        
+        raftersAndColumnsRoofArea: 4959,
+        
+        raftersAndColumnsMaterialConsumption: 1.25,
+        
+        roofPurlinesValue: 89,
+        roofPurlinsSpecification: 'Z/C PURLIN 150 MM DEPTH',
+        
+        roofPurlinsQuantity: 27672,
+        roofPurlinsAdditionalQuantity: 565,
+        roofPurlinsSinglePurlinLength: 6.4,
+        
+        roofPurlinsPurlinsPerFrame: 14,
+        roofPurlinsTotalPurlinBays: 5,
+        roofPurlinsPurlinUnitWeight: 4.72,
+        
+        roofPurlinsExtendedFramePurlins: 10,
+        roofPurlinsExtendedPurlinBays: 89,
+        roofSheetSpecification: '30MM THICK PUFF SHEET',
+        
+        roofSheetQuantity: 6563,
+        roofSheetPurchaseQuantity: 7219,
+        roofSheetAdditionalQuantity: 456,
+        roofSheetExtendedRoofWidth: 12.07,
+        
+        roofSheetExtendedRoofLength: 534,
+        
+        roofSheetRoofAreaDeductions: 5,
+        
+        roofSheetPolycarbonateAreaDeduction: 336,
+        
+        
+        polycarbonateSheetQuantity: 336,
+        polycarbonateSheetPurchaseQuantity: 0,
+        polycarbonateSheetAdditionalQuantity: 4564,
+        polycarbonateSheetSheetLength: 6,
+        
+        polycarbonateSheetSheetWidth: 7,
+        
+        polycarbonateSheetNumberOfSheets: 8,
+        
+        roofWindBracingsQuantity: 190,
+        roofWindBracingsAdditionalQuantity: 5432,
+        roofWindBracingsSingleBracingLength: 9.64,
+        
+        roofWindBracingsTotalBracings: 8,
+        roofWindBracingsUnitWeight: 2.46,
+        
+        roofSagRodValue:8.500,
+        
+        roofSagRodQuantity: 726,
+        roofSagRodAdditionalQuantity: 6756,
+        roofSagRodSingleSagRodLength: 1.5,
+        
+        roofSagRodSagRodsPerFrame: 12,
+        roofSagRodSagRodBays: 5,
+        roofSagRodExtendedFrameSagRods: 9,
+        roofSagRodExtendedSagRodBays: 89,
+        roofSagRodUnitWeight: 0.89,
+        
+        
+        roofFlangeBraceQuantity: 3308,
+        roofFlangeBraceAdditionalQuantity: 767,
+        roofFlangeBraceMidFrameBraceLength: 1.5,
+        
+        roofFlangeBraceMidFrameBraces: 28,
+        roofFlangeBraceEndFrameBraces: 14,
+        roofFlangeBraceMidFrames: 4,
+        roofFlangeBraceEndFrames: 2,
+        roofFlangeBraceExtendedFrameMidBraces: 19,
+        roofFlangeBraceExtendedFrameEndBraces: 10,
+        roofFlangeBraceExtendedMidFrames: 45,
+        roofFlangeBraceExtendedEndFrames: 45,
+        roofFlangeBraceEndFrameBraceLength: 0.5,
+        
+        purlinBoltsSpecification: '12 MM DIA ORDINARY BOLTS',
+        
+        purlinBoltsQuantity: 13155,
+        purlinBoltsPurlinJointsPerFrame: 14,
+        purlinBoltsTotalFrames: 6,
+        purlinBoltsExtendedFramePurlinNodes: 10,
+        purlinBoltsExtendedFrames: 90,
+        purlinBoltsBoltsPerPurlinJoint: 14,
+        roofJointBoltsSpecification: '16 MM DIA HSFG BOLTS',
+        
+        roofJointBoltsQuantity: 1776,
+        foundationBoltsSpecification: '20 MM DIA FOUNDATION BOLTS',
+        
+        foundationBoltsQuantity: 848,
+        anchorBoltsSpecification: '20 MM DIA ANCHOR BOLTS',
+        
+        anchorBoltsQuantity: 0,
+      },
+      cladding: {
+        
+        claddingStructureQuantity: 326,
+        claddingStructureAdditionalQuantity: 3677,
+        claddingStructureFrontEaveHeight: 3.25,
+        claddingStructureBackEaveHeight: 3.25,
+        claddingStructureRightEaveHeight: 3.25,
+        claddingStructureLeftEaveHeight: 3.25,
+        
+        claddingStructureExtendedColumnHeight: 1.98,
+        
+        claddingStructureExtendedFrameWidth: 12,
+        
+        claddingStructureSideCladdingPurlins: 2,
+        claddingStructureFaceCladdingPurlins: 4,
+        claddingStructureTotalCladdingPurlinLength: 242,
+        
+        claddingStructureTotalCladdingPurlinWeight: 1140,
+        
+        claddingStructureCladdingArea: 367,
+        
+        claddingStructureAverageMaterialConsumption: 0.29,
+        
+        claddingStructureTotalOpenings: 210,
+        
+        claddingStructureFasciaOpening: 52,
+        
+        
+        claddingSheetQuantity: 105,
+        claddingSheetPurchaseQuantity: 115,
+        
+        columnWindBracingsQuantity: 162,
+        
+        claddingSagRodQuantity: 19,
+        
+        claddingFlangeBraceQuantity: 163,
+        
+        claddingPurlinBoltsQuantity: 208,
+      },
+      canopy: {
+        
+        structureQuantity: 404,
+        structureCanopyArea: 322.8,
+        
+        
+        purlinQuantity: 229.392,
+        
+        sheetQuantity: 30,
+        sheetPurchaseQuantity: 33,
+        
+        gutterQuantity: 15,
+        
+        downTakeQuantity: 14,
+        
+        sideCoveringQuantity: 9.5,
+        
+        flashingQuantity: 19,
+        
+        purlinBoltsQuantity: 120,
+        
+        jointBoltsQuantity: 32,
+      },
+      accessories: {
+        doorsCount: 10,
+        
+        doorsArea: 21,
+        
+        windowsCount: 10,
+        
+        windowsArea: 18,
+        
+        
+        fasciaStructureQuantity: 556.5072,
+        
+        fasciaCoveringSheetQuantity: 51.72,
+        
+        internalPartitionsQuantity: 900,
+        
+        ridgeQuantity: 442,
+        
+        gutterQuantity: 306,
+        
+        downTakeQuantity: 262.87,
+        
+        dripTrimQuantity: 546,
+        
+        gableEndFlashingQuantity: 101,
+        
+        cornerFlashLength: 33,
+        
+        rollingShutterCount: 1,
+        
+        rollingShutterArea: 100,
+        
+        louversCount: 1,
+        
+        louversArea: 100,
+        
+        skyLightCount: 1,
+        
+        skyLightArea: 100,
+        
+        wallLightCount: 1,
+        
+        wallLightArea: 100,
+        
+        roofInsulationType: 'XLPE',
+        
+        roofInsulationQuantity: 6563,
+        wallInsulationType: 'XLPE',
+        
+        wallInsulationQuantity: 105,
+        
+        turboVentilatorsQuantity: 10,
+        
+        handrailQuantity: 250,
+      },
+      mezzanine: {
+        
+        structureQuantity: 6455,
+        structureAdditionalQuantity: 4756,
+        structureTotalArea: 171,
+        
+        structureMaterialConsumption: 4,
+        
+        
+        deckSheetQuantity: 171,
+        deckSheetPurchaseQuantity: 189,
+        deckSheetAdditionalQuantity: 46,
+        
+        shearStudsQuantity: 900,
+        
+        concreteFlashingQuantity: 84,
+        jointBoltsSpecification: '16 MM DIA HSFG BOLTS',
+        jointBoltsQuantity: 392,
+        // foundationBolts source is "NA" → left null.
+      },
+      stair: {
+        
+        totalAreaQuantity: 5,
+        stringerBeamsSection: 'HR SECTION',
+        
+        stringerBeamsQuantity: 484,
+        stringerBeamsAdditionalQuantity: 456,
+        stepsSpecification: '6MM CHQ PLATE',
+        
+        stepsQuantity: 243,
+        stepsAdditionalQuantity: 457,
+      },
+      additionalBolts: {        jointBolt24mmHsfgQuantity: 10,        jointBolt20mmHsfgQuantity: 11,        jointBolt16mmHsfgQuantity: 12,        purlinBolt12mmOrdinaryQuantity: 13,
+        
+        anchorBoltQuantity: 14,
+        
+        foundationBoltQuantity: 15,
+      },
+    },
+    {
+      jobId: 'seed_job_3',
+      // Partial: peb roof + cladding + mezzanine only.
+      pebRoof: {
+        
+        materialWithPurlinQuantity: 0.52,
+        raftersAndColumnsSpecification: 'FE 250',
+        
+        raftersAndColumnsQuantity: 5120,
+        roofSheetSpecification: '40MM THICK PUFF SHEET',
+        
+        roofSheetQuantity: 4200,
+        roofSheetPurchaseQuantity: 4620,
+      },
+      cladding: {
+        
+        claddingStructureQuantity: 280,
+        
+        claddingSheetQuantity: 90,
+        claddingSheetPurchaseQuantity: 99,
+      },
+      mezzanine: {
+        
+        structureQuantity: 5200,
+        structureTotalArea: 150,
+        
+        
+        deckSheetQuantity: 150,
+      },
+    },
+    {
+      jobId: 'seed_job_5',
+      // Minimal: additional bolts only.
+      additionalBolts: {        jointBolt16mmHsfgQuantity: 24,        purlinBolt12mmOrdinaryQuantity: 48,
+      },
+    },
+  ]
+
+  for (const { jobId, pebRoof, cladding, canopy, accessories: acc, mezzanine, stair, additionalBolts } of quantities) {
+    const nested = {
+      ...(pebRoof && { pebRoof: { create: pebRoof } }),
+      ...(cladding && { cladding: { create: cladding } }),
+      ...(canopy && { canopy: { create: canopy } }),
+      ...(acc && { accessories: { create: acc } }),
+      ...(mezzanine && { mezzanine: { create: mezzanine } }),
+      ...(stair && { stair: { create: stair } }),
+      ...(additionalBolts && { additionalBolts: { create: additionalBolts } }),
+    }
+    // 1-to-1 sub-models don't support nested `deleteMany` on update, so recreate
+    // the whole record for idempotency — the cascade drops all children.
+    await prisma.quantity.deleteMany({ where: { jobId } })
+    await prisma.quantity.create({ data: { jobId, ...nested } as any })
+  }
+  console.log('✓ Quantities seeded')
+
+  // ── Amounts (cost summary per job) ──────────────────────────
+  const amounts = [
+    {
+      jobId: 'seed_job_1',
+      steelStructuresQuantity: 8500,
+      steelStructuresFabricationRate: 85,
+      steelStructuresErrectionRate: 12,
+      steelStructuresLoadingRate: 3,
+      steelStructuresFabricationAmount: 722500,
+      steelStructuresErrectionAmount: 102000,
+      steelStructuresLoadingAmount: 25500,
+      roofSheetQuantity: 460,
+      roofSheetFabricationRate: 0,
+      roofSheetErrectionRate: 45,
+      roofSheetLoadingRate: 5,
+      roofSheetFabricationAmount: 0,
+      roofSheetErrectionAmount: 20700,
+      roofSheetLoadingAmount: 2300,
+    },
+    {
+      jobId: 'seed_job_3',
+      steelStructuresQuantity: 5200,
+      steelStructuresFabricationRate: 85,
+      steelStructuresErrectionRate: 12,
+      steelStructuresLoadingRate: 3,
+      steelStructuresFabricationAmount: 442000,
+      steelStructuresErrectionAmount: 62400,
+      steelStructuresLoadingAmount: 15600,
+    },
+  ]
+  for (const { jobId, ...data } of amounts) {
+    await prisma.amount.deleteMany({ where: { jobId } })
+    await prisma.amount.create({ data: { jobId, ...data } })
+  }
+  console.log('✓ Amounts seeded')
+
   // ── Rates ───────────────────────────────────────────────────
-  // Global master/lookup table keyed by unique `item` — not job-scoped.
-  for (const rate of rateSeedData) {
-    await prisma.rate.upsert({ where: { item: rate.item }, update: rate, create: rate })
+  // Job-scoped defaults: each seeded job owns an independent rate set.
+  const seededJobIds = jobs.map(({ id }) => id)
+  for (const jobId of seededJobIds) {
+    for (const rate of rateSeedData) {
+      const data = { ...rate, ...deriveRateBreakdown(rate) }
+      await prisma.rate.upsert({ where: { jobId_item: { jobId, item: rate.item } }, update: data, create: { jobId, ...data } })
+    }
   }
   console.log('✓ Rates seeded')
 }

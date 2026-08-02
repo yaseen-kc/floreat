@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
-import { render, screen, waitFor } from '@testing-library/react'
+import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 
 const mocks = vi.hoisted(() => ({
@@ -16,6 +16,10 @@ const mocks = vi.hoisted(() => ({
   upsertAccessoriesMutateAsync: vi.fn(),
   upsertJointMutateAsync: vi.fn(),
   upsertSpecMutateAsync: vi.fn(),
+  upsertAmountMutateAsync: vi.fn(),
+  upsertQuantityMutateAsync: vi.fn(),
+  upsertQuotationMutateAsync: vi.fn(),
+  replaceRatesMutateAsync: vi.fn(),
   createPending: false,
   updatePending: false,
   upsertRoofPending: false,
@@ -23,6 +27,10 @@ const mocks = vi.hoisted(() => ({
 
 vi.mock('react-router-dom', () => ({
   useNavigate: () => mocks.navigate,
+}))
+
+vi.mock('@clerk/react', () => ({
+  useAuth: () => ({ getToken: async () => 'test-token' }),
 }))
 
 vi.mock('sonner', () => ({
@@ -57,6 +65,10 @@ vi.mock('@/api/quotation/load/postLoad', () => ({
   useUpsertLoad: () => ({ mutateAsync: mocks.upsertLoadMutateAsync, isPending: false }),
 }))
 
+vi.mock('@/api/quotation/quantity/postQuantity', () => ({
+  useUpsertQuantity: () => ({ mutateAsync: mocks.upsertQuantityMutateAsync, isPending: false }),
+}))
+
 vi.mock('@/api/quotation/accessories/postAccessories', () => ({
   useUpsertAccessories: () => ({ mutateAsync: mocks.upsertAccessoriesMutateAsync, isPending: false }),
 }))
@@ -67,6 +79,22 @@ vi.mock('@/api/quotation/joint/postJoint', () => ({
 
 vi.mock('@/api/quotation/spec/postSpec', () => ({
   useUpsertSpec: () => ({ mutateAsync: mocks.upsertSpecMutateAsync, isPending: false }),
+}))
+
+vi.mock('@/api/quotation/amount/postAmount', () => ({
+  useUpsertAmount: () => ({ mutateAsync: mocks.upsertAmountMutateAsync, isPending: false }),
+}))
+
+vi.mock('@/api/quotation/rate/putRatesBulk', () => ({
+  useReplaceRates: () => ({ mutateAsync: mocks.replaceRatesMutateAsync, isPending: false }),
+}))
+
+vi.mock('@/api/quotation/quotation/postQuotation', () => ({
+  useUpsertQuotation: () => ({ mutateAsync: mocks.upsertQuotationMutateAsync, isPending: false }),
+}))
+
+vi.mock('@/api/quotation/rate/getRate', () => ({
+  useRates: () => ({ data: { data: [] } }),
 }))
 
 import { WizardActionBar, successToast } from '@/components/quotation/WizardActionBar'
@@ -236,7 +264,7 @@ describe('WizardActionBar Step 2 roof persistence', () => {
     expect(useQuotationStore.getState().currentStep).toBe(2)
   })
 
-  it('Save draft upserts the roof without advancing', async () => {
+  it('Save draft upserts the roof and returns to saved drafts', async () => {
     mocks.upsertRoofMutateAsync.mockResolvedValueOnce({ id: 'roof-1' })
     fillCoreRoof()
     render(<WizardActionBar />)
@@ -245,6 +273,30 @@ describe('WizardActionBar Step 2 roof persistence', () => {
 
     await waitFor(() => expect(mocks.upsertRoofMutateAsync).toHaveBeenCalledTimes(1))
     expect(useQuotationStore.getState().currentStep).toBe(2)
+    expect(mocks.navigate).toHaveBeenCalledWith('/drafts')
+  })
+
+  it('Ctrl+S saves the roof draft and returns to saved drafts', async () => {
+    mocks.upsertRoofMutateAsync.mockResolvedValueOnce({ id: 'roof-1' })
+    fillCoreRoof()
+    render(<WizardActionBar />)
+
+    fireEvent.keyDown(document, { key: 's', code: 'KeyS', ctrlKey: true })
+
+    await waitFor(() => expect(mocks.upsertRoofMutateAsync).toHaveBeenCalledTimes(1))
+    expect(useQuotationStore.getState().currentStep).toBe(2)
+    expect(mocks.navigate).toHaveBeenCalledWith('/drafts')
+  })
+
+  it('does not leave the wizard when saving the draft fails', async () => {
+    mocks.upsertRoofMutateAsync.mockRejectedValueOnce(new Error('API error: 500'))
+    fillCoreRoof()
+    render(<WizardActionBar />)
+
+    await userEvent.click(screen.getByRole('button', { name: /save draft/i }))
+
+    await waitFor(() => expect(mocks.toastError).toHaveBeenCalledWith('Failed to save roof'))
+    expect(mocks.navigate).not.toHaveBeenCalled()
   })
 })
 
@@ -262,7 +314,7 @@ describe('WizardActionBar Step 3 mezzanine persistence', () => {
 
   it('upserts the mezzanine with populated rows and advances to step 4', async () => {
     mocks.upsertMezzMutateAsync.mockResolvedValueOnce({ id: 'mezz-1' })
-    useQuotationStore.getState().setMezzanine({ floors: [{ code: 'MEZ-1', lengthM: 12 }] })
+    useQuotationStore.getState().setMezzanine({ floors: [{ code: 'MEZ_1', lengthM: 12 }] })
     render(<WizardActionBar />)
 
     await userEvent.click(screen.getByRole('button', { name: /continue/i }))
@@ -270,7 +322,7 @@ describe('WizardActionBar Step 3 mezzanine persistence', () => {
     await waitFor(() => expect(useQuotationStore.getState().currentStep).toBe(4))
     expect(mocks.upsertMezzMutateAsync).toHaveBeenCalledWith({
       jobId: 'job-1',
-      payload: { floors: [{ code: 'MEZ-1', lengthM: 12 }] },
+      payload: { floors: [{ code: 'MEZ_1', lengthM: 12 }] },
     })
   })
 
@@ -310,7 +362,7 @@ describe('WizardActionBar Step 4 stair persistence', () => {
 
   it('upserts the stair with populated rows and advances to step 5', async () => {
     mocks.upsertStairMutateAsync.mockResolvedValueOnce({ id: 'stair-1' })
-    useQuotationStore.getState().setStair({ stairs: [{ code: 'STAIR-1', length: 12 }] })
+    useQuotationStore.getState().setStair({ stairs: [{ code: 'STAIR_1', length: 12 }] })
     render(<WizardActionBar />)
 
     await userEvent.click(screen.getByRole('button', { name: /continue/i }))
@@ -318,7 +370,7 @@ describe('WizardActionBar Step 4 stair persistence', () => {
     await waitFor(() => expect(useQuotationStore.getState().currentStep).toBe(5))
     expect(mocks.upsertStairMutateAsync).toHaveBeenCalledWith({
       jobId: 'job-1',
-      payload: { stairs: [{ code: 'STAIR-1', length: 12 }] },
+      payload: { stairs: [{ code: 'STAIR_1', length: 12 }] },
     })
   })
 
@@ -526,15 +578,95 @@ describe('WizardActionBar Step 9 spec advance', () => {
 })
 
 
-describe('WizardActionBar Step 10 finalise', () => {
+describe('WizardActionBar Step 11 quantity persistence', () => {
   beforeEach(() => {
     localStorage.clear()
     useQuotationStore.getState().resetQuotation()
     mocks.navigate.mockReset()
     mocks.toastSuccess.mockReset()
     mocks.toastError.mockReset()
+    mocks.upsertAmountMutateAsync.mockReset()
+    mocks.upsertQuotationMutateAsync.mockReset()
+    mocks.upsertQuotationMutateAsync.mockResolvedValue({})
+    mocks.upsertQuantityMutateAsync.mockReset()
     useQuotationStore.getState().setJobId('job-1')
-    useQuotationStore.setState({ currentStep: 10 })
+    useQuotationStore.setState({ currentStep: 11 })
+  })
+
+  it('upserts the quantity and advances to step 12 (Amount) without finalising', async () => {
+    mocks.upsertQuantityMutateAsync.mockResolvedValueOnce({ id: 'quantity-1' })
+    render(<WizardActionBar />)
+
+    await userEvent.click(screen.getByRole('button', { name: /continue/i }))
+
+    await waitFor(() => expect(useQuotationStore.getState().currentStep).toBe(12))
+    expect(mocks.upsertQuantityMutateAsync).toHaveBeenCalledWith({
+      jobId: 'job-1',
+      payload: expect.any(Object),
+    })
+
+    expect(mocks.navigate).not.toHaveBeenCalled()
+  })
+
+  it('stays on step 11 when the quantity upsert fails', async () => {
+    mocks.upsertQuantityMutateAsync.mockRejectedValueOnce(new Error('API error: 500'))
+    render(<WizardActionBar />)
+
+    await userEvent.click(screen.getByRole('button', { name: /continue/i }))
+
+    await waitFor(() => expect(mocks.toastError).toHaveBeenCalledWith('Failed to save quantity'))
+    expect(useQuotationStore.getState().currentStep).toBe(11)
+    expect(mocks.navigate).not.toHaveBeenCalled()
+  })
+})
+
+
+describe('WizardActionBar Step 12 amount advance', () => {
+  beforeEach(() => {
+    localStorage.clear()
+    useQuotationStore.getState().resetQuotation()
+    mocks.navigate.mockReset()
+    mocks.toastSuccess.mockReset()
+    mocks.toastError.mockReset()
+    mocks.upsertAmountMutateAsync.mockReset()
+    mocks.upsertQuantityMutateAsync.mockReset()
+    useQuotationStore.getState().setJobId('job-1')
+    useQuotationStore.setState({ currentStep: 12 })
+  })
+
+  it('saves the amount then advances to the quotation step', async () => {
+    mocks.upsertAmountMutateAsync.mockResolvedValueOnce({ id: 'amount-1' })
+    render(<WizardActionBar />)
+
+    await userEvent.click(screen.getByRole('button', { name: /continue/i }))
+
+    await waitFor(() => expect(useQuotationStore.getState().currentStep).toBe(13))
+    expect(mocks.upsertAmountMutateAsync).toHaveBeenCalled()
+    expect(mocks.navigate).not.toHaveBeenCalled()
+  })
+
+  it('stays on Step 12 when the amount upsert fails', async () => {
+    mocks.upsertAmountMutateAsync.mockRejectedValueOnce(new Error('boom'))
+    render(<WizardActionBar />)
+
+    await userEvent.click(screen.getByRole('button', { name: /continue/i }))
+
+    await waitFor(() => expect(mocks.toastError).toHaveBeenCalled())
+    expect(useQuotationStore.getState().currentStep).toBe(12)
+  })
+})
+
+
+describe('WizardActionBar Step 13 quotation finalise', () => {
+  beforeEach(() => {
+    localStorage.clear()
+    useQuotationStore.getState().resetQuotation()
+    mocks.navigate.mockReset()
+    mocks.upsertAmountMutateAsync.mockReset()
+    mocks.upsertQuotationMutateAsync.mockReset()
+    mocks.upsertQuotationMutateAsync.mockResolvedValue({})
+    useQuotationStore.getState().setJobId('job-1')
+    useQuotationStore.setState({ currentStep: 13 })
   })
 
   it('finalises and navigates home on Finish & save', async () => {
@@ -544,6 +676,7 @@ describe('WizardActionBar Step 10 finalise', () => {
 
     await waitFor(() => expect(mocks.navigate).toHaveBeenCalledWith('/'))
     expect(useQuotationStore.getState().currentStep).toBe(1)
+    expect(mocks.upsertAmountMutateAsync).not.toHaveBeenCalled()
   })
 })
 

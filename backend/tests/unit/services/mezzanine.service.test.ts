@@ -19,12 +19,12 @@ describe('mezzanine.service', () => {
         where: { jobId: 'job-1' },
         create: {
           jobId: 'job-1',
-          floors: { createMany: { data: floors } },
-          extensions: { createMany: { data: extensions } },
+          floors: { createMany: { data: floors.map(f => ({ ...f, code: f.code as string })) } },
+          extensions: { createMany: { data: extensions.map(e => ({ ...e, code: e.code as string })) } },
         },
         update: {
-          floors: { deleteMany: {}, createMany: { data: floors } },
-          extensions: { deleteMany: {}, createMany: { data: extensions } },
+          floors: { deleteMany: {}, createMany: { data: floors.map(f => ({ ...f, code: f.code as string })) } },
+          extensions: { deleteMany: {}, createMany: { data: extensions.map(e => ({ ...e, code: e.code as string })) } },
         },
         include: { floors: true, extensions: true },
       })
@@ -50,6 +50,15 @@ describe('mezzanine.service', () => {
         },
         include: { floors: true, extensions: true },
       })
+    })
+
+    it('rejects an extension floor that is not configured on a mezzanine floor', async () => {
+      await expect(upsertMezzanine('job-3', {
+        floors: [makeMezzanineFloor({ floor: 'FLOOR_1' })],
+        extensions: [makeMezzanineExtension({ floor: 'FLOOR_2' })],
+      })).rejects.toThrow('FLOOR_2')
+
+      expect(prismaMock.mezzanine.upsert).not.toHaveBeenCalled()
     })
   })
 
@@ -92,8 +101,8 @@ describe('mezzanine.service', () => {
   describe('updateMezzanine', () => {
     it('updates mezzanine and replaces floors and extensions when provided', async () => {
       const mezzanine = makeMezzanine()
-      const floors = [makeMezzanineFloor({ code: 'MEZ-2', floor: 'FLOOR_2' })]
-      const extensions = [makeMezzanineExtension()]
+      const floors = [makeMezzanineFloor({ code: 'MEZ_2', floor: 'FLOOR_2' })]
+      const extensions = [makeMezzanineExtension({ floor: 'FLOOR_2' })]
       prismaMock.mezzanine.update.mockResolvedValue(mezzanine as any)
 
       const result = await updateMezzanine('job-1', { floors, extensions })
@@ -102,8 +111,8 @@ describe('mezzanine.service', () => {
       expect(prismaMock.mezzanine.update).toHaveBeenCalledWith({
         where: { jobId: 'job-1' },
         data: {
-          floors: { deleteMany: {}, createMany: { data: floors } },
-          extensions: { deleteMany: {}, createMany: { data: extensions } },
+          floors: { deleteMany: {}, createMany: { data: floors.map(f => ({ ...f, code: f.code as string })) } },
+          extensions: { deleteMany: {}, createMany: { data: extensions.map(e => ({ ...e, code: e.code as string })) } },
         },
         include: { floors: true, extensions: true },
       })

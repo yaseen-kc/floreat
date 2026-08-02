@@ -35,8 +35,6 @@ export type InsulationType = 'XLPE' | 'ROCK_WOOL' | 'GLASS_WOOL' | 'ALUMINIUM_BU
 /** Turbo ventilator diameter. */
 export type TurboVentilatorDiameter = 'IN_6' | 'FT_1' | 'IN_18' | 'FT_2'
 
-/** Kind of a wall/roof opening line item. */
-export type AccessoryOpeningKind = 'ROLLING_SHUTTER' | 'LOUVER' | 'SKY_LIGHT' | 'WALL_LIGHT'
 
 /** Paint/primer product type for frames. */
 export type PaintType = 'EPOXY_PRIMER' | 'EPOXY_PAINT'
@@ -61,46 +59,6 @@ export type FoundationBoltFinish = 'BLACK_UNPAINTED'
  * string.
  * ────────────────────────────────────────────────────────────────────────── */
 
-/** A door line item attached to an accessories container. */
-export interface AccessoryDoor {
-  id: string
-  accessoriesId: string
-  height: string | null
-  width: string | null
-  nos: number | null
-  quantity: string | null
-}
-
-/** A window line item attached to an accessories container. */
-export interface AccessoryWindow {
-  id: string
-  accessoriesId: string
-  height: string | null
-  width: string | null
-  nos: number | null
-  quantity: string | null
-}
-
-/** A folded-plate line item attached to an accessories container. */
-export interface AccessoryFoldedPlate {
-  id: string
-  accessoriesId: string
-  length: string | null
-  width: string | null
-  nos: number | null
-  quantity: string | null
-}
-
-/** An opening line item attached to an accessories container (`kind` is non-null). */
-export interface AccessoryOpening {
-  id: string
-  accessoriesId: string
-  kind: AccessoryOpeningKind
-  length: string | null
-  width: string | null
-  nos: number | null
-  quantity: string | null
-}
 
 /** Shape of a single Accessories returned by the backend (with inline arrays). */
 export interface Accessories {
@@ -150,6 +108,27 @@ export interface Accessories {
   partitionThickness: PartitionThickness | null
   partitionQuantity: number | null
 
+  // ── Openings ──
+  rollingShutterLength: string | null
+  rollingShutterWidth: string | null
+  rollingShutterNos: number | null
+  rollingShutterQuantity: string | null
+
+  louverLength: string | null
+  louverWidth: string | null
+  louverNos: number | null
+  louverQuantity: string | null
+
+  skyLightLength: string | null
+  skyLightWidth: string | null
+  skyLightNos: number | null
+  skyLightQuantity: string | null
+
+  wallLightLength: string | null
+  wallLightWidth: string | null
+  wallLightNos: number | null
+  wallLightQuantity: string | null
+
   // ── Insulation ──
   roofInsulationType: InsulationType | null
   wallInsulationType: InsulationType | null
@@ -180,11 +159,21 @@ export interface Accessories {
   // ── Paint & Primer: Foundation Bolt ──
   foundationBoltFinish: FoundationBoltFinish | null
 
-  // ── Inline line-item arrays ──
-  doors: AccessoryDoor[]
-  windows: AccessoryWindow[]
-  foldedPlates: AccessoryFoldedPlate[]
-  openings: AccessoryOpening[]
+  // ── Doors, Windows, Folded Plates ──
+  doorHeight: string | null
+  doorWidth: string | null
+  doorNos: number | null
+  doorQuantity: string | null
+
+  windowHeight: string | null
+  windowWidth: string | null
+  windowNos: number | null
+  windowQuantity: string | null
+
+  foldedPlateLength: string | null
+  foldedPlateWidth: string | null
+  foldedPlateNos: number | null
+  foldedPlateQuantity: string | null
 }
 
 /** Paginated response shape from GET /api/accessories. */

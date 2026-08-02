@@ -14,7 +14,7 @@ describe('createCanopySchema', () => {
     const result = createCanopySchema.safeParse({
       canopies: [
         {
-          code: 'CANOPY-1',
+          code: 'CANOPY_1',
           heightFrom: 'GROUND',
           length: 10,
           width: 5,
@@ -42,7 +42,7 @@ describe('createCanopySchema', () => {
   })
 
   it('rejects a malformed code', () => {
-    const result = canopyItemSchema.safeParse({ code: 'CANOPY-0' })
+    const result = canopyItemSchema.safeParse({ code: 'CANOPY_0' })
     expect(result.success).toBe(false)
   })
 

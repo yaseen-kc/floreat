@@ -12,8 +12,15 @@ export async function upsert(request: FastifyRequest, reply: FastifyReply) {
   const { jobId } = request.params as { jobId: string }
   const result = createMezzanineSchema.safeParse(request.body)
   if (!result.success) return reply.status(400).send({ error: result.error.flatten() })
-  const mezzanine = await mezzanineService.upsertMezzanine(jobId, result.data)
-  return reply.status(200).send(mezzanine)
+  try {
+    const mezzanine = await mezzanineService.upsertMezzanine(jobId, result.data)
+    return reply.status(200).send(mezzanine)
+  } catch (err) {
+    if (err instanceof mezzanineService.InvalidMezzanineExtensionFloorError) {
+      return sendError(reply, 400, err.message)
+    }
+    throw err
+  }
 }
 
 /** GET /api/mezzanines — returns a paginated list of all mezzanines. */
@@ -39,7 +46,10 @@ export async function update(request: FastifyRequest, reply: FastifyReply) {
   try {
     const mezzanine = await mezzanineService.updateMezzanine(jobId, result.data)
     return reply.send(mezzanine)
-  } catch {
+  } catch (err) {
+    if (err instanceof mezzanineService.InvalidMezzanineExtensionFloorError) {
+      return sendError(reply, 400, err.message)
+    }
     return sendError(reply, 404, 'Mezzanine not found')
   }
 }

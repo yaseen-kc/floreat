@@ -5,6 +5,7 @@ import { NumberField } from '@/components/quotation/shared/NumberField'
 import { Weight } from 'lucide-react'
 import { isRequired, getFieldErrors } from '@/schemas/roof.schema'
 import { ROOF_SECTION_FIELDS } from '@/stores/quotation-store'
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 
 export function MaterialConsumption() {
   const { roof, setRoof, enabled, toggleRoofSection, showValidation } = useQuotationStore(
@@ -27,16 +28,32 @@ export function MaterialConsumption() {
       onToggle={(e) => toggleRoofSection('materialConsumption', e)}
       error={sectionError}
     >
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-[18px] desktop:gap-6">
-        <NumberField
-          label="Material Consumption (Excluding Purlin)"
-          unit="kg/m²"
-          required={isRequired('materialConsumptionExcludingPurlin')}
-          value={roof.materialConsumptionExcludingPurlin}
-          error={Boolean(errors.materialConsumptionExcludingPurlin)}
-          onChange={(v) => setRoof({ materialConsumptionExcludingPurlin: v })}
-        />
-      </div>
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead scope="col" className="w-12">No</TableHead>
+            <TableHead scope="col">Description</TableHead>
+            <TableHead scope="col">Value</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          <TableRow>
+            <TableCell>1</TableCell>
+            <TableCell className="font-medium">Material Consumption (Excluding Purlin)</TableCell>
+            <TableCell className="min-w-48">
+              <NumberField
+                className="[&>label]:sr-only"
+                label="Material Consumption (Excluding Purlin)"
+                unit="kg/m²"
+                required={isRequired('materialConsumptionExcludingPurlin')}
+                value={roof.materialConsumptionExcludingPurlin}
+                error={Boolean(errors.materialConsumptionExcludingPurlin)}
+                onChange={(v) => setRoof({ materialConsumptionExcludingPurlin: v })}
+              />
+            </TableCell>
+          </TableRow>
+        </TableBody>
+      </Table>
     </CollapsibleSection>
   )
 }

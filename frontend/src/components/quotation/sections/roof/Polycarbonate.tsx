@@ -6,6 +6,7 @@ import { NumberField } from '@/components/quotation/shared/NumberField'
 import { PanelTop } from 'lucide-react'
 import { isRequired, getFieldErrors } from '@/schemas/roof.schema'
 import { ROOF_SECTION_FIELDS } from '@/stores/quotation-store'
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 
 type PolycarbonateField =
   | 'polycarbonateRoofLength'
@@ -39,24 +40,41 @@ export function Polycarbonate() {
       onToggle={(e) => toggleRoofSection('polycarbonate', e)}
       error={sectionError}
     >
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-[18px] desktop:gap-6">
-        {FIELDS.map(({ name, label, unit, step }) => (
-          <NumberField
-            key={name}
-            label={label}
-            unit={unit}
-            step={step}
-            required={isRequired(name)}
-            value={roof[name]}
-            error={Boolean(errors[name])}
-            onChange={(v) => {
-              const patch: Partial<RoofDraft> = {}
-              patch[name] = v
-              setRoof(patch)
-            }}
-          />
-        ))}
-      </div>
+      <Table className="min-w-[720px]">
+        <TableHeader>
+          <TableRow>
+            <TableHead scope="col" className="w-12">No</TableHead>
+            <TableHead scope="col">Type</TableHead>
+            <TableHead scope="col">Length</TableHead>
+            <TableHead scope="col">Width</TableHead>
+            <TableHead scope="col">Count</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          <TableRow>
+            <TableCell>1</TableCell>
+            <TableCell className="font-medium">Polycarbonate Roof</TableCell>
+            {FIELDS.map(({ name, label, unit, step }) => (
+              <TableCell key={name} className="min-w-36">
+                <NumberField
+                  className="[&>label]:sr-only"
+                  label={label}
+                  unit={unit}
+                  step={step}
+                  required={isRequired(name)}
+                  value={roof[name]}
+                  error={Boolean(errors[name])}
+                  onChange={(v) => {
+                    const patch: Partial<RoofDraft> = {}
+                    patch[name] = v
+                    setRoof(patch)
+                  }}
+                />
+              </TableCell>
+            ))}
+          </TableRow>
+        </TableBody>
+      </Table>
     </CollapsibleSection>
   )
 }

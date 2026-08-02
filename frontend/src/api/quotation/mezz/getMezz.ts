@@ -10,6 +10,9 @@ import { mezzanineKeys } from './queryKeys'
 /** Mezzanine deck/slab construction type. */
 export type MezzanineType = 'DECK_SHEET' | 'FOLDED_PLATE' | 'PANEL' | 'BOARD' | 'RCC_SLAB'
 
+/** Mezzanine extension code identifier. */
+export type MezzanineFloorCodeExt = 'EXT_1' | 'EXT_2' | 'EXT_3'
+
 /** Mezzanine floor level (1st through 10th). */
 export type MezzanineFloorLevel =
   | 'FLOOR_1'
@@ -70,6 +73,8 @@ export interface MezzanineFloorExtension {
   id: string
   mezzanineId: string
 
+  code: MezzanineFloorCodeExt | null
+  floor: MezzanineFloorLevel | null
   type: MezzanineType | null
   heightFrom: MezzanineHeightFrom | null
   typicalTo: MezzanineFloorLevel | null

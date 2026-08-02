@@ -1,0 +1,168 @@
+const BUILDING_DESCRIPTION: readonly Row[] = [
+['1', 'Structure Type', 'Pre-Engineered Structure'],
+['2', 'Building Usage', Job.buildingUsage],
+['3', 'Number of Building', Job.numberOfBuilding],
+['4', 'Frame Type', Job.frameType],
+['5', 'Configuration', Job.configuration],
+['6', 'Span (Width)', Roof.buildingOverallWidth+"Meter"],
+['7', 'Length of Building', 'Roof.buildingOverallLength+"Meter"],
+['8', 'Column', 'Steel'],
+['9', 'Intermediate Roof Columns', IF(Roof.internalColumnsForMainRoofFrames>0,"Yes" else "NA")],
+['10', 'Number of Main Frame', Roof.mainRoofFrames],
+['11', 'Number of Gable Frame', Roof.endRoofFrames],
+['12', 'Eaves Height', Roof.eaveHeight+"Meter"],
+['13', 'Cladding Height', (Roof.eaveHeight - enum.SideWallSide_FRONT_Sidewall.height)+"Meter"],
+['14', 'Wall Height', enum.SideWallSide_FRONT_Sidewall.height+"Meter"],
+['15', 'Wall Material', enum.TypeOfWall_Sidewall.wallType],
+['16', 'Roof Slope', 'Roof.roofSlope+"Degree"],
+['17', 'Bay Spacing', '(Roof.buildingOverallLength/(Roof.mainRoofFrames+Roof.endRoofFrames)-1)+"Meter"],
+['18', 'Gable', if(endRoofFrames > 0,"Yes" else "NA")],
+['19', 'EOT Crane', if(Accessories.gantryGirderEnabled=TRUE,"Yes" els "NA")],
+['20', 'Roof Sheet', (Roof.roofCoveringType)+" "+(Roof.roofCoveringThickness)+" "+("mm Thick")],
+['21', 'Cladding Sheet', (Roof.claddingCoveringType)+" "+(Roof.claddingCoveringThickness)+" "+("mm Thick")],
+['A', 'Gutter', if(Accessories.gutterQuantity > 0,"Yes" else "NA")],
+['B', 'Down Take', if(Accessories.downTakeQuantity > 0,"Yes" else "NA")],
+['C', 'Drip Trim', if(Accessories.dripTrimQuantity > 0,"Yes" else "NA")],
+['D', 'Gable Trim', if(Accessories.gableEndFlashingQuantity > 0,"Yes" else "NA")],
+['E', 'Corner Flash', if(Accessories.cornerFlashQuantity > 0,"Yes" else "NA")],
+['F', 'Ridge Sheet', if(Accessories.ridgeQuantity > 0,"Yes" else "NA")],
+['23', 'Polycarbonate Sheet', if(Roof.polycarbonateRoofCount > 0,"Yes" else "NA")],
+['24', 'Turbo Ventilator', if(Accessories.turboVentilatorNos > 0,"Yes" else "NA")],
+['25', 'Rolling Shutter', if(Accessories.rollingShutterNos > 0,"Yes" else "NA")],
+['26', 'Wind Bracing', if(Roof.roofWindBracingSegmentsInOneHalf > 0,"Yes" else "NA")],
+['27', 'Canopy', if(CanopyItem.length > 0,"Yes","NA")],
+['28', 'Canopy Sheet', if(CanopyItem.canopySheet = "null, "NA" else "Yes")],
+['29', 'Insulation', if(Accessories.roofInsulationType = "null, "NA" else "Yes")],
+['30', 'Ridge Ventilator', 'NA'],
+['31', 'Fixed Louver', if(Accessories.louverNos > 0, "Yes" else "NA")],
+['32', 'Sky Lights', if(Accessories.skyLightNos > 0, "Yes" else "NA")],
+['33', 'Wall Light', if(Accessories.wallLightNos > 0, "Yes" else "NA")],
+['35', 'Partition Wall', if(Accessories.partitionQuantity > 0, "Yes" else "NA")],
+['36', 'Mezzanine Floor', if(MEZZ!$AV$28=FALSE,"NA","Yes")],
+['37', 'Decking Sheet', if(MezzanineFloor.type="DECK_SHEET","Yes" else "NA")],
+['38', 'Shear Studs', if(MezzanineFloor.type="DECK_SHEET","Yes" else "NA")],
+['39', 'Joint Bolt', 'Yes'],
+['40', 'Anchor Bolt', if(Roof.roofFrameBaseFixing="ANCHOR_BOLT","Yes" else "NA")],
+['41', 'Stair', if(STAIR!$AX$28=FALSE,"NA","Yes")],
+['42', 'Handrail', if(Accessories.handrailWeightKg > 0,"Yes" else "No")],
+['43', 'Lift Supporting Structure', if(Accessories.liftStructureEnabled = TRUE,"Yes" else "No")],
+['44', 'Lift Device', 'NA'],
+]
+
+{
+"Structure Type": string,
+"Building Usage": string,
+"Number of Building": int,
+"Frame Type": string,
+"Configuration": string,
+"Span (Width)": decimal, (15.00)
+"Length of Building": decimal, (30.00)
+"Column": string,
+"Intermediate Roof Columns": boolean,
+"Number of Main Frame": int,
+"Number of Gable Frame": int,
+"Eaves Height": int,
+"Cladding Height": int,
+"Wall Height": int,
+"Wall Material": string,
+"Roof Slope": int,
+"Bay Spacing": int,
+"Gable": boolean,
+"EOT Crane": boolean,
+"Roof Sheet": string,
+"Cladding Sheet": string,
+"Gutter": boolean,
+"Down Take": boolean,
+"Drip Trim": boolean,
+"Gable Trim": boolean,
+"Corner Flash": boolean,
+"Ridge Sheet": boolean,
+"Polycarbonate Sheet": boolean,
+"Turbo Ventilator": boolean,
+"Rolling Shutter": boolean,
+"Wind Bracing": boolean,
+"Canopy": boolean,
+"Canopy Sheet": boolean,
+"Insulation": boolean,
+"Ridge Ventilator": boolean,
+"Fixed Louver": boolean,
+"Sky Lights": boolean,
+"Wall Light": boolean,
+"Partition Wall": boolean,
+"Mezzanine Floor": boolean,
+"Decking Sheet": boolean,
+"Shear Studs": boolean,
+"Joint Bolt": boolean,
+"Anchor Bolt": boolean,
+"Stair": boolean,
+"Handrail": boolean,
+"Lift Supporting Structure": boolean,
+"Lift Device": boolean
+}
+
+const QUANTITY_ESTIMATION: readonly QuantityRow[] = [
+{ sl: '1', label: 'Roof Structure:', detail: 'Rafters, Columns and Tie Beams', unit: 'Kg', quantity: 'QuantityPebRoof.raftersAndColumnsQuantity + QuantityPebRoof.lengthOfBuildingQuantity + QuantityAccessories.fasciaStructureQuantity' },
+{ sl: '2', label: 'Roof Purlins', unit: 'Kg', quantity: 'QuantityPebRoof.roofPurlinsQuantity + QuantityPebRoof.lengthOfOnePurlinQuantity' },
+{ sl: '3', label: 'Mezzanine Structure.', unit: 'Kg', quantity: 'QuantityMezzanine.mezzanineStructureQuantity + QuantityMezzanine.totalMezzanineAreaQuantity' },
+{ sl: '4', label: 'Cladding Structure:', detail: 'Cladding Purlins', unit: 'Kg', quantity: 'QuantityCladding.claddingStructureQuantity + QuantityCladding.claddingEaveHeightFrontAdditional' },
+{ sl: '5', label: 'Bracings:', detail: 'Wind Bracings, Sag Rod, Flange Brace', unit: 'Kg', quantity: '(Amount.windBracingsQuantity * Roof.windBracingUnitWeight)+(Amount.sagRodQuantity * QuantityPebRoof.unitWeightOfSagRod)+Amount.flangeBraceQuantity' },
+{ sl: '6', label: 'Canopy Structure', unit: 'Kg', quantity: 'QuantityCanopy.canopyStructureQuantity' },
+{ sl: '7', label: 'Canopy Purlins', unit: 'Kg', quantity: 'QuantityCanopy.canopyPurlinQuantity' },
+{ sl: '8', label: 'Stair', unit: 'Kg', quantity: 'Amount.stair1Quantity+Amount.stair2Quantity' },
+{ sl: '9', label: 'Plinth Area', unit: 'Sqm', quantity: 'Roof.buildingOverallLength*Roof.buildingOverallWidth' },
+{ sl: '10', label: 'Roof Sheet Area', unit: 'Sqm', quantity: 'QuantityPebRoof.roofSheetQuantity + QuantityPebRoof.extendedRoofWidthAdditonal' },
+{ sl: '11', label: 'Decking Sheet', unit: 'Sqm', quantity: 'Amount.deckingSheetQuantity' },
+{ sl: '12', label: 'Cladding Sheet Area', unit: 'Sqm', quantity: 'QuantityCladding.claddingSheetAdditional + QuantityCladding.claddingSheetQuantity' },
+{ sl: '13', label: 'Canopy Sheet Area', unit: 'Sqm', quantity: 'QuantityCanopy.canopySheetQuantity' },
+{ sl: '14', label: 'Sheet Accessories: Flashing, Gutter and Downtake', unit: 'Rmtr', quantity: 'QuantityCanopy.canopyGutterQuantity + QuantityCanopy.canopyDownTakeQuantity + QuantityCanopy.canopySideCoveringQuantity + QuantityCanopy.canopyFlashingQuantity + QuantityAccessories.ridgeQuantity + QuantityAccessories.gutterQuantity + QuantityAccessories.downtakeQuantity + QuantityAccessories.dripTrimQuantity + QuantityAccessories.gableEndFlashingQuantity + QuantityAccessories.cornerFlashQuantity' },
+{ sl: '15', label: 'Doors', unit: 'Sqm', quantity: 'QuantityAccessories.doorsQuantity' },
+{ sl: '16', label: 'Windows', unit: 'Sqm', quantity: 'QuantityAccessories.windowsQuantity' },
+{ sl: '17', label: 'Rolling Shutter', unit: 'Sqm', quantity: 'QuantityAccessories.rollingShutterQuantity' },
+{ sl: '18', label: 'Louvers', unit: 'Sqm', quantity: 'QuantityAccessories.louversQuantity' },
+{ sl: '19', label: 'Turbo Ventilators', unit: 'Nos', quantity: 'QuantityAccessories.turboVentilatorsQuantity' },
+{ sl: '20', label: 'Sky Lights', unit: 'Sqm', quantity: 'QuantityAccessories.skyLightQuantity' },
+{ sl: '21', label: 'Wall Lights', unit: 'Sqm', quantity: 'QuantityAccessories.wallLightQuantity' },
+{ sl: '22', label: 'Roof Insulation', unit: 'Sqm', quantity: 'QuantityAccessories.roofInsulationQuantity' },
+{ sl: '23', label: 'Wall Insulation', unit: 'Sqm', quantity: 'QuantityAccessories.wallInsulationQuantity' },
+{ sl: '24', label: 'Polycarbonate Sheet Area', unit: 'Sqm', quantity: 'QuantityPebRoof.lengthOfpolyCarbonateSheetAdditional+QuantityPebRoof.polyCarbonateSheetQuantity' },
+{ sl: '25', label: 'Fascia Structure', unit: 'Sqm', quantity: 'QuantityAccessories.lengthOfpolyCarbonateSheetAdditional' },
+]
+
+
+sl,5,11
+
+
+
+const PRICING: readonly PricingRow[] = [
+  {
+    sl: 'A',
+    item: 'Fabrication and Supply of Pre Engineered Steel Structure including transportation, Loading and Unloading Charges',
+    amount: 'Amount.totalFabricationAmount',
+  },
+  
+  { item: 'GST @ 18% =', amount: 'Amount.totalFabricationAmount * 0.18' },
+  
+  { item: 'Total Amount (Part A) =', amount: '(Amount.totalFabricationAmount) + (Amount.totalFabricationAmount * 0.18)', emphasis: true },
+  
+  { sl: 'B', item: 'Installation of Supplied Pre Engineered Steel Structure', amount: 'Amount.totalErrectionAmount + Amount.totalLoadingAmount' },
+  
+  { item: 'GST @ 18% =', amount: '(Amount.totalErrectionAmount + Amount.totalLoadingAmount) * 0.18' },
+  
+  { item: 'Total Amount (Part B) =', amount: '(Amount.totalErrectionAmount + Amount.totalLoadingAmount)+((Amount.totalErrectionAmount + Amount.totalLoadingAmount) * 0.18')', emphasis: true },
+  
+  { sl: 'C', item: 'Total Amount (Part A) + (Part B) Excluding GST', amount: '(Amount.totalFabricationAmount) + (Amount.totalErrectionAmount + Amount.totalLoadingAmount) ' },
+  
+  { item: 'GST 18% =', amount: '(Amount.totalFabricationAmount * 0.18) + ((Amount.totalErrectionAmount + Amount.totalLoadingAmount) * 0.18')' },
+  
+  { item: 'Grand Total =', amount: '(Amount.totalFabricationAmount) + (Amount.totalFabricationAmount * 0.18) + (Amount.totalErrectionAmount + Amount.totalLoadingAmount)+((Amount.totalErrectionAmount + Amount.totalLoadingAmount) * 0.18')', emphasis: true },
+]
+
+
+const META = {
+  ref: 'Job.refNo',
+  date: 'Job.date,
+  client: 'Job.firmName',
+  subject: Job.subject,
+  reference: 'Job.refNo',
+  company: 'Floreat Building Systems Pvt Ltd',
+} as const

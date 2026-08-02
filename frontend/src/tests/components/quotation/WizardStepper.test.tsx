@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach } from 'vitest'
-import { render, screen, within } from '@testing-library/react'
+import { fireEvent, render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { WizardStepper } from '@/components/quotation/WizardStepper'
 import { STEP_COUNT } from '@/components/quotation/steps'
@@ -58,6 +58,42 @@ describe('WizardStepper', () => {
     expect(next).not.toBeDisabled()
     await userEvent.click(next)
     expect(useQuotationStore.getState().currentStep).toBe(2)
+  })
+
+  it('moves forward with Ctrl+ArrowRight when the next step is reachable', () => {
+    fillRequired()
+    render(<WizardStepper />)
+
+    fireEvent.keyDown(document, { key: 'ArrowRight', code: 'ArrowRight', ctrlKey: true })
+
+    expect(useQuotationStore.getState().currentStep).toBe(2)
+  })
+
+  it('does not move forward with Ctrl+ArrowRight when the current step is invalid', () => {
+    render(<WizardStepper />)
+
+    fireEvent.keyDown(document, { key: 'ArrowRight', code: 'ArrowRight', ctrlKey: true })
+
+    expect(useQuotationStore.getState().currentStep).toBe(1)
+  })
+
+  it('moves backward with Ctrl+ArrowLeft and stops at the first step', () => {
+    useQuotationStore.getState().goStep(2)
+    render(<WizardStepper />)
+
+    fireEvent.keyDown(document, { key: 'ArrowLeft', code: 'ArrowLeft', ctrlKey: true })
+    fireEvent.keyDown(document, { key: 'ArrowLeft', code: 'ArrowLeft', ctrlKey: true })
+
+    expect(useQuotationStore.getState().currentStep).toBe(1)
+  })
+
+  it('reserves Ctrl+K by preventing the browser default', () => {
+    render(<WizardStepper />)
+    const event = new KeyboardEvent('keydown', { key: 'k', code: 'KeyK', ctrlKey: true, cancelable: true })
+
+    document.dispatchEvent(event)
+
+    expect(event.defaultPrevented).toBe(true)
   })
 
   it('confirming the New quotation dialog resets the draft', async () => {

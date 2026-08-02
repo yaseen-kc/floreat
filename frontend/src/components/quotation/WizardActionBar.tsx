@@ -1,4 +1,5 @@
-import { useQuotationStore, buildRoofPayload, buildMezzaninePayload, buildStairPayload, buildCanopyPayload, buildLoadPayload, buildAccessoriesPayload, buildJointPayload, buildSpecPayload } from '@/stores/quotation-store'
+import { useQuotationStore, buildRoofPayload, buildMezzaninePayload, buildStairPayload, buildCanopyPayload, buildLoadPayload, buildAccessoriesPayload, buildJointPayload, buildSpecPayload, buildQuotationPayload } from '@/stores/quotation-store'
+import { useHotkeys } from 'react-hotkeys-hook'
 import { useSaveStatusStore } from '@/stores/save-status-store'
 import { useShallow } from 'zustand/react/shallow'
 import { toast } from 'sonner'
@@ -12,13 +13,28 @@ import { useUpsertLoad } from '@/api/quotation/load/postLoad'
 import { useUpsertAccessories } from '@/api/quotation/accessories/postAccessories'
 import { useUpsertJoint } from '@/api/quotation/joint/postJoint'
 import { useUpsertSpec } from '@/api/quotation/spec/postSpec'
+import { useReplaceRates } from '@/api/quotation/rate/putRatesBulk'
+import { PRICING_FIELDS } from '@/schemas/rate.schema'
+import { useUpsertAmount } from '@/api/quotation/amount/postAmount'
+import { useUpsertQuantity } from '@/api/quotation/quantity/postQuantity'
+import { useUpsertQuotation } from '@/api/quotation/quotation/postQuotation'
+import {
+  calculatePebQuantities,
+  calculateCladdingQuantities,
+  calculateCanopyQuantities,
+  calculateAccessoriesQuantities,
+  calculateMezzanineQuantities,
+  calculateStairQuantities,
+  calculateAdditionalBoltsQuantities,
+} from '@floreat/shared/calc'
+import { buildFullQuantityPayload } from '@/lib/quantity-payload'
 import { useNavigate } from 'react-router-dom'
+
 import { Button } from '@/components/ui/button'
-import { Spinner } from '@/components/ui/spinner'
+import { Loader2 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { ArrowLeft, ArrowRight, Check, Save } from 'lucide-react'
 import { STEPS, STEP_COUNT } from '@/components/quotation/steps'
-
 /** Fires a success toast, but stays silent on small (≤640px) devices, where the
  *  sticky action bar already surfaces state via the save-status pill and spinner. */
 export const successToast = (message: string) => {
@@ -27,7 +43,7 @@ export const successToast = (message: string) => {
 }
 
 export function WizardActionBar() {
-  const { currentStep, nextStep, prevStep, validateStep, goStep, projectInfo, roof, jobId, setJobId, resetQuotation, mezzanine, stair, canopy, load, accessories, joint, spec } =
+  const { currentStep, nextStep, prevStep, validateStep, goStep, projectInfo, roof, jobId, setJobId, resetQuotation, mezzanine, stair, canopy, load, accessories, joint, spec, quotation, rateRows } =
     useQuotationStore(
       useShallow((s) => ({
         currentStep: s.currentStep,
@@ -47,12 +63,15 @@ export function WizardActionBar() {
         accessories: s.accessories,
         joint: s.joint,
         spec: s.spec,
+        quotation: s.quotation,
+        rateRows: s.rateRows,
       })),
     )
   const navigate = useNavigate()
   const setSaving = useSaveStatusStore((s) => s.saving)
   const setSaved = useSaveStatusStore((s) => s.saved)
   const resetSaveStatus = useSaveStatusStore((s) => s.reset)
+  
   const createJob = useCreateJob()
   const updateJob = useUpdateJob()
   const upsertRoof = useUpsertRoof()
@@ -63,6 +82,10 @@ export function WizardActionBar() {
   const upsertAccessories = useUpsertAccessories()
   const upsertJoint = useUpsertJoint()
   const upsertSpec = useUpsertSpec()
+  const upsertAmount = useUpsertAmount()
+  const upsertQuantity = useUpsertQuantity()
+  const upsertQuotation = useUpsertQuotation()
+  const replaceRates = useReplaceRates()
   const isLast = currentStep === STEP_COUNT
   const isSubmitting =
     createJob.isPending ||
@@ -74,7 +97,11 @@ export function WizardActionBar() {
     upsertLoad.isPending ||
     upsertAccessories.isPending ||
     upsertJoint.isPending ||
-    upsertSpec.isPending
+    upsertSpec.isPending ||
+    upsertAmount.isPending ||
+    upsertQuantity.isPending ||
+    upsertQuotation.isPending
+    || replaceRates.isPending
 
   /**
    * Persists Step 1 data. Creates the job once (POST) and stores its id;
@@ -299,6 +326,124 @@ export function WizardActionBar() {
     }
   }
 
+  /**
+   * Triggers server-authoritative calculation of Step 12 amount data.
+   * Requires the Step 1 `jobId`.
+   */
+  const submitAmount = async () => {
+    if (!jobId) {
+      toast.error('Save the project details first')
+      throw new Error('Cannot save amount before the job is created')
+    }
+    try {
+      setSaving()
+      const updatedAmount = await upsertAmount.mutateAsync({ jobId, payload: {} })
+      useQuotationStore.setState({ amount: updatedAmount })
+      setSaved()
+      successToast('Amount saved successfully')
+    } catch (err) {
+      resetSaveStatus()
+      toast.error('Failed to save amount')
+      throw err
+    }
+  }
+
+  /**
+   * Persists Step 11 quantity data via an idempotent upsert.
+   * Requires the Step 1 `jobId`.
+   */
+  const submitQuantity = async () => {
+    if (!jobId) {
+      toast.error('Save the project details first')
+      throw new Error('Cannot save quantity before the job is created')
+    }
+    try {
+      setSaving()
+      const storeState = useQuotationStore.getState()
+      const calcs = {
+        pebRoof: calculatePebQuantities({
+          roof: storeState.roof,
+          joint: storeState.joint,
+          jointBoltRoofs: storeState.joint?.jointBoltRoof,
+          foundationBoltRoof: storeState.joint?.foundationBoltRoof,
+        }),
+        cladding: calculateCladdingQuantities({ roof: storeState.roof }),
+        canopy: calculateCanopyQuantities({ canopy: storeState.canopy, joint: storeState.joint }),
+        accessories: calculateAccessoriesQuantities({ accessories: storeState.accessories, roof: storeState.roof }),
+        mezzanine: calculateMezzanineQuantities({ mezzanine: storeState.mezzanine, joint: storeState.joint, jointBoltMezzanines: storeState.joint?.jointBoltMezzanine, stair: storeState.stair }),
+        stair: calculateStairQuantities({ stair: storeState.stair, mezzanine: storeState.mezzanine }),
+        additionalBolts: calculateAdditionalBoltsQuantities({}),
+      }
+
+      const payload = buildFullQuantityPayload(calcs, storeState.quantity, storeState.quantityDrafts)
+
+      const updatedQuantity = await upsertQuantity.mutateAsync({ jobId, payload })
+      useQuotationStore.setState({ quantity: updatedQuantity })
+      setSaved()
+      successToast('Quantity saved successfully')
+    } catch (err) {
+      resetSaveStatus()
+      toast.error('Failed to save quantity')
+      throw err
+    }
+  }
+
+  const submitQuotation = async () => {
+    if (!jobId) {
+      toast.error('Save the project details first')
+      throw new Error('Cannot save quotation before the job is created')
+    }
+    try {
+      setSaving()
+      await upsertQuotation.mutateAsync({ jobId, payload: buildQuotationPayload(quotation) })
+      setSaved()
+      successToast('Quotation saved successfully')
+    } catch (err) {
+      resetSaveStatus()
+      toast.error('Failed to save quotation')
+      throw err
+    }
+  }
+
+  const submitRates = async () => {
+    if (!jobId) {
+      toast.error('Save the project details first')
+      throw new Error('Cannot save rates before the job is created')
+    }
+    try {
+      setSaving()
+      const saved = await replaceRates.mutateAsync({
+        jobId,
+        payload: {
+          rates: rateRows.map((row) => ({
+            item: row.item,
+            unit: row.unit,
+            ...Object.fromEntries(PRICING_FIELDS.filter((field) => row[field] !== undefined).map((field) => [field, row[field]])),
+          })),
+        },
+      })
+      useQuotationStore.getState().setRateRows(saved.map((row) => ({
+        id: row.id,
+        item: row.item,
+        unit: row.unit,
+        ...Object.fromEntries(PRICING_FIELDS.map((field) => {
+          const value = row[field]
+          return [field, value == null || value === '' ? undefined : Number(value)]
+        })),
+        fabricationRate: row.fabricationRate,
+        erectionRate: row.erectionRate,
+        loadingRate: row.loadingRate,
+        totalRate: row.totalRate,
+      })))
+      setSaved()
+      successToast('Rates saved successfully')
+    } catch (err) {
+      resetSaveStatus()
+      toast.error('Failed to save rates')
+      throw err
+    }
+  }
+
   const handleNext = async () => {
     if (isSubmitting) return
 
@@ -409,15 +554,47 @@ export function WizardActionBar() {
       return
     }
 
-    // Final step (Rate Master): finalise and return to the dashboard.
+    // Step 10 (Rate Master): replace the complete rate set before advancing.
+    if (currentStep === 10) {
+      try {
+        await submitRates()
+        goStep(11)
+      } catch {
+        // Error toast already shown; stay on Step 10.
+      }
+      return
+    }
+
+    // Step 11 (Quantity): upsert all quantity sections then advance to Amount.
+    if (currentStep === 11) {
+      try {
+        await submitQuantity()
+        goStep(12)
+      } catch {
+        // Error toast already shown; stay on Step 11.
+      }
+      return
+    }
+
+    // Step 12 (Amount): upsert the canonical 36 items then advance to Quotation.
+    if (currentStep === 12) {
+      try {
+        await submitAmount()
+        goStep(13)
+      } catch {
+        // Error toast already shown; stay on Step 12.
+      }
+      return
+    }
+
+    // Final step (Quotation): save the snapshot, then finalise the draft.
     if (isLast) {
       try {
-        successToast('Quotation finalised & saved')
+        await submitQuotation()
         resetQuotation()
         navigate('/')
       } catch {
-        // No persistence is performed at this step; this block is here for
-        // symmetry and future extension.
+        // Error toast already shown; stay on Step 13.
       }
       return
     }
@@ -428,30 +605,46 @@ export function WizardActionBar() {
 
   const handleSaveDraft = async () => {
     if (isSubmitting) return
+    let saveSucceeded = false
+
     if (currentStep === 1) {
       if (!ensureStep1Valid()) return
-      try { await submitJob() } catch { /* error toast already shown */ }
+      try { await submitJob(); saveSucceeded = true } catch { /* error toast already shown */ }
     } else if (currentStep === 2) {
       if (!ensureStep2Valid()) return
-      try { await submitRoof() } catch { /* error toast already shown */ }
+      try { await submitRoof(); saveSucceeded = true } catch { /* error toast already shown */ }
     } else if (currentStep === 3) {
-      try { await submitMezzanine() } catch { /* error toast already shown */ }
+      try { await submitMezzanine(); saveSucceeded = true } catch { /* error toast already shown */ }
     } else if (currentStep === 4) {
-      try { await submitStair() } catch { /* error toast already shown */ }
+      try { await submitStair(); saveSucceeded = true } catch { /* error toast already shown */ }
     } else if (currentStep === 5) {
-      try { await submitCanopy() } catch { /* error toast already shown */ }
+      try { await submitCanopy(); saveSucceeded = true } catch { /* error toast already shown */ }
     } else if (currentStep === 6) {
-      try { await submitAccessories() } catch { /* error toast already shown */ }
+      try { await submitAccessories(); saveSucceeded = true } catch { /* error toast already shown */ }
     } else if (currentStep === 7) {
-      try { await submitLoad() } catch { /* error toast already shown */ }
+      try { await submitLoad(); saveSucceeded = true } catch { /* error toast already shown */ }
     } else if (currentStep === 8) {
-      try { await submitJoint() } catch { /* error toast already shown */ }
+      try { await submitJoint(); saveSucceeded = true } catch { /* error toast already shown */ }
     } else if (currentStep === 9) {
-      try { await submitSpec() } catch { /* error toast already shown */ }
+      try { await submitSpec(); saveSucceeded = true } catch { /* error toast already shown */ }
+    } else if (currentStep === 10) {
+      try { await submitRates(); saveSucceeded = true } catch { /* error toast already shown */ }
+    } else if (currentStep === 11) {
+      try { await submitQuantity(); saveSucceeded = true } catch { /* error toast already shown */ }
+    } else if (currentStep === 12) {
+      try { await submitAmount(); saveSucceeded = true } catch { /* error toast already shown */ }
+    } else if (currentStep === 13) {
+      try { await submitQuotation(); saveSucceeded = true } catch { /* error toast already shown */ }
     } else {
-      successToast('Draft saved')
+      saveSucceeded = true
     }
+
+    if (saveSucceeded) navigate('/drafts')
   }
+
+  useHotkeys(['ctrl+s', 'meta+s'], () => {
+    void handleSaveDraft()
+  }, { enableOnFormTags: true, preventDefault: true }, [handleSaveDraft])
 
   return (
     <div className="sticky bottom-0 left-0 right-0 z-15 flex flex-wrap items-center gap-3 border-t border-border bg-card/92 px-8 py-3.5 backdrop-blur-[10px] max-[640px]:gap-2 max-[640px]:px-4 max-[640px]:py-3">
@@ -479,13 +672,13 @@ export function WizardActionBar() {
         aria-label="Save draft"
         className="max-[640px]:order-4"
       >
-        {isSubmitting ? <Spinner /> : <Save className="w-4 h-4" />}
+        {isSubmitting ? <Loader2 className="animate-spin" /> : <Save className="w-4 h-4" />}
         <span className="max-[640px]:hidden">Save draft</span>
       </Button>
 
       <Button onClick={handleNext} disabled={isSubmitting} className="max-[640px]:order-3 max-[640px]:flex-1">
         {isSubmitting ? (
-          <>Saving <Spinner /></>
+          <>Saving <Loader2 className="animate-spin" /></>
         ) : isLast ? (
           <>Finish & save <Check className="w-4 h-4" /></>
         ) : (

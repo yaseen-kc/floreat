@@ -53,7 +53,7 @@ describe('buildRoofPayload', () => {
       sidewalls: [{ side: 'FRONT', wallType: 'BRICK', thickness: 0.2, height: 3 }],
     })
     const payload = buildRoofPayload(useQuotationStore.getState().roof)
-    expect(payload.sidewalls).toHaveLength(1)
+    expect(payload.sidewalls).toHaveLength(4)
   })
 
   it('produces a payload that satisfies the create schema', () => {

@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest'
 import '../../../tests/mocks/prisma.js'
 import { prismaMock } from '../../mocks/prisma.js'
 import { makeJob, makeJobInput } from '../../helpers/factories.js'
-import { createJob, getJobs, getJobById, updateJob, deleteJob } from '../../../services/job.service.js'
+import { createJob, getJobs, getJobById, getJobWithAllData, updateJob, deleteJob } from '../../../services/job.service.js'
 
 const USER = 'user_test'
 
@@ -16,7 +16,7 @@ describe('job.service', () => {
       const result = await createJob(USER, input as any)
 
       expect(result).toEqual(job)
-      expect(prismaMock.job.create).toHaveBeenCalledWith({ data: { ...input, userId: USER } })
+      expect(prismaMock.job.create).toHaveBeenCalledWith({ data: expect.objectContaining({ ...input, userId: USER, rates: expect.objectContaining({ create: expect.any(Array) }) }) })
     })
   })
 
@@ -54,6 +54,57 @@ describe('job.service', () => {
       prismaMock.job.findFirst.mockResolvedValue(null)
 
       const result = await getJobById('nonexistent', USER)
+
+      expect(result).toBeNull()
+    })
+  })
+
+  describe('getJobWithAllData', () => {
+    it('returns job with all nested relations when found and owned', async () => {
+      const job = { ...makeJob(), roof: {}, mezzanine: {} }
+      prismaMock.job.findFirst.mockResolvedValue(job as any)
+
+      const result = await getJobWithAllData(job.id, USER)
+
+      expect(result).toEqual(job)
+      expect(prismaMock.job.findFirst).toHaveBeenCalledWith({
+        where: { id: job.id, userId: USER },
+        include: {
+          roof: { include: { sidewalls: true } },
+          mezzanine: { include: { floors: true, extensions: true } },
+          stair: { include: { stairs: true, areaDeductions: true } },
+          canopy: { include: { canopies: true } },
+          load: true,
+          accessories: true,
+          joint: {
+            include: {
+              jointBoltRoof: true,
+              jointBoltMezzanine: true,
+              foundationBoltRoof: true,
+            },
+          },
+          spec: { include: { products: true } },
+          quantity: {
+            include: {
+              pebRoof: true,
+              cladding: true,
+              canopy: true,
+              accessories: true,
+              mezzanine: true,
+              stair: true,
+              additionalBolts: true,
+            },
+          },
+          amount: true,
+          rates: true,
+        },
+      })
+    })
+
+    it('returns null when not found or not owned', async () => {
+      prismaMock.job.findFirst.mockResolvedValue(null)
+
+      const result = await getJobWithAllData('nonexistent', USER)
 
       expect(result).toBeNull()
     })

@@ -8,9 +8,17 @@ const num = (v: string | null): number | undefined => {
   return Number.isFinite(n) ? n : undefined
 }
 
-/** Maps a server `Rate` into an editable {@link RateRowDraft} (raw pricing only). */
+/** Maps a server `Rate` into an editable {@link RateRowDraft} (raw pricing + stored derived rates). */
 function toDraft(rate: Rate): RateRowDraft {
-  const row: RateRowDraft = { id: rate.id, item: rate.item, unit: rate.unit }
+  const row: RateRowDraft = {
+    id: rate.id,
+    item: rate.item,
+    unit: rate.unit,
+    fabricationRate: rate.fabricationRate,
+    erectionRate: rate.erectionRate,
+    loadingRate: rate.loadingRate,
+    totalRate: rate.totalRate,
+  }
   for (const field of PRICING_FIELDS) {
     const value = num(rate[field])
     if (value !== undefined) row[field] = value
@@ -19,13 +27,13 @@ function toDraft(rate: Rate): RateRowDraft {
 }
 
 /**
- * Merges the server rate master over the canonical 35 defaults into the ordered
+ * Merges the server job rates over the canonical 35 defaults into the ordered
  * list of editable table rows.
  *
  * Each default item is matched to its server row by `item` name (case-sensitive,
  * as seeded): a match yields a persisted, priced row; an unmatched default stays
  * an unpriced draft (no `id`). Any server rows that aren't part of the 35
- * defaults (user-added master items) are appended after, so nothing is hidden.
+ * defaults (user-added job items) are appended after, so nothing is hidden.
  */
 export function mergeRatesWithDefaults(rates: Rate[]): RateRowDraft[] {
   const byItem = new Map(rates.map((r) => [r.item, r]))

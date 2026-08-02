@@ -23,7 +23,7 @@ const mockedApiFetch = vi.mocked(apiFetch)
 const payload: CreateCanopyPayload = {
   canopies: [
     {
-      code: 'CANOPY-1',
+      code: 'CANOPY_1',
       heightFrom: 'GROUND',
       length: 10,
       width: 5,

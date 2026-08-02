@@ -5,10 +5,10 @@ export interface SeedSpec extends CreateSpecInput {
 }
 
 /**
- * Rate master items used by the Prisma seed runner. Rate is a global lookup
- * table keyed by unique `item` (not job-scoped). Mirrors `rate.json`: only
- * STEEL STRUCTURE carries full pricing; the rest are draft rows (item + unit),
- * to be priced later. Derived rates are computed on read (never seeded).
+ * Canonical job-scoped rate items used by the Prisma seed runner. Every seeded
+ * job receives an independent copy of this set. Only STEEL STRUCTURE carries
+ * full pricing; the rest are draft rows (item + unit). Derived rates are
+ * calculated when rows are written.
  */
 export const rateSeedData: CreateRateInput[] = [
   {

@@ -14,12 +14,15 @@ import { Step7Load } from '@/components/quotation/steps/Step7Load'
 import { Step8Joint } from '@/components/quotation/steps/Step8Joint'
 import { Step9Spec } from '@/components/quotation/steps/Step9Spec'
 import { Step10Rate } from '@/components/quotation/steps/Step10Rate'
+import { Step11Quantity } from '@/components/quotation/steps/Step11Quantity'
+import { Step12Amount } from '@/components/quotation/steps/Step12Amount'
+import { Step13Quotation } from '@/components/quotation/steps/Step13Quotation'
 
 
 export default function CreateQuotation() {
   const currentStep = useQuotationStore((s) => s.currentStep)
   const scrollRef = useRef<HTMLDivElement>(null)
-  const isRateStep = currentStep === 10
+  const isWideStep = currentStep === 3 || currentStep === 4 || currentStep === 5 || currentStep === 10 || currentStep === 11 || currentStep === 12
 
   useEffect(() => {
     scrollRef.current?.scrollTo({ top: 0, behavior: 'smooth' })
@@ -31,14 +34,14 @@ export default function CreateQuotation() {
       <div
         ref={scrollRef}
         className={cn(
-          'flex-1 overflow-y-auto py-7 pb-[120px] max-[640px]:px-4 max-[640px]:py-5 max-[640px]:pb-[140px]',
-          isRateStep ? 'px-4' : 'px-8'
+          'min-h-0 flex-1 overflow-y-auto py-7 pb-[120px] max-[640px]:px-4 max-[640px]:py-5 max-[640px]:pb-[140px]',
+          isWideStep ? 'px-4' : 'px-8'
         )}
       >
         <div
           className={cn(
             'animate-in fade-in duration-250',
-            isRateStep ? 'desktop:max-w-none desktop:mx-0' : 'desktop:max-w-[1040px] desktop:mx-auto'
+            isWideStep ? 'desktop:max-w-none desktop:mx-0' : 'desktop:max-w-[1040px] desktop:mx-auto'
           )}
           key={currentStep}
         >
@@ -52,6 +55,10 @@ export default function CreateQuotation() {
           {currentStep === 8 && <Step8Joint />}
           {currentStep === 9 && <Step9Spec />}
           {currentStep === 10 && <Step10Rate />}
+          {currentStep === 11 && <Step11Quantity />}
+          {currentStep === 12 && <Step12Amount />}
+          {currentStep === 13 && <Step13Quotation />}
+
         </div>
       </div>
       <WizardActionBar />

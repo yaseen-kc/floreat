@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useHotkeys } from 'react-hotkeys-hook'
 import { useQuotationStore } from '@/stores/quotation-store'
 import { useShallow } from 'zustand/react/shallow'
 import { cn } from '@/lib/utils'
@@ -20,12 +21,12 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { Check, ChevronDown, RotateCcw } from 'lucide-react'
-import { STEPS, STEP_COUNT } from '@/components/quotation/steps'
+import { STEPS, STEP_COUNT, FREE_NAV_FIRST_STEP, FREE_NAV_LAST_STEP } from '@/components/quotation/steps'
 
 // Static per-step fill widths for the mobile progress bar. Kept as literal
 // class strings (not built at runtime) so Tailwind's JIT emits them. Indexed by
 // currentStep - 1; the last step fills the track completely.
-const PROGRESS_WIDTHS = ['w-[9%]', 'w-[18%]', 'w-[27%]', 'w-[36%]', 'w-[45%]', 'w-[54%]', 'w-[63%]', 'w-[72%]', 'w-[81%]', 'w-full']
+const PROGRESS_WIDTHS = ['w-[8%]', 'w-[15%]', 'w-[23%]', 'w-[31%]', 'w-[38%]', 'w-[46%]', 'w-[54%]', 'w-[62%]', 'w-[69%]', 'w-[77%]', 'w-[85%]', 'w-[92%]', 'w-full']
 
 export function WizardStepper() {
   const { currentStep, goStep, validateStep, resetQuotation } = useQuotationStore(
@@ -38,16 +39,39 @@ export function WizardStepper() {
   )
   const [confirmOpen, setConfirmOpen] = useState(false)
 
-  // A step is reachable if it's already visited/current, or it's the immediate
-  // next step and the current step passes validation.
+  // Steps 1–2 are the required foundation: they create the job and roof records
+  // every later step upserts against, so the optional middle steps only unlock
+  // once both validate.
+  const foundationComplete = validateStep(1) && validateStep(2)
+  const currentStepValid = validateStep(currentStep)
+
+  /**
+   * A step is reachable when it is already visited/current, when it is the
+   * immediate next step and the current step validates, or when it sits inside
+   * the free-navigation range and the foundation steps are complete.
+   */
   const canNavigate = (target: number) =>
-    target <= currentStep || (target === currentStep + 1 && validateStep(currentStep))
+    target <= currentStep ||
+    (target === currentStep + 1 && currentStepValid) ||
+    (foundationComplete && target >= FREE_NAV_FIRST_STEP && target <= FREE_NAV_LAST_STEP)
 
   const handleClick = (target: number) => {
     if (canNavigate(target)) goStep(target)
   }
 
   const currentLabel = STEPS[currentStep - 1]?.label
+
+  useHotkeys(['ctrl+right', 'meta+right'], () => {
+    const target = currentStep + 1
+    if (target <= STEP_COUNT && canNavigate(target)) goStep(target)
+  }, { preventDefault: true }, [currentStep, currentStepValid, foundationComplete])
+
+  useHotkeys(['ctrl+left', 'meta+left'], () => {
+    if (currentStep > 1) goStep(currentStep - 1)
+  }, { preventDefault: true }, [currentStep])
+
+  // Reserve the shortcut for quotation search until its UI is available.
+  useHotkeys(['ctrl+k', 'meta+k'], () => {}, { preventDefault: true })
 
   return (
     <div className="bg-card border-b border-border">

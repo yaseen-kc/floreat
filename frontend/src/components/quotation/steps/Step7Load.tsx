@@ -1,6 +1,7 @@
 import { useLoadHydration } from '@/hooks/useLoadHydration'
 import { LoadDetails } from '@/components/quotation/sections/load/LoadDetails'
 import { CompletionPeriod } from '@/components/quotation/sections/load/CompletionPeriod'
+import { RecentlyUsed } from '@/components/quotation/RecentlyUsed'
 
 /**
  * Step 7 — Load. A flat, always-on form for a job's structural loads and the
@@ -12,6 +13,7 @@ export function Step7Load() {
 
   return (
     <section>
+      <RecentlyUsed step={7} />
       <div className="mb-5">
         <h2 className="text-xl font-semibold tracking-tight">Load</h2>
         <p className="text-muted-foreground text-sm mt-1">

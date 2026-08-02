@@ -7,6 +7,19 @@ import { stairKeys } from './queryKeys'
  * Enum unions — mirror the backend Prisma enums (string literals over the wire).
  * ────────────────────────────────────────────────────────────────────────── */
 
+export type StairCode =
+  | 'STAIR_1'
+  | 'STAIR_2'
+  | 'STAIR_3'
+  | 'STAIR_4'
+  | 'STAIR_5'
+  | 'STAIR_6'
+  | 'STAIR_7'
+  | 'STAIR_8'
+  | 'STAIR_9'
+  | 'STAIR_10'
+  | 'STAIR_11'
+  | 'STAIR_12'
 export type StairStepType = 'CHQ_PLATE_6MM' | 'CHQ_PLATE_4MM' | 'TUBE'
 export type StairFloorLevel = 'GROUND' | 'FIRST_FLOOR' | 'SECOND_FLOOR' | 'THIRD_FLOOR' | 'FOURTH_FLOOR' | 'FIFTH_FLOOR' | 'SIXTH_FLOOR'
 export type StairStringerType = 'HR_SECTION' | 'FAB_SECTION'
@@ -24,7 +37,7 @@ export type AreaDeductionFor = 'STRUCTURE_DEDUCTION' | 'COVERING_DEDUCTION' | 'B
 export interface StairItem {
   id: string
   stairId: string
-  code: string | null
+  code: StairCode | null
   typeOfStep: StairStepType | null
   location: string | null
   startingFrom: StairFloorLevel | null

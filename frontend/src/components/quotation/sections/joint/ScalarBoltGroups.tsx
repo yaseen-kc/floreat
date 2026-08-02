@@ -4,6 +4,7 @@ import type { JointDraft } from '@/stores/quotation-store'
 import { SectionCard } from '@/components/quotation/shared/SectionCard'
 import { NumberField } from '@/components/quotation/shared/NumberField'
 import { SelectField } from '@/components/quotation/shared/SelectField'
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { Layers, PanelTop, Grid3x3, Tent } from 'lucide-react'
 import { BOLT_TYPE_OPTIONS } from './jointOptions'
 
@@ -18,28 +19,28 @@ interface ScalarGroup {
 
 const SCALAR_GROUPS: ScalarGroup[] = [
   {
-    title: 'Secondary Beams',
+    title: 'Joint Bolt For Secondary Beams',
     icon: <Layers className="w-3.5 h-3.5" />,
     typeKey: 'secondaryBeamsBoltType',
     diameterKey: 'secondaryBeamsBoltDiameter',
     countKey: 'secondaryBeamsNumberOfBolts',
   },
   {
-    title: 'Purlins & Flange Brace',
+    title: 'Bolt For Purlins + Flange Brace',
     icon: <PanelTop className="w-3.5 h-3.5" />,
     typeKey: 'purlinFlangeBraceBoltType',
     diameterKey: 'purlinFlangeBraceBoltDiameter',
     countKey: 'purlinFlangeBraceNumberOfBolts',
   },
   {
-    title: 'Cladding Purlins',
+    title: 'Bolt For Cladding Purlins',
     icon: <Grid3x3 className="w-3.5 h-3.5" />,
     typeKey: 'claddingPurlinsBoltType',
     diameterKey: 'claddingPurlinsBoltDiameter',
     countKey: 'claddingPurlinsNumberOfBolts',
   },
   {
-    title: 'Canopy',
+    title: 'Joint Bolt For Canopy',
     icon: <Tent className="w-3.5 h-3.5" />,
     typeKey: 'canopyBoltType',
     diameterKey: 'canopyBoltDiameter',
@@ -62,33 +63,55 @@ export function ScalarBoltGroups() {
     <>
       {SCALAR_GROUPS.map((g) => (
         <SectionCard key={g.title} icon={g.icon} title={g.title}>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-[18px] desktop:gap-6">
-            <SelectField
-              label="Bolt Type"
-              options={BOLT_TYPE_OPTIONS}
-              required={false}
-              error={false}
-              value={joint[g.typeKey] as string | undefined}
-              onChange={(v) => setJoint({ [g.typeKey]: v || undefined } as Partial<JointDraft>)}
-            />
-            <NumberField
-              label="Bolt Diameter"
-              unit="mm"
-              required={false}
-              error={false}
-              value={joint[g.diameterKey] as number | undefined}
-              onChange={(v) => setJoint({ [g.diameterKey]: v } as Partial<JointDraft>)}
-            />
-            <NumberField
-              label="No. of Bolts"
-              unit="count"
-              step={1}
-              required={false}
-              error={false}
-              value={joint[g.countKey] as number | undefined}
-              onChange={(v) => setJoint({ [g.countKey]: v } as Partial<JointDraft>)}
-            />
-          </div>
+          <Table className="min-w-[680px] border-collapse text-sm">
+            <TableHeader>
+              <TableRow className="bg-muted/50 border-b">
+                <TableHead scope="col" className="w-12 text-center">SL</TableHead>
+                <TableHead scope="col" className="min-w-48">Type</TableHead>
+                <TableHead scope="col" className="min-w-48">Dia Of Bolt</TableHead>
+                <TableHead scope="col" className="min-w-48">No Of Bolt</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              <TableRow>
+                <TableCell className="text-center text-muted-foreground">1</TableCell>
+                <TableCell>
+                  <SelectField
+                    className="[&>label]:sr-only"
+                    label={`${g.title} bolt type`}
+                    options={BOLT_TYPE_OPTIONS}
+                    required={false}
+                    error={false}
+                    value={joint[g.typeKey] as string | undefined}
+                    onChange={(value) => setJoint({ [g.typeKey]: value || undefined } as Partial<JointDraft>)}
+                  />
+                </TableCell>
+                <TableCell>
+                  <NumberField
+                    className="[&>label]:sr-only"
+                    label={`${g.title} bolt diameter`}
+                    unit="mm"
+                    required={false}
+                    error={false}
+                    value={joint[g.diameterKey] as number | undefined}
+                    onChange={(value) => setJoint({ [g.diameterKey]: value } as Partial<JointDraft>)}
+                  />
+                </TableCell>
+                <TableCell>
+                  <NumberField
+                    className="[&>label]:sr-only"
+                    label={`${g.title} number of bolts`}
+                    unit="count"
+                    step={1}
+                    required={false}
+                    error={false}
+                    value={joint[g.countKey] as number | undefined}
+                    onChange={(value) => setJoint({ [g.countKey]: value } as Partial<JointDraft>)}
+                  />
+                </TableCell>
+              </TableRow>
+            </TableBody>
+          </Table>
         </SectionCard>
       ))}
     </>

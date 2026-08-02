@@ -83,4 +83,10 @@ export const validRoofDraft: Partial<RoofDraft> = {
   // SAG rod
   diaOfRoofSagRod: 12,
   diaOfCladdingSagRod: 10,
+  sidewalls: [
+    { side: 'FRONT', wallType: 'BRICK', thickness: 0.2, height: 3 },
+    { side: 'BACK', wallType: 'BRICK', thickness: 0.2, height: 3 },
+    { side: 'RIGHT', wallType: 'BRICK', thickness: 0.2, height: 3 },
+    { side: 'LEFT', wallType: 'BRICK', thickness: 0.2, height: 3 },
+  ],
 }

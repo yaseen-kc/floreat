@@ -7,6 +7,7 @@ import { SelectField, type SelectFieldOption } from '@/components/quotation/shar
 import { Layers } from 'lucide-react'
 import { isRequired, getFieldErrors } from '@/schemas/roof.schema'
 import { ROOF_SECTION_FIELDS } from '@/stores/quotation-store'
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 
 /** Human-readable labels for the covering-type enum. */
 const COVERING_TYPE_OPTIONS: SelectFieldOption[] = [
@@ -17,13 +18,6 @@ const COVERING_TYPE_OPTIONS: SelectFieldOption[] = [
 ]
 
 type CoveringTypeField = 'roofCoveringType' | 'claddingCoveringType'
-type CoveringNumberField = 'roofCoveringThickness' | 'claddingCoveringThickness' | 'roofAreaDeduction'
-
-const NUMBER_FIELDS: { name: CoveringNumberField; label: string; unit: string }[] = [
-  { name: 'roofCoveringThickness', label: 'Roof Covering Thickness', unit: 'mm' },
-  { name: 'claddingCoveringThickness', label: 'Cladding Covering Thickness', unit: 'mm' },
-  { name: 'roofAreaDeduction', label: 'Roof Area Deduction', unit: 'm²' },
-]
 
 export function Coverings() {
   const { roof, setRoof, enabled, toggleRoofSection, showValidation } = useQuotationStore(
@@ -52,39 +46,82 @@ export function Coverings() {
       onToggle={(e) => toggleRoofSection('coverings', e)}
       error={sectionError}
     >
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-[18px] desktop:gap-6">
-        <SelectField
-          label="Roof Covering Type"
-          options={COVERING_TYPE_OPTIONS}
-          required={isRequired('roofCoveringType')}
-          value={roof.roofCoveringType}
-          error={Boolean(errors.roofCoveringType)}
-          onChange={setType('roofCoveringType')}
-        />
-        <SelectField
-          label="Cladding Covering Type"
-          options={COVERING_TYPE_OPTIONS}
-          required={isRequired('claddingCoveringType')}
-          value={roof.claddingCoveringType}
-          error={Boolean(errors.claddingCoveringType)}
-          onChange={setType('claddingCoveringType')}
-        />
-        {NUMBER_FIELDS.map(({ name, label, unit }) => (
-          <NumberField
-            key={name}
-            label={label}
-            unit={unit}
-            required={isRequired(name)}
-            value={roof[name]}
-            error={Boolean(errors[name])}
-            onChange={(v) => {
-              const patch: Partial<RoofDraft> = {}
-              patch[name] = v
-              setRoof(patch)
-            }}
-          />
-        ))}
-      </div>
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead scope="col" className="w-12">No</TableHead>
+            <TableHead scope="col">Type</TableHead>
+            <TableHead scope="col">Thick</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          <TableRow>
+            <TableCell>1</TableCell>
+            <TableCell className="min-w-48">
+              <SelectField
+                className="[&>label]:sr-only"
+                label="Roof Covering Type"
+                options={COVERING_TYPE_OPTIONS}
+                required={isRequired('roofCoveringType')}
+                value={roof.roofCoveringType}
+                error={Boolean(errors.roofCoveringType)}
+                onChange={setType('roofCoveringType')}
+              />
+            </TableCell>
+            <TableCell className="min-w-36">
+              <NumberField
+                className="[&>label]:sr-only"
+                label="Roof Covering Thickness"
+                unit="mm"
+                required={isRequired('roofCoveringThickness')}
+                value={roof.roofCoveringThickness}
+                error={Boolean(errors.roofCoveringThickness)}
+                onChange={(v) => setRoof({ roofCoveringThickness: v })}
+              />
+            </TableCell>
+          </TableRow>
+          <TableRow>
+            <TableCell>2</TableCell>
+            <TableCell className="min-w-48">
+              <SelectField
+                className="[&>label]:sr-only"
+                label="Cladding Covering Type"
+                options={COVERING_TYPE_OPTIONS}
+                required={isRequired('claddingCoveringType')}
+                value={roof.claddingCoveringType}
+                error={Boolean(errors.claddingCoveringType)}
+                onChange={setType('claddingCoveringType')}
+              />
+            </TableCell>
+            <TableCell className="min-w-36">
+              <NumberField
+                className="[&>label]:sr-only"
+                label="Cladding Covering Thickness"
+                unit="mm"
+                required={isRequired('claddingCoveringThickness')}
+                value={roof.claddingCoveringThickness}
+                error={Boolean(errors.claddingCoveringThickness)}
+                onChange={(v) => setRoof({ claddingCoveringThickness: v })}
+              />
+            </TableCell>
+          </TableRow>
+          <TableRow>
+            <TableCell>3</TableCell>
+            <TableCell className="font-medium">Roof Area Deduction</TableCell>
+            <TableCell className="min-w-36">
+              <NumberField
+                className="[&>label]:sr-only"
+                label="Roof Area Deduction"
+                unit="m²"
+                required={isRequired('roofAreaDeduction')}
+                value={roof.roofAreaDeduction}
+                error={Boolean(errors.roofAreaDeduction)}
+                onChange={(v) => setRoof({ roofAreaDeduction: v })}
+              />
+            </TableCell>
+          </TableRow>
+        </TableBody>
+      </Table>
     </CollapsibleSection>
   )
 }

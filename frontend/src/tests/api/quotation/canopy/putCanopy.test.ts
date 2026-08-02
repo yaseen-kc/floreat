@@ -21,7 +21,7 @@ import { canopyKeys } from '@/api/quotation/canopy/queryKeys'
 const mockedApiFetch = vi.mocked(apiFetch)
 
 const payload: UpdateCanopyPayload = {
-  canopies: [{ code: 'CANOPY-1', length: 12 }],
+  canopies: [{ code: 'CANOPY_1', length: 12 }],
 }
 
 const canopy: Canopy = {

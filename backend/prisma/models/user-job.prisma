@@ -51,6 +51,10 @@ model Job {
   accessories Accessories?
   joint       Joint?
   spec        Spec?
+  quantity    Quantity?
+  amount      Amount?
+  quotation   Quotation?
+  rates       Rate[]
 
   @@index([userId])
   @@index([userId, createdAt])

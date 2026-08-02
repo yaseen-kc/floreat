@@ -1,69 +1,117 @@
-import { useQuotationStore } from '@/stores/quotation-store'
-import type { AccessoryOpeningDraft } from '@/stores/quotation-store'
+import { useState } from 'react'
 import { useShallow } from 'zustand/react/shallow'
+import { Blinds } from 'lucide-react'
+import { deriveLineItemQuantity } from '@floreat/shared/calc'
+import { useQuotationStore } from '@/stores/quotation-store'
+import type { AccessoriesDraft } from '@/stores/quotation-store'
 import { SectionCard } from '@/components/quotation/shared/SectionCard'
-import { RowCard, type RowGroup } from '@/components/quotation/shared/RowCard'
-import { EmptyState } from '@/components/ui/empty-state'
-import { Button } from '@/components/ui/button'
-import { Blinds, Plus } from 'lucide-react'
-import { ACCESSORY_OPENING_KIND_OPTIONS } from './accessoriesOptions'
+import { InputUnit } from '@/components/quotation/shared/InputUnit'
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 
-const OPENING_GROUPS: RowGroup[] = [
-  {
-    title: 'Classification',
-    fields: [
-      { kind: 'select', name: 'kind', label: 'Kind', options: ACCESSORY_OPENING_KIND_OPTIONS },
-    ],
-  },
-  {
-    title: 'Dimensions',
-    fields: [
-      { kind: 'number', name: 'length', label: 'Length', unit: 'm' },
-      { kind: 'number', name: 'width', label: 'Width', unit: 'm' },
-      { kind: 'number', name: 'nos', label: 'Nos', unit: 'count', step: 1 },
-    ],
-  },
+type OpeningRow = {
+  key: 'rollingShutter' | 'louver' | 'skyLight' | 'wallLight'
+  label: string
+  lengthField: 'rollingShutterLength' | 'louverLength' | 'skyLightLength' | 'wallLightLength'
+  widthField: 'rollingShutterWidth' | 'louverWidth' | 'skyLightWidth' | 'wallLightWidth'
+  nosField: 'rollingShutterNos' | 'louverNos' | 'skyLightNos' | 'wallLightNos'
+}
+
+const OPENING_ROWS: OpeningRow[] = [
+  { key: 'rollingShutter', label: 'Rolling Shutter', lengthField: 'rollingShutterLength', widthField: 'rollingShutterWidth', nosField: 'rollingShutterNos' },
+  { key: 'louver', label: 'Louver', lengthField: 'louverLength', widthField: 'louverWidth', nosField: 'louverNos' },
+  { key: 'skyLight', label: 'Sky Light', lengthField: 'skyLightLength', widthField: 'skyLightWidth', nosField: 'skyLightNos' },
+  { key: 'wallLight', label: 'Wall Light', lengthField: 'wallLightLength', widthField: 'wallLightWidth', nosField: 'wallLightNos' },
 ]
 
-/** Repeating opening line items for Step 6 — `kind` is required. `quantity` is server-derived (not shown). */
-export function Openings() {
-  const { openings, setAccessories } = useQuotationStore(
-    useShallow((s) => ({ openings: s.accessories.openings, setAccessories: s.setAccessories })),
-  )
+const hasValue = (value: unknown) => value !== undefined && value !== null
 
-  const addRow = () => setAccessories({ openings: [...openings, {}] })
-  const removeRow = (index: number) => setAccessories({ openings: openings.filter((_, i) => i !== index) })
-  const updateRow = (index: number, patch: Partial<AccessoryOpeningDraft>) =>
-    setAccessories({ openings: openings.map((row, i) => (i === index ? { ...row, ...patch } : row)) })
+/** Openings fields for Step 6. */
+export function Openings() {
+  const { accessories, setAccessories } = useQuotationStore(
+    useShallow((s) => ({ accessories: s.accessories, setAccessories: s.setAccessories })),
+  )
+  const [enabledOverrides, setEnabledOverrides] = useState<Partial<Record<OpeningRow['key'], boolean>>>({})
+
+  const toggleRow = (row: OpeningRow, checked: boolean) => {
+    setEnabledOverrides((current) => ({ ...current, [row.key]: checked }))
+    if (!checked) {
+      setAccessories({
+        [row.lengthField]: undefined,
+        [row.widthField]: undefined,
+        [row.nosField]: undefined,
+      } as Partial<AccessoriesDraft>)
+    }
+  }
 
   return (
     <SectionCard icon={<Blinds className="w-3.5 h-3.5" />} title="Openings">
-      <div className="flex flex-col gap-[18px] desktop:gap-6">
-        {openings.length === 0 && (
-          <EmptyState
-            icon={<Blinds />}
-            title="No openings added yet."
-            description="Add an opening (rolling shutter, louver, sky light, wall light) to include it."
-          />
-        )}
+      <Table className="min-w-[760px] border-collapse text-sm">
+        <TableHeader>
+          <TableRow className="bg-muted/50 border-b">
+            <TableHead className="w-12 text-center">SL</TableHead>
+            <TableHead className="w-12 text-center"> </TableHead>
+            <TableHead>Opening</TableHead>
+            <TableHead className="min-w-44">Length</TableHead>
+            <TableHead className="min-w-36">Width</TableHead>
+            <TableHead className="w-32">Nos</TableHead>
+            <TableHead className="w-32 text-right">Qty</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {OPENING_ROWS.map((row, index) => {
+            const length = accessories[row.lengthField] as number | undefined
+            const width = accessories[row.widthField] as number | undefined
+            const nos = accessories[row.nosField] as number | undefined
+            const hasPersistedValue = hasValue(length) || hasValue(width) || hasValue(nos)
+            const isEnabled = enabledOverrides[row.key] ?? hasPersistedValue
+            const quantity = isEnabled ? deriveLineItemQuantity(length, width, nos) : undefined
 
-        {openings.map((row, index) => (
-          <RowCard
-            key={index}
-            title={`Opening ${index + 1}`}
-            groups={OPENING_GROUPS}
-            values={row as Record<string, number | string | boolean | undefined>}
-            onChange={(patch) => updateRow(index, patch as Partial<AccessoryOpeningDraft>)}
-            onRemove={() => removeRow(index)}
-          />
-        ))}
-
-        <div>
-          <Button type="button" variant="outline" size="sm" onClick={addRow}>
-            <Plus /> Add opening
-          </Button>
-        </div>
-      </div>
+            return (
+              <TableRow key={row.key} className={!isEnabled ? 'bg-muted/20' : undefined}>
+                <TableCell className="text-center font-medium text-muted-foreground">{index + 1}</TableCell>
+                <TableCell className="text-center">
+                  <input
+                    type="checkbox"
+                    checked={isEnabled}
+                    onChange={(event) => toggleRow(row, event.target.checked)}
+                    aria-label={`Include ${row.label}`}
+                    className="h-4 w-4 accent-primary"
+                  />
+                </TableCell>
+                <TableCell className="font-medium">{row.label}</TableCell>
+                <TableCell>
+                  <InputUnit
+                    value={length}
+                    unit="m"
+                    readOnly={!isEnabled}
+                    onChange={(value) => setAccessories({ [row.lengthField]: value } as Partial<AccessoriesDraft>)}
+                  />
+                </TableCell>
+                <TableCell>
+                  <InputUnit
+                    value={width}
+                    unit="m"
+                    readOnly={!isEnabled}
+                    onChange={(value) => setAccessories({ [row.widthField]: value } as Partial<AccessoriesDraft>)}
+                  />
+                </TableCell>
+                <TableCell>
+                  <InputUnit
+                    value={nos}
+                    unit="Nos"
+                    step={1}
+                    readOnly={!isEnabled}
+                    onChange={(value) => setAccessories({ [row.nosField]: value } as Partial<AccessoriesDraft>)}
+                  />
+                </TableCell>
+                <TableCell className="text-right font-mono tabular-nums">
+                  {quantity !== undefined ? `${quantity} m2` : '-'}
+                </TableCell>
+              </TableRow>
+            )
+          })}
+        </TableBody>
+      </Table>
     </SectionCard>
   )
 }

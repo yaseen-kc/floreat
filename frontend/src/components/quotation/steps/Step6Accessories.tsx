@@ -1,15 +1,10 @@
 import { useAccessoriesHydration } from '@/hooks/useAccessoriesHydration'
-import { Drainage } from '@/components/quotation/sections/accessories/Drainage'
-import { Flashing } from '@/components/quotation/sections/accessories/Flashing'
-import { DerivedQuantities } from '@/components/quotation/sections/accessories/DerivedQuantities'
-import { PartitionInsulation } from '@/components/quotation/sections/accessories/PartitionInsulation'
-import { VentilatorHandrail } from '@/components/quotation/sections/accessories/VentilatorHandrail'
-import { FeatureToggles } from '@/components/quotation/sections/accessories/FeatureToggles'
+import { DrainageFlashingPartition } from '@/components/quotation/sections/accessories/DrainageFlashingPartition'
+import { InsulationVentilatorFeatures } from '@/components/quotation/sections/accessories/InsulationVentilatorFeatures'
 import { PaintPrimer } from '@/components/quotation/sections/accessories/PaintPrimer'
-import { Doors } from '@/components/quotation/sections/accessories/Doors'
-import { Windows } from '@/components/quotation/sections/accessories/Windows'
-import { FoldedPlates } from '@/components/quotation/sections/accessories/FoldedPlates'
+import { DoorsWindowsFoldedPlates } from '@/components/quotation/sections/accessories/DoorsWindowsFoldedPlates'
 import { Openings } from '@/components/quotation/sections/accessories/Openings'
+import { RecentlyUsed } from '@/components/quotation/RecentlyUsed'
 
 /**
  * Step 6 — Accessories. An always-on form for a job's accessories: drainage,
@@ -24,6 +19,7 @@ export function Step6Accessories() {
 
   return (
     <section>
+      <RecentlyUsed step={6} />
       <div className="mb-5">
         <h2 className="text-xl font-semibold tracking-tight">Accessories</h2>
         <p className="text-muted-foreground text-sm mt-1">
@@ -31,17 +27,11 @@ export function Step6Accessories() {
         </p>
       </div>
 
-      <Drainage />
-      <Flashing />
-      <DerivedQuantities />
-      <PartitionInsulation />
-      <VentilatorHandrail />
-      <FeatureToggles />
-      <PaintPrimer />
-      <Doors />
-      <Windows />
-      <FoldedPlates />
+      <DrainageFlashingPartition />
       <Openings />
+      <InsulationVentilatorFeatures />
+      <DoorsWindowsFoldedPlates />
+      <PaintPrimer />
     </section>
   )
 }

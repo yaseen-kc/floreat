@@ -42,6 +42,13 @@ describe('PebRoof core-dimensions section', () => {
     expect(screen.queryByText('Eave Height is required')).not.toBeInTheDocument()
   })
 
+  it('renders zero-valued defaults as empty inputs', () => {
+    render(<PebRoof />)
+    const input = screen.getAllByRole('spinbutton')[2]
+    expect(input).toHaveValue(null)
+    expect(useQuotationStore.getState().roof.eaveHeight).toBe(0)
+  })
+
   it('shows errors for the empty defaults when showValidation is true', () => {
     useQuotationStore.setState({ showValidation: true })
     render(<PebRoof />)

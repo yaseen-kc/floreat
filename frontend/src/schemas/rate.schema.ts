@@ -1,9 +1,9 @@
 /**
- * Rate master-data contract on the frontend — re-exported from the single
+ * Job rate contract on the frontend — re-exported from the single
  * source of truth in `@floreat/shared/schemas`. Adds the frontend-only
  * `RateRowDraft` (an editable Step 10 table row), the ordered list of raw
  * pricing fields, and the canonical 35-item default set that seeds the rate
- * table before the server master is populated.
+ * table before the server job rates are populated.
  */
 import type { CreateRateInput } from '@floreat/shared/schemas'
 
@@ -30,7 +30,7 @@ export type PricingField = (typeof PRICING_FIELDS)[number]
 
 /**
  * One editable row in the Step 10 rate table. `id` is present once the row has
- * been persisted (a server master row); an absent `id` marks an unsaved default.
+ * been persisted (a server job row); an absent `id` marks an unsaved default.
  * Every pricing component is an optional number (blank = draft), mirroring
  * `CreateRateInput` minus its required `item`/`unit`.
  */
@@ -38,10 +38,14 @@ export type RateRowDraft = {
   id?: string
   item: string
   unit: RateUnit
+  fabricationRate?: number
+  erectionRate?: number
+  loadingRate?: number
+  totalRate?: number
 } & Partial<Record<PricingField, number>>
 
 /**
- * The canonical 35 rate master items (item + unit), mirroring the backend seed
+ * The canonical 35 job rate items (item + unit), mirroring the backend seed
  * (`rateSeedData`). These render as the always-present baseline in the Step 10
  * table; a matching server row (by `item`) supplies pricing + derived rates,
  * and an unmatched item stays an unpriced draft until saved.

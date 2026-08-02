@@ -1,7 +1,9 @@
 import { useJointHydration } from '@/hooks/useJointHydration'
 import { ScalarBoltGroups } from '@/components/quotation/sections/joint/ScalarBoltGroups'
 import { JointBoltTable } from '@/components/quotation/sections/joint/JointBoltTable'
+import { JointFrameReference } from '@/components/quotation/sections/joint/JointFrameReference'
 import { Building2, Layers, Anchor } from 'lucide-react'
+import { RecentlyUsed } from '@/components/quotation/RecentlyUsed'
 
 /**
  * Step 8 — Joint. An always-on form for a job's bolt specifications: interactive
@@ -15,6 +17,7 @@ export function Step8Joint() {
 
     return (
         <section>
+            <RecentlyUsed step={8} />
             <div className="mb-5">
                 <h2 className="text-xl font-semibold tracking-tight">Joint bolt specifications</h2>
                 <p className="text-muted-foreground text-sm mt-1">
@@ -22,23 +25,25 @@ export function Step8Joint() {
                 </p>
             </div>
 
+            <JointFrameReference />
+
             <JointBoltTable
                 group="roof"
-                title="Roof Joints"
+                title="Joint Bolt in Roof - HSFG"
                 icon={<Building2 className="w-3.5 h-3.5" />}
                 columns="diameterAndCount"
-                hint="Bolt diameter and count per roof / rafter joint code (A–L and end-frame A-1…L-1)."
+                hint="Bolt diameter and count per roof / rafter joint code (A–L and end-frame A_1…L_1)."
             />
             <JointBoltTable
                 group="mezzanine"
-                title="Mezzanine Joints"
+                title="Joint Bolt In Mezzanine - HSFG"
                 icon={<Layers className="w-3.5 h-3.5" />}
                 columns="diameterAndCount"
                 hint="Bolt diameter and count per mezzanine joint (M–S and SEC)."
             />
             <JointBoltTable
                 group="foundation"
-                title="Foundation Bolts"
+                title="Foundation Bolts -  Roof"
                 icon={<Anchor className="w-3.5 h-3.5" />}
                 columns="diameterAndCount"
                 hint="Bolt diameter and count per foundation bolt group (FB-4 / FB-5 / FB-6)."

@@ -14,30 +14,32 @@ import { MaterialConsumption } from "../sections/roof/MaterialConsumption";
 import { SagRod } from "../sections/roof/SagRod";
 import { Sidewalls } from "../sections/roof/Sidewalls";
 import { useRoofHydration } from "@/hooks/useRoofHydration";
+import { RecentlyUsed } from '@/components/quotation/RecentlyUsed'
 
 export function Step2Roof() {
     useRoofHydration();
     return (
         <section>
+            <RecentlyUsed step={2} />
             <div className="mb-5">
                 <h2 className="text-xl font-semibold tracking-tight">Structural inputs</h2>
                 <p className="text-muted-foreground text-sm mt-1">Core building dimensions and roof frame configuration.</p>
             </div>
             <PebRoof />
-            <FrameMembers />
-            <Sidewalls />
-            <Coverings />
-            <Purlins />
-            <FlangeBrace />
-            <Polycarbonate />
-            <WindBracing />
-            <CladdingOpenings />
-            <SideExtension />
-            <FasciaBoard />
-            <BaseFixing />
             <MaterialConsumption />
             <SagRod />
             <MaterialGrade />
+            <FrameMembers />
+            <Purlins />
+            <WindBracing />
+            <Sidewalls />
+            <FlangeBrace />
+            <CladdingOpenings />
+            <FasciaBoard />
+            <Coverings />
+            <Polycarbonate />
+            <SideExtension />
+            <BaseFixing />
         </section>
     )
 }

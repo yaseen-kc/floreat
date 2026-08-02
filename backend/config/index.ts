@@ -21,6 +21,12 @@ export function resolveCorsOrigin(env: NodeJS.ProcessEnv): string[] {
   return origins
 }
 
+export function assertSafeAuthConfig(env: NodeJS.ProcessEnv): void {
+  if (env.NODE_ENV === 'production' && env.BYPASS_AUTH === 'true') {
+    throw new Error('BYPASS_AUTH is development-only and must be disabled in production.')
+  }
+}
+
 /**
  * Centralized app configuration.
  * Reads from environment variables with sensible defaults for local development.
@@ -31,6 +37,7 @@ export const config = {
   port: Number(process.env.PORT) || 3000,
   corsOrigins: resolveCorsOrigin(process.env),
   rateLimit: {
+    enabled: process.env.RATELIMITER !== 'false',
     max: Number(process.env.RATE_LIMIT_MAX) || 100,
     timeWindow: process.env.RATE_LIMIT_WINDOW || '1 minute',
   },
@@ -38,3 +45,5 @@ export const config = {
     enabled: process.env.NODE_ENV !== 'production' && process.env.SWAGGER_UI !== 'false',
   },
 }
+
+assertSafeAuthConfig(process.env)

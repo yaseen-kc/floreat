@@ -18,14 +18,13 @@ import {
   canopyItemSchema,
 } from '@/schemas/canopy.schema'
 import { type CreateLoadInput } from '@/schemas/load.schema'
+import { type CreateQuotationInput } from '@/schemas/quotation.schema'
 import { type CreateSpecInput, specProductItemSchema } from '@/schemas/spec.schema'
 import {
   type CreateAccessoriesInput,
-  accessoryDoorSchema,
-  accessoryWindowSchema,
-  accessoryFoldedPlateSchema,
-  accessoryOpeningSchema,
 } from '@/schemas/accessories.schema'
+import type { Quantity } from '@/api/quotation/quantity/getQuantity'
+import type { Amount } from '@/api/quotation/amount/getAmount'
 import {
   type CreateJointInput,
   jointBoltRoofItemSchema,
@@ -35,8 +34,15 @@ import {
   mezzanineJointIdEnum,
   foundationBoltJointIdEnum,
 } from '@/schemas/joint.schema'
-import { deriveSideColumnsWidthHeight, deriveJointBolts } from '@floreat/shared/calc'
+import {
+  deriveSideColumnsWidthHeight,
+  deriveJointBolts,
+  deriveWindBracingBaySpacing,
+  deriveRoofWindBracingLength,
+  deriveColumnWindBracingLength,
+} from '@floreat/shared/calc'
 import { STEP_COUNT } from '@/components/quotation/steps'
+import type { RateRowDraft } from '@/schemas/rate.schema'
 
 /** Step 1 project info — the canonical job contract (see job.schema.ts). */
 export type ProjectInfo = JobInput
@@ -73,6 +79,20 @@ export type RoofDraft = Omit<CreateRoofInput, 'roofFrameBaseFixing' | RoofSectio
   Partial<Pick<CreateRoofInput, RoofSectionField>> & {
     roofFrameBaseFixing: CreateRoofInput['roofFrameBaseFixing'] | ''
   }
+
+export const SIDEWALL_SIDES = ['FRONT', 'BACK', 'RIGHT', 'LEFT'] as const
+type SidewallDraft = NonNullable<RoofDraft['sidewalls']>[number]
+
+const createDefaultSidewall = (side: SidewallDraft['side']): SidewallDraft => ({
+  side,
+  wallType: 'BRICK',
+  thickness: 0,
+  height: 0,
+})
+
+/** Keeps sidewalls addressable by the four fixed building sides. */
+export const normalizeSidewalls = (sidewalls?: readonly SidewallDraft[] | null): SidewallDraft[] =>
+  SIDEWALL_SIDES.map((side) => sidewalls?.find((row) => row.side === side) ?? createDefaultSidewall(side))
 
 /**
  * The optional, toggleable roof sections (Step 2). Each maps to a group of
@@ -218,17 +238,13 @@ export interface CanopyDraft {
 export type LoadDraft = CreateLoadInput
 
 /**
- * Step 6 accessory line-item draft rows. Each comes straight from the Zod item
- * schema minus the server-derived `quantity` (recomputed on write), so the
- * draft holds only user-entered fields. Opening `kind` is optional in the draft
- * (a freshly-added row has no kind yet) even though the wire schema requires it.
+ * Step 13 quotation draft. Quotation is a flat, 1:1-per-job resource with NO
+ * child arrays, and the schema is entirely optional — so the draft is just the
+ * create input. Every field can be left blank and is dropped from the payload by
+ * {@link buildQuotationPayload}.
  */
-export type AccessoryDoorDraft = Omit<z.infer<typeof accessoryDoorSchema>, 'quantity'>
-export type AccessoryWindowDraft = Omit<z.infer<typeof accessoryWindowSchema>, 'quantity'>
-export type AccessoryFoldedPlateDraft = Omit<z.infer<typeof accessoryFoldedPlateSchema>, 'quantity'>
-export type AccessoryOpeningDraft = Omit<z.infer<typeof accessoryOpeningSchema>, 'quantity' | 'kind'> & {
-  kind?: z.infer<typeof accessoryOpeningSchema>['kind']
-}
+export type QuotationDraft = CreateQuotationInput
+
 
 /**
  * The Step 6 accessories draft. Accessories is a flat, always-on 1:1-per-job
@@ -239,13 +255,8 @@ export type AccessoryOpeningDraft = Omit<z.infer<typeof accessoryOpeningSchema>,
  */
 export type AccessoriesDraft = Omit<
   CreateAccessoriesInput,
-  'doors' | 'windows' | 'foldedPlates' | 'openings'
-> & {
-  doors: AccessoryDoorDraft[]
-  windows: AccessoryWindowDraft[]
-  foldedPlates: AccessoryFoldedPlateDraft[]
-  openings: AccessoryOpeningDraft[]
-}
+  'doorQuantity' | 'windowQuantity' | 'foldedPlateQuantity'
+>
 
 /**
  * Step 8 joint bolt-spec draft rows. Each item type comes straight from the
@@ -304,6 +315,14 @@ interface QuotationState {
   accessories: AccessoriesDraft
   joint: JointDraft
   spec: SpecDraft
+  quotation: QuotationDraft
+  quantity: Quantity | null
+  amount: Amount | null
+  quantityDrafts: Record<string, Record<string, string>>
+  rateRows: RateRowDraft[]
+  setQuantityDraft: (sectionKey: string, draft: Record<string, string>) => void
+  setAmount: (amount: Amount | null) => void
+  setRateRows: (rows: RateRowDraft[]) => void
   showValidation: boolean
   jobId: string | null
   setProjectInfo: (v: Partial<ProjectInfo>) => void
@@ -316,6 +335,7 @@ interface QuotationState {
   setAccessories: (v: Partial<AccessoriesDraft>) => void
   setJoint: (v: Partial<JointDraft>) => void
   setSpec: (v: Partial<SpecDraft>) => void
+  setQuotation: (v: Partial<QuotationDraft>) => void
   setJobId: (id: string | null) => void
   resetQuotation: () => void
   goStep: (n: number) => void
@@ -325,7 +345,7 @@ interface QuotationState {
 }
 
 /** Factory for a fresh projectInfo so each new quotation gets a current date. */
-const createDefaultProjectInfo = (): ProjectInfo => ({
+export const createDefaultProjectInfo = (): ProjectInfo => ({
   projectNo: '', subject: '', refNo: '',
   date: new Date().toISOString().slice(0, 10),
   designedByName: '', designedByMobile: '',
@@ -342,7 +362,7 @@ const createDefaultProjectInfo = (): ProjectInfo => ({
  * (rejected by the schema's `.positive()`) and `roofFrameBaseFixing` starts
  * unselected (`''`), so Step 2 is invalid until the user fills it in.
  */
-const createDefaultRoof = (): RoofDraft => ({
+export const createDefaultRoof = (): RoofDraft => ({
   buildingOverallLength: 0,
   buildingOverallWidth: 0,
   eaveHeight: 0,
@@ -354,44 +374,40 @@ const createDefaultRoof = (): RoofDraft => ({
   internalColumnsForMainRoofFrames: 0,
   internalColumnsForEndRoofFrames: 0,
   roofFrameBaseFixing: '',
-  sidewalls: [],
+  sidewalls: normalizeSidewalls(),
 })
 
 /** Factory for the per-section enabled flags — every optional section starts off. */
-const createDefaultRoofSections = (): RoofSectionsEnabled => ({
-  members: false,
-  purlins: false,
-  coverings: false,
-  flangeBrace: false,
-  polycarbonate: false,
-  windBracing: false,
-  claddingOpenings: false,
-  fasciaBoard: false,
-  sideExtension: false,
-  materialGrade: false,
-  materialConsumption: false,
-  sagRod: false,
-  sidewalls: false,
+export const createDefaultRoofSections = (): RoofSectionsEnabled => ({
+  members: true,
+  purlins: true,
+  coverings: true,
+  flangeBrace: true,
+  polycarbonate: true,
+  windBracing: true,
+  claddingOpenings: true,
+  fasciaBoard: true,
+  sideExtension: true,
+  materialGrade: true,
+  materialConsumption: true,
+  sagRod: true,
+  sidewalls: true,
 })
 
 /** Factory for a fresh mezzanine draft — no floors or extensions to start. */
-const createDefaultMezzanine = (): MezzanineDraft => ({ floors: [], extensions: [] })
+export const createDefaultMezzanine = (): MezzanineDraft => ({ floors: [], extensions: [] })
 
 /** Factory for a fresh stair draft — no staircases or area deductions to start. */
-const createDefaultStair = (): StairDraft => ({ stairs: [], areaDeductions: [] })
+export const createDefaultStair = (): StairDraft => ({ stairs: [], areaDeductions: [] })
 
 /** Factory for a fresh canopy draft — no canopy items to start. */
-const createDefaultCanopy = (): CanopyDraft => ({ canopies: [] })
+export const createDefaultCanopy = (): CanopyDraft => ({ canopies: [] })
 
 /** Factory for a fresh load draft — every field blank (the schema is all-optional). */
-const createDefaultLoad = (): LoadDraft => ({})
+export const createDefaultLoad = (): LoadDraft => ({})
 
-/** Factory for a fresh accessories draft — every scalar blank, all four arrays empty. */
-const createDefaultAccessories = (): AccessoriesDraft => ({
-  doors: [],
-  windows: [],
-  foldedPlates: [],
-  openings: [],
+/** Factory for a fresh accessories draft — every scalar blank. */
+export const createDefaultAccessories = (): AccessoriesDraft => ({
 })
 
 /**
@@ -401,14 +417,17 @@ const createDefaultAccessories = (): AccessoriesDraft => ({
  * row for the interactive frame diagrams. Blank rows are dropped from the
  * payload by {@link buildJointPayload}.
  */
-const createDefaultJoint = (): JointDraft => ({
+export const createDefaultJoint = (): JointDraft => ({
   jointBoltRoof: roofJointIdEnum.options.map((roofJointId) => ({ roofJointId })),
   jointBoltMezzanine: mezzanineJointIdEnum.options.map((mezzanineJointId) => ({ mezzanineJointId })),
   foundationBoltRoof: foundationBoltJointIdEnum.options.map((foundationJointId) => ({ foundationJointId })),
 })
 
 /** Factory for a fresh spec draft — an empty products table (the schema is all-optional). */
-const createDefaultSpec = (): SpecDraft => ({ products: [] })
+export const createDefaultSpec = (): SpecDraft => ({ products: [] })
+
+/** Factory for a fresh quotation draft — every field blank (the schema is all-optional). */
+export const createDefaultQuotation = (): QuotationDraft => ({})
 
 /** True for a plain, non-array object (the shape of every nested draft slice). */
 const isPlainObject = (v: unknown): v is Record<string, unknown> =>
@@ -449,6 +468,10 @@ export const useQuotationStore = create<QuotationState>()(
       currentStep: 1,
       showValidation: false,
       jobId: null,
+      quantity: null,
+      amount: null,
+      quantityDrafts: {},
+      rateRows: [],
       projectInfo: createDefaultProjectInfo(),
       roof: createDefaultRoof(),
       roofSectionsEnabled: createDefaultRoofSections(),
@@ -459,8 +482,19 @@ export const useQuotationStore = create<QuotationState>()(
       accessories: createDefaultAccessories(),
       joint: createDefaultJoint(),
       spec: createDefaultSpec(),
+      quotation: createDefaultQuotation(),
+
+      setAmount: (amount) => set({ amount }),
+      setRateRows: (rateRows) => set({ rateRows }),
 
       setProjectInfo: (v) => set((s) => ({ projectInfo: { ...s.projectInfo, ...v } })),
+      setQuantityDraft: (sectionKey, draft) =>
+        set((s) => ({
+          quantityDrafts: {
+            ...s.quantityDrafts,
+            [sectionKey]: draft,
+          },
+        })),
 
       // `sideColumnsWidthHeight`, `sideColumnsMidFrameCount` and
       // `sideColumnsEndFrameCount` are derived, never user-entered: recompute
@@ -469,17 +503,29 @@ export const useQuotationStore = create<QuotationState>()(
       // `claddingExtensionMidFrameCount` / `claddingExtensionEndFrameCount`.
       setRoof: (v) =>
         set((s) => {
-          const roof = { ...s.roof, ...v }
+          const roof = {
+            ...s.roof,
+            ...v,
+            ...(v.sidewalls ? { sidewalls: normalizeSidewalls(v.sidewalls) } : {}),
+          }
           roof.sideColumnsWidthHeight = deriveSideColumnsWidthHeight(roof)
           roof.sideColumnsMidFrameCount = roof.claddingExtensionMidFrameCount
           roof.sideColumnsEndFrameCount = roof.claddingExtensionEndFrameCount
+          const baySpacing = deriveWindBracingBaySpacing(roof)
+          roof.roofWindBracingBaySpacing = baySpacing
+          roof.columnWindBracingBaySpacing = baySpacing
+          roof.roofWindBracingLength = deriveRoofWindBracingLength(roof)
+          roof.columnWindBracingLength = deriveColumnWindBracingLength(roof)
           return { roof }
         }),
 
       toggleRoofSection: (key, enabled) =>
         set((s) => {
           const roofSectionsEnabled = { ...s.roofSectionsEnabled, [key]: enabled }
-          if (enabled) return { roofSectionsEnabled }
+          if (enabled) {
+            if (key !== 'sidewalls') return { roofSectionsEnabled }
+            return { roofSectionsEnabled, roof: { ...s.roof, sidewalls: normalizeSidewalls(s.roof.sidewalls) } }
+          }
           // Disabling a section clears its fields so they drop from the payload.
           const roof = { ...s.roof } as Record<string, unknown>
           for (const field of ROOF_SECTION_FIELDS[key]) {
@@ -525,12 +571,20 @@ export const useQuotationStore = create<QuotationState>()(
       // are dropped from the payload by buildSpecPayload at save time.
       setSpec: (v) => set((s) => ({ spec: { ...s.spec, ...v } })),
 
+      // Quotation is always-on: blank fields are dropped from the payload by
+      // buildQuotationPayload at save time.
+      setQuotation: (v) => set((s) => ({ quotation: { ...s.quotation, ...v } })),
+
       setJobId: (id) => set({ jobId: id }),
 
       resetQuotation: () => set({
         currentStep: 1,
         showValidation: false,
         jobId: null,
+        quantity: null,
+        amount: null,
+        quantityDrafts: {},
+        rateRows: [],
         projectInfo: createDefaultProjectInfo(),
         roof: createDefaultRoof(),
         roofSectionsEnabled: createDefaultRoofSections(),
@@ -541,6 +595,7 @@ export const useQuotationStore = create<QuotationState>()(
         accessories: createDefaultAccessories(),
         joint: createDefaultJoint(),
         spec: createDefaultSpec(),
+        quotation: createDefaultQuotation(),
       }),
 
       validateStep: (n) => {
@@ -572,7 +627,7 @@ export const useQuotationStore = create<QuotationState>()(
       // creating a duplicate.
       skipHydration: true,
       merge: (persistedState, currentState) => deepMergeDraft(persistedState, currentState),
-      partialize: (s) => ({ projectInfo: s.projectInfo, roof: s.roof, roofSectionsEnabled: s.roofSectionsEnabled, mezzanine: s.mezzanine, stair: s.stair, canopy: s.canopy, load: s.load, accessories: s.accessories, joint: s.joint, spec: s.spec, currentStep: s.currentStep, jobId: s.jobId }),
+      partialize: (s) => ({ projectInfo: s.projectInfo, roof: s.roof, roofSectionsEnabled: s.roofSectionsEnabled, mezzanine: s.mezzanine, stair: s.stair, canopy: s.canopy, load: s.load, accessories: s.accessories, joint: s.joint, spec: s.spec, quotation: s.quotation, rateRows: s.rateRows, currentStep: s.currentStep, jobId: s.jobId }),
     }
   )
 )
@@ -600,7 +655,9 @@ export function buildRoofPayload(roof: RoofDraft): CreateRoofInput {
 
   const entries = Object.entries(roof).filter(([key, value]) => {
     if (value === undefined) return false
-    if (key === 'sidewalls') return Array.isArray(value) && value.length > 0
+    if (key === 'sidewalls') {
+      return Array.isArray(value) && value.some((row) => row.thickness > 0 || row.height > 0)
+    }
     return true
   })
 
@@ -677,6 +734,16 @@ export function buildLoadPayload(load: LoadDraft): CreateLoadInput {
   return compactRow(load) as CreateLoadInput
 }
 
+/**
+ * Builds the quotation create/upsert payload from the Step 13 draft.
+ *
+ * Quotation is a flat resource with an all-optional schema, so this just drops
+ * every blank (`undefined`) field. An entirely blank draft yields `{}`.
+ */
+export function buildQuotationPayload(quotation: QuotationDraft): CreateQuotationInput {
+  return compactRow(quotation) as CreateQuotationInput
+}
+
 /** The six roof-derived quantity fields; each is only sent when its `*Manual` flag is set. */
 const ACCESSORY_QUANTITY_FIELDS = [
   'gutterQuantity',
@@ -699,7 +766,7 @@ const ACCESSORY_QUANTITY_FIELDS = [
  * never part of the draft. An entirely blank draft yields `{}`.
  */
 export function buildAccessoriesPayload(accessories: AccessoriesDraft): CreateAccessoriesInput {
-  const { doors, windows, foldedPlates, openings, ...scalars } = accessories
+  const { ...scalars } = accessories
 
   const scalarsClean = { ...scalars } as Record<string, unknown>
   for (const field of ACCESSORY_QUANTITY_FIELDS) {
@@ -707,17 +774,6 @@ export function buildAccessoriesPayload(accessories: AccessoriesDraft): CreateAc
   }
 
   const payload = compactRow(scalarsClean) as CreateAccessoriesInput
-
-  const cleanDoors = doors.map(compactRow).filter((r) => Object.keys(r).length > 0)
-  const cleanWindows = windows.map(compactRow).filter((r) => Object.keys(r).length > 0)
-  const cleanFoldedPlates = foldedPlates.map(compactRow).filter((r) => Object.keys(r).length > 0)
-  // An opening is meaningless without its (schema-required) `kind`.
-  const cleanOpenings = openings.map(compactRow).filter((r) => r.kind !== undefined)
-
-  if (cleanDoors.length > 0) payload.doors = cleanDoors
-  if (cleanWindows.length > 0) payload.windows = cleanWindows
-  if (cleanFoldedPlates.length > 0) payload.foldedPlates = cleanFoldedPlates
-  if (cleanOpenings.length > 0) payload.openings = cleanOpenings as CreateAccessoriesInput['openings']
 
   return payload
 }
@@ -761,7 +817,7 @@ export function buildJointPayload(joint: JointDraft): CreateJointInput {
  */
 export function buildSpecPayload(spec: SpecDraft): CreateSpecInput {
   const products = spec.products
-    .map(({ code: _code, ...rest }) => compactRow(rest))
+    .map((product) => compactRow(Object.fromEntries(Object.entries(product).filter(([key]) => key !== 'code'))))
     .filter((r) => Object.keys(r).length > 0)
     .map((r, i) => ({ ...r, code: `PRODUCT-${i + 1}` }))
 

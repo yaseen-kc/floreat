@@ -13,7 +13,7 @@ export const boltTypeEnum = z.enum(['HSFG', 'ORD'])
 
 /** Closed set of roof joint codes. Underscore variants (e.g. `A_1`) mirror the
  * Prisma `RoofJointId` enum member names, which `@map` to their hyphenated
- * DB/UI form (e.g. "A-1") — matches the project convention for @map'd enums. */
+ * DB/UI form (e.g. "A_1") — matches the project convention for @map'd enums. */
 export const roofJointIdEnum = z.enum([
   'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L',
   'A_1', 'B_1', 'B_2', 'C_1', 'D_1', 'G_1', 'H_1', 'I_1', 'K_1', 'L_1',

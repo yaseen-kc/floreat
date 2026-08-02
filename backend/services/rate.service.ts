@@ -1,69 +1,83 @@
-/**
- * Rate service — encapsulates database operations for the Rate master model.
- * Rate is a top-level master/lookup table (unique by `item`, no `jobId`), so it
- * follows plain REST rather than the nested job-scoped pattern.
- *
- * The four rates (fabrication/erection/loading/total) are never stored — they
- * are derived from each row's raw pricing components via `@floreat/shared/calc`
- * and attached to every response, keeping the server authoritative (§0).
- */
+/** Job-owned rate operations. Every query is scoped by jobId. */
 import { prisma } from '../lib/prisma.js'
 import { deriveRateBreakdown } from '@floreat/shared/calc'
-import type { CreateRateInput, UpdateRateInput } from '../schemas/rate.schema.js'
+import type { BulkRateInput, CreateRateInput, UpdateRateInput } from '../schemas/rate.schema.js'
+import { computeJobAmount } from './amount-calc.helper.js'
 
-/** A Rate row as returned by Prisma (Decimal columns are `Decimal` objects server-side). */
-type RateRow = Awaited<ReturnType<typeof prisma.rate.findUniqueOrThrow>>
-
-/** Coerce a Prisma Decimal (or null) to a plain number for the pure calc. */
 const toNum = (v: unknown): number | undefined => (v == null ? undefined : Number(v))
 
-/**
- * Attaches the four server-derived rates to a Rate row. The raw pricing
- * components stay on the row untouched; consumers read `fabricationRate`,
- * `erectionRate`, `loadingRate` and `totalRate` off the returned object.
- */
-function withBreakdown<T extends RateRow>(rate: T) {
-  const breakdown = deriveRateBreakdown({
-    material: toNum(rate.material),
-    fabrication: toNum(rate.fabrication),
-    transportation: toNum(rate.transportation),
-    installation: toNum(rate.installation),
-    loadingUnloading: toNum(rate.loadingUnloading),
-    overheads: toNum(rate.overheads),
-    others: toNum(rate.others),
-    marginPercentage: toNum(rate.marginPercentage),
+function computeBreakdown(row: Partial<CreateRateInput> & Record<string, unknown>) {
+  return deriveRateBreakdown({
+    material: toNum(row.material), fabrication: toNum(row.fabrication),
+    transportation: toNum(row.transportation), installation: toNum(row.installation),
+    loadingUnloading: toNum(row.loadingUnloading), overheads: toNum(row.overheads),
+    others: toNum(row.others), marginPercentage: toNum(row.marginPercentage),
   })
-  return { ...rate, ...breakdown }
 }
 
-/** Creates a new rate master item. Throws P2002 if `item` already exists. */
-export async function createRate(data: CreateRateInput) {
-  const rate = await prisma.rate.create({ data })
-  return withBreakdown(rate)
+async function refreshAmount(jobId: string) {
+  const computed = await computeJobAmount(jobId)
+  if (!computed) return
+  await prisma.amount.upsert({
+    where: { jobId },
+    create: { jobId, ...computed, calculationVersion: 'amount-v1', sourceUpdatedAt: new Date(), rateVersion: 1, isStale: false },
+    update: { ...computed, calculationVersion: 'amount-v1', sourceUpdatedAt: new Date(), rateVersion: 1, isStale: false },
+  })
 }
 
-/** Returns a paginated list of rate items ordered by most recent first, each with its derived rates. */
-export async function getRates(page: number, pageSize: number) {
+export async function createRate(jobId: string, data: CreateRateInput) {
+  const rate = await prisma.rate.create({ data: { jobId, ...data, ...computeBreakdown(data) } })
+  await refreshAmount(jobId)
+  return rate
+}
+
+export async function replaceRates(jobId: string, data: BulkRateInput) {
+  const rates = await prisma.$transaction(async (tx) => {
+    await tx.rate.deleteMany({ where: { jobId } })
+    for (const row of data.rates) {
+      await tx.rate.create({ data: { jobId, ...row, ...computeBreakdown(row) } })
+    }
+    return tx.rate.findMany({ where: { jobId }, orderBy: { createdAt: 'asc' } })
+  })
+  await refreshAmount(jobId)
+  return rates
+}
+
+export async function getRates(jobId: string, page: number, pageSize: number) {
+  const where = { jobId }
   const [rows, total] = await Promise.all([
-    prisma.rate.findMany({ skip: (page - 1) * pageSize, take: pageSize, orderBy: { createdAt: 'desc' } }),
-    prisma.rate.count(),
+    prisma.rate.findMany({ where, skip: (page - 1) * pageSize, take: pageSize, orderBy: { createdAt: 'desc' } }),
+    prisma.rate.count({ where }),
   ])
-  return { data: rows.map(withBreakdown), total, page, pageSize }
+  return { data: rows, total, page, pageSize }
 }
 
-/** Finds a single rate item by id, with its derived rates. Returns null if not found. */
-export async function getRateById(id: string) {
-  const rate = await prisma.rate.findUnique({ where: { id } })
-  return rate ? withBreakdown(rate) : null
+export function getRateById(jobId: string, id: string) {
+  return prisma.rate.findFirst({ where: { id, jobId } })
 }
 
-/** Partially updates a rate item by id. Throws P2025 if not found. */
-export async function updateRate(id: string, data: UpdateRateInput) {
-  const rate = await prisma.rate.update({ where: { id }, data })
-  return withBreakdown(rate)
+export async function updateRate(jobId: string, id: string, data: UpdateRateInput) {
+  const existing = await prisma.rate.findFirst({ where: { id, jobId } })
+  if (!existing) throw Object.assign(new Error('Record not found'), { code: 'P2025' })
+  const breakdown = computeBreakdown({
+    material: data.material !== undefined ? data.material : toNum(existing.material),
+    fabrication: data.fabrication !== undefined ? data.fabrication : toNum(existing.fabrication),
+    transportation: data.transportation !== undefined ? data.transportation : toNum(existing.transportation),
+    installation: data.installation !== undefined ? data.installation : toNum(existing.installation),
+    loadingUnloading: data.loadingUnloading !== undefined ? data.loadingUnloading : toNum(existing.loadingUnloading),
+    overheads: data.overheads !== undefined ? data.overheads : toNum(existing.overheads),
+    others: data.others !== undefined ? data.others : toNum(existing.others),
+    marginPercentage: data.marginPercentage !== undefined ? data.marginPercentage : toNum(existing.marginPercentage),
+  })
+  const rate = await prisma.rate.update({ where: { id }, data: { ...data, ...breakdown } })
+  await refreshAmount(jobId)
+  return rate
 }
 
-/** Deletes a rate item by id. Throws P2025 if not found. */
-export function deleteRate(id: string) {
-  return prisma.rate.delete({ where: { id } })
+export async function deleteRate(jobId: string, id: string) {
+  const existing = await prisma.rate.findFirst({ where: { id, jobId } })
+  if (!existing) throw Object.assign(new Error('Record not found'), { code: 'P2025' })
+  const rate = await prisma.rate.delete({ where: { id } })
+  await refreshAmount(jobId)
+  return rate
 }

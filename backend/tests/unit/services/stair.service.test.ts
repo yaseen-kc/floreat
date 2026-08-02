@@ -92,7 +92,7 @@ describe('stair.service', () => {
   describe('updateStair', () => {
     it('updates stair and replaces stairs and deductions when provided', async () => {
       const stair = makeStair()
-      const stairs = [makeStairItem({ code: 'STAIR-2' })]
+      const stairs = [makeStairItem({ code: 'STAIR_2' })]
       const areaDeductions = [makeAreaDeduction()]
       prismaMock.stair.update.mockResolvedValue(stair as any)
 

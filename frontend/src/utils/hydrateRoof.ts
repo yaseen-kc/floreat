@@ -1,6 +1,6 @@
 import type { Roof } from '@/api/quotation/roof/getRoof'
 import type { RoofDraft, RoofSectionsEnabled, RoofSectionKey } from '@/stores/quotation-store'
-import { ROOF_SECTION_FIELDS } from '@/stores/quotation-store'
+import { normalizeSidewalls, ROOF_SECTION_FIELDS } from '@/stores/quotation-store'
 
 import { num, int } from '@floreat/shared/units'
 
@@ -111,12 +111,12 @@ export function mapRoofResponseToDraft(r: Roof): HydratedRoof {
     diaOfCladdingSagRod: num(r.diaOfCladdingSagRod),
 
     // ── Inline sidewalls ──
-    sidewalls: r.sidewalls.map((s) => ({
+    sidewalls: normalizeSidewalls(r.sidewalls.map((s) => ({
       side: s.side,
       wallType: s.wallType,
       thickness: Number(s.thickness),
       height: Number(s.height),
-    })),
+    }))),
   }
 
   const record = roof as Record<string, unknown>

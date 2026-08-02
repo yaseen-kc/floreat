@@ -23,7 +23,7 @@ const mockedApiFetch = vi.mocked(apiFetch)
 const payload: CreateAccessoriesPayload = {
   gutterType: 'PPGL',
   gutterSize: 'IN_6',
-  doors: [{ height: 2.1, width: 0.9, nos: 3 }],
+  doorHeight: 2, doorWidth: 1, doorNos: 1,
 }
 
 const accessories = {
@@ -31,10 +31,6 @@ const accessories = {
   jobId: 'job-1',
   createdAt: '2026-01-01T00:00:00.000Z',
   updatedAt: '2026-01-01T00:00:00.000Z',
-  doors: [],
-  windows: [],
-  foldedPlates: [],
-  openings: [],
 } as unknown as Accessories
 
 describe('upsertAccessories', () => {

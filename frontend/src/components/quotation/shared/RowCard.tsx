@@ -3,11 +3,12 @@ import { NumberField } from '@/components/quotation/shared/NumberField'
 import { SelectField, type SelectFieldOption } from '@/components/quotation/shared/SelectField'
 import { Trash2 } from 'lucide-react'
 
-/** A single editable field within a row group — a numeric input, an enum select, or a yes/no boolean. */
+/** A single editable field within a row group — a numeric input, an enum select, a yes/no boolean, or a read-only computed value. */
 export type RowField =
   | { kind: 'number'; name: string; label: string; unit: string; step?: number }
   | { kind: 'select'; name: string; label: string; options: SelectFieldOption[] }
   | { kind: 'boolean'; name: string; label: string }
+  | { kind: 'computed'; name: string; label: string; unit: string; compute: (values: Record<string, number | string | boolean | undefined>) => number | undefined }
 
 /** Yes/No options for boolean fields (mapped to real booleans on change). */
 const BOOL_OPTIONS: SelectFieldOption[] = [
@@ -81,6 +82,17 @@ export function RowCard({ title, badge, groups, values, onChange, onRemove }: Ro
                       values[field.name] === true ? 'true' : values[field.name] === false ? 'false' : undefined
                     }
                     onChange={(v) => onChange({ [field.name]: v === '' || v === undefined ? undefined : v === 'true' })}
+                  />
+                ) : field.kind === 'computed' ? (
+                  <NumberField
+                    key={field.name}
+                    label={field.label}
+                    unit={field.unit}
+                    readOnly
+                    required={false}
+                    error={false}
+                    value={field.compute(values)}
+                    onChange={() => {}}
                   />
                 ) : (
                   <SelectField

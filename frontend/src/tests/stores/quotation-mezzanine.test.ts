@@ -9,7 +9,7 @@ describe('buildMezzaninePayload', () => {
     const draft: MezzanineDraft = {
       floors: [
         // A real floor: code + a couple of populated fields, the rest undefined.
-        { code: 'MEZ-1', type: 'DECK_SHEET', lengthM: 12, widthM: undefined, beamsSecondary: undefined },
+        { code: 'MEZ_1', type: 'DECK_SHEET', lengthM: 12, widthM: undefined, beamsSecondary: undefined },
         // Fully-empty row (all undefined) — must be dropped.
         { type: undefined, lengthM: undefined },
       ],
@@ -19,11 +19,20 @@ describe('buildMezzaninePayload', () => {
 
     const payload = buildMezzaninePayload(draft)
 
-    expect(payload.floors).toEqual([{ code: 'MEZ-1', type: 'DECK_SHEET', lengthM: 12 }])
+    expect(payload.floors).toEqual([{ code: 'MEZ_1', type: 'DECK_SHEET', lengthM: 12 }])
     expect('extensions' in payload).toBe(false)
   })
 
   it('returns an empty object for an empty draft', () => {
     expect(buildMezzaninePayload({ floors: [], extensions: [] })).toEqual({})
+  })
+
+  it('preserves the generated extension code in the submission payload', () => {
+    const payload = buildMezzaninePayload({
+      floors: [],
+      extensions: [{ code: 'EXT_1', floor: 'FLOOR_1' }],
+    })
+
+    expect(payload.extensions).toEqual([{ code: 'EXT_1', floor: 'FLOOR_1' }])
   })
 })
