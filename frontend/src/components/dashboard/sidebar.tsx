@@ -18,19 +18,19 @@ const navItems = [
     label: 'Workspace',
     items: [
       { name: 'Dashboard', to: '/', icon: LayoutDashboard },
-      { name: 'Quotations', to: '/quotations', icon: FileText, count: 24 },
+      { name: 'Quotations', to: '/quotations', icon: FileText },
       { name: 'Create Quotation', to: '/quotations/new', icon: Plus },
-      { name: 'Saved Drafts', to: '/drafts', icon: Folder, count: 2 },
+      { name: 'Saved Drafts', to: '/drafts', icon: Folder },
     ],
   },
-  {
-    label: 'Library',
-    items: [
-      { name: 'Templates', to: '/templates', icon: LayoutGrid },
-      { name: 'Customers', to: '/customers', icon: Users },
-      { name: 'Settings', to: '/settings', icon: Settings },
-    ],
-  },
+  // {
+  //   label: 'Library',
+  //   items: [
+  //     { name: 'Templates', to: '/templates', icon: LayoutGrid },
+  //     { name: 'Customers', to: '/customers', icon: Users },
+  //     { name: 'Settings', to: '/settings', icon: Settings },
+  //   ],
+  // },
 ]
 
 // Elements that collapse to nothing in the icon-rail tier (769–1180px) but stay
@@ -114,20 +114,6 @@ export function Sidebar({ navOpen, onClose, collapsed, onToggleCollapse }: Sideb
               >
                 <item.icon className="size-[17px] shrink-0" />
                 <span className={hide}>{item.name}</span>
-                {item.count != null && (
-                  <>
-                    <span className={cn('ml-auto rounded-4xl bg-secondary px-[7px] py-px font-mono text-xs text-muted-foreground', hide)}>
-                      {item.count}
-                    </span>
-                    {/* Icon-only tiers: the count collapses to a dot (DESIGN.md §8.3). */}
-                    <span
-                      className={cn(
-                        'absolute top-2 right-2.5 hidden size-1.5 rounded-full bg-primary',
-                        collapsed ? 'min-[769px]:block' : 'min-[769px]:max-[1180px]:block',
-                      )}
-                    />
-                  </>
-                )}
               </NavLink>
             ))}
           </div>

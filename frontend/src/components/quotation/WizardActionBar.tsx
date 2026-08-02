@@ -605,37 +605,41 @@ export function WizardActionBar() {
 
   const handleSaveDraft = async () => {
     if (isSubmitting) return
+    let saveSucceeded = false
+
     if (currentStep === 1) {
       if (!ensureStep1Valid()) return
-      try { await submitJob() } catch { /* error toast already shown */ }
+      try { await submitJob(); saveSucceeded = true } catch { /* error toast already shown */ }
     } else if (currentStep === 2) {
       if (!ensureStep2Valid()) return
-      try { await submitRoof() } catch { /* error toast already shown */ }
+      try { await submitRoof(); saveSucceeded = true } catch { /* error toast already shown */ }
     } else if (currentStep === 3) {
-      try { await submitMezzanine() } catch { /* error toast already shown */ }
+      try { await submitMezzanine(); saveSucceeded = true } catch { /* error toast already shown */ }
     } else if (currentStep === 4) {
-      try { await submitStair() } catch { /* error toast already shown */ }
+      try { await submitStair(); saveSucceeded = true } catch { /* error toast already shown */ }
     } else if (currentStep === 5) {
-      try { await submitCanopy() } catch { /* error toast already shown */ }
+      try { await submitCanopy(); saveSucceeded = true } catch { /* error toast already shown */ }
     } else if (currentStep === 6) {
-      try { await submitAccessories() } catch { /* error toast already shown */ }
+      try { await submitAccessories(); saveSucceeded = true } catch { /* error toast already shown */ }
     } else if (currentStep === 7) {
-      try { await submitLoad() } catch { /* error toast already shown */ }
+      try { await submitLoad(); saveSucceeded = true } catch { /* error toast already shown */ }
     } else if (currentStep === 8) {
-      try { await submitJoint() } catch { /* error toast already shown */ }
+      try { await submitJoint(); saveSucceeded = true } catch { /* error toast already shown */ }
     } else if (currentStep === 9) {
-      try { await submitSpec() } catch { /* error toast already shown */ }
+      try { await submitSpec(); saveSucceeded = true } catch { /* error toast already shown */ }
     } else if (currentStep === 10) {
-      try { await submitRates() } catch { /* error toast already shown */ }
+      try { await submitRates(); saveSucceeded = true } catch { /* error toast already shown */ }
     } else if (currentStep === 11) {
-      try { await submitQuantity() } catch { /* error toast already shown */ }
+      try { await submitQuantity(); saveSucceeded = true } catch { /* error toast already shown */ }
     } else if (currentStep === 12) {
-      try { await submitAmount() } catch { /* error toast already shown */ }
+      try { await submitAmount(); saveSucceeded = true } catch { /* error toast already shown */ }
     } else if (currentStep === 13) {
-      try { await submitQuotation() } catch { /* error toast already shown */ }
+      try { await submitQuotation(); saveSucceeded = true } catch { /* error toast already shown */ }
     } else {
-      successToast('Draft saved')
+      saveSucceeded = true
     }
+
+    if (saveSucceeded) navigate('/drafts')
   }
 
   useHotkeys(['ctrl+s', 'meta+s'], () => {

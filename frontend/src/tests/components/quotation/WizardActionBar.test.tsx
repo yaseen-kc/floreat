@@ -264,7 +264,7 @@ describe('WizardActionBar Step 2 roof persistence', () => {
     expect(useQuotationStore.getState().currentStep).toBe(2)
   })
 
-  it('Save draft upserts the roof without advancing', async () => {
+  it('Save draft upserts the roof and returns to saved drafts', async () => {
     mocks.upsertRoofMutateAsync.mockResolvedValueOnce({ id: 'roof-1' })
     fillCoreRoof()
     render(<WizardActionBar />)
@@ -273,9 +273,10 @@ describe('WizardActionBar Step 2 roof persistence', () => {
 
     await waitFor(() => expect(mocks.upsertRoofMutateAsync).toHaveBeenCalledTimes(1))
     expect(useQuotationStore.getState().currentStep).toBe(2)
+    expect(mocks.navigate).toHaveBeenCalledWith('/drafts')
   })
 
-  it('Ctrl+S saves the roof draft without advancing', async () => {
+  it('Ctrl+S saves the roof draft and returns to saved drafts', async () => {
     mocks.upsertRoofMutateAsync.mockResolvedValueOnce({ id: 'roof-1' })
     fillCoreRoof()
     render(<WizardActionBar />)
@@ -284,6 +285,18 @@ describe('WizardActionBar Step 2 roof persistence', () => {
 
     await waitFor(() => expect(mocks.upsertRoofMutateAsync).toHaveBeenCalledTimes(1))
     expect(useQuotationStore.getState().currentStep).toBe(2)
+    expect(mocks.navigate).toHaveBeenCalledWith('/drafts')
+  })
+
+  it('does not leave the wizard when saving the draft fails', async () => {
+    mocks.upsertRoofMutateAsync.mockRejectedValueOnce(new Error('API error: 500'))
+    fillCoreRoof()
+    render(<WizardActionBar />)
+
+    await userEvent.click(screen.getByRole('button', { name: /save draft/i }))
+
+    await waitFor(() => expect(mocks.toastError).toHaveBeenCalledWith('Failed to save roof'))
+    expect(mocks.navigate).not.toHaveBeenCalled()
   })
 })
 
