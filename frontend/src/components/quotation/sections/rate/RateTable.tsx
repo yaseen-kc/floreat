@@ -23,6 +23,7 @@ import {
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog'
 import { IndianRupee, Save } from 'lucide-react'
+import { useQuotationStore } from '@/stores/quotation-store'
 
 /** Short column headers for the eight raw pricing inputs, in `PRICING_FIELDS` order. */
 const PRICING_LABELS: Record<PricingField, string> = {
@@ -55,14 +56,14 @@ const pricingOf = (row: RateRowDraft): Partial<Record<PricingField, number>> => 
 }
 
 /**
- * The Step 10 rate master table — one editable row per rate item. The 35
+ * The Step 10 job rate table — one editable row per rate item. The 35
  * canonical items always render (merged with any saved server pricing); each
  * row exposes the eight raw pricing inputs, previews the four server-derived
  * rates live via `deriveRateBreakdown`, and saves independently (POST for a new
- * item, PUT for an existing one). Rate is global master-data, so edits persist
- * to the shared `/rates` table rather than the per-job draft.
+ * item, PUT for an existing one). Rates persist only for the active job.
  */
 export function RateTable() {
+  const jobId = useQuotationStore((s) => s.jobId)
   const { rows: hydratedRows, isLoading, isError } = useRateHydration()
   const createRate = useCreateRate()
   const updateRate = useUpdateRate()
@@ -73,6 +74,12 @@ export function RateTable() {
   const [editorOpen, setEditorOpen] = useState(false)
   const [editorDraft, setEditorDraft] = useState<RateRowDraft | null>(null)
   const seeded = useRef(false)
+
+  useEffect(() => {
+    seeded.current = false
+    setRows([])
+    setBaseline({})
+  }, [jobId])
 
   // Seed local edit state once, the first time the merged rows arrive.
   useEffect(() => {
@@ -111,11 +118,15 @@ export function RateTable() {
 
   /** Persists one row: PUT when it already has an `id`, POST otherwise. */
   const saveRow = async (row: RateRowDraft): Promise<Rate | null> => {
+    if (!jobId) {
+      toast.error('Save the job before editing rates')
+      return null
+    }
     setSavingItem(row.item)
     try {
       const saved: Rate = row.id
-        ? await updateRate.mutateAsync({ id: row.id, payload: { unit: row.unit, ...pricingOf(row) } })
-        : await createRate.mutateAsync({ item: row.item, unit: row.unit, ...pricingOf(row) })
+        ? await updateRate.mutateAsync({ jobId, id: row.id, payload: { unit: row.unit, ...pricingOf(row) } })
+        : await createRate.mutateAsync({ jobId, payload: { item: row.item, unit: row.unit, ...pricingOf(row) } })
       setRows((prev) => prev.map((r) => (r.item === row.item ? { ...r, id: saved.id, fabricationRate: saved.fabricationRate, erectionRate: saved.erectionRate, loadingRate: saved.loadingRate, totalRate: saved.totalRate } : r)))
       setBaseline((prev) => ({ ...prev, [row.item]: rowKey(row) }))
       toast.success(`${row.item} saved`)
@@ -136,7 +147,7 @@ export function RateTable() {
         </div>
       ) : isError ? (
         <p className="py-14 text-center text-sm text-destructive">
-          Couldn't load the rate master. The 35 defaults are shown; saving will retry the server.
+          Couldn't load this job's rates. The 35 defaults are shown; saving will retry the server.
         </p>
       ) : null}
 

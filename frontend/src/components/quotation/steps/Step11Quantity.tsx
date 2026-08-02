@@ -21,6 +21,7 @@ import {
 } from '@floreat/shared/calc'
 import { useQuotationStore } from '@/stores/quotation-store'
 import { useShallow } from 'zustand/react/shallow'
+import { RecentlyUsed } from '@/components/quotation/RecentlyUsed'
 
 export function Step11Quantity() {
   useQuantityHydration()
@@ -70,6 +71,7 @@ export function Step11Quantity() {
 
   return (
     <section>
+      <RecentlyUsed step={11} />
       <div className="mb-5">
         <h2 className="text-xl font-semibold tracking-tight">Quantity</h2>
         <p className="text-muted-foreground text-sm mt-1">

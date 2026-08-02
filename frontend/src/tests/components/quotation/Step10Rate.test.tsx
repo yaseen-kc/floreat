@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { render, screen, within, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
+import { useQuotationStore } from '@/stores/quotation-store'
 
 const mocks = vi.hoisted(() => ({
   rows: [] as Array<Record<string, unknown>>,
@@ -46,12 +47,13 @@ describe('Step10Rate', () => {
     mocks.createRateMutateAsync.mockReset()
     mocks.updateRateMutateAsync.mockReset()
     mocks.createRateMutateAsync.mockResolvedValue({ id: 'saved-1' })
+    useQuotationStore.setState({ jobId: 'job-1' })
   })
 
   it('renders the rate master heading and table rows', () => {
     render(<Step10Rate />)
 
-    const headings = screen.getAllByRole('heading', { name: /Rate master/i })
+    const headings = screen.getAllByRole('heading', { name: /Job rates/i })
     expect(headings[0]).toBeInTheDocument()
     expect(screen.getByRole('table')).toBeInTheDocument()
     expect(screen.getByText('STEEL STRUCTURE')).toBeInTheDocument()
@@ -82,6 +84,6 @@ describe('Step10Rate', () => {
     await waitFor(() => {
       expect(screen.queryByRole('alertdialog')).not.toBeInTheDocument()
     })
-    expect(mocks.createRateMutateAsync).toHaveBeenCalledWith({ item: 'STEEL STRUCTURE', unit: 'KG', material: 63, fabrication: 15, transportation: 1.5, installation: 8, loadingUnloading: 3, overheads: 0, others: 0, marginPercentage: 15 })
+    expect(mocks.createRateMutateAsync).toHaveBeenCalledWith({ jobId: 'job-1', payload: { item: 'STEEL STRUCTURE', unit: 'KG', material: 63, fabrication: 15, transportation: 1.5, installation: 8, loadingUnloading: 3, overheads: 0, others: 0, marginPercentage: 15 } })
   })
 })

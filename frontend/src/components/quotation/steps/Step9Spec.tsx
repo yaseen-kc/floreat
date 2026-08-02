@@ -1,5 +1,6 @@
 import { useSpecHydration } from '@/hooks/useSpecHydration'
 import { SpecProducts } from '@/components/quotation/sections/spec/SpecProducts'
+import { RecentlyUsed } from '@/components/quotation/RecentlyUsed'
 
 /**
  * Step 9 — Spec. The wizard's final step: an always-on table of the products in
@@ -13,6 +14,7 @@ export function Step9Spec() {
 
   return (
     <section>
+      <RecentlyUsed step={9} />
       <div className="mb-5">
         <h2 className="text-xl font-semibold tracking-tight">Product specification</h2>
         <p className="text-muted-foreground text-sm mt-1">

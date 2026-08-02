@@ -1,4 +1,5 @@
 import { prisma } from '../lib/prisma.js'
+import { deriveRateBreakdown } from '@floreat/shared/calc'
 import { createSpecSchema } from '../schemas/spec.schema.js'
 import { specSeedData, rateSeedData } from './seed-data.js'
 import {
@@ -147,6 +148,15 @@ async function main() {
     await prisma.job.upsert({ where: { id }, update: data, create: { id, ...data } })
   }
   console.log('✓ Jobs seeded')
+
+  // Seed rates immediately after jobs so every job owns independent defaults.
+  for (const { id: jobId } of jobs) {
+    for (const rate of rateSeedData) {
+      const data = { ...rate, ...deriveRateBreakdown(rate) }
+      await prisma.rate.upsert({ where: { jobId_item: { jobId, item: rate.item } }, update: data, create: { jobId, ...data } })
+    }
+  }
+  console.log('✓ Job rates seeded')
 
   // ── Job-owned product specifications ───────────────────────
   for (const { jobId, ...data } of specSeedData) {
@@ -599,21 +609,19 @@ async function main() {
   ]
 
   for (const { jobId, doors = [], windows = [], foldedPlates = [], ...data } of accessories) {
+    const door = doors[0]
+    const window = windows[0]
+    const foldedPlate = foldedPlates[0]
+    const flattened = {
+      ...data,
+      ...(door ? { doorHeight: door.height, doorWidth: door.width, doorNos: door.nos, doorQuantity: door.quantity } : {}),
+      ...(window ? { windowHeight: window.height, windowWidth: window.width, windowNos: window.nos, windowQuantity: window.quantity } : {}),
+      ...(foldedPlate ? { foldedPlateLength: foldedPlate.length, foldedPlateWidth: foldedPlate.width, foldedPlateNos: foldedPlate.nos, foldedPlateQuantity: foldedPlate.quantity } : {}),
+    }
     await prisma.accessories.upsert({
       where: { jobId },
-      create: {
-        jobId,
-        ...data,
-        doors: { createMany: { data: doors } },
-        windows: { createMany: { data: windows } },
-        foldedPlates: { createMany: { data: foldedPlates } },
-      },
-      update: {
-        ...data,
-        doors: { deleteMany: {}, createMany: { data: doors } },
-        windows: { deleteMany: {}, createMany: { data: windows } },
-        foldedPlates: { deleteMany: {}, createMany: { data: foldedPlates } },
-      },
+      create: { jobId, ...flattened },
+      update: flattened,
     })
   }
   console.log('✓ Accessories seeded')
@@ -1110,9 +1118,13 @@ async function main() {
   console.log('✓ Amounts seeded')
 
   // ── Rates ───────────────────────────────────────────────────
-  // Global master/lookup table keyed by unique `item` — not job-scoped.
-  for (const rate of rateSeedData) {
-    await prisma.rate.upsert({ where: { item: rate.item }, update: rate, create: rate })
+  // Job-scoped defaults: each seeded job owns an independent rate set.
+  const seededJobIds = jobs.map(({ id }) => id)
+  for (const jobId of seededJobIds) {
+    for (const rate of rateSeedData) {
+      const data = { ...rate, ...deriveRateBreakdown(rate) }
+      await prisma.rate.upsert({ where: { jobId_item: { jobId, item: rate.item } }, update: data, create: { jobId, ...data } })
+    }
   }
   console.log('✓ Rates seeded')
 }

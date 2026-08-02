@@ -1,11 +1,13 @@
 import { AmountTable } from '@/components/quotation/sections/amount/AmountTable'
 import { useAmountHydration } from '@/hooks/useAmountHydration'
+import { RecentlyUsed } from '@/components/quotation/RecentlyUsed'
 
 export function Step12Amount() {
   useAmountHydration()
 
   return (
     <section>
+      <RecentlyUsed step={12} />
       <div className="mb-5">
         <h2 className="text-xl font-semibold tracking-tight">Amount</h2>
         <p className="text-muted-foreground text-sm mt-1">

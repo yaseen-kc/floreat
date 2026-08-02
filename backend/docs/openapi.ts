@@ -18,6 +18,7 @@ const {
   createQuantityMezzanineSchema,
   createQuantityStairSchema,
   createQuantityAdditionalBoltsSchema,
+  createQuotationSchema,
   createRateSchema,
   createRoofSchema,
   createSpecSchema,
@@ -38,6 +39,7 @@ const {
   updateQuantityMezzanineSchema,
   updateQuantityStairSchema,
   updateQuantityAdditionalBoltsSchema,
+  updateQuotationSchema,
   updateRateSchema,
   updateRoofSchema,
   updateSpecSchema,
@@ -85,6 +87,8 @@ const schemas = {
   UpdateQuantityStairRequest: updateQuantityStairSchema.meta({ id: 'UpdateQuantityStairRequest' }),
   CreateQuantityAdditionalBoltsRequest: createQuantityAdditionalBoltsSchema.meta({ id: 'CreateQuantityAdditionalBoltsRequest' }),
   UpdateQuantityAdditionalBoltsRequest: updateQuantityAdditionalBoltsSchema.meta({ id: 'UpdateQuantityAdditionalBoltsRequest' }),
+  CreateQuotationRequest: createQuotationSchema.meta({ id: 'CreateQuotationRequest' }),
+  UpdateQuotationRequest: updateQuotationSchema.meta({ id: 'UpdateQuotationRequest' }),
   PaginationQuery: paginationSchema.meta({ id: 'PaginationQuery' }),
 }
 
@@ -144,6 +148,7 @@ const responseSchemas = {
   QuantityMezzanineResponse: resourceResponseSchema.meta({ id: 'QuantityMezzanineResponse' }),
   QuantityStairResponse: resourceResponseSchema.meta({ id: 'QuantityStairResponse' }),
   QuantityAdditionalBoltsResponse: resourceResponseSchema.meta({ id: 'QuantityAdditionalBoltsResponse' }),
+  QuotationResponse: resourceResponseSchema.meta({ id: 'QuotationResponse' }),
   UserResponse: resourceResponseSchema.meta({ id: 'UserResponse' }),
   PaginatedAccessoriesResponse: paginatedResponseSchema.meta({ id: 'PaginatedAccessoriesResponse' }),
   PaginatedAmountResponse: paginatedResponseSchema.meta({ id: 'PaginatedAmountResponse' }),
@@ -164,6 +169,7 @@ const responseSchemas = {
   PaginatedQuantityMezzanineResponse: paginatedResponseSchema.meta({ id: 'PaginatedQuantityMezzanineResponse' }),
   PaginatedQuantityStairResponse: paginatedResponseSchema.meta({ id: 'PaginatedQuantityStairResponse' }),
   PaginatedQuantityAdditionalBoltsResponse: paginatedResponseSchema.meta({ id: 'PaginatedQuantityAdditionalBoltsResponse' }),
+  PaginatedQuotationResponse: paginatedResponseSchema.meta({ id: 'PaginatedQuotationResponse' }),
   ApiError: apiErrorSchema.meta({ id: 'ApiError' }),
   HealthResponse: healthResponseSchema.meta({ id: 'HealthResponse' }),
 }
@@ -364,6 +370,7 @@ const resourceDefinitions: ResourceDefinition[] = [
   { singular: 'QuantityMezzanine', plural: 'quantity-mezzanines', customNestedPath: '/api/jobs/{jobId}/quantity/mezzanine', tag: 'Quantity', createSchema: schemas.CreateQuantityMezzanineRequest, updateSchema: schemas.UpdateQuantityMezzanineRequest, responseSchema: responseSchemas.QuantityMezzanineResponse, paginatedSchema: responseSchemas.PaginatedQuantityMezzanineResponse, example: {} },
   { singular: 'QuantityStair', plural: 'quantity-stairs', customNestedPath: '/api/jobs/{jobId}/quantity/stair', tag: 'Quantity', createSchema: schemas.CreateQuantityStairRequest, updateSchema: schemas.UpdateQuantityStairRequest, responseSchema: responseSchemas.QuantityStairResponse, paginatedSchema: responseSchemas.PaginatedQuantityStairResponse, example: {} },
   { singular: 'QuantityAdditionalBolts', plural: 'quantity-additional-bolts', customNestedPath: '/api/jobs/{jobId}/quantity/additional-bolts', tag: 'Quantity', createSchema: schemas.CreateQuantityAdditionalBoltsRequest, updateSchema: schemas.UpdateQuantityAdditionalBoltsRequest, responseSchema: responseSchemas.QuantityAdditionalBoltsResponse, paginatedSchema: responseSchemas.PaginatedQuantityAdditionalBoltsResponse, example: {} },
+  { singular: 'Quotation', plural: 'quotations', customNestedPath: '/api/jobs/{jobId}/quotation', tag: 'Quotation', createSchema: schemas.CreateQuotationRequest, updateSchema: schemas.UpdateQuotationRequest, responseSchema: responseSchemas.QuotationResponse, paginatedSchema: responseSchemas.PaginatedQuotationResponse, example: {} },
 ]
 
 export const documentedOperations: string[] = []
@@ -517,30 +524,30 @@ registerOperation({
   responseDescription: 'Job deleted. No response body is returned.',
 })
 registerOperation({
-  method: 'post', path: '/api/rates', operationId: 'createRate', tag: 'Rates', auth: true,
-  summary: 'Create a rate', description: 'Creates a new rate master item in the global rate table.',
-  body: { schema: schemas.CreateRateRequest, example: examples.rate, description: 'New rate master item payload.' },
+  method: 'post', path: '/api/jobs/{jobId}/rates', operationId: 'createRate', tag: 'Rates', auth: true, params: jobIdParams(),
+  summary: 'Create a job rate', description: 'Creates a new rate item owned by the specified job.',
+  body: { schema: schemas.CreateRateRequest, example: examples.rate, description: 'New job-specific rate payload.' },
   responseSchema: responseSchemas.RateResponse, responseDescription: 'Rate created.', status: 201, conflict: true,
 })
 registerOperation({
-  method: 'get', path: '/api/rates', operationId: 'listRates', tag: 'Rates', auth: true,
-  summary: 'List rates', description: 'Returns a paginated list of rate master items.', query: paginationQuery(),
+  method: 'get', path: '/api/jobs/{jobId}/rates', operationId: 'listRates', tag: 'Rates', auth: true, params: jobIdParams(),
+  summary: 'List job rates', description: 'Returns the specified job\'s paginated rate items.', query: paginationQuery(),
   responseSchema: responseSchemas.PaginatedRateResponse, responseDescription: 'Paginated rate list returned.',
 })
 registerOperation({
-  method: 'get', path: '/api/rates/{id}', operationId: 'getRateById', tag: 'Rates', auth: true,
-  summary: 'Get a rate by ID', description: 'Returns one rate master item by its identifier.', params: idParams(),
+  method: 'get', path: '/api/jobs/{jobId}/rates/{id}', operationId: 'getRateById', tag: 'Rates', auth: true,
+  summary: 'Get a job rate by ID', description: 'Returns one rate owned by the specified job.', params: z.object({ ...jobIdParams().shape, ...idParams().shape }),
   responseSchema: responseSchemas.RateResponse, responseDescription: 'Rate returned.', notFound: true,
 })
 registerOperation({
-  method: 'put', path: '/api/rates/{id}', operationId: 'updateRate', tag: 'Rates', auth: true,
-  summary: 'Update a rate', description: 'Partially updates a rate master item by its identifier.', params: idParams(),
-  body: { schema: schemas.UpdateRateRequest, example: { marginPercentage: 20 }, description: 'Partial rate master item payload.' },
+  method: 'put', path: '/api/jobs/{jobId}/rates/{id}', operationId: 'updateRate', tag: 'Rates', auth: true,
+  summary: 'Update a job rate', description: 'Partially updates a rate owned by the specified job.', params: z.object({ ...jobIdParams().shape, ...idParams().shape }),
+  body: { schema: schemas.UpdateRateRequest, example: { marginPercentage: 20 }, description: 'Partial job-specific rate payload.' },
   responseSchema: responseSchemas.RateResponse, responseDescription: 'Rate updated.', notFound: true, conflict: true,
 })
 registerOperation({
-  method: 'delete', path: '/api/rates/{id}', operationId: 'deleteRate', tag: 'Rates', auth: true,
-  summary: 'Delete a rate', description: 'Deletes a rate master item by its identifier.', params: idParams(),
+  method: 'delete', path: '/api/jobs/{jobId}/rates/{id}', operationId: 'deleteRate', tag: 'Rates', auth: true,
+  summary: 'Delete a job rate', description: 'Deletes a rate owned by the specified job.', params: z.object({ ...jobIdParams().shape, ...idParams().shape }),
   responseDescription: 'Rate deleted. No response body is returned.', notFound: true,
 })
 
@@ -570,7 +577,8 @@ export function buildOpenApiDocument() {
       { name: 'Accessories', description: 'Accessories configuration endpoints.' },
       { name: 'Joint', description: 'Joint configuration endpoints.' },
       { name: 'Specs', description: 'Job product specification endpoints.' },
-      { name: 'Rates', description: 'Global rate master-data endpoints.' },
+      { name: 'Rates', description: 'Job-specific rate endpoints.' },
+      { name: 'Quotation', description: 'Quotation snapshot endpoints.' },
     ],
   })
 }

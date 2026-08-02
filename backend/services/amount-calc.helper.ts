@@ -17,7 +17,7 @@ export { ITEM_PREFIX_MAP }
 
 
 /**
- * Computes baseline amount fields for a job from database job inputs & rate master data.
+ * Computes baseline amount fields for a job from its database inputs and rates.
  */
 export async function computeJobAmount(jobId: string): Promise<CreateAmountInput | null> {
   const [job, rates] = await Promise.all([
@@ -49,7 +49,7 @@ export async function computeJobAmount(jobId: string): Promise<CreateAmountInput
         },
       },
     }),
-    prisma.rate.findMany(),
+    prisma.rate.findMany({ where: { jobId } }),
   ])
 
   if (!job) return null
@@ -248,13 +248,6 @@ export async function computeJobAmount(jobId: string): Promise<CreateAmountInput
 
   const calculatedQuantities = calculateAmountQuantities(input)
   const rateByItem = new Map(rates.map((r) => [r.item, r]))
-
-  const missingRates = DEFAULT_AMOUNT_ITEMS
-    .map((item) => item.rateItem)
-    .filter((item): item is string => Boolean(item && !rateByItem.has(item)))
-  if (missingRates.length) {
-    throw new Error(`Missing required rate items: ${missingRates.join(', ')}`)
-  }
 
   const payload: Record<string, number | null> = {}
 

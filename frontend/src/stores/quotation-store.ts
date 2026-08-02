@@ -342,7 +342,7 @@ interface QuotationState {
 }
 
 /** Factory for a fresh projectInfo so each new quotation gets a current date. */
-const createDefaultProjectInfo = (): ProjectInfo => ({
+export const createDefaultProjectInfo = (): ProjectInfo => ({
   projectNo: '', subject: '', refNo: '',
   date: new Date().toISOString().slice(0, 10),
   designedByName: '', designedByMobile: '',
@@ -359,7 +359,7 @@ const createDefaultProjectInfo = (): ProjectInfo => ({
  * (rejected by the schema's `.positive()`) and `roofFrameBaseFixing` starts
  * unselected (`''`), so Step 2 is invalid until the user fills it in.
  */
-const createDefaultRoof = (): RoofDraft => ({
+export const createDefaultRoof = (): RoofDraft => ({
   buildingOverallLength: 0,
   buildingOverallWidth: 0,
   eaveHeight: 0,
@@ -375,7 +375,7 @@ const createDefaultRoof = (): RoofDraft => ({
 })
 
 /** Factory for the per-section enabled flags — every optional section starts off. */
-const createDefaultRoofSections = (): RoofSectionsEnabled => ({
+export const createDefaultRoofSections = (): RoofSectionsEnabled => ({
   members: true,
   purlins: true,
   coverings: true,
@@ -392,19 +392,19 @@ const createDefaultRoofSections = (): RoofSectionsEnabled => ({
 })
 
 /** Factory for a fresh mezzanine draft — no floors or extensions to start. */
-const createDefaultMezzanine = (): MezzanineDraft => ({ floors: [], extensions: [] })
+export const createDefaultMezzanine = (): MezzanineDraft => ({ floors: [], extensions: [] })
 
 /** Factory for a fresh stair draft — no staircases or area deductions to start. */
-const createDefaultStair = (): StairDraft => ({ stairs: [], areaDeductions: [] })
+export const createDefaultStair = (): StairDraft => ({ stairs: [], areaDeductions: [] })
 
 /** Factory for a fresh canopy draft — no canopy items to start. */
-const createDefaultCanopy = (): CanopyDraft => ({ canopies: [] })
+export const createDefaultCanopy = (): CanopyDraft => ({ canopies: [] })
 
 /** Factory for a fresh load draft — every field blank (the schema is all-optional). */
-const createDefaultLoad = (): LoadDraft => ({})
+export const createDefaultLoad = (): LoadDraft => ({})
 
 /** Factory for a fresh accessories draft — every scalar blank. */
-const createDefaultAccessories = (): AccessoriesDraft => ({
+export const createDefaultAccessories = (): AccessoriesDraft => ({
 })
 
 /**
@@ -414,17 +414,17 @@ const createDefaultAccessories = (): AccessoriesDraft => ({
  * row for the interactive frame diagrams. Blank rows are dropped from the
  * payload by {@link buildJointPayload}.
  */
-const createDefaultJoint = (): JointDraft => ({
+export const createDefaultJoint = (): JointDraft => ({
   jointBoltRoof: roofJointIdEnum.options.map((roofJointId) => ({ roofJointId })),
   jointBoltMezzanine: mezzanineJointIdEnum.options.map((mezzanineJointId) => ({ mezzanineJointId })),
   foundationBoltRoof: foundationBoltJointIdEnum.options.map((foundationJointId) => ({ foundationJointId })),
 })
 
 /** Factory for a fresh spec draft — an empty products table (the schema is all-optional). */
-const createDefaultSpec = (): SpecDraft => ({ products: [] })
+export const createDefaultSpec = (): SpecDraft => ({ products: [] })
 
 /** Factory for a fresh quotation draft — every field blank (the schema is all-optional). */
-const createDefaultQuotation = (): QuotationDraft => ({})
+export const createDefaultQuotation = (): QuotationDraft => ({})
 
 /** True for a plain, non-array object (the shape of every nested draft slice). */
 const isPlainObject = (v: unknown): v is Record<string, unknown> =>

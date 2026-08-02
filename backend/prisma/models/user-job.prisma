@@ -54,6 +54,7 @@ model Job {
   quantity    Quantity?
   amount      Amount?
   quotation   Quotation?
+  rates       Rate[]
 
   @@index([userId])
   @@index([userId, createdAt])

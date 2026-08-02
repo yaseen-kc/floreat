@@ -4,6 +4,7 @@ import { InsulationVentilatorFeatures } from '@/components/quotation/sections/ac
 import { PaintPrimer } from '@/components/quotation/sections/accessories/PaintPrimer'
 import { DoorsWindowsFoldedPlates } from '@/components/quotation/sections/accessories/DoorsWindowsFoldedPlates'
 import { Openings } from '@/components/quotation/sections/accessories/Openings'
+import { RecentlyUsed } from '@/components/quotation/RecentlyUsed'
 
 /**
  * Step 6 — Accessories. An always-on form for a job's accessories: drainage,
@@ -18,6 +19,7 @@ export function Step6Accessories() {
 
   return (
     <section>
+      <RecentlyUsed step={6} />
       <div className="mb-5">
         <h2 className="text-xl font-semibold tracking-tight">Accessories</h2>
         <p className="text-muted-foreground text-sm mt-1">

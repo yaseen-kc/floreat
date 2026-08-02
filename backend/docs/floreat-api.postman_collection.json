@@ -2522,26 +2522,39 @@
     },
     {
       "name": "Rates",
-      "description": "Global rate master-data endpoints.",
+      "description": "Job-specific rate endpoints.",
       "item": [
         {
-          "name": "Create a rate",
+          "name": "Create a job rate",
           "request": {
-            "name": "Create a rate",
+            "name": "Create a job rate",
             "description": {
-              "content": "Creates a new rate master item in the global rate table.",
+              "content": "Creates a new rate item owned by the specified job.",
               "type": "text/plain"
             },
             "url": {
               "path": [
                 "api",
+                "jobs",
+                ":jobId",
                 "rates"
               ],
               "host": [
                 "{{baseUrl}}"
               ],
               "query": [],
-              "variable": []
+              "variable": [
+                {
+                  "type": "any",
+                  "value": "job_cuid_123",
+                  "key": "jobId",
+                  "disabled": false,
+                  "description": {
+                    "content": "(Required) ",
+                    "type": "text/plain"
+                  }
+                }
+              ]
             },
             "header": [
               {
@@ -2571,16 +2584,18 @@
           }
         },
         {
-          "name": "List rates",
+          "name": "List job rates",
           "request": {
-            "name": "List rates",
+            "name": "List job rates",
             "description": {
-              "content": "Returns a paginated list of rate master items.",
+              "content": "Returns the specified job's paginated rate items.",
               "type": "text/plain"
             },
             "url": {
               "path": [
                 "api",
+                "jobs",
+                ":jobId",
                 "rates"
               ],
               "host": [
@@ -2606,7 +2621,18 @@
                   "value": "10"
                 }
               ],
-              "variable": []
+              "variable": [
+                {
+                  "type": "any",
+                  "value": "job_cuid_123",
+                  "key": "jobId",
+                  "disabled": false,
+                  "description": {
+                    "content": "(Required) ",
+                    "type": "text/plain"
+                  }
+                }
+              ]
             },
             "header": [
               {
@@ -2623,16 +2649,18 @@
           }
         },
         {
-          "name": "Get a rate by ID",
+          "name": "Get a job rate by ID",
           "request": {
-            "name": "Get a rate by ID",
+            "name": "Get a job rate by ID",
             "description": {
-              "content": "Returns one rate master item by its identifier.",
+              "content": "Returns one rate owned by the specified job.",
               "type": "text/plain"
             },
             "url": {
               "path": [
                 "api",
+                "jobs",
+                ":jobId",
                 "rates",
                 ":id"
               ],
@@ -2641,6 +2669,16 @@
               ],
               "query": [],
               "variable": [
+                {
+                  "type": "any",
+                  "value": "job_cuid_123",
+                  "key": "jobId",
+                  "disabled": false,
+                  "description": {
+                    "content": "(Required) ",
+                    "type": "text/plain"
+                  }
+                },
                 {
                   "type": "any",
                   "value": "cuid_123",
@@ -2668,16 +2706,18 @@
           }
         },
         {
-          "name": "Update a rate",
+          "name": "Update a job rate",
           "request": {
-            "name": "Update a rate",
+            "name": "Update a job rate",
             "description": {
-              "content": "Partially updates a rate master item by its identifier.",
+              "content": "Partially updates a rate owned by the specified job.",
               "type": "text/plain"
             },
             "url": {
               "path": [
                 "api",
+                "jobs",
+                ":jobId",
                 "rates",
                 ":id"
               ],
@@ -2686,6 +2726,16 @@
               ],
               "query": [],
               "variable": [
+                {
+                  "type": "any",
+                  "value": "job_cuid_123",
+                  "key": "jobId",
+                  "disabled": false,
+                  "description": {
+                    "content": "(Required) ",
+                    "type": "text/plain"
+                  }
+                },
                 {
                   "type": "any",
                   "value": "cuid_123",
@@ -2726,16 +2776,18 @@
           }
         },
         {
-          "name": "Delete a rate",
+          "name": "Delete a job rate",
           "request": {
-            "name": "Delete a rate",
+            "name": "Delete a job rate",
             "description": {
-              "content": "Deletes a rate master item by its identifier.",
+              "content": "Deletes a rate owned by the specified job.",
               "type": "text/plain"
             },
             "url": {
               "path": [
                 "api",
+                "jobs",
+                ":jobId",
                 "rates",
                 ":id"
               ],
@@ -2744,6 +2796,16 @@
               ],
               "query": [],
               "variable": [
+                {
+                  "type": "any",
+                  "value": "job_cuid_123",
+                  "key": "jobId",
+                  "disabled": false,
+                  "description": {
+                    "content": "(Required) ",
+                    "type": "text/plain"
+                  }
+                },
                 {
                   "type": "any",
                   "value": "cuid_123",
@@ -2763,6 +2825,274 @@
               }
             ],
             "method": "DELETE",
+            "body": {}
+          },
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ]
+    },
+    {
+      "name": "Quotation",
+      "description": "Quotation snapshot endpoints.",
+      "item": [
+        {
+          "name": "Create or replace a job's quotation",
+          "request": {
+            "name": "Create or replace a job's quotation",
+            "description": {
+              "content": "Creates or replaces the quotation configuration for the specified job.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "jobs",
+                ":jobId",
+                "quotation"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "type": "any",
+                  "value": "job_cuid_123",
+                  "key": "jobId",
+                  "disabled": false,
+                  "description": {
+                    "content": "(Required) ",
+                    "type": "text/plain"
+                  }
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": {
+                "raw": {
+                  "headerFamily": "json",
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "name": "Get a job's quotation",
+          "request": {
+            "name": "Get a job's quotation",
+            "description": {
+              "content": "Returns the quotation configuration belonging to the specified job.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "jobs",
+                ":jobId",
+                "quotation"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "type": "any",
+                  "value": "job_cuid_123",
+                  "key": "jobId",
+                  "disabled": false,
+                  "description": {
+                    "content": "(Required) ",
+                    "type": "text/plain"
+                  }
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "body": {}
+          },
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "name": "Update a job's quotation",
+          "request": {
+            "name": "Update a job's quotation",
+            "description": {
+              "content": "Partially updates the quotation configuration for the specified job.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "jobs",
+                ":jobId",
+                "quotation"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "type": "any",
+                  "value": "job_cuid_123",
+                  "key": "jobId",
+                  "disabled": false,
+                  "description": {
+                    "content": "(Required) ",
+                    "type": "text/plain"
+                  }
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "PUT",
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": {
+                "raw": {
+                  "headerFamily": "json",
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "name": "Delete a job's quotation",
+          "request": {
+            "name": "Delete a job's quotation",
+            "description": {
+              "content": "Deletes the quotation configuration for the specified job.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "jobs",
+                ":jobId",
+                "quotation"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "type": "any",
+                  "value": "job_cuid_123",
+                  "key": "jobId",
+                  "disabled": false,
+                  "description": {
+                    "content": "(Required) ",
+                    "type": "text/plain"
+                  }
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "DELETE",
+            "body": {}
+          },
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "name": "List quotations",
+          "request": {
+            "name": "List quotations",
+            "description": {
+              "content": "Returns a paginated list of quotations.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "quotations"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "description": {
+                    "content": "",
+                    "type": "text/plain"
+                  },
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "disabled": false,
+                  "description": {
+                    "content": "",
+                    "type": "text/plain"
+                  },
+                  "key": "pageSize",
+                  "value": "10"
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
             "body": {}
           },
           "event": [],

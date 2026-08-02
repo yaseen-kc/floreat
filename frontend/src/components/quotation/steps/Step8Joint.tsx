@@ -1,7 +1,9 @@
 import { useJointHydration } from '@/hooks/useJointHydration'
 import { ScalarBoltGroups } from '@/components/quotation/sections/joint/ScalarBoltGroups'
 import { JointBoltTable } from '@/components/quotation/sections/joint/JointBoltTable'
+import { JointFrameReference } from '@/components/quotation/sections/joint/JointFrameReference'
 import { Building2, Layers, Anchor } from 'lucide-react'
+import { RecentlyUsed } from '@/components/quotation/RecentlyUsed'
 
 /**
  * Step 8 — Joint. An always-on form for a job's bolt specifications: interactive
@@ -15,12 +17,15 @@ export function Step8Joint() {
 
     return (
         <section>
+            <RecentlyUsed step={8} />
             <div className="mb-5">
                 <h2 className="text-xl font-semibold tracking-tight">Joint bolt specifications</h2>
                 <p className="text-muted-foreground text-sm mt-1">
                     Bolt type, diameter and count for each structural joint. Use the frame diagrams to locate a joint.
                 </p>
             </div>
+
+            <JointFrameReference />
 
             <JointBoltTable
                 group="roof"

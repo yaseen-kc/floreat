@@ -18,7 +18,7 @@ const parseNum = (v?: string | number | null): number | undefined => (v == null 
  * amount line items with quantities derived from earlier steps via shared calc.
  */
 export function AmountTable() {
-  const { roof, canopy, mezzanine, stair, joint, accessories, quantity, amount } = useQuotationStore(
+  const { jobId, roof, canopy, mezzanine, stair, joint, accessories, quantity, amount } = useQuotationStore(
     useShallow((s) => ({
       roof: s.roof,
       canopy: s.canopy,
@@ -28,11 +28,12 @@ export function AmountTable() {
       accessories: s.accessories,
       quantity: s.quantity,
       amount: s.amount,
+      jobId: s.jobId,
     })),
   )
 
 
-  const { data: ratesPage } = useRates(1, 100)
+  const { data: ratesPage } = useRates(jobId ?? '', 1, 100)
   const rateByItem = new Map((ratesPage?.data ?? []).map((r) => [r.item, r]))
 
   const calculated = calculateAmountQuantities({    // Roof fields

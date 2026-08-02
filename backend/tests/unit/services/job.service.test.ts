@@ -16,7 +16,7 @@ describe('job.service', () => {
       const result = await createJob(USER, input as any)
 
       expect(result).toEqual(job)
-      expect(prismaMock.job.create).toHaveBeenCalledWith({ data: { ...input, userId: USER } })
+      expect(prismaMock.job.create).toHaveBeenCalledWith({ data: expect.objectContaining({ ...input, userId: USER, rates: expect.objectContaining({ create: expect.any(Array) }) }) })
     })
   })
 
@@ -96,6 +96,7 @@ describe('job.service', () => {
             },
           },
           amount: true,
+          rates: true,
         },
       })
     })

@@ -1,24 +1,16 @@
-/**
- * Rate route definitions — plain REST for the global rate master table
- * (`/rates`, `/rates/:id`). Rate is top-level reference data (not job-scoped),
- * so routes require authentication but no per-job ownership check.
- *
- * NOTE: rate write authorization is intentionally deferred; any authenticated
- * user can currently mutate this global pricing master-data —
- * there is no admin/role gate in the current standards. Add one here if rate
- * writes should be restricted.
- */
+/** Job-owned rate routes. */
 import { FastifyInstance } from 'fastify'
 import { authMiddleware } from '../middlewares/auth.js'
+import { jobOwnership } from '../middlewares/job-ownership.js'
 import * as rateController from '../controllers/rate.controller.js'
 
 export async function rateRoutes(app: FastifyInstance) {
   const writeLimit = { config: { rateLimit: { max: 20, timeWindow: '1 minute' } } }
-  const write = { preHandler: [authMiddleware], ...writeLimit }
-
-  app.post('/rates', write, rateController.create)
-  app.get('/rates', { preHandler: [authMiddleware] }, rateController.getAll)
-  app.get('/rates/:id', { preHandler: [authMiddleware] }, rateController.getById)
-  app.put('/rates/:id', write, rateController.update)
-  app.delete('/rates/:id', write, rateController.remove)
+  const read = { preHandler: [authMiddleware, jobOwnership] }
+  const write = { preHandler: [authMiddleware, jobOwnership], ...writeLimit }
+  app.post('/jobs/:jobId/rates', write, rateController.create)
+  app.get('/jobs/:jobId/rates', read, rateController.getAll)
+  app.get('/jobs/:jobId/rates/:id', read, rateController.getById)
+  app.put('/jobs/:jobId/rates/:id', write, rateController.update)
+  app.delete('/jobs/:jobId/rates/:id', write, rateController.remove)
 }

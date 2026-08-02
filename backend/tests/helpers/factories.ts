@@ -463,6 +463,7 @@ export function makeRateInput(overrides = {}) {
 export function makeRate(overrides = {}) {
   return {
     id: faker.string.uuid(),
+    jobId: faker.string.uuid(),
     item: `ITEM-${faker.string.alphanumeric(6)}`,
     unit: 'KG',
     material: null,

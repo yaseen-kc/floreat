@@ -4,13 +4,18 @@
  * user can only ever see or mutate their own jobs (tenant isolation, C1).
  */
 import { prisma } from '../lib/prisma.js'
+import { rateSeedData } from '../prisma/seed-data.js'
+import { deriveRateBreakdown } from '@floreat/shared/calc'
 
 type JobCreateData = Parameters<typeof prisma.job.create>[0]['data']
 type JobUpdateData = Parameters<typeof prisma.job.update>[0]['data']
 
 /** Creates a new job owned by `userId`. Requires the User row to exist (syncUser). */
 export function createJob(userId: string, data: Omit<JobCreateData, 'userId' | 'user'>) {
-  return prisma.job.create({ data: { ...data, userId } as JobCreateData })
+  const rates = rateSeedData.map((rate) => ({ ...rate, ...deriveRateBreakdown(rate) }))
+  return prisma.job.create({
+    data: { ...data, userId, rates: { create: rates } } as JobCreateData,
+  })
 }
 
 /** Returns a paginated list of the user's jobs ordered by most recent first. */
@@ -63,6 +68,7 @@ export function getJobWithAllData(id: string, userId: string) {
         },
       },
       amount: true,
+      rates: true,
     },
   })
 }
