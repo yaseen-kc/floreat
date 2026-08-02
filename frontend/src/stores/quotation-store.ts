@@ -42,6 +42,7 @@ import {
   deriveColumnWindBracingLength,
 } from '@floreat/shared/calc'
 import { STEP_COUNT } from '@/components/quotation/steps'
+import type { RateRowDraft } from '@/schemas/rate.schema'
 
 /** Step 1 project info — the canonical job contract (see job.schema.ts). */
 export type ProjectInfo = JobInput
@@ -318,8 +319,10 @@ interface QuotationState {
   quantity: Quantity | null
   amount: Amount | null
   quantityDrafts: Record<string, Record<string, string>>
+  rateRows: RateRowDraft[]
   setQuantityDraft: (sectionKey: string, draft: Record<string, string>) => void
   setAmount: (amount: Amount | null) => void
+  setRateRows: (rows: RateRowDraft[]) => void
   showValidation: boolean
   jobId: string | null
   setProjectInfo: (v: Partial<ProjectInfo>) => void
@@ -468,6 +471,7 @@ export const useQuotationStore = create<QuotationState>()(
       quantity: null,
       amount: null,
       quantityDrafts: {},
+      rateRows: [],
       projectInfo: createDefaultProjectInfo(),
       roof: createDefaultRoof(),
       roofSectionsEnabled: createDefaultRoofSections(),
@@ -481,6 +485,7 @@ export const useQuotationStore = create<QuotationState>()(
       quotation: createDefaultQuotation(),
 
       setAmount: (amount) => set({ amount }),
+      setRateRows: (rateRows) => set({ rateRows }),
 
       setProjectInfo: (v) => set((s) => ({ projectInfo: { ...s.projectInfo, ...v } })),
       setQuantityDraft: (sectionKey, draft) =>
@@ -579,6 +584,7 @@ export const useQuotationStore = create<QuotationState>()(
         quantity: null,
         amount: null,
         quantityDrafts: {},
+        rateRows: [],
         projectInfo: createDefaultProjectInfo(),
         roof: createDefaultRoof(),
         roofSectionsEnabled: createDefaultRoofSections(),
@@ -621,7 +627,7 @@ export const useQuotationStore = create<QuotationState>()(
       // creating a duplicate.
       skipHydration: true,
       merge: (persistedState, currentState) => deepMergeDraft(persistedState, currentState),
-      partialize: (s) => ({ projectInfo: s.projectInfo, roof: s.roof, roofSectionsEnabled: s.roofSectionsEnabled, mezzanine: s.mezzanine, stair: s.stair, canopy: s.canopy, load: s.load, accessories: s.accessories, joint: s.joint, spec: s.spec, quotation: s.quotation, currentStep: s.currentStep, jobId: s.jobId }),
+      partialize: (s) => ({ projectInfo: s.projectInfo, roof: s.roof, roofSectionsEnabled: s.roofSectionsEnabled, mezzanine: s.mezzanine, stair: s.stair, canopy: s.canopy, load: s.load, accessories: s.accessories, joint: s.joint, spec: s.spec, quotation: s.quotation, rateRows: s.rateRows, currentStep: s.currentStep, jobId: s.jobId }),
     }
   )
 )

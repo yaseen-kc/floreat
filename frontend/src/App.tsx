@@ -7,6 +7,8 @@ import { Sidebar } from './components/dashboard/sidebar'
 import { Topbar } from './components/dashboard/Topbar'
 import CreateQuotation from './pages/quotation/CreateQuotation'
 import SavedDrafts from './pages/SavedDrafts'
+import Quotations from './pages/Quotations'
+import QuotationViewer from './pages/QuotationViewer'
 import { Toaster } from './components/ui/sonner'
 import { useDraftPersistenceScope } from './hooks/useDraftPersistenceScope'
 import { useSearchShortcuts } from './hooks/useSearchShortcuts'
@@ -43,6 +45,8 @@ function App() {
           <Route path="/" element={<Dashboard />} />
           <Route path="*" element={<Navigate to="/" replace />} />
           <Route path="/quotations/new" element={<CreateQuotation />} />
+          <Route path="/quotations/:jobId" element={<QuotationViewer />} />
+          <Route path="/quotations" element={<Quotations />} />
           <Route path="/drafts" element={<SavedDrafts />} />
 
         </Route>

@@ -16,9 +16,28 @@ export function upsertQuotation(jobId: string, data: CreateQuotationInput) {
 
 /** Returns a paginated list of the user's quotations ordered by most recent first. */
 export async function getQuotations(userId: string, page: number, pageSize: number) {
-  const where = { job: { userId } }
+  const where = { grandTotal: { not: null }, job: { userId } }
   const [data, total] = await Promise.all([
-    prisma.quotation.findMany({ where, skip: (page - 1) * pageSize, take: pageSize, orderBy: { createdAt: 'desc' } }),
+    prisma.quotation.findMany({
+      where,
+      skip: (page - 1) * pageSize,
+      take: pageSize,
+      orderBy: { updatedAt: 'desc' },
+      include: {
+        job: {
+          select: {
+            projectNo: true,
+            refNo: true,
+            subject: true,
+            clientName: true,
+            firmName: true,
+            frameType: true,
+            configuration: true,
+            updatedAt: true,
+          },
+        },
+      },
+    }),
     prisma.quotation.count({ where }),
   ])
   return { data, total, page, pageSize }

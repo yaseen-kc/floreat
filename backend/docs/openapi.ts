@@ -20,6 +20,7 @@ const {
   createQuantityAdditionalBoltsSchema,
   createQuotationSchema,
   createRateSchema,
+  bulkRateSchema,
   createRoofSchema,
   createSpecSchema,
   createStairSchema,
@@ -70,6 +71,7 @@ const schemas = {
   CreateStairRequest: createStairSchema.meta({ id: 'CreateStairRequest' }),
   UpdateStairRequest: updateStairSchema.meta({ id: 'UpdateStairRequest' }),
   CreateRateRequest: createRateSchema.meta({ id: 'CreateRateRequest' }),
+  BulkRateRequest: bulkRateSchema.meta({ id: 'BulkRateRequest' }),
   UpdateRateRequest: updateRateSchema.meta({ id: 'UpdateRateRequest' }),
   CreateQuantityRequest: createQuantitySchema.meta({ id: 'CreateQuantityRequest' }),
   UpdateQuantityRequest: updateQuantitySchema.meta({ id: 'UpdateQuantityRequest' }),
@@ -522,6 +524,12 @@ registerOperation({
   method: 'delete', path: '/api/jobs/{id}', operationId: 'deleteJob', tag: 'Jobs', auth: true,
   summary: 'Delete a job', description: 'Deletes a job by its identifier.', params: idParams(),
   responseDescription: 'Job deleted. No response body is returned.',
+})
+registerOperation({
+  method: 'put', path: '/api/jobs/{jobId}/rates/bulk', operationId: 'replaceRates', tag: 'Rates', auth: true, params: jobIdParams(),
+  summary: 'Replace all job rates', description: 'Atomically replaces the complete rate set for the specified job. Derived rates are recalculated server-side; an empty array clears the set.',
+  body: { schema: schemas.BulkRateRequest, example: { rates: [examples.rate] }, description: 'Complete replacement payload. Omitted existing rows are deleted.' },
+  responseSchema: z.array(responseSchemas.RateResponse), responseDescription: 'Persisted rate collection returned.',
 })
 registerOperation({
   method: 'post', path: '/api/jobs/{jobId}/rates', operationId: 'createRate', tag: 'Rates', auth: true, params: jobIdParams(),

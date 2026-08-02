@@ -1,6 +1,6 @@
 /** HTTP handlers for job-specific rate operations. */
 import { FastifyRequest, FastifyReply } from 'fastify'
-import { createRateSchema, updateRateSchema, paginationSchema } from '../schemas/rate.schema.js'
+import { bulkRateSchema, createRateSchema, updateRateSchema, paginationSchema } from '../schemas/rate.schema.js'
 import * as rateService from '../services/rate.service.js'
 import { sendError } from '../utils/response.js'
 
@@ -11,6 +11,12 @@ export async function create(request: FastifyRequest, reply: FastifyReply) {
   if (!result.success) return reply.status(400).send({ error: result.error.flatten() })
   try { return reply.status(201).send(await rateService.createRate(params(request).jobId, result.data)) }
   catch (err: any) { if (err?.code === 'P2002') return sendError(reply, 409, 'A rate with this item already exists for this job'); throw err }
+}
+
+export async function replaceAll(request: FastifyRequest, reply: FastifyReply) {
+  const result = bulkRateSchema.safeParse(request.body)
+  if (!result.success) return reply.status(400).send({ error: result.error.flatten() })
+  return reply.send(await rateService.replaceRates(params(request).jobId, result.data))
 }
 
 export async function getAll(request: FastifyRequest, reply: FastifyReply) {

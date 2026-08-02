@@ -319,6 +319,72 @@
           "nullable": true
         }
       },
+      "BulkRateRequest": {
+        "type": "object",
+        "properties": {
+          "rates": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "item": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "unit": {
+                  "type": "string",
+                  "enum": [
+                    "KG",
+                    "RM",
+                    "SQM",
+                    "NOS"
+                  ]
+                },
+                "material": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "fabrication": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "transportation": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "installation": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "loadingUnloading": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "overheads": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "others": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "marginPercentage": {
+                  "type": "number",
+                  "minimum": 0
+                }
+              },
+              "required": [
+                "item",
+                "unit"
+              ],
+              "additionalProperties": false
+            }
+          }
+        },
+        "required": [
+          "rates"
+        ]
+      },
       "CreateRateRequest": {
         "type": "object",
         "properties": {
@@ -9933,6 +9999,93 @@
           },
           "404": {
             "description": "Resource not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/jobs/{jobId}/rates/bulk": {
+      "put": {
+        "operationId": "replaceRates",
+        "tags": [
+          "Rates"
+        ],
+        "summary": "Replace all job rates",
+        "description": "Atomically replaces the complete rate set for the specified job. Derived rates are recalculated server-side; an empty array clears the set.",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "example": "job_cuid_123"
+            },
+            "required": true,
+            "name": "jobId",
+            "in": "path"
+          }
+        ],
+        "requestBody": {
+          "description": "Complete replacement payload. Omitted existing rows are deleted.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BulkRateRequest"
+              },
+              "example": {
+                "rates": [
+                  {
+                    "item": "STEEL STRUCTURE",
+                    "unit": "KG",
+                    "material": 63,
+                    "fabrication": 15,
+                    "transportation": 1.5,
+                    "installation": 8,
+                    "loadingUnloading": 3,
+                    "overheads": 0,
+                    "others": 0,
+                    "marginPercentage": 15
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Persisted rate collection returned.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/RateResponse"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required",
             "content": {
               "application/json": {
                 "schema": {

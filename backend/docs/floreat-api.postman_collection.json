@@ -2525,6 +2525,66 @@
       "description": "Job-specific rate endpoints.",
       "item": [
         {
+          "name": "Replace all job rates",
+          "request": {
+            "name": "Replace all job rates",
+            "description": {
+              "content": "Atomically replaces the complete rate set for the specified job. Derived rates are recalculated server-side; an empty array clears the set.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "jobs",
+                ":jobId",
+                "rates",
+                "bulk"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "type": "any",
+                  "value": "job_cuid_123",
+                  "key": "jobId",
+                  "disabled": false,
+                  "description": {
+                    "content": "(Required) ",
+                    "type": "text/plain"
+                  }
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "PUT",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"rates\": [\n    {\n      \"item\": \"STEEL STRUCTURE\",\n      \"unit\": \"KG\",\n      \"material\": 63,\n      \"fabrication\": 15,\n      \"transportation\": 1.5,\n      \"installation\": 8,\n      \"loadingUnloading\": 3,\n      \"overheads\": 0,\n      \"others\": 0,\n      \"marginPercentage\": 15\n    }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "headerFamily": "json",
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
           "name": "Create a job rate",
           "request": {
             "name": "Create a job rate",

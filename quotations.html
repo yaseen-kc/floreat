@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Quotations · Strukt</title>
+<link rel="stylesheet" href="assets/app.css" />
+<style>
+  .toolbar { display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:16px; }
+  .filter-input { position:relative; flex:1; min-width:200px; max-width:340px; }
+  .filter-input svg { position:absolute; left:11px; top:50%; transform:translateY(-50%); width:15px; height:15px; color:var(--muted); }
+  .filter-input input { width:100%; padding:8px 12px 8px 32px; background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-sm); font-size:13.5px; }
+  .filter-input input:focus { outline:none; border-color:var(--accent); box-shadow:0 0 0 3px var(--accent-soft); }
+  .chip-filter { display:flex; gap:6px; }
+  .chip-filter button { padding:6px 12px; border:1px solid var(--border); border-radius:999px; font-size:13px; color:var(--muted); background:var(--surface); }
+  .chip-filter button.on { background:var(--accent-soft); color:var(--accent); border-color:transparent; }
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar">
+    <div class="brand"><div class="brand-mark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M3 21h18M5 21V8l7-5 7 5v13M9 21v-6h6v6"/></svg></div><div class="brand-name">Strukt</div></div>
+    <nav class="nav">
+      <div class="nav-label">Workspace</div>
+      <a class="nav-item" href="dashboard.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg> Dashboard</a>
+      <a class="nav-item active" href="quotations.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 2h6l4 4v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2z"/><path d="M14 2v5h5M8 13h8M8 17h5"/></svg> Quotations <span class="nav-count">24</span></a>
+      <a class="nav-item" href="create-quotation.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg> Create Quotation</a>
+      <a class="nav-item" href="drafts.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg> Saved Drafts <span class="nav-count">2</span></a>
+      <div class="nav-label">Library</div>
+      <a class="nav-item" href="templates.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg> Templates</a>
+      <a class="nav-item" href="customers.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg> Customers</a>
+      <a class="nav-item" href="settings.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.6 1.6 0 0 0 .3 1.8 2 2 0 1 1-2.8 2.8 1.6 1.6 0 0 0-2.8 1V21a2 2 0 0 1-4 0 1.6 1.6 0 0 0-2.8-1 2 2 0 1 1-2.8-2.8 1.6 1.6 0 0 0 .3-1.8 1.6 1.6 0 0 0-1.5-1H3a2 2 0 0 1 0-4 1.6 1.6 0 0 0 1.5-1 1.6 1.6 0 0 0-.3-1.8 2 2 0 1 1 2.8-2.8 1.6 1.6 0 0 0 2.8-1V3a2 2 0 0 1 4 0 1.6 1.6 0 0 0 2.8 1 2 2 0 1 1 2.8 2.8 1.6 1.6 0 0 0-.3 1.8 1.6 1.6 0 0 0 1.5 1H21a2 2 0 0 1 0 4 1.6 1.6 0 0 0-1.5 1z"/></svg> Settings</a>
+    </nav>
+    <div class="sidebar-foot"><div class="user-chip"><div class="avatar">YK</div><div class="who"><b>Yaseen K.</b><small>Lead Estimator</small></div></div></div>
+  </aside>
+  <div class="scrim" onclick="closeNav()"></div>
+
+  <div class="main">
+    <header class="topbar">
+      <button class="icon-btn menu-btn" onclick="toggleNav()" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 12h18M3 6h18M3 18h18"/></svg></button>
+      <div class="crumbs"><b>Quotations</b></div>
+      <label class="search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4-4"/></svg><input placeholder="Search…" /><kbd>/</kbd></label>
+      <div class="topbar-actions">
+        <button class="icon-btn" data-theme-icon onclick="toggleTheme()" aria-label="Theme"><svg data-sun viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2v2.5M12 19.5V22M4.2 4.2l1.8 1.8M18 18l1.8 1.8M2 12h2.5M19.5 12H22M4.2 19.8L6 18M18 6l1.8-1.8"/></svg><svg data-moon style="display:none" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8 8 0 1 1 9.5 4 6.2 6.2 0 0 0 20 14.5z"/></svg></button>
+        <a class="btn btn-primary btn-sm" href="create-quotation.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg> New</a>
+      </div>
+    </header>
+
+    <main class="content" data-od-id="quotations">
+     <div class="container">
+      <div class="page-head"><div><h1 class="page-title">Quotations</h1><p class="page-sub">24 quotations · representative records.</p></div></div>
+
+      <div class="toolbar">
+        <div class="filter-input"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4-4"/></svg><input placeholder="Filter by client, ref or site…" oninput="filterRows(this.value)" /></div>
+        <div class="chip-filter">
+          <button class="on" onclick="setFilter(this,'all')">All</button>
+          <button onclick="setFilter(this,'sent')">Sent</button>
+          <button onclick="setFilter(this,'review')">In review</button>
+          <button onclick="setFilter(this,'accepted')">Accepted</button>
+          <button onclick="setFilter(this,'draft')">Draft</button>
+        </div>
+        <div style="margin-left:auto;"><button class="btn btn-secondary btn-sm"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3M1 14h6M9 8h6M17 16h6"/></svg> Filters</button></div>
+      </div>
+
+      <div class="card flush">
+        <div class="table-wrap">
+          <table class="tbl" id="q-table">
+            <thead><tr><th>Ref</th><th>Client / Project</th><th>Type</th><th class="r">Value</th><th>Rev</th><th>Updated</th><th>Status</th></tr></thead>
+            <tbody>
+              <tr data-status="sent" data-k="meridian q-2614 bhiwandi"><td class="num">Q-2614</td><td><div class="primary-cell">Meridian Logistics</div><div class="sub-cell">Gable warehouse · Bhiwandi</div></td><td><span class="tag">Gable</span></td><td class="r">₹62,40,000</td><td class="num">R2</td><td class="sub-cell">2h ago</td><td><span class="badge ok"><span class="led"></span>Sent</span></td></tr>
+              <tr data-status="review" data-k="anand agritech nashik q-2613"><td class="num">Q-2613</td><td><div class="primary-cell">Anand Agritech</div><div class="sub-cell">Mono-pitch shed · Nashik</div></td><td><span class="tag">Mono-pitch</span></td><td class="r">₹28,75,500</td><td class="num">R1</td><td class="sub-cell">5h ago</td><td><span class="badge warn"><span class="led"></span>In review</span></td></tr>
+              <tr data-status="accepted" data-k="sundaram motors hosur q-2612"><td class="num">Q-2612</td><td><div class="primary-cell">Sundaram Motors</div><div class="sub-cell">Multi-bay + mezzanine · Hosur</div></td><td><span class="tag">Multi-bay</span></td><td class="r">₹1,14,20,000</td><td class="num">R3</td><td class="sub-cell">Yesterday</td><td><span class="badge ok"><span class="led"></span>Accepted</span></td></tr>
+              <tr data-status="draft" data-k="kestrel cold chain pune q-2611"><td class="num">Q-2611</td><td><div class="primary-cell">Kestrel Cold Chain</div><div class="sub-cell">Insulated PEB · Pune</div></td><td><span class="tag">Gable</span></td><td class="r">₹86,90,000</td><td class="num">R0</td><td class="sub-cell">Yesterday</td><td><span class="badge"><span class="led"></span>Draft</span></td></tr>
+              <tr data-status="sent" data-k="greenfield foods indore q-2610"><td class="num">Q-2610</td><td><div class="primary-cell">Greenfield Foods</div><div class="sub-cell">Process hall · Indore</div></td><td><span class="tag">Gable</span></td><td class="r">₹49,30,750</td><td class="num">R1</td><td class="sub-cell">2d ago</td><td><span class="badge ok"><span class="led"></span>Sent</span></td></tr>
+              <tr data-status="review" data-k="patel steelworks rajkot q-2609"><td class="num">Q-2609</td><td><div class="primary-cell">Patel Steelworks</div><div class="sub-cell">Fabrication bay · Rajkot</div></td><td><span class="tag">Multi-bay</span></td><td class="r">₹73,15,000</td><td class="num">R2</td><td class="sub-cell">3d ago</td><td><span class="badge warn"><span class="led"></span>In review</span></td></tr>
+              <tr data-status="accepted" data-k="orbit retail surat q-2608"><td class="num">Q-2608</td><td><div class="primary-cell">Orbit Retail Parks</div><div class="sub-cell">Big-box retail · Surat</div></td><td><span class="tag">Gable</span></td><td class="r">₹2,04,60,000</td><td class="num">R1</td><td class="sub-cell">4d ago</td><td><span class="badge ok"><span class="led"></span>Accepted</span></td></tr>
+              <tr data-status="draft" data-k="vega ceramics morbi q-2607"><td class="num">Q-2607</td><td><div class="primary-cell">Vega Ceramics</div><div class="sub-cell">Kiln shed · Morbi</div></td><td><span class="tag">Mono-pitch</span></td><td class="r">₹41,08,200</td><td class="num">R0</td><td class="sub-cell">5d ago</td><td><span class="badge"><span class="led"></span>Draft</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+     </div>
+    </main>
+  </div>
+</div>
+<script src="assets/app.js"></script>
+<script>
+  var curFilter='all', curText='';
+  function apply(){
+    document.querySelectorAll('#q-table tbody tr').forEach(tr=>{
+      var okS = curFilter==='all' || tr.dataset.status===curFilter;
+      var okT = !curText || tr.dataset.k.indexOf(curText)>-1;
+      tr.style.display = (okS&&okT)?'':'none';
+    });
+  }
+  function setFilter(btn,f){ curFilter=f; document.querySelectorAll('.chip-filter button').forEach(b=>b.classList.remove('on')); btn.classList.add('on'); apply(); }
+  function filterRows(v){ curText=v.toLowerCase().trim(); apply(); }
+</script>
+</body>
+</html>

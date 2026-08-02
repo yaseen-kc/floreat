@@ -7,6 +7,7 @@ import { getQuotationByJobId } from '@/api/quotation/quotation/getQuotation'
 import { getRoofByJobId } from '@/api/quotation/roof/getRoof'
 import { getSpecByJobId } from '@/api/quotation/spec/getSpec'
 import { getStairByJobId } from '@/api/quotation/stair/getStairs'
+import { getRates } from '@/api/quotation/rate/getRate'
 import type { Job } from '@/api/quotation/jobs/getJobs'
 import {
   createDefaultAccessories,
@@ -31,6 +32,7 @@ import { mapQuotationResponseToDraft } from '@/utils/hydrateQuotation'
 import { mapRoofResponseToDraft } from '@/utils/hydrateRoof'
 import { mapSpecResponseToDraft } from '@/utils/hydrateSpec'
 import { mapStairResponseToDraft } from '@/utils/hydrateStair'
+import { mergeRatesWithDefaults } from '@/utils/hydrateRate'
 
 export type RecentlyUsedStep = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13
 
@@ -114,6 +116,12 @@ const adapters: Partial<Record<RecentlyUsedStep, StepAdapter>> = {
     apply: async (job, token) => {
       const data = await getSpecByJobId(token, job.id)
       useQuotationStore.setState({ spec: data ? mapSpecResponseToDraft(data) : createDefaultSpec() })
+    },
+  },
+  10: {
+    apply: async (job, token) => {
+      const data = await getRates(token, job.id, 1, 100)
+      useQuotationStore.setState({ rateRows: mergeRatesWithDefaults(data.data) })
     },
   },
   13: {

@@ -1,7 +1,7 @@
 /** Job-owned rate operations. Every query is scoped by jobId. */
 import { prisma } from '../lib/prisma.js'
 import { deriveRateBreakdown } from '@floreat/shared/calc'
-import type { CreateRateInput, UpdateRateInput } from '../schemas/rate.schema.js'
+import type { BulkRateInput, CreateRateInput, UpdateRateInput } from '../schemas/rate.schema.js'
 import { computeJobAmount } from './amount-calc.helper.js'
 
 const toNum = (v: unknown): number | undefined => (v == null ? undefined : Number(v))
@@ -29,6 +29,18 @@ export async function createRate(jobId: string, data: CreateRateInput) {
   const rate = await prisma.rate.create({ data: { jobId, ...data, ...computeBreakdown(data) } })
   await refreshAmount(jobId)
   return rate
+}
+
+export async function replaceRates(jobId: string, data: BulkRateInput) {
+  const rates = await prisma.$transaction(async (tx) => {
+    await tx.rate.deleteMany({ where: { jobId } })
+    for (const row of data.rates) {
+      await tx.rate.create({ data: { jobId, ...row, ...computeBreakdown(row) } })
+    }
+    return tx.rate.findMany({ where: { jobId }, orderBy: { createdAt: 'asc' } })
+  })
+  await refreshAmount(jobId)
+  return rates
 }
 
 export async function getRates(jobId: string, page: number, pageSize: number) {

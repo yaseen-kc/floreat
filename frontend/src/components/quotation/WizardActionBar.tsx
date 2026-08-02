@@ -13,6 +13,8 @@ import { useUpsertLoad } from '@/api/quotation/load/postLoad'
 import { useUpsertAccessories } from '@/api/quotation/accessories/postAccessories'
 import { useUpsertJoint } from '@/api/quotation/joint/postJoint'
 import { useUpsertSpec } from '@/api/quotation/spec/postSpec'
+import { useReplaceRates } from '@/api/quotation/rate/putRatesBulk'
+import { PRICING_FIELDS } from '@/schemas/rate.schema'
 import { useUpsertAmount } from '@/api/quotation/amount/postAmount'
 import { useUpsertQuantity } from '@/api/quotation/quantity/postQuantity'
 import { useUpsertQuotation } from '@/api/quotation/quotation/postQuotation'
@@ -41,7 +43,7 @@ export const successToast = (message: string) => {
 }
 
 export function WizardActionBar() {
-  const { currentStep, nextStep, prevStep, validateStep, goStep, projectInfo, roof, jobId, setJobId, resetQuotation, mezzanine, stair, canopy, load, accessories, joint, spec, quotation } =
+  const { currentStep, nextStep, prevStep, validateStep, goStep, projectInfo, roof, jobId, setJobId, resetQuotation, mezzanine, stair, canopy, load, accessories, joint, spec, quotation, rateRows } =
     useQuotationStore(
       useShallow((s) => ({
         currentStep: s.currentStep,
@@ -62,6 +64,7 @@ export function WizardActionBar() {
         joint: s.joint,
         spec: s.spec,
         quotation: s.quotation,
+        rateRows: s.rateRows,
       })),
     )
   const navigate = useNavigate()
@@ -82,6 +85,7 @@ export function WizardActionBar() {
   const upsertAmount = useUpsertAmount()
   const upsertQuantity = useUpsertQuantity()
   const upsertQuotation = useUpsertQuotation()
+  const replaceRates = useReplaceRates()
   const isLast = currentStep === STEP_COUNT
   const isSubmitting =
     createJob.isPending ||
@@ -97,6 +101,7 @@ export function WizardActionBar() {
     upsertAmount.isPending ||
     upsertQuantity.isPending ||
     upsertQuotation.isPending
+    || replaceRates.isPending
 
   /**
    * Persists Step 1 data. Creates the job once (POST) and stores its id;
@@ -400,6 +405,45 @@ export function WizardActionBar() {
     }
   }
 
+  const submitRates = async () => {
+    if (!jobId) {
+      toast.error('Save the project details first')
+      throw new Error('Cannot save rates before the job is created')
+    }
+    try {
+      setSaving()
+      const saved = await replaceRates.mutateAsync({
+        jobId,
+        payload: {
+          rates: rateRows.map((row) => ({
+            item: row.item,
+            unit: row.unit,
+            ...Object.fromEntries(PRICING_FIELDS.filter((field) => row[field] !== undefined).map((field) => [field, row[field]])),
+          })),
+        },
+      })
+      useQuotationStore.getState().setRateRows(saved.map((row) => ({
+        id: row.id,
+        item: row.item,
+        unit: row.unit,
+        ...Object.fromEntries(PRICING_FIELDS.map((field) => {
+          const value = row[field]
+          return [field, value == null || value === '' ? undefined : Number(value)]
+        })),
+        fabricationRate: row.fabricationRate,
+        erectionRate: row.erectionRate,
+        loadingRate: row.loadingRate,
+        totalRate: row.totalRate,
+      })))
+      setSaved()
+      successToast('Rates saved successfully')
+    } catch (err) {
+      resetSaveStatus()
+      toast.error('Failed to save rates')
+      throw err
+    }
+  }
+
   const handleNext = async () => {
     if (isSubmitting) return
 
@@ -510,10 +554,14 @@ export function WizardActionBar() {
       return
     }
 
-    // Step 10 (Rate Master): no wizard-level persistence — rows are saved
-    // independently in the table. Just advance to the Quantity step.
+    // Step 10 (Rate Master): replace the complete rate set before advancing.
     if (currentStep === 10) {
-      goStep(11)
+      try {
+        await submitRates()
+        goStep(11)
+      } catch {
+        // Error toast already shown; stay on Step 10.
+      }
       return
     }
 
@@ -577,6 +625,8 @@ export function WizardActionBar() {
       try { await submitJoint() } catch { /* error toast already shown */ }
     } else if (currentStep === 9) {
       try { await submitSpec() } catch { /* error toast already shown */ }
+    } else if (currentStep === 10) {
+      try { await submitRates() } catch { /* error toast already shown */ }
     } else if (currentStep === 11) {
       try { await submitQuantity() } catch { /* error toast already shown */ }
     } else if (currentStep === 12) {

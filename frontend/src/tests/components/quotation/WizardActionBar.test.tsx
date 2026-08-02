@@ -18,6 +18,8 @@ const mocks = vi.hoisted(() => ({
   upsertSpecMutateAsync: vi.fn(),
   upsertAmountMutateAsync: vi.fn(),
   upsertQuantityMutateAsync: vi.fn(),
+  upsertQuotationMutateAsync: vi.fn(),
+  replaceRatesMutateAsync: vi.fn(),
   createPending: false,
   updatePending: false,
   upsertRoofPending: false,
@@ -81,6 +83,14 @@ vi.mock('@/api/quotation/spec/postSpec', () => ({
 
 vi.mock('@/api/quotation/amount/postAmount', () => ({
   useUpsertAmount: () => ({ mutateAsync: mocks.upsertAmountMutateAsync, isPending: false }),
+}))
+
+vi.mock('@/api/quotation/rate/putRatesBulk', () => ({
+  useReplaceRates: () => ({ mutateAsync: mocks.replaceRatesMutateAsync, isPending: false }),
+}))
+
+vi.mock('@/api/quotation/quotation/postQuotation', () => ({
+  useUpsertQuotation: () => ({ mutateAsync: mocks.upsertQuotationMutateAsync, isPending: false }),
 }))
 
 vi.mock('@/api/quotation/rate/getRate', () => ({
@@ -563,6 +573,8 @@ describe('WizardActionBar Step 11 quantity persistence', () => {
     mocks.toastSuccess.mockReset()
     mocks.toastError.mockReset()
     mocks.upsertAmountMutateAsync.mockReset()
+    mocks.upsertQuotationMutateAsync.mockReset()
+    mocks.upsertQuotationMutateAsync.mockResolvedValue({})
     mocks.upsertQuantityMutateAsync.mockReset()
     useQuotationStore.getState().setJobId('job-1')
     useQuotationStore.setState({ currentStep: 11 })
@@ -638,6 +650,8 @@ describe('WizardActionBar Step 13 quotation finalise', () => {
     useQuotationStore.getState().resetQuotation()
     mocks.navigate.mockReset()
     mocks.upsertAmountMutateAsync.mockReset()
+    mocks.upsertQuotationMutateAsync.mockReset()
+    mocks.upsertQuotationMutateAsync.mockResolvedValue({})
     useQuotationStore.getState().setJobId('job-1')
     useQuotationStore.setState({ currentStep: 13 })
   })

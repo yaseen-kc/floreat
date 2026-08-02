@@ -4,7 +4,6 @@ import { useAmountHydration } from '@/hooks/useAmountHydration'
 import { useQuantityHydration } from '@/hooks/useQuantityHydration'
 import { useQuotationHydration } from '@/hooks/useQuotationHydration'
 import { Printer } from 'lucide-react'
-import { RecentlyUsed } from '@/components/quotation/RecentlyUsed'
 
 export function Step13Quotation() {
   useQuotationHydration()
@@ -13,7 +12,6 @@ export function Step13Quotation() {
 
   return (
     <section>
-      <RecentlyUsed step={13} />
       <div className="mb-5 flex items-start justify-between">
         <div>
           <h2 className="text-xl font-semibold tracking-tight">Quotation</h2>

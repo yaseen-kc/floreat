@@ -44,6 +44,18 @@ export interface Quotation {
   qtyFasciaStructure: number | null
   createdAt: string
   updatedAt: string
+  job: QuotationJobSummary
+}
+
+export interface QuotationJobSummary {
+  projectNo: string
+  refNo: string
+  subject: string
+  clientName: string | null
+  firmName: string | null
+  frameType: string
+  configuration: string
+  updatedAt: string
 }
 
 /** Paginated response shape from GET /api/quotations. */

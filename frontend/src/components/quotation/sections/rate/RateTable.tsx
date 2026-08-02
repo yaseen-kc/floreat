@@ -2,9 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { toast } from 'sonner'
 import { deriveRateBreakdown } from '@floreat/shared/calc'
 import { useRateHydration } from '@/hooks/useRateHydration'
-import { useCreateRate } from '@/api/quotation/rate/postRate'
-import { useUpdateRate } from '@/api/quotation/rate/putRate'
-import type { Rate } from '@/api/quotation/rate/getRate'
+import { useReplaceRates } from '@/api/quotation/rate/putRatesBulk'
 import { PRICING_FIELDS, type PricingField, type RateRowDraft } from '@/schemas/rate.schema'
 import { SectionCard } from '@/components/quotation/shared/SectionCard'
 import { Badge } from '@/components/ui/badge'
@@ -24,6 +22,8 @@ import {
 } from '@/components/ui/alert-dialog'
 import { IndianRupee, Save } from 'lucide-react'
 import { useQuotationStore } from '@/stores/quotation-store'
+import { useShallow } from 'zustand/react/shallow'
+import { mergeRatesWithDefaults } from '@/utils/hydrateRate'
 
 /** Short column headers for the eight raw pricing inputs, in `PRICING_FIELDS` order. */
 const PRICING_LABELS: Record<PricingField, string> = {
@@ -59,38 +59,34 @@ const pricingOf = (row: RateRowDraft): Partial<Record<PricingField, number>> => 
  * The Step 10 job rate table — one editable row per rate item. The 35
  * canonical items always render (merged with any saved server pricing); each
  * row exposes the eight raw pricing inputs, previews the four server-derived
- * rates live via `deriveRateBreakdown`, and saves independently (POST for a new
- * item, PUT for an existing one). Rates persist only for the active job.
+ * rates live via `deriveRateBreakdown`, and saves the complete set atomically.
  */
 export function RateTable() {
   const jobId = useQuotationStore((s) => s.jobId)
   const { rows: hydratedRows, isLoading, isError } = useRateHydration()
-  const createRate = useCreateRate()
-  const updateRate = useUpdateRate()
-
-  const [rows, setRows] = useState<RateRowDraft[]>([])
+  const { rateRows: rows, setRateRows } = useQuotationStore(useShallow((s) => ({ rateRows: s.rateRows, setRateRows: s.setRateRows })))
+  const replaceRates = useReplaceRates()
   const [baseline, setBaseline] = useState<Record<string, string>>({})
-  const [savingItem, setSavingItem] = useState<string | null>(null)
   const [editorOpen, setEditorOpen] = useState(false)
   const [editorDraft, setEditorDraft] = useState<RateRowDraft | null>(null)
   const seeded = useRef(false)
 
   useEffect(() => {
     seeded.current = false
-    setRows([])
+    setRateRows([])
     setBaseline({})
-  }, [jobId])
+  }, [jobId, setRateRows])
 
   // Seed local edit state once, the first time the merged rows arrive.
   useEffect(() => {
     if (seeded.current || isLoading) return
     seeded.current = true
-    setRows(hydratedRows)
+    setRateRows(hydratedRows)
     setBaseline(Object.fromEntries(hydratedRows.map((r) => [r.item, rowKey(r)])))
-  }, [hydratedRows, isLoading])
+  }, [hydratedRows, isLoading, setRateRows])
 
   const updateRow = (index: number, patch: Partial<RateRowDraft>) =>
-    setRows((prev) => prev.map((row, i) => (i === index ? { ...row, ...patch } : row)))
+    setRateRows(rows.map((row, i) => (i === index ? { ...row, ...patch } : row)))
 
   const openEditor = (index: number) => {
     setEditorDraft(rows[index])
@@ -107,8 +103,8 @@ export function RateTable() {
 
   const saveDraftedRow = async () => {
     if (!editorDraft) return
-    const saved = await saveRow(editorDraft)
-    if (saved) closeEditor()
+    setRateRows(rows.map((row) => row.item === editorDraft.item ? editorDraft : row))
+    closeEditor()
   }
 
   const editorPriced = editorDraft ? PRICING_FIELDS.some((f) => editorDraft[f] !== undefined) : false
@@ -116,28 +112,27 @@ export function RateTable() {
 
   const isDirty = (row: RateRowDraft): boolean => baseline[row.item] !== rowKey(row)
 
-  /** Persists one row: PUT when it already has an `id`, POST otherwise. */
-  const saveRow = async (row: RateRowDraft): Promise<Rate | null> => {
+  const saveAll = async () => {
     if (!jobId) {
       toast.error('Save the job before editing rates')
-      return null
+      throw new Error('Missing job id')
     }
-    setSavingItem(row.item)
     try {
-      const saved: Rate = row.id
-        ? await updateRate.mutateAsync({ jobId, id: row.id, payload: { unit: row.unit, ...pricingOf(row) } })
-        : await createRate.mutateAsync({ jobId, payload: { item: row.item, unit: row.unit, ...pricingOf(row) } })
-      setRows((prev) => prev.map((r) => (r.item === row.item ? { ...r, id: saved.id, fabricationRate: saved.fabricationRate, erectionRate: saved.erectionRate, loadingRate: saved.loadingRate, totalRate: saved.totalRate } : r)))
-      setBaseline((prev) => ({ ...prev, [row.item]: rowKey(row) }))
-      toast.success(`${row.item} saved`)
-      return saved
+      const saved = await replaceRates.mutateAsync({
+        jobId,
+        payload: { rates: rows.map((row) => ({ item: row.item, unit: row.unit, ...pricingOf(row) })) },
+      })
+      const nextRows = mergeRatesWithDefaults(saved)
+      setRateRows(nextRows)
+      setBaseline(Object.fromEntries(nextRows.map((row) => [row.item, rowKey(row)])))
+      toast.success('Rates saved')
     } catch {
-      toast.error(`Failed to save ${row.item}`)
-      return null
-    } finally {
-      setSavingItem(null)
+      toast.error('Failed to save rates')
+      throw new Error('Rate save failed')
     }
   }
+
+  const saving = replaceRates.isPending
 
   return (
     <SectionCard icon={<IndianRupee />} title="Rate Master">
@@ -150,6 +145,14 @@ export function RateTable() {
           Couldn't load this job's rates. The 35 defaults are shown; saving will retry the server.
         </p>
       ) : null}
+
+      {!isLoading && (
+        <div className="mb-3 flex justify-end">
+          <Button type="button" onClick={() => void saveAll()} disabled={saving || !rows.some(isDirty)}>
+            {saving ? <Spinner /> : <Save className="w-4 h-4" />} Save all
+          </Button>
+        </div>
+      )}
 
       {!isLoading && (
         <Table className="min-w-[1500px]"> 
@@ -174,7 +177,6 @@ export function RateTable() {
                 ? { fabricationRate: row.fabricationRate, erectionRate: row.erectionRate!, loadingRate: row.loadingRate!, totalRate: row.totalRate! }
                 : deriveRateBreakdown(pricingOf(row))
               const priced = PRICING_FIELDS.some((f) => row[f] !== undefined)
-              const dirty = isDirty(row)
               return (
                 <TableRow key={row.item}>
                   <TableCell className="text-right text-muted-foreground">
@@ -209,18 +211,7 @@ export function RateTable() {
                   <TableCell className="text-right">{priced ? <Num>{derived.erectionRate}</Num> : <span className="text-muted-foreground">—</span>}</TableCell>
                   <TableCell className="text-right">{priced ? <Num>{derived.loadingRate}</Num> : <span className="text-muted-foreground">—</span>}</TableCell>
                   <TableCell className="text-right font-semibold">{priced ? <Num>{derived.totalRate}</Num> : <span className="text-muted-foreground">—</span>}</TableCell>
-                  <TableCell>
-                    <Button
-                      type="button"
-                      variant={dirty ? 'default' : 'ghost'}
-                      size="icon"
-                      disabled={!dirty || savingItem === row.item}
-                      aria-label={`Save ${row.item}`}
-                      onClick={() => saveRow(row)}
-                    >
-                      {savingItem === row.item ? <Spinner /> : <Save />}
-                    </Button>
-                  </TableCell>
+                  <TableCell />
                 </TableRow>
               )
             })}
@@ -330,9 +321,9 @@ export function RateTable() {
               type="button"
               variant="default"
               onClick={saveDraftedRow}
-              disabled={!editorDraft || savingItem === editorDraft.item}
+              disabled={!editorDraft || saving}
             >
-              {savingItem === editorDraft?.item ? <Spinner /> : 'Save changes'}
+              Save changes
             </Button>
           </AlertDialogFooter>
         </AlertDialogContent>

@@ -22,6 +22,19 @@ export const createRateSchema = z.object({
   marginPercentage: z.number().nonnegative().optional(),
 })
 
+/** Complete replacement payload for a job's rate set. */
+export const bulkRateSchema = z.object({
+  rates: z.array(createRateSchema.strict()).superRefine((rates, ctx) => {
+    const seen = new Set<string>()
+    rates.forEach((rate, index) => {
+      if (seen.has(rate.item)) {
+        ctx.addIssue({ code: 'custom', path: [index, 'item'], message: 'Rate item names must be unique' })
+      }
+      seen.add(rate.item)
+    })
+  }),
+})
+
 /** Schema for partially updating a rate master item (all fields optional). */
 export const updateRateSchema = createRateSchema.partial()
 
@@ -30,3 +43,4 @@ export type CreateRateInput = z.infer<typeof createRateSchema>
 
 /** Validated payload for updating a rate master item (all fields optional). */
 export type UpdateRateInput = z.infer<typeof updateRateSchema>
+export type BulkRateInput = z.infer<typeof bulkRateSchema>

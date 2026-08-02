@@ -8,7 +8,7 @@ export function Step10Rate() {
       <div className="mb-5">
         <h2 className="text-xl font-semibold tracking-tight">Job rates</h2>
         <p className="text-muted-foreground text-sm mt-1">
-          Each job starts with 35 default rate items. Enter pricing for each item and save rows individually. Click an item name to open a popup editor for faster editing on smaller screens.
+          Each job starts with 35 default rate items. Edit the raw pricing fields and save the complete rate set together.
         </p>
       </div>
 
