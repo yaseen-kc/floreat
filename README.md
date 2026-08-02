@@ -44,6 +44,7 @@ deferred and must be externally restricted until Clerk role checks are added.
 19. [Verify the application works](#19-verify)
 20. [Troubleshooting common problems](#20-troubleshooting)
 21. [Basic server maintenance](#21-maintenance)
+22. [Connect a Cloudflare subdomain](#22-cloudflare)
 
 ---
 
@@ -1438,6 +1439,182 @@ pm2 monit    # live CPU/memory for the backend
 - **Why:** the two things that quietly break a small server are a **full disk** (logs,
   backups, npm caches) and **exhausted memory** during builds. Check these if the app gets
   slow or a build fails.
+
+---
+
+<a name="22-cloudflare"></a>
+## 22. Connect a Cloudflare subdomain
+
+So far the app is reachable at `http://YOUR_EC2_IP`. This section points a **subdomain**
+you own (for example `app.example.com`) at the instance through **Cloudflare**. Cloudflare
+gives you a clean URL, hides the origin IP, and — because its proxy terminates HTTPS —
+lets visitors reach the app over **`https://`** even though Nginx here still listens on
+plain port 80.
+
+> **Prerequisite:** the domain (`example.com`) must already be **added to Cloudflare** and
+> using Cloudflare's nameservers. If you bought the domain elsewhere, add it in the
+> Cloudflare dashboard (**Add a site**) and switch the registrar's nameservers to the two
+> Cloudflare gives you. You only do that once per domain; a subdomain needs no separate
+> purchase.
+
+### 22.1 How the pieces fit
+
+```
+   Visitor ──HTTPS──► Cloudflare edge ──HTTP (port 80)──► EC2 Nginx ──► app + /api
+  (app.example.com)   (proxy + TLS)         (your origin)
+```
+
+- The visitor always speaks **HTTPS** to Cloudflare.
+- Cloudflare speaks to your EC2 origin. With SSL/TLS mode **Flexible** (Section 22.4) that
+  hop is plain HTTP on port 80 — no server changes needed. Upgrading that hop to HTTPS is
+  the follow-up in Section 22.6.
+
+### 22.2 Create the DNS record in Cloudflare
+
+1. Sign in to <https://dash.cloudflare.com/> and select your domain (`example.com`).
+2. Open **DNS → Records** and click **Add record**.
+3. Fill it in:
+   - **Type:** `A`
+   - **Name:** `app` (this becomes `app.example.com`; use `@` for the root domain)
+   - **IPv4 address:** your instance's public IP (`YOUR_EC2_IP`)
+   - **Proxy status:** **Proxied** (orange cloud) — routes traffic through Cloudflare so
+     you get HTTPS and a hidden origin IP. Grey cloud = DNS-only, which skips all of that.
+   - **TTL:** `Auto`
+4. Click **Save**.
+
+> **Tip:** an **A** record needs a fixed IPv4. A stopped/started EC2 instance gets a **new**
+> public IP unless you attach an **Elastic IP** (a static address). Allocate one in the EC2
+> console and associate it with the instance, then use that IP here so the record doesn't
+> break on reboot.
+
+### 22.3 Tell Nginx to answer for the hostname
+
+Nginx currently matches only `YOUR_EC2_IP` (Section 16.2). Add the subdomain so it also
+responds by name. Edit the site config:
+
+```bash
+sudo nano /etc/nginx/sites-available/floreat
+```
+
+Change the `server_name` line to include the hostname:
+
+```nginx
+server_name YOUR_EC2_IP app.example.com;
+```
+
+Then test and reload:
+
+```bash
+sudo nginx -t
+sudo systemctl reload nginx
+```
+
+- **Why:** `server_name` lets this server block claim requests arriving with the
+  `Host: app.example.com` header (which Cloudflare forwards). Naming it explicitly is
+  correct and becomes required once the instance hosts more than one site.
+
+### 22.4 Set Cloudflare SSL/TLS mode
+
+In the Cloudflare dashboard open **SSL/TLS → Overview** and choose an encryption mode:
+
+- **Flexible** — Cloudflare serves HTTPS to visitors but talks to your origin over plain
+  **HTTP (port 80)**. Works immediately with the current setup and needs **no** origin
+  changes. Good enough to get a working `https://app.example.com` today.
+- **Full (strict)** — Cloudflare talks to your origin over **HTTPS** and validates the
+  origin certificate. More secure, but requires installing a certificate on the server
+  first (Section 22.6).
+
+Start with **Flexible** to confirm everything routes, then upgrade to **Full (strict)**
+when you're ready.
+
+> **Heads-up:** "Flexible" encrypts only the visitor↔Cloudflare hop; the Cloudflare↔EC2 hop
+> is unencrypted. That's acceptable for a first cut, but move to Full (strict) for anything
+> handling real user data.
+
+### 22.5 Verify the subdomain
+
+DNS and Cloudflare changes can take a few minutes to propagate. Then:
+
+1. Open `https://app.example.com` in a browser — you should see the Floreat app with a
+   valid padlock (the certificate is issued to your domain by Cloudflare).
+2. Confirm the API works through the proxy:
+
+   ```bash
+   curl -i https://app.example.com/api/health
+   ```
+
+   - *Expected:* `HTTP/2 200` and the health JSON body, same as Section 19.
+3. If you see a Cloudflare **error 5xx** page, the edge reached Cloudflare but couldn't
+   reach your origin — jump to 22.7.
+
+### 22.6 (Optional) Encrypt the Cloudflare↔EC2 hop with Full (strict)
+
+To close the plaintext gap, install a **Cloudflare Origin Certificate** — a free
+certificate Cloudflare trusts, valid up to 15 years, only for the edge↔origin hop.
+
+1. In Cloudflare: **SSL/TLS → Origin Server → Create Certificate**. Accept the defaults
+   (RSA, hostnames `app.example.com` or `*.example.com`) and **Create**.
+2. Copy the two blocks Cloudflare shows into files on the server:
+
+   ```bash
+   sudo mkdir -p /etc/nginx/cloudflare
+   sudo nano /etc/nginx/cloudflare/origin.pem   # paste the certificate
+   sudo nano /etc/nginx/cloudflare/origin.key   # paste the private key
+   sudo chmod 600 /etc/nginx/cloudflare/origin.key
+   ```
+
+3. Add a TLS server block to `/etc/nginx/sites-available/floreat` (keep the existing
+   port-80 block or make it redirect to 443):
+
+   ```nginx
+   server {
+       listen 443 ssl;
+       server_name YOUR_EC2_IP app.example.com;
+
+       ssl_certificate     /etc/nginx/cloudflare/origin.pem;
+       ssl_certificate_key /etc/nginx/cloudflare/origin.key;
+
+       root /home/ubuntu/floreat/frontend/dist;
+       index index.html;
+
+       location /api/ {
+           proxy_pass http://127.0.0.1:3000;
+           proxy_http_version 1.1;
+           proxy_set_header Host              $host;
+           proxy_set_header X-Real-IP         $remote_addr;
+           proxy_set_header X-Forwarded-For   $proxy_add_x_forwarded_for;
+           proxy_set_header X-Forwarded-Proto $scheme;
+       }
+
+       location / {
+           try_files $uri $uri/ /index.html;
+       }
+   }
+   ```
+
+4. Open **port 443** to Cloudflare in your **EC2 Security Group** (add an inbound HTTPS
+   rule, port 443, source `0.0.0.0/0` or Cloudflare's IP ranges), then:
+
+   ```bash
+   sudo nginx -t
+   sudo systemctl reload nginx
+   ```
+
+5. Back in Cloudflare, switch **SSL/TLS → Overview** to **Full (strict)**.
+
+### 22.7 Troubleshooting the subdomain
+
+- **Cloudflare error 521/522 (web server down / timed out):** the edge can't reach your
+  origin. Confirm Nginx is running (`sudo systemctl status nginx`), the Security Group
+  allows inbound **80** (and **443** if using Full), and the A record IP matches
+  `YOUR_EC2_IP`.
+- **Error 525 (SSL handshake failed):** you set **Full/Full (strict)** but the origin has
+  no working HTTPS. Either finish Section 22.6 or drop back to **Flexible**.
+- **Redirect loop / "too many redirects":** usually caused by **Flexible** mode combined
+  with an app-side HTTP→HTTPS redirect. This guide's Nginx doesn't redirect, so if you see
+  it, remove any forced-HTTPS redirect or switch to **Full**.
+- **Still shows the IP, not the app:** DNS may not have propagated, or the record is
+  **DNS-only** (grey cloud). Set it to **Proxied** and wait a few minutes.
 
 ---
 
