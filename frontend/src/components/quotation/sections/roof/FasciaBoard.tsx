@@ -1,4 +1,4 @@
-import { useQuotationStore } from '@/stores/quotation-store'
+import { useQuotationStore, ROOF_SECTION_FIELDS } from '@/stores/quotation-store'
 import type { RoofDraft } from '@/stores/quotation-store'
 import { useShallow } from 'zustand/react/shallow'
 import { CollapsibleSection } from '@/components/quotation/shared/CollapsibleSection'
@@ -24,7 +24,7 @@ export function FasciaBoard() {
       showValidation: s.showValidation,
     })),
   )
-  const errors = showValidation ? getFieldErrors(roof) : {}
+  const errors = showValidation ? getFieldErrors(roof, enabled ? { requiredFields: ROOF_SECTION_FIELDS.fasciaBoard } : { optionalFields: ROOF_SECTION_FIELDS.fasciaBoard }) : {}
 
   return (
     <CollapsibleSection
@@ -51,7 +51,7 @@ export function FasciaBoard() {
                   className="[&>label]:sr-only"
                   label={label}
                   unit={unit}
-                  required={isRequired(name)}
+                  required={isRequired(name, enabled)}
                   value={roof[name]}
                   error={Boolean(errors[name])}
                   onChange={(v) => {

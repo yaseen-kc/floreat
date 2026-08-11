@@ -1,10 +1,9 @@
-import { useQuotationStore } from '@/stores/quotation-store'
+import { useQuotationStore, ROOF_SECTION_FIELDS } from '@/stores/quotation-store'
 import { useShallow } from 'zustand/react/shallow'
 import { CollapsibleSection } from '@/components/quotation/shared/CollapsibleSection'
 import { NumberField } from '@/components/quotation/shared/NumberField'
 import { Weight } from 'lucide-react'
 import { isRequired, getFieldErrors } from '@/schemas/roof.schema'
-import { ROOF_SECTION_FIELDS } from '@/stores/quotation-store'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 
 export function MaterialConsumption() {
@@ -17,7 +16,7 @@ export function MaterialConsumption() {
       showValidation: s.showValidation,
     })),
   )
-  const errors = showValidation ? getFieldErrors(roof) : {}
+  const errors = showValidation ? getFieldErrors(roof, enabled ? { requiredFields: ROOF_SECTION_FIELDS.materialConsumption } : { optionalFields: ROOF_SECTION_FIELDS.materialConsumption }) : {}
   const sectionError = ROOF_SECTION_FIELDS.materialConsumption.some((f) => Boolean(errors[f]))
 
   return (
@@ -45,7 +44,7 @@ export function MaterialConsumption() {
                 className="[&>label]:sr-only"
                 label="Material Consumption (Excluding Purlin)"
                 unit="kg/m²"
-                required={isRequired('materialConsumptionExcludingPurlin')}
+                required={isRequired('materialConsumptionExcludingPurlin', enabled)}
                 value={roof.materialConsumptionExcludingPurlin}
                 error={Boolean(errors.materialConsumptionExcludingPurlin)}
                 onChange={(v) => setRoof({ materialConsumptionExcludingPurlin: v })}

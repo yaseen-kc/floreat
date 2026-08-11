@@ -64,6 +64,9 @@ export const validRoofDraft: Partial<RoofDraft> = {
   backCladdingOpeningArea: 0,
   rightCladdingOpeningArea: 0,
   leftCladdingOpeningArea: 0,
+  // fascia board
+  fasciaBoardArea: 20,
+  fasciaMaterialWeightPerSqft: 1.5,
   // side extension
   roofExtensionWidthHeight: 1,
   roofExtensionMidFrameCount: 1,

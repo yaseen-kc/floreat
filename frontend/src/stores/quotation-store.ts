@@ -2,7 +2,7 @@ import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import { z } from 'zod'
 import { jobSchema, type JobInput } from '@/schemas/job.schema'
-import { createRoofSchema, type CreateRoofInput } from '@/schemas/roof.schema'
+import { getRoofValidationSchema, type CreateRoofInput } from '@/schemas/roof.schema'
 import {
   type CreateMezzanineInput,
   mezzanineFloorSchema,
@@ -601,7 +601,18 @@ export const useQuotationStore = create<QuotationState>()(
       validateStep: (n) => {
         const s = get()
         if (n === 1) return jobSchema.safeParse(s.projectInfo).success
-        if (n === 2) return createRoofSchema.safeParse(s.roof).success
+        if (n === 2) {
+          const disabledFields = Object.entries(s.roofSectionsEnabled)
+            .filter(([, enabled]) => !enabled)
+            .flatMap(([key]) => ROOF_SECTION_FIELDS[key as RoofSectionKey])
+          const enabledFields = Object.entries(s.roofSectionsEnabled)
+            .filter(([, enabled]) => enabled)
+            .flatMap(([key]) => ROOF_SECTION_FIELDS[key as RoofSectionKey])
+          return getRoofValidationSchema({
+            optionalFields: disabledFields,
+            requiredFields: enabledFields,
+          }).safeParse(s.roof).success
+        }
         return true
       },
 

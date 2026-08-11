@@ -1,11 +1,10 @@
-import { useQuotationStore } from '@/stores/quotation-store'
+import { useQuotationStore, ROOF_SECTION_FIELDS } from '@/stores/quotation-store'
 import type { RoofDraft } from '@/stores/quotation-store'
 import { useShallow } from 'zustand/react/shallow'
 import { CollapsibleSection } from '@/components/quotation/shared/CollapsibleSection'
 import { NumberField } from '@/components/quotation/shared/NumberField'
 import { StretchHorizontal } from 'lucide-react'
 import { isRequired, getFieldErrors } from '@/schemas/roof.schema'
-import { ROOF_SECTION_FIELDS } from '@/stores/quotation-store'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 
 type SideExtensionField =
@@ -55,7 +54,7 @@ export function SideExtension() {
       showValidation: s.showValidation,
     })),
   )
-  const errors = showValidation ? getFieldErrors(roof) : {}
+  const errors = showValidation ? getFieldErrors(roof, enabled ? { requiredFields: ROOF_SECTION_FIELDS.sideExtension } : { optionalFields: ROOF_SECTION_FIELDS.sideExtension }) : {}
   const sectionError = ROOF_SECTION_FIELDS.sideExtension.some((f) => Boolean(errors[f]))
 
   return (
@@ -91,7 +90,7 @@ export function SideExtension() {
                       unit={field.unit}
                       step={field.step}
                       readOnly={readOnly}
-                      required={!readOnly && isRequired(field.name)}
+                      required={!readOnly && isRequired(field.name, enabled)}
                       value={roof[field.name]}
                       error={!readOnly && Boolean(errors[field.name])}
                       onChange={(v) => {

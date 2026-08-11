@@ -29,7 +29,7 @@ export function FlangeBrace() {
       showValidation: s.showValidation,
     })),
   )
-  const errors = showValidation ? getFieldErrors(roof) : {}
+  const errors = showValidation ? getFieldErrors(roof, enabled ? { requiredFields: ROOF_SECTION_FIELDS.flangeBrace } : { optionalFields: ROOF_SECTION_FIELDS.flangeBrace }) : {}
   const sectionError = ROOF_SECTION_FIELDS.flangeBrace.some((f) => Boolean(errors[f]))
 
   return (
@@ -58,7 +58,7 @@ export function FlangeBrace() {
                   className="[&>label]:sr-only"
                   label={label}
                   unit="m"
-                  required={isRequired(name)}
+                  required={isRequired(name, enabled)}
                   value={roof[name]}
                   error={Boolean(errors[name])}
                   onChange={(v) => {

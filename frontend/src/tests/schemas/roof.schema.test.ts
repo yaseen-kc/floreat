@@ -235,10 +235,16 @@ describe('isRequired', () => {
     }
   })
 
-  it('reports the excluded fascia board fields and sidewalls as not required', () => {
-    expect(isRequired('fasciaBoardArea')).toBe(false)
-    expect(isRequired('fasciaMaterialWeightPerSqft')).toBe(false)
-    expect(isRequired('sidewalls')).toBe(false)
+  it('reports toggle-controlled fields as optional when disabled', () => {
+    expect(isRequired('fasciaBoardArea', false)).toBe(false)
+    expect(isRequired('fasciaMaterialWeightPerSqft', false)).toBe(false)
+    expect(isRequired('sidewalls', false)).toBe(false)
+  })
+
+  it('reports toggle-controlled fields as required when enabled', () => {
+    expect(isRequired('fasciaBoardArea', true)).toBe(true)
+    expect(isRequired('fasciaMaterialWeightPerSqft', true)).toBe(true)
+    expect(isRequired('sidewalls', true)).toBe(true)
   })
 })
 
@@ -275,5 +281,22 @@ describe('getFieldErrors', () => {
     const errors = getFieldErrors(requiredRoof)
     expect(errors.fasciaBoardArea).toBeUndefined()
     expect(errors.fasciaMaterialWeightPerSqft).toBeUndefined()
+  })
+
+  it('flags previously optional fields when their section is enabled', () => {
+    const incomplete = omit(omit(requiredRoof, 'fasciaBoardArea'), 'sidewalls')
+    const errors = getFieldErrors(incomplete, {
+      requiredFields: ['fasciaBoardArea', 'sidewalls'],
+    })
+    expect(errors.fasciaBoardArea).toBeDefined()
+    expect(errors.sidewalls).toBeDefined()
+  })
+
+  it('allows required section fields to be absent when disabled', () => {
+    const incomplete = omit(requiredRoof, 'roofPurlinDepth')
+    const errors = getFieldErrors(incomplete, {
+      optionalFields: ['roofPurlinDepth'],
+    })
+    expect(errors.roofPurlinDepth).toBeUndefined()
   })
 })

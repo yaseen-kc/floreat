@@ -1,11 +1,10 @@
-import { useQuotationStore } from '@/stores/quotation-store'
+import { useQuotationStore, ROOF_SECTION_FIELDS } from '@/stores/quotation-store'
 import type { RoofDraft } from '@/stores/quotation-store'
 import { useShallow } from 'zustand/react/shallow'
 import { CollapsibleSection } from '@/components/quotation/shared/CollapsibleSection'
 import { NumberField } from '@/components/quotation/shared/NumberField'
 import { DoorOpen } from 'lucide-react'
 import { isRequired, getFieldErrors } from '@/schemas/roof.schema'
-import { ROOF_SECTION_FIELDS } from '@/stores/quotation-store'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 
 type CladdingOpeningField =
@@ -31,7 +30,7 @@ export function CladdingOpenings() {
       showValidation: s.showValidation,
     })),
   )
-  const errors = showValidation ? getFieldErrors(roof) : {}
+  const errors = showValidation ? getFieldErrors(roof, enabled ? { requiredFields: ROOF_SECTION_FIELDS.claddingOpenings } : { optionalFields: ROOF_SECTION_FIELDS.claddingOpenings }) : {}
   const sectionError = ROOF_SECTION_FIELDS.claddingOpenings.some((f) => Boolean(errors[f]))
 
   return (
@@ -60,7 +59,7 @@ export function CladdingOpenings() {
                   className="[&>label]:sr-only"
                   label={label}
                   unit="m²"
-                  required={isRequired(name)}
+                  required={isRequired(name, enabled)}
                   value={roof[name]}
                   error={Boolean(errors[name])}
                   onChange={(v) => {

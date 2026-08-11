@@ -1,4 +1,4 @@
-import { useQuotationStore } from '@/stores/quotation-store'
+import { useQuotationStore, ROOF_SECTION_FIELDS } from '@/stores/quotation-store'
 import type { RoofDraft } from '@/stores/quotation-store'
 import { useShallow } from 'zustand/react/shallow'
 import { CollapsibleSection } from '@/components/quotation/shared/CollapsibleSection'
@@ -6,7 +6,6 @@ import { NumberField } from '@/components/quotation/shared/NumberField'
 import { SelectField, type SelectFieldOption } from '@/components/quotation/shared/SelectField'
 import { Layers } from 'lucide-react'
 import { isRequired, getFieldErrors } from '@/schemas/roof.schema'
-import { ROOF_SECTION_FIELDS } from '@/stores/quotation-store'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 
 /** Human-readable labels for the covering-type enum. */
@@ -29,7 +28,7 @@ export function Coverings() {
       showValidation: s.showValidation,
     })),
   )
-  const errors = showValidation ? getFieldErrors(roof) : {}
+  const errors = showValidation ? getFieldErrors(roof, enabled ? { requiredFields: ROOF_SECTION_FIELDS.coverings } : { optionalFields: ROOF_SECTION_FIELDS.coverings }) : {}
   const sectionError = ROOF_SECTION_FIELDS.coverings.some((f) => Boolean(errors[f]))
 
   const setType = (name: CoveringTypeField) => (v: string) => {
@@ -57,12 +56,13 @@ export function Coverings() {
         <TableBody>
           <TableRow>
             <TableCell>1</TableCell>
+            <TableCell className="font-medium">Roof Covering</TableCell>
             <TableCell className="min-w-48">
               <SelectField
                 className="[&>label]:sr-only"
                 label="Roof Covering Type"
                 options={COVERING_TYPE_OPTIONS}
-                required={isRequired('roofCoveringType')}
+                required={isRequired('roofCoveringType', enabled)}
                 value={roof.roofCoveringType}
                 error={Boolean(errors.roofCoveringType)}
                 onChange={setType('roofCoveringType')}
@@ -73,7 +73,7 @@ export function Coverings() {
                 className="[&>label]:sr-only"
                 label="Roof Covering Thickness"
                 unit="mm"
-                required={isRequired('roofCoveringThickness')}
+                required={isRequired('roofCoveringThickness', enabled)}
                 value={roof.roofCoveringThickness}
                 error={Boolean(errors.roofCoveringThickness)}
                 onChange={(v) => setRoof({ roofCoveringThickness: v })}
@@ -82,12 +82,13 @@ export function Coverings() {
           </TableRow>
           <TableRow>
             <TableCell>2</TableCell>
+            <TableCell className="font-medium">Cladding Covering</TableCell>
             <TableCell className="min-w-48">
               <SelectField
                 className="[&>label]:sr-only"
                 label="Cladding Covering Type"
                 options={COVERING_TYPE_OPTIONS}
-                required={isRequired('claddingCoveringType')}
+                required={isRequired('claddingCoveringType', enabled)}
                 value={roof.claddingCoveringType}
                 error={Boolean(errors.claddingCoveringType)}
                 onChange={setType('claddingCoveringType')}
@@ -98,7 +99,7 @@ export function Coverings() {
                 className="[&>label]:sr-only"
                 label="Cladding Covering Thickness"
                 unit="mm"
-                required={isRequired('claddingCoveringThickness')}
+                required={isRequired('claddingCoveringThickness', enabled)}
                 value={roof.claddingCoveringThickness}
                 error={Boolean(errors.claddingCoveringThickness)}
                 onChange={(v) => setRoof({ claddingCoveringThickness: v })}
@@ -113,7 +114,7 @@ export function Coverings() {
                 className="[&>label]:sr-only"
                 label="Roof Area Deduction"
                 unit="m²"
-                required={isRequired('roofAreaDeduction')}
+                required={isRequired('roofAreaDeduction', enabled)}
                 value={roof.roofAreaDeduction}
                 error={Boolean(errors.roofAreaDeduction)}
                 onChange={(v) => setRoof({ roofAreaDeduction: v })}
