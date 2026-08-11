@@ -57,6 +57,7 @@ export function Coverings() {
         <TableBody>
           <TableRow>
             <TableCell>1</TableCell>
+            <TableCell className="font-medium">Roof Covering</TableCell>
             <TableCell className="min-w-48">
               <SelectField
                 className="[&>label]:sr-only"
@@ -82,6 +83,7 @@ export function Coverings() {
           </TableRow>
           <TableRow>
             <TableCell>2</TableCell>
+            <TableCell className="font-medium">Cladding Covering</TableCell>
             <TableCell className="min-w-48">
               <SelectField
                 className="[&>label]:sr-only"
