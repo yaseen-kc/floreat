@@ -74,7 +74,7 @@ export function Sidewalls() {
                 className="[&>label]:sr-only"
                 label="Wall Type"
                 options={WALL_TYPE_OPTIONS}
-                required
+                required={enabled}
                 error={false}
                 value={row.wallType}
                 onChange={(v) => updateRow(index, { wallType: v as SidewallRow['wallType'] })}
@@ -85,8 +85,8 @@ export function Sidewalls() {
                 className="[&>label]:sr-only"
                 label="Thickness"
                 unit="mm"
-                required
-                error={showValidation && !(row.thickness > 0)}
+                required={enabled}
+                error={showValidation && enabled && !(row.thickness > 0)}
                 value={row.thickness === 0 ? undefined : row.thickness}
                 onChange={(v) => updateRow(index, { thickness: v ?? 0 })}
               />
@@ -96,8 +96,8 @@ export function Sidewalls() {
                 className="[&>label]:sr-only"
                 label="Height"
                 unit="m"
-                required
-                error={showValidation && !(row.height > 0)}
+                required={enabled}
+                error={showValidation && enabled && !(row.height > 0)}
                 value={row.height === 0 ? undefined : row.height}
                 onChange={(v) => updateRow(index, { height: v ?? 0 })}
               />

@@ -142,21 +142,47 @@ export type CreateRoofInput = z.infer<typeof createRoofSchema>
 /** A field key of the roof create/upsert contract. */
 export type RoofField = keyof CreateRoofInput
 
+export interface RoofValidationOptions {
+  /** Fields owned by disabled sections, which should not block validation. */
+  optionalFields?: readonly RoofField[]
+  /** Retained for callers that describe enabled section fields explicitly. */
+  requiredFields?: readonly RoofField[]
+}
+
+/**
+ * Returns the roof schema with section-specific requiredness applied.
+ *
+ * The base schema keeps the historically optional fields optional for the
+ * shared form type. Validation can promote those fields when their section is
+ * enabled and relax required fields when their section is disabled.
+ */
+export function getRoofValidationSchema({ optionalFields = [], requiredFields = [] }: RoofValidationOptions = {}) {
+  const optionalMask = Object.fromEntries(optionalFields.map((field) => [field, true]))
+  const requiredMask = Object.fromEntries(requiredFields.map((field) => [field, true]))
+
+  return createRoofSchema
+    .required(requiredMask as never)
+    .partial(optionalMask as never)
+}
+
 /**
  * Returns true when a field is required (i.e. an `undefined` value is rejected).
  * Derived from the schema so the form's required markers can't drift — the core
  * dimensions report `true`, every `.optional()` section field reports `false`.
  */
-export function isRequired(field: RoofField): boolean {
-  return !createRoofSchema.shape[field].safeParse(undefined).success
+export function isRequired(_field: RoofField, enabled = true): boolean {
+  return enabled
 }
 
 /**
  * Validates `input` and returns a map of field -> first error message.
  * Returns an empty object when the input is valid.
  */
-export function getFieldErrors(input: unknown): Partial<Record<RoofField, string>> {
-  const result = createRoofSchema.safeParse(input)
+export function getFieldErrors(
+  input: unknown,
+  options: RoofValidationOptions = {},
+): Partial<Record<RoofField, string>> {
+  const result = getRoofValidationSchema(options).safeParse(input)
   if (result.success) return {}
 
   const errors: Partial<Record<RoofField, string>> = {}

@@ -1,4 +1,4 @@
-import { useQuotationStore } from '@/stores/quotation-store'
+import { useQuotationStore, ROOF_SECTION_FIELDS } from '@/stores/quotation-store'
 import type { RoofDraft } from '@/stores/quotation-store'
 import { useShallow } from 'zustand/react/shallow'
 import { CollapsibleSection } from '@/components/quotation/shared/CollapsibleSection'
@@ -6,7 +6,6 @@ import { NumberField } from '@/components/quotation/shared/NumberField'
 import { SelectField, type SelectFieldOption } from '@/components/quotation/shared/SelectField'
 import { Wind } from 'lucide-react'
 import { isRequired, getFieldErrors } from '@/schemas/roof.schema'
-import { ROOF_SECTION_FIELDS } from '@/stores/quotation-store'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 
 const WIND_BRACING_TYPE_OPTIONS: SelectFieldOption[] = [
@@ -50,7 +49,7 @@ export function WindBracing() {
       showValidation: s.showValidation,
     })),
   )
-  const errors = showValidation ? getFieldErrors(roof) : {}
+  const errors = showValidation ? getFieldErrors(roof, enabled ? { requiredFields: ROOF_SECTION_FIELDS.windBracing } : { optionalFields: ROOF_SECTION_FIELDS.windBracing }) : {}
   const sectionError = ROOF_SECTION_FIELDS.windBracing.some((f) => Boolean(errors[f]))
 
   return (
@@ -78,7 +77,7 @@ export function WindBracing() {
                 className="[&>label]:sr-only"
                 label="Wind Bracing Type"
                 options={WIND_BRACING_TYPE_OPTIONS}
-                required={isRequired('windBracingType')}
+                required={isRequired('windBracingType', enabled)}
                 value={roof.windBracingType}
                 error={Boolean(errors.windBracingType)}
                 onChange={(v) => setRoof({ windBracingType: v as RoofDraft['windBracingType'] })}
@@ -95,7 +94,7 @@ export function WindBracing() {
                   label={label}
                   unit={unit}
                   step={step}
-                  required={isRequired(name)}
+                  required={isRequired(name, enabled)}
                   value={roof[name]}
                   error={Boolean(errors[name])}
                   onChange={(v) => {

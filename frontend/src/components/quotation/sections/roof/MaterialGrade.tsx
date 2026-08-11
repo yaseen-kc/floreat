@@ -1,11 +1,10 @@
-import { useQuotationStore } from '@/stores/quotation-store'
+import { useQuotationStore, ROOF_SECTION_FIELDS } from '@/stores/quotation-store'
 import type { RoofDraft } from '@/stores/quotation-store'
 import { useShallow } from 'zustand/react/shallow'
 import { CollapsibleSection } from '@/components/quotation/shared/CollapsibleSection'
 import { SelectField, type SelectFieldOption } from '@/components/quotation/shared/SelectField'
 import { Grid2x2 } from 'lucide-react'
 import { isRequired, getFieldErrors } from '@/schemas/roof.schema'
-import { ROOF_SECTION_FIELDS } from '@/stores/quotation-store'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 
 /** Human-readable labels for the plate material grade enum. */
@@ -25,7 +24,7 @@ export function MaterialGrade() {
       showValidation: s.showValidation,
     })),
   )
-  const errors = showValidation ? getFieldErrors(roof) : {}
+  const errors = showValidation ? getFieldErrors(roof, enabled ? { requiredFields: ROOF_SECTION_FIELDS.materialGrade } : { optionalFields: ROOF_SECTION_FIELDS.materialGrade }) : {}
   const sectionError = ROOF_SECTION_FIELDS.materialGrade.some((f) => Boolean(errors[f]))
 
   return (
@@ -53,7 +52,7 @@ export function MaterialGrade() {
                 className="[&>label]:sr-only"
                 label="Grade of Plate Material"
                 options={GRADE_OPTIONS}
-                required={isRequired('gradeOfPlateMaterial')}
+                required={isRequired('gradeOfPlateMaterial', enabled)}
                 value={roof.gradeOfPlateMaterial}
                 error={Boolean(errors.gradeOfPlateMaterial)}
                 onChange={(v) => setRoof({ gradeOfPlateMaterial: v as RoofDraft['gradeOfPlateMaterial'] })}

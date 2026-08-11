@@ -139,7 +139,28 @@ describe('quotation-store step 2 roof slice', () => {
     expect(useQuotationStore.getState().validateStep(2)).toBe(false)
   })
 
-  it('validateStep(2) is invalid with only the core filled (sections are required)', () => {
+  it('validateStep(2) accepts only the core when all sections are disabled', () => {
+    useQuotationStore.getState().setRoof({
+      buildingOverallLength: 100,
+      buildingOverallWidth: 50,
+      eaveHeight: 6,
+      roofSlope: 10,
+      mainRoofFrames: 5,
+      endRoofFrames: 2,
+      roofPurlinSpacing: 1.5,
+      claddingPurlins: 4,
+      internalColumnsForMainRoofFrames: 0,
+      internalColumnsForEndRoofFrames: 0,
+      roofFrameBaseFixing: 'FOUNDATION_BOLT',
+    })
+    const store = useQuotationStore.getState()
+    for (const key of Object.keys(store.roofSectionsEnabled) as Array<keyof typeof store.roofSectionsEnabled>) {
+      store.toggleRoofSection(key, false)
+    }
+    expect(useQuotationStore.getState().validateStep(2)).toBe(true)
+  })
+
+  it('validateStep(2) rejects missing fields in an enabled section', () => {
     useQuotationStore.getState().setRoof({
       buildingOverallLength: 100,
       buildingOverallWidth: 50,
@@ -154,6 +175,13 @@ describe('quotation-store step 2 roof slice', () => {
       roofFrameBaseFixing: 'FOUNDATION_BOLT',
     })
     expect(useQuotationStore.getState().validateStep(2)).toBe(false)
+
+    useQuotationStore.getState().toggleRoofSection('purlins', false)
+    const store = useQuotationStore.getState()
+    for (const key of Object.keys(store.roofSectionsEnabled) as Array<keyof typeof store.roofSectionsEnabled>) {
+      store.toggleRoofSection(key, false)
+    }
+    expect(useQuotationStore.getState().validateStep(2)).toBe(true)
   })
 
   it('validateStep(2) is valid once every required field is filled', () => {

@@ -1,4 +1,4 @@
-import { useQuotationStore } from '@/stores/quotation-store'
+import { useQuotationStore, ROOF_SECTION_FIELDS } from '@/stores/quotation-store'
 import type { RoofDraft } from '@/stores/quotation-store'
 import { useShallow } from 'zustand/react/shallow'
 import { CollapsibleSection } from '@/components/quotation/shared/CollapsibleSection'
@@ -6,7 +6,6 @@ import { NumberField } from '@/components/quotation/shared/NumberField'
 import { SelectField, type SelectFieldOption } from '@/components/quotation/shared/SelectField'
 import { Columns3 } from 'lucide-react'
 import { isRequired, getFieldErrors } from '@/schemas/roof.schema'
-import { ROOF_SECTION_FIELDS } from '@/stores/quotation-store'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 
 /** Human-readable labels for the purlin material-type enum. */
@@ -26,7 +25,7 @@ export function Purlins() {
       showValidation: s.showValidation,
     })),
   )
-  const errors = showValidation ? getFieldErrors(roof) : {}
+  const errors = showValidation ? getFieldErrors(roof, enabled ? { requiredFields: ROOF_SECTION_FIELDS.purlins } : { optionalFields: ROOF_SECTION_FIELDS.purlins }) : {}
   const sectionError = ROOF_SECTION_FIELDS.purlins.some((f) => Boolean(errors[f]))
 
   const setType = (name: PurlinTypeField) => (v: string) => {
@@ -63,7 +62,7 @@ export function Purlins() {
                   label="Roof Purlin Type"
                   className="[&>label]:sr-only"
                   options={PURLIN_TYPE_OPTIONS}
-                  required={isRequired('roofPurlinType')}
+                  required={isRequired('roofPurlinType', enabled)}
                   value={roof.roofPurlinType}
                   error={Boolean(errors.roofPurlinType)}
                   onChange={setType('roofPurlinType')}
@@ -74,7 +73,7 @@ export function Purlins() {
                   label="Roof Purlin Depth"
                   className="[&>label]:sr-only"
                   unit="mm"
-                  required={isRequired('roofPurlinDepth')}
+                  required={isRequired('roofPurlinDepth', enabled)}
                   value={roof.roofPurlinDepth}
                   error={Boolean(errors.roofPurlinDepth)}
                   onChange={(v) => setRoof({ roofPurlinDepth: v })}
@@ -85,7 +84,7 @@ export function Purlins() {
                   label="Roof Purlin Unit Weight"
                   className="[&>label]:sr-only"
                   unit="kg/m"
-                  required={isRequired('roofPurlinUnitWeight')}
+                  required={isRequired('roofPurlinUnitWeight', enabled)}
                   value={roof.roofPurlinUnitWeight}
                   error={Boolean(errors.roofPurlinUnitWeight)}
                   onChange={(v) => setRoof({ roofPurlinUnitWeight: v })}
@@ -100,7 +99,7 @@ export function Purlins() {
                   label="Cladding Purlin Type"
                   className="[&>label]:sr-only"
                   options={PURLIN_TYPE_OPTIONS}
-                  required={isRequired('claddingPurlinType')}
+                  required={isRequired('claddingPurlinType', enabled)}
                   value={roof.claddingPurlinType}
                   error={Boolean(errors.claddingPurlinType)}
                   onChange={setType('claddingPurlinType')}
@@ -111,7 +110,7 @@ export function Purlins() {
                   label="Cladding Purlin Depth"
                   className="[&>label]:sr-only"
                   unit="mm"
-                  required={isRequired('claddingPurlinDepth')}
+                  required={isRequired('claddingPurlinDepth', enabled)}
                   value={roof.claddingPurlinDepth}
                   error={Boolean(errors.claddingPurlinDepth)}
                   onChange={(v) => setRoof({ claddingPurlinDepth: v })}
@@ -122,7 +121,7 @@ export function Purlins() {
                   label="Cladding Purlin Unit Weight"
                   className="[&>label]:sr-only"
                   unit="kg/m"
-                  required={isRequired('claddingPurlinUnitWeight')}
+                  required={isRequired('claddingPurlinUnitWeight', enabled)}
                   value={roof.claddingPurlinUnitWeight}
                   error={Boolean(errors.claddingPurlinUnitWeight)}
                   onChange={(v) => setRoof({ claddingPurlinUnitWeight: v })}

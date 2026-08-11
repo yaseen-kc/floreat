@@ -1,4 +1,4 @@
-import { useQuotationStore } from '@/stores/quotation-store'
+import { useQuotationStore, ROOF_SECTION_FIELDS } from '@/stores/quotation-store'
 import type { RoofDraft } from '@/stores/quotation-store'
 import { useShallow } from 'zustand/react/shallow'
 import { SectionCard } from '@/components/quotation/shared/SectionCard'
@@ -33,7 +33,8 @@ export function BaseFixing() {
   )
   // Required markers and error states come from the schema (SSOT), matching the
   // Step 1 sections, so the form can never disagree with the backend contract.
-  const errors = showValidation ? getFieldErrors(roof) : {}
+  const disabledSectionFields = Object.values(ROOF_SECTION_FIELDS).flat()
+  const errors = showValidation ? getFieldErrors(roof, { optionalFields: disabledSectionFields }) : {}
 
   return (
     <SectionCard icon={<Anchor className="w-3.5 h-3.5" />} title="Base Fixing">

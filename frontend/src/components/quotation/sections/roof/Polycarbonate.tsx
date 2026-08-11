@@ -1,11 +1,10 @@
-import { useQuotationStore } from '@/stores/quotation-store'
+import { useQuotationStore, ROOF_SECTION_FIELDS } from '@/stores/quotation-store'
 import type { RoofDraft } from '@/stores/quotation-store'
 import { useShallow } from 'zustand/react/shallow'
 import { CollapsibleSection } from '@/components/quotation/shared/CollapsibleSection'
 import { NumberField } from '@/components/quotation/shared/NumberField'
 import { PanelTop } from 'lucide-react'
 import { isRequired, getFieldErrors } from '@/schemas/roof.schema'
-import { ROOF_SECTION_FIELDS } from '@/stores/quotation-store'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 
 type PolycarbonateField =
@@ -29,7 +28,7 @@ export function Polycarbonate() {
       showValidation: s.showValidation,
     })),
   )
-  const errors = showValidation ? getFieldErrors(roof) : {}
+  const errors = showValidation ? getFieldErrors(roof, enabled ? { requiredFields: ROOF_SECTION_FIELDS.polycarbonate } : { optionalFields: ROOF_SECTION_FIELDS.polycarbonate }) : {}
   const sectionError = ROOF_SECTION_FIELDS.polycarbonate.some((f) => Boolean(errors[f]))
 
   return (
@@ -61,7 +60,7 @@ export function Polycarbonate() {
                   label={label}
                   unit={unit}
                   step={step}
-                  required={isRequired(name)}
+                  required={isRequired(name, enabled)}
                   value={roof[name]}
                   error={Boolean(errors[name])}
                   onChange={(v) => {
