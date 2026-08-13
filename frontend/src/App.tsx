@@ -14,6 +14,8 @@ import { useDraftPersistenceScope } from './hooks/useDraftPersistenceScope'
 import { useSearchShortcuts } from './hooks/useSearchShortcuts'
 import { clerkAppearance } from './lib/clerk'
 import { resolveInitialCollapsed, setCollapsedPref } from './lib/sidebar'
+import { AuthorizationProvider, useAuthorization } from './auth/authorization'
+import Users from './pages/Users'
 
 
 const PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY
@@ -48,6 +50,7 @@ function App() {
           <Route path="/quotations/:jobId" element={<QuotationViewer />} />
           <Route path="/quotations" element={<Quotations />} />
           <Route path="/drafts" element={<SavedDrafts />} />
+          <Route path="/users" element={<UsersRoute />} />
 
         </Route>
       </Routes>
@@ -62,9 +65,21 @@ function App() {
 function ProtectedLayout() {
   return (
     <Show when="signed-in" fallback={<Navigate to="/login" replace />}>
-      <SignedInLayout />
+      <AuthorizationProvider><AuthorizedLayout /></AuthorizationProvider>
     </Show>
   )
+}
+
+function UsersRoute() {
+  const { can } = useAuthorization()
+  return can('user:list') || can('user:invite') ? <Users /> : <Navigate to="/" replace />
+}
+
+function AuthorizedLayout() {
+  const { loading, user } = useAuthorization()
+  if (loading) return <div className="grid min-h-screen place-items-center text-sm text-muted-foreground">Loading account...</div>
+  if (!user) return <Navigate to="/login" replace />
+  return <SignedInLayout />
 }
 
 /**

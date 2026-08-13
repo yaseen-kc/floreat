@@ -45,6 +45,10 @@ const {
   updateRoofSchema,
   updateSpecSchema,
   updateStairSchema,
+  appRoleSchema,
+  createUserInvitationSchema,
+  userRoleSchema,
+  listUsersQuerySchema,
 } = await import('@floreat/shared/schemas')
 
 const registry = new OpenAPIRegistry()
@@ -92,6 +96,8 @@ const schemas = {
   CreateQuotationRequest: createQuotationSchema.meta({ id: 'CreateQuotationRequest' }),
   UpdateQuotationRequest: updateQuotationSchema.meta({ id: 'UpdateQuotationRequest' }),
   PaginationQuery: paginationSchema.meta({ id: 'PaginationQuery' }),
+  CreateUserInvitationRequest: createUserInvitationSchema.meta({ id: 'CreateUserInvitationRequest' }),
+  UserRoleRequest: userRoleSchema.meta({ id: 'UserRoleRequest' }),
 }
 
 registry.registerComponent('securitySchemes', 'LocalDevUserId', {
@@ -152,6 +158,7 @@ const responseSchemas = {
   QuantityAdditionalBoltsResponse: resourceResponseSchema.meta({ id: 'QuantityAdditionalBoltsResponse' }),
   QuotationResponse: resourceResponseSchema.meta({ id: 'QuotationResponse' }),
   UserResponse: resourceResponseSchema.meta({ id: 'UserResponse' }),
+  UserListResponse: resourceResponseSchema.meta({ id: 'UserListResponse' }),
   PaginatedAccessoriesResponse: paginatedResponseSchema.meta({ id: 'PaginatedAccessoriesResponse' }),
   PaginatedAmountResponse: paginatedResponseSchema.meta({ id: 'PaginatedAmountResponse' }),
   PaginatedCanopyResponse: paginatedResponseSchema.meta({ id: 'PaginatedCanopyResponse' }),
@@ -382,7 +389,7 @@ function operationKey(method: string, path: string): string {
 }
 
 function registerOperation(options: {
-  method: 'get' | 'post' | 'put' | 'delete'
+  method: 'get' | 'post' | 'put' | 'patch' | 'delete'
   path: string
   operationId: string
   tag: string
@@ -493,6 +500,28 @@ registerOperation({
   summary: 'Get the authenticated user', description: 'Returns the local profile for the authenticated Clerk user.',
   responseSchema: responseSchemas.UserResponse, responseDescription: 'Authenticated user returned.',
 })
+registerOperation({
+  method: 'get', path: '/api/users', operationId: 'listUsers', tag: 'User', auth: true,
+  summary: 'List users and invitations', description: 'Lists local users and pending invitations for administrators.', query: listUsersQuerySchema,
+  responseSchema: responseSchemas.UserListResponse, responseDescription: 'Users and invitations returned.',
+})
+registerOperation({
+  method: 'post', path: '/api/users/invitations', operationId: 'inviteUser', tag: 'User', auth: true,
+  summary: 'Invite a user', description: 'Creates a Clerk email invitation and records its intended Floreat role.', body: { schema: schemas.CreateUserInvitationRequest, example: { email: 'new.user@example.com', role: 'ESTIMATOR' }, description: 'Invitation payload.' },
+  responseSchema: responseSchemas.UserResponse, responseDescription: 'Invitation created.', status: 201, conflict: true,
+})
+registerOperation({
+  method: 'patch', path: '/api/users/{clerkId}/role', operationId: 'assignUserRole', tag: 'User', auth: true,
+  summary: 'Assign a user role', description: 'Assigns an application role subject to administrator hierarchy.', params: z.object({ clerkId: z.string() }), body: { schema: schemas.UserRoleRequest, example: { role: 'ESTIMATOR' }, description: 'Role assignment payload.' }, responseSchema: responseSchemas.UserResponse, responseDescription: 'Role updated.', notFound: true,
+})
+registerOperation({ method: 'post', path: '/api/jobs/{jobId}/quotation/transition', operationId: 'transitionQuotation', tag: 'Quotation', auth: true, summary: 'Transition a quotation', description: 'Transitions a quotation through its workflow.', params: jobIdParams(), body: { schema: z.object({ status: z.enum(['SUBMITTED', 'APPROVED', 'REJECTED']), comment: z.string().optional() }), example: { status: 'SUBMITTED' }, description: 'Quotation transition payload.' }, responseSchema: responseSchemas.QuotationResponse, responseDescription: 'Quotation transitioned.' })
+registerOperation({ method: 'post', path: '/api/jobs/{jobId}/quotation/review', operationId: 'reviewQuotation', tag: 'Quotation', auth: true, summary: 'Review a quotation', description: 'Reviews a submitted quotation.', params: jobIdParams(), body: { schema: z.object({ status: z.enum(['APPROVED', 'REJECTED']), comment: z.string().optional() }), example: { status: 'APPROVED' }, description: 'Quotation review payload.' }, responseSchema: responseSchemas.QuotationResponse, responseDescription: 'Quotation reviewed.' })
+for (const operation of [
+  { method: 'post' as const, path: '/api/users/invitations/{id}/resend', operationId: 'resendUserInvitation', summary: 'Resend an invitation' },
+  { method: 'post' as const, path: '/api/users/invitations/{id}/revoke', operationId: 'revokeUserInvitation', summary: 'Revoke an invitation' },
+  { method: 'post' as const, path: '/api/users/{clerkId}/deactivate', operationId: 'deactivateUser', summary: 'Deactivate a user' },
+  { method: 'post' as const, path: '/api/users/{clerkId}/reactivate', operationId: 'reactivateUser', summary: 'Reactivate a user' },
+]) registerOperation({ method: operation.method, path: operation.path, operationId: operation.operationId, tag: 'User', auth: true, summary: operation.summary, description: operation.summary, params: z.object({ [operation.path.includes('{id}') ? 'id' : 'clerkId']: z.string() }), responseSchema: responseSchemas.UserResponse, responseDescription: 'Operation completed.', notFound: true, conflict: true })
 registerOperation({
   method: 'post', path: '/api/jobs', operationId: 'createJob', tag: 'Jobs', auth: true,
   summary: 'Create a job', description: 'Creates a new structural quotation job.',

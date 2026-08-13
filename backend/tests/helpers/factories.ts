@@ -69,6 +69,8 @@ export function makeUser(overrides = {}) {
     firstName: faker.person.firstName(),
     lastName: faker.person.lastName(),
     imageUrl: faker.image.avatar(),
+    role: 'ESTIMATOR' as const,
+    status: 'ACTIVE' as const,
     createdAt: new Date(),
     updatedAt: new Date(),
     ...overrides,

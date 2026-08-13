@@ -15,8 +15,8 @@ export function upsertQuotation(jobId: string, data: CreateQuotationInput) {
 }
 
 /** Returns a paginated list of the user's quotations ordered by most recent first. */
-export async function getQuotations(userId: string, page: number, pageSize: number) {
-  const where = { grandTotal: { not: null }, job: { userId } }
+export async function getQuotations(userId: string, page: number, pageSize: number, global = false) {
+  const where = global ? { grandTotal: { not: null } } : { grandTotal: { not: null }, job: { userId } }
   const [data, total] = await Promise.all([
     prisma.quotation.findMany({
       where,
@@ -49,11 +49,26 @@ export function getQuotationByJobId(jobId: string) {
 }
 
 /** Updates a quotation by its associated job ID. Throws P2025 if not found. */
-export function updateQuotation(jobId: string, data: Record<string, unknown>) {
+export async function updateQuotation(jobId: string, data: Record<string, unknown>) {
+  const draft = await prisma.quotation.findFirst({ where: { jobId, status: 'DRAFT' }, select: { jobId: true } })
+  if (!draft) throw Object.assign(new Error('Quotation not found'), { code: 'P2025' })
   return prisma.quotation.update({ where: { jobId }, data })
 }
 
 /** Deletes a quotation by its associated job ID. Throws P2025 if not found. */
-export function deleteQuotation(jobId: string) {
+export async function deleteQuotation(jobId: string) {
+  const draft = await prisma.quotation.findFirst({ where: { jobId, status: 'DRAFT' }, select: { jobId: true } })
+  if (!draft) throw Object.assign(new Error('Quotation not found'), { code: 'P2025' })
   return prisma.quotation.delete({ where: { jobId } })
+}
+
+export async function transitionQuotation(jobId: string, actorId: string, status: 'SUBMITTED' | 'APPROVED' | 'REJECTED', comment?: string) {
+  const current = await prisma.quotation.findUnique({ where: { jobId } })
+  if (!current) throw Object.assign(new Error('Quotation not found'), { code: 'P2025' })
+  const valid = (current.status === 'DRAFT' && status === 'SUBMITTED') ||
+    (current.status === 'SUBMITTED' && (status === 'APPROVED' || status === 'REJECTED'))
+  if (!valid) throw Object.assign(new Error('Invalid quotation transition'), { code: 'INVALID_TRANSITION' })
+  return prisma.quotation.update({ where: { jobId }, data: status === 'SUBMITTED'
+    ? { status, submittedById: actorId, submittedAt: new Date() }
+    : { status, reviewedById: actorId, reviewedAt: new Date(), reviewComment: comment ?? null } })
 }

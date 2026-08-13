@@ -19,28 +19,29 @@ export function createJob(userId: string, data: Omit<JobCreateData, 'userId' | '
 }
 
 /** Returns a paginated list of the user's jobs ordered by most recent first. */
-export async function getJobs(userId: string, page: number, pageSize: number) {
+export async function getJobs(userId: string, page: number, pageSize: number, global = false) {
+  const where = global ? {} : { userId }
   const [data, total] = await Promise.all([
     prisma.job.findMany({
-      where: { userId },
+      where,
       skip: (page - 1) * pageSize,
       take: pageSize,
       orderBy: { createdAt: 'desc' },
     }),
-    prisma.job.count({ where: { userId } }),
+    prisma.job.count({ where }),
   ])
   return { data, total, page, pageSize }
 }
 
 /** Finds a single job owned by `userId`. Returns null if not found or not owned. */
-export function getJobById(id: string, userId: string) {
-  return prisma.job.findFirst({ where: { id, userId } })
+export function getJobById(id: string, userId: string, global = false) {
+  return prisma.job.findFirst({ where: global ? { id } : { id, userId } })
 }
 
 /** Finds a single job owned by `userId` and returns all nested relations and sub-items. */
-export function getJobWithAllData(id: string, userId: string) {
+export function getJobWithAllData(id: string, userId: string, global = false) {
   return prisma.job.findFirst({
-    where: { id, userId },
+    where: global ? { id } : { id, userId },
     include: {
       roof: { include: { sidewalls: true } },
       mezzanine: { include: { floors: true, extensions: true } },

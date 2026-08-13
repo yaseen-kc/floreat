@@ -1,3 +1,22 @@
+enum Role {
+  SUPER_ADMIN
+  ADMIN
+  ESTIMATOR
+  SALES_COORDINATOR
+}
+
+enum UserStatus {
+  ACTIVE
+  DEACTIVATED
+}
+
+enum UserInvitationStatus {
+  PENDING
+  ACCEPTED
+  REVOKED
+  EXPIRED
+}
+
 model User {
   id        String   @id @default(cuid())
   clerkId   String   @unique
@@ -5,12 +24,32 @@ model User {
   firstName String?
   lastName  String?
   imageUrl  String?
+  role      Role     @default(ESTIMATOR)
+  status    UserStatus @default(ACTIVE)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   // Jobs owned by this user. `Job.userId` references `clerkId` (the app-wide
   // "userId" is the Clerk id, matching request.userId), not the cuid `id`.
   jobs Job[]
+  invitationsSent UserInvitation[] @relation("InvitationInviter")
+}
+
+model UserInvitation {
+  id             String               @id @default(cuid())
+  email          String
+  clerkInvitationId String            @unique
+  role           Role
+  invitedById    String
+  invitedBy      User                 @relation("InvitationInviter", fields: [invitedById], references: [clerkId])
+  status         UserInvitationStatus @default(PENDING)
+  createdAt      DateTime             @default(now())
+  acceptedAt     DateTime?
+  revokedAt      DateTime?
+  expiresAt      DateTime?
+
+  @@index([email, status])
+  @@index([status, createdAt])
 }
 
 model Job {

@@ -7,6 +7,7 @@ import { FastifyRequest, FastifyReply } from 'fastify'
 import { createJobSchema, updateJobSchema, paginationSchema } from '../schemas/job.schema.js'
 import * as jobService from '../services/job.service.js'
 import { sendError } from '../utils/response.js'
+import { isGlobalRole } from '../auth/authorization.js'
 
 /** POST /api/jobs — creates a new job owned by the authenticated user. */
 export async function create(request: FastifyRequest, reply: FastifyReply) {
@@ -20,13 +21,13 @@ export async function create(request: FastifyRequest, reply: FastifyReply) {
 export async function getAll(request: FastifyRequest, reply: FastifyReply) {
   const result = paginationSchema.safeParse(request.query)
   if (!result.success) return reply.status(400).send({ error: result.error.flatten() })
-  return reply.send(await jobService.getJobs(request.userId, result.data.page, result.data.pageSize))
+  return reply.send(await jobService.getJobs(request.userId, result.data.page, result.data.pageSize, isGlobalRole(request.role)))
 }
 
 /** GET /api/jobs/:id — returns a single job owned by the user. */
 export async function getById(request: FastifyRequest, reply: FastifyReply) {
   const { id } = request.params as { id: string }
-  const job = await jobService.getJobById(id, request.userId)
+  const job = await jobService.getJobById(id, request.userId, isGlobalRole(request.role))
   if (!job) return sendError(reply, 404, 'Job not found')
   return reply.send(job)
 }
@@ -36,7 +37,7 @@ export async function getAllDataByJobId(request: FastifyRequest, reply: FastifyR
   const { jobId, id } = request.params as { jobId?: string; id?: string }
   const targetId = jobId || id
   if (!targetId) return sendError(reply, 400, 'Job ID is required')
-  const job = await jobService.getJobWithAllData(targetId, request.userId)
+  const job = await jobService.getJobWithAllData(targetId, request.userId, isGlobalRole(request.role))
   if (!job) return sendError(reply, 404, 'Job not found')
   return reply.send(job)
 }

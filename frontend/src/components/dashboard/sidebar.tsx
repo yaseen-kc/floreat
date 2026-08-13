@@ -10,8 +10,10 @@ import {
   Settings,
   PanelLeftClose,
   PanelLeftOpen,
+  Users,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { useAuthorization } from '@/auth/authorization'
 
 const navItems = [
   {
@@ -21,6 +23,7 @@ const navItems = [
       { name: 'Quotations', to: '/quotations', icon: FileText },
       { name: 'Create Quotation', to: '/quotations/new', icon: Plus },
       { name: 'Saved Drafts', to: '/drafts', icon: Folder },
+      { name: 'Users', to: '/users', icon: Users, permission: 'user:list' },
     ],
   },
   // {
@@ -55,6 +58,7 @@ interface SidebarProps {
 }
 
 export function Sidebar({ navOpen, onClose, collapsed, onToggleCollapse }: SidebarProps) {
+  const { can } = useAuthorization()
   // When collapsed, labels/centering apply from 769px up; otherwise only in the
   // auto rail tier (769–1180px).
   const hide = collapsed ? collapsedHide : railHide
@@ -96,7 +100,7 @@ export function Sidebar({ navOpen, onClose, collapsed, onToggleCollapse }: Sideb
             <div className={cn('px-3 pt-3 pb-2 font-mono text-xs uppercase tracking-widest text-muted-foreground', hide)}>
               {section.label}
             </div>
-            {section.items.map((item) => (
+            {section.items.filter((item) => (item.to !== '/quotations/new' || can('quotation:create')) && (!('permission' in item) || !item.permission || can(item.permission))).map((item) => (
               <NavLink
                 key={item.to}
                 to={item.to}

@@ -44,6 +44,7 @@ export const config = {
   docs: {
     enabled: process.env.NODE_ENV !== 'production' && process.env.SWAGGER_UI !== 'false',
   },
+  superAdminClerkIds: new Set((process.env.SUPERADMIN_CLERK_IDS ?? '').split(',').map((id) => id.trim()).filter(Boolean)),
 }
 
 assertSafeAuthConfig(process.env)

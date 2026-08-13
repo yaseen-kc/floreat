@@ -10,11 +10,14 @@
 import { FastifyRequest, FastifyReply } from 'fastify'
 import { prisma } from '../lib/prisma.js'
 import { sendError } from '../utils/response.js'
+import { isGlobalRole } from '../auth/authorization.js'
 
 export async function jobOwnership(request: FastifyRequest, reply: FastifyReply) {
   const { jobId } = request.params as { jobId?: string }
   if (!jobId) return
 
+  const user = await prisma.user.findUnique({ where: { clerkId: request.userId }, select: { role: true } })
+  if (user && isGlobalRole(user.role)) return
   const job = await prisma.job.findFirst({
     where: { id: jobId, userId: request.userId },
     select: { id: true },

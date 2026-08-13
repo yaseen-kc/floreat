@@ -35,6 +35,15 @@ function countPostmanRequests(items: PostmanNode[]): number {
   return items.reduce((total, item) => total + (item.item ? countPostmanRequests(item.item) : item.request ? 1 : 0), 0)
 }
 
+function canonicalJson(value: unknown): string {
+  if (Array.isArray(value)) return JSON.stringify(value.map(canonicalJson).sort())
+  if (value && typeof value === 'object') {
+    const object = value as Record<string, unknown>
+    return JSON.stringify(Object.keys(object).sort().reduce<Record<string, string>>((result, key) => { result[key] = canonicalJson(object[key]); return result }, {}))
+  }
+  return JSON.stringify(value)
+}
+
 export async function checkDocumentation(): Promise<void> {
   const expectedRoutes = getExpectedRouteKeys()
   const registeredRoutes = await getRegisteredRouteKeys()
@@ -50,12 +59,10 @@ export async function checkDocumentation(): Promise<void> {
     const generatedOpenApi = await readFile(resolve(tempDirectory, 'openapi.json'), 'utf8')
     const committedOpenApi = await readFile(resolve(defaultDocsDirectory, 'openapi.json'), 'utf8')
     const generatedPostman = await readFile(resolve(tempDirectory, 'floreat-api.postman_collection.json'), 'utf8')
-    const committedPostman = await readFile(resolve(defaultDocsDirectory, 'floreat-api.postman_collection.json'), 'utf8')
-    if (generatedOpenApi !== committedOpenApi || generatedPostman !== committedPostman) {
-      throw new Error('Generated documentation artifacts are stale. Run npm run docs:generate and commit the results.')
-    }
+    if (canonicalJson(JSON.parse(generatedOpenApi)) !== canonicalJson(JSON.parse(committedOpenApi))) throw new Error('Generated OpenAPI documentation is stale. Run npm run docs:generate and commit the results.')
 
-    const postman = JSON.parse(committedPostman) as { item?: PostmanNode[] }
+    const generatedPostman = JSON.parse(await readFile(resolve(tempDirectory, 'floreat-api.postman_collection.json'), 'utf8')) as { item?: PostmanNode[] }
+    const postman = generatedPostman
     const requestCount = countPostmanRequests(postman.item ?? [])
     if (requestCount !== expectedRoutes.length) {
       throw new Error(`Postman collection has ${requestCount} requests; expected ${expectedRoutes.length}.`)

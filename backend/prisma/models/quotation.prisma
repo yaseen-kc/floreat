@@ -40,5 +40,19 @@ model Quotation {
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
 
+    status QuotationStatus @default(DRAFT)
+    submittedById String?
+    submittedAt DateTime?
+    reviewedById String?
+    reviewedAt DateTime?
+    reviewComment String?
+
     @@index([createdAt])
+}
+
+enum QuotationStatus {
+    DRAFT
+    SUBMITTED
+    APPROVED
+    REJECTED
 }

@@ -6,6 +6,8 @@ export interface Me {
   email?: string
   firstName?: string | null
   lastName?: string | null
+  role?: 'SUPER_ADMIN' | 'ADMIN' | 'ESTIMATOR' | 'SALES_COORDINATOR'
+  permissions?: string[]
   [key: string]: unknown
 }
 
