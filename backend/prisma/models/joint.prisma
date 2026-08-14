@@ -51,6 +51,9 @@ enum FoundationBoltJointId {
 
 model Joint {
   id    String @id @default(cuid())
+  deletedAt DateTime?
+  deletedBy String?
+  deletionBatchId String?
   jobId String @unique
   job   Job    @relation(fields: [jobId], references: [id], onDelete: Cascade)
 
@@ -86,6 +89,9 @@ model Joint {
 
 model JointBoltRoof {
   id      String @id @default(cuid())
+  deletedAt DateTime?
+  deletedBy String?
+  deletionBatchId String?
   jointId String
   joint   Joint  @relation(fields: [jointId], references: [id], onDelete: Cascade)
 
@@ -98,6 +104,9 @@ model JointBoltRoof {
 
 model JointBoltMezzanine {
   id      String @id @default(cuid())
+  deletedAt DateTime?
+  deletedBy String?
+  deletionBatchId String?
   jointId String
   joint   Joint  @relation(fields: [jointId], references: [id], onDelete: Cascade)
 
@@ -110,6 +119,9 @@ model JointBoltMezzanine {
 
 model FoundationBoltRoof {
   id      String @id @default(cuid())
+  deletedAt DateTime?
+  deletedBy String?
+  deletionBatchId String?
   jointId String
   joint   Joint  @relation(fields: [jointId], references: [id], onDelete: Cascade)
 

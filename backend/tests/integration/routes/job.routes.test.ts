@@ -116,7 +116,10 @@ describe('Job routes integration', () => {
 
   describe('DELETE /api/jobs/:id', () => {
     it('deletes a job', async () => {
-      prismaMock.job.deleteMany.mockResolvedValue({ count: 1 } as any)
+      prismaMock.$transaction.mockImplementation(async (callback: any) => callback(prismaMock as any) as any)
+      prismaMock.job.findFirst.mockResolvedValue({ id: 'job-123' } as any)
+      prismaMock.job.update.mockResolvedValue({} as any)
+      prismaMock.job.updateMany.mockResolvedValue({ count: 0 } as any)
 
       const res = await app.inject({ method: 'DELETE', url: '/api/jobs/job-123' })
 
@@ -124,7 +127,8 @@ describe('Job routes integration', () => {
     })
 
     it('returns 404 when not found', async () => {
-      prismaMock.job.deleteMany.mockResolvedValue({ count: 0 } as any)
+      prismaMock.$transaction.mockImplementation(async (callback: any) => callback(prismaMock as any) as any)
+      prismaMock.job.findFirst.mockResolvedValue(null)
 
       const res = await app.inject({ method: 'DELETE', url: '/api/jobs/nope' })
 

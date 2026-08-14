@@ -10,6 +10,9 @@ enum ApprovalDrawingsTimeUnit {
 
 model Load {
   id    String @id @default(cuid())
+  deletedAt DateTime?
+  deletedBy String?
+  deletionBatchId String?
   jobId String @unique
   job   Job    @relation(fields: [jobId], references: [id], onDelete: Cascade)
 

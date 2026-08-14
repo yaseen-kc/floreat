@@ -65,7 +65,7 @@ function resolveWriteQuantities(derived: DerivedQuantities, input: Record<string
  * without both sidewalls) are also mapped to `null`.
  */
 export async function deriveQuantitiesFromRoof(jobId: string): Promise<DerivedQuantities> {
-  const roof = await prisma.roof.findUnique({ where: { jobId }, include: { sidewalls: true } })
+  const roof = await prisma.roof.findFirst({ where: { jobId, deletedAt: null }, include: { sidewalls: { where: { deletedAt: null } } } })
   if (!roof) return { ...NULL_QUANTITIES }
 
   // Prisma Decimal columns are `Decimal` objects server-side (they only become
@@ -130,6 +130,7 @@ export async function upsertAccessories(jobId: string, data: CreateAccessoriesIn
     create: {
       jobId,
       ...scalars,
+      deletedAt: null, deletedBy: null, deletionBatchId: null,
     },
     update: {
       ...scalars,
@@ -139,7 +140,7 @@ export async function upsertAccessories(jobId: string, data: CreateAccessoriesIn
 
 /** Returns a paginated list of the user's accessories ordered by most recent first. */
 export async function getAccessories(userId: string, page: number, pageSize: number) {
-  const where = { job: { userId } }
+  const where = { job: { userId }, deletedAt: null }
   const [data, total] = await Promise.all([
     prisma.accessories.findMany({
       where,
@@ -154,9 +155,7 @@ export async function getAccessories(userId: string, page: number, pageSize: num
 
 /** Finds accessories by their associated job ID. Returns null if not found. */
 export function getAccessoriesByJobId(jobId: string) {
-  return prisma.accessories.findUnique({
-    where: { jobId },
-  })
+  return prisma.accessories.findFirst({ where: { jobId, deletedAt: null } })
 }
 
 /** Updates accessories by job ID. Replaces each line-item array entirely if provided. */
@@ -223,5 +222,5 @@ export async function recomputeAccessoriesQuantities(jobId: string) {
 
 /** Deletes accessories by their associated job ID. Throws P2025 if not found. */
 export function deleteAccessories(jobId: string) {
-  return prisma.accessories.delete({ where: { jobId } })
+  return prisma.accessories.update({ where: { jobId }, data: { deletedAt: new Date() } })
 }

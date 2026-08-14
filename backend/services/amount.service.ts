@@ -16,14 +16,14 @@ export async function upsertAmount(jobId: string, _data: CreateAmountInput) {
   return prisma.amount.upsert({
     where: { jobId },
     create: { jobId, ...merged, calculationVersion: 'amount-v1', sourceUpdatedAt: new Date(), rateVersion: 1, isStale: false },
-    update: { ...merged, calculationVersion: 'amount-v1', sourceUpdatedAt: new Date(), rateVersion: 1, isStale: false },
+    update: { ...merged, calculationVersion: 'amount-v1', sourceUpdatedAt: new Date(), rateVersion: 1, isStale: false, deletedAt: null, deletedBy: null, deletionBatchId: null },
   })
 }
 
 
 /** Returns a paginated list of the user's amounts ordered by most recent first. */
 export async function getAmounts(userId: string, page: number, pageSize: number) {
-  const where = { job: { userId } }
+  const where = { job: { userId }, deletedAt: null }
   const [data, total] = await Promise.all([
     prisma.amount.findMany({ where, skip: (page - 1) * pageSize, take: pageSize, orderBy: { createdAt: 'desc' } }),
     prisma.amount.count({ where }),
@@ -33,7 +33,7 @@ export async function getAmounts(userId: string, page: number, pageSize: number)
 
 /** Finds an amount by its associated job ID without creating or recalculating rows. */
 export async function getAmountByJobId(jobId: string) {
-  return prisma.amount.findUnique({ where: { jobId } })
+  return prisma.amount.findFirst({ where: { jobId, deletedAt: null } })
 }
 
 /** Updates an amount by job ID. Throws P2025 if not found. */
@@ -48,6 +48,6 @@ export async function updateAmount(jobId: string, data: UpdateAmountInput) {
 
 /** Deletes an amount by its associated job ID. Throws P2025 if not found. */
 export function deleteAmount(jobId: string) {
-  return prisma.amount.delete({ where: { jobId } })
+  return prisma.amount.update({ where: { jobId }, data: { deletedAt: new Date() } })
 }
 

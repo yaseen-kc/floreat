@@ -6,6 +6,7 @@ import { prisma } from '../lib/prisma.js'
 import { deriveSideColumnsWidthHeight } from '@floreat/shared/calc'
 import { recomputeAccessoriesQuantities } from './accessories.service.js'
 import type { CreateRoofInput, UpdateRoofInput } from '../schemas/roof.schema.js'
+import { replaceChildren } from './soft-delete.service.js'
 
 /** Creates or updates a roof for a given job. Sidewalls are replaced entirely on update. */
 export async function upsertRoof(jobId: string, data: CreateRoofInput) {
@@ -30,11 +31,10 @@ export async function upsertRoof(jobId: string, data: CreateRoofInput) {
   if (derivedWidthHeight !== undefined) rest.sideColumnsWidthHeight = derivedWidthHeight
   else delete rest.sideColumnsWidthHeight
 
-  const roof = await prisma.roof.upsert({
-    where: { jobId },
-    create: { jobId, ...rest, sidewalls: { createMany: { data: sidewallData } } },
-    update: { ...rest, sidewalls: { deleteMany: {}, createMany: { data: sidewallData } } },
-    include: { sidewalls: true },
+  const roof = await prisma.$transaction(async (tx) => {
+    const result = await tx.roof.upsert({ where: { jobId }, create: { jobId, ...rest }, update: { ...rest, deletedAt: null, deletedBy: null, deletionBatchId: null } })
+    await replaceChildren(tx, 'sidewall', 'roofId', result.id, sidewallData)
+    return (await tx.roof.findUnique({ where: { id: result.id }, include: { sidewalls: { where: { deletedAt: null } } } })) ?? result
   })
 
   // Accessory quantities are derived from the roof — keep them in sync when the
@@ -48,15 +48,15 @@ export async function upsertRoof(jobId: string, data: CreateRoofInput) {
 export async function getRoofs(userId: string, page: number, pageSize: number) {
   const where = { job: { userId } }
   const [data, total] = await Promise.all([
-    prisma.roof.findMany({ where, skip: (page - 1) * pageSize, take: pageSize, orderBy: { createdAt: 'desc' }, include: { sidewalls: true } }),
-    prisma.roof.count({ where }),
+    prisma.roof.findMany({ where: { ...where, deletedAt: null }, skip: (page - 1) * pageSize, take: pageSize, orderBy: { createdAt: 'desc' }, include: { sidewalls: { where: { deletedAt: null } } } }),
+    prisma.roof.count({ where: { ...where, deletedAt: null } }),
   ])
   return { data, total, page, pageSize }
 }
 
 /** Finds a roof by its associated job ID. Returns null if not found. */
 export function getRoofByJobId(jobId: string) {
-  return prisma.roof.findUnique({ where: { jobId }, include: { sidewalls: true } })
+  return prisma.roof.findFirst({ where: { jobId, deletedAt: null }, include: { sidewalls: { where: { deletedAt: null } } } })
 }
 
 /** Updates a roof by job ID. Replaces sidewalls entirely if provided. */
@@ -99,10 +99,13 @@ export async function updateRoof(jobId: string, data: Record<string, any>) {
   }
 
   if (sidewalls !== undefined) {
-    updateData.sidewalls = { deleteMany: {}, createMany: { data: sidewalls } }
   }
 
-  const roof = await prisma.roof.update({ where: { jobId }, data: updateData, include: { sidewalls: true } })
+  const roof = await prisma.$transaction(async (tx) => {
+    const result = await tx.roof.update({ where: { jobId }, data: updateData })
+    if (sidewalls !== undefined) await replaceChildren(tx, 'sidewall', 'roofId', result.id, sidewalls)
+    return (await tx.roof.findUnique({ where: { id: result.id }, include: { sidewalls: { where: { deletedAt: null } } } })) ?? result
+  })
 
   // Accessory quantities depend on the roof — recompute after any roof change
   // (no-op if the job has no Accessories row yet).
@@ -113,5 +116,5 @@ export async function updateRoof(jobId: string, data: Record<string, any>) {
 
 /** Deletes a roof by its associated job ID. Throws if not found. */
 export function deleteRoof(jobId: string) {
-  return prisma.roof.delete({ where: { jobId } })
+  return prisma.roof.update({ where: { jobId }, data: { deletedAt: new Date() } })
 }

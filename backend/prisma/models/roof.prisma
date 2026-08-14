@@ -46,6 +46,9 @@ enum RoofFrameBaseFixing {
 
 model Roof {
   id    String @id @default(cuid())
+  deletedAt DateTime?
+  deletedBy String?
+  deletionBatchId String?
   jobId String @unique
   job   Job    @relation(fields: [jobId], references: [id], onDelete: Cascade)
 
@@ -152,6 +155,9 @@ model Roof {
 
 model Sidewall {
   id        String       @id @default(cuid())
+  deletedAt DateTime?
+  deletedBy String?
+  deletionBatchId String?
   roofId    String
   roof      Roof         @relation(fields: [roofId], references: [id], onDelete: Cascade)
   side      SideWallSide

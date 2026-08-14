@@ -1,5 +1,8 @@
 model Spec {
   id    String @id @default(cuid())
+  deletedAt DateTime?
+  deletedBy String?
+  deletionBatchId String?
   jobId String @unique
   job   Job    @relation(fields: [jobId], references: [id], onDelete: Cascade)
 
@@ -13,6 +16,9 @@ model Spec {
 
 model SpecProduct {
   id     String @id @default(cuid())
+  deletedAt DateTime?
+  deletedBy String?
+  deletionBatchId String?
   specId String
   spec   Spec   @relation(fields: [specId], references: [id], onDelete: Cascade)
 

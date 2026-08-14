@@ -54,6 +54,9 @@ model UserInvitation {
 
 model Job {
   id String @id @default(cuid())
+  deletedAt DateTime?
+  deletedBy String?
+  deletionBatchId String?
 
   // Owner — stores the Clerk user id (request.userId). References User.clerkId,
   // so services filter jobs directly by request.userId with no extra lookup.

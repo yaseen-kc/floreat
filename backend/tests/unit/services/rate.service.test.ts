@@ -20,20 +20,20 @@ describe('rate.service', () => {
     prismaMock.rate.count.mockResolvedValue(1)
     const result = await getRates(JOB, 2, 10)
     expect(result).toMatchObject({ total: 1, page: 2, pageSize: 10 })
-    expect(prismaMock.rate.findMany).toHaveBeenCalledWith({ where: { jobId: JOB }, skip: 10, take: 10, orderBy: { createdAt: 'desc' } })
-    expect(prismaMock.rate.count).toHaveBeenCalledWith({ where: { jobId: JOB } })
+    expect(prismaMock.rate.findMany).toHaveBeenCalledWith({ where: { jobId: JOB, deletedAt: null }, skip: 10, take: 10, orderBy: { createdAt: 'desc' } })
+    expect(prismaMock.rate.count).toHaveBeenCalledWith({ where: { jobId: JOB, deletedAt: null } })
   })
 
   it('scopes reads, updates, and deletes by jobId', async () => {
     const rate = makeRate({ jobId: JOB })
     prismaMock.rate.findFirst.mockResolvedValue(rate as any)
     prismaMock.rate.update.mockResolvedValue(rate as any)
-    prismaMock.rate.delete.mockResolvedValue(rate as any)
+    prismaMock.rate.update.mockResolvedValue(rate as any)
     await expect(getRateById(JOB, rate.id)).resolves.toEqual(rate)
     await updateRate(JOB, rate.id, { marginPercentage: 0 })
     await deleteRate(JOB, rate.id)
-    expect(prismaMock.rate.findFirst).toHaveBeenCalledWith({ where: { id: rate.id, jobId: JOB } })
-    expect(prismaMock.rate.delete).toHaveBeenCalledWith({ where: { id: rate.id } })
+    expect(prismaMock.rate.findFirst).toHaveBeenCalledWith({ where: { id: rate.id, jobId: JOB, deletedAt: null } })
+    expect(prismaMock.rate.update).toHaveBeenCalledWith({ where: { id: rate.id }, data: { deletedAt: expect.any(Date) } })
   })
 
   it('returns not found for a rate ID owned by another job', async () => {

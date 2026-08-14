@@ -4,24 +4,17 @@
  */
 import { prisma } from '../lib/prisma.js'
 import type { CreateCanopyInput } from '../schemas/canopy.schema.js'
+import { replaceChildren } from './soft-delete.service.js'
 
 /** Creates or updates a canopy for a given job. Canopies are replaced entirely on update. */
-export function upsertCanopy(jobId: string, data: CreateCanopyInput) {
+export async function upsertCanopy(jobId: string, data: CreateCanopyInput) {
   const { canopies, ...rest } = data
   const canopyData = canopies ?? []
 
-  return prisma.canopy.upsert({
-    where: { jobId },
-    create: {
-      jobId,
-      ...rest,
-      canopies: { createMany: { data: canopyData } },
-    },
-    update: {
-      ...rest,
-      canopies: { deleteMany: {}, createMany: { data: canopyData } },
-    },
-    include: { canopies: true },
+  return prisma.$transaction(async (tx) => {
+    const canopy = await tx.canopy.upsert({ where: { jobId }, create: { jobId, ...rest }, update: { ...rest, deletedAt: null, deletedBy: null, deletionBatchId: null } })
+    await replaceChildren(tx, 'canopyItem', 'canopyId', canopy.id, canopyData)
+    return (await tx.canopy.findUnique({ where: { id: canopy.id }, include: { canopies: { where: { deletedAt: null } } } })) ?? canopy
   })
 }
 
@@ -29,30 +22,30 @@ export function upsertCanopy(jobId: string, data: CreateCanopyInput) {
 export async function getCanopies(userId: string, page: number, pageSize: number) {
   const where = { job: { userId } }
   const [data, total] = await Promise.all([
-    prisma.canopy.findMany({ where, skip: (page - 1) * pageSize, take: pageSize, orderBy: { createdAt: 'desc' }, include: { canopies: true } }),
-    prisma.canopy.count({ where }),
+    prisma.canopy.findMany({ where: { ...where, deletedAt: null }, skip: (page - 1) * pageSize, take: pageSize, orderBy: { createdAt: 'desc' }, include: { canopies: { where: { deletedAt: null } } } }),
+    prisma.canopy.count({ where: { ...where, deletedAt: null } }),
   ])
   return { data, total, page, pageSize }
 }
 
 /** Finds a canopy by its associated job ID. Returns null if not found. */
 export function getCanopyByJobId(jobId: string) {
-  return prisma.canopy.findUnique({ where: { jobId }, include: { canopies: true } })
+  return prisma.canopy.findFirst({ where: { jobId, deletedAt: null }, include: { canopies: { where: { deletedAt: null } } } })
 }
 
 /** Updates a canopy by job ID. Replaces canopies entirely if provided. */
-export function updateCanopy(jobId: string, data: Record<string, any>) {
+export async function updateCanopy(jobId: string, data: Record<string, any>) {
   const { canopies, ...rest } = data
   const updateData: any = { ...rest }
 
-  if (canopies !== undefined) {
-    updateData.canopies = { deleteMany: {}, createMany: { data: canopies } }
-  }
-
-  return prisma.canopy.update({ where: { jobId }, data: updateData, include: { canopies: true } })
+  return prisma.$transaction(async (tx) => {
+    const canopy = await tx.canopy.update({ where: { jobId }, data: updateData })
+    if (canopies !== undefined) await replaceChildren(tx, 'canopyItem', 'canopyId', canopy.id, canopies)
+    return (await tx.canopy.findUnique({ where: { id: canopy.id }, include: { canopies: { where: { deletedAt: null } } } })) ?? canopy
+  })
 }
 
 /** Deletes a canopy by its associated job ID. Throws if not found. */
 export function deleteCanopy(jobId: string) {
-  return prisma.canopy.delete({ where: { jobId } })
+  return prisma.canopy.update({ where: { jobId }, data: { deletedAt: new Date() } })
 }

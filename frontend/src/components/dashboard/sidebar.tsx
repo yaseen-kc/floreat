@@ -5,12 +5,9 @@ import {
   FileText,
   Plus,
   Folder,
-  LayoutGrid,
   Users,
-  Settings,
   PanelLeftClose,
   PanelLeftOpen,
-  Users,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { useAuthorization } from '@/auth/authorization'

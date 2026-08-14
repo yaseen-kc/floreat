@@ -55,6 +55,9 @@ enum MezzanineHeightFrom {
 
 model Mezzanine {
   id    String @id @default(cuid())
+  deletedAt DateTime?
+  deletedBy String?
+  deletionBatchId String?
   jobId String @unique
   job   Job    @relation(fields: [jobId], references: [id], onDelete: Cascade)
 
@@ -69,6 +72,9 @@ model Mezzanine {
 
 model MezzanineFloor {
   id          String    @id @default(cuid())
+  deletedAt DateTime?
+  deletedBy String?
+  deletionBatchId String?
   mezzanineId String
   mezzanine   Mezzanine @relation(fields: [mezzanineId], references: [id], onDelete: Cascade)
 
@@ -104,6 +110,9 @@ model MezzanineFloor {
 
 model MezzanineFloorExtension {
   id          String    @id @default(cuid())
+  deletedAt DateTime?
+  deletedBy String?
+  deletionBatchId String?
   mezzanineId String
   mezzanine   Mezzanine @relation(fields: [mezzanineId], references: [id], onDelete: Cascade)
 

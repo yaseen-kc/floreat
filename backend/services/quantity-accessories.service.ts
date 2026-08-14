@@ -10,7 +10,7 @@ export async function upsertQuantityAccessories(jobId: string, data: CreateQuant
   const result = await prisma.quantity.upsert({
     where: { jobId },
     create: { jobId, accessories: { create: mergedData as any } } as any,
-    update: { accessories: { upsert: { create: mergedData as any, update: mergedData as any } } } as any,
+    update: { deletedAt: null, accessories: { upsert: { create: mergedData as any, update: { ...mergedData as any, deletedAt: null } } } } as any,
     include: { accessories: true },
   })
   return result.accessories
@@ -18,7 +18,7 @@ export async function upsertQuantityAccessories(jobId: string, data: CreateQuant
 
 /** Returns the accessories section for a job, calculating defaults server-side if not yet persisted. */
 export async function getQuantityAccessoriesByJobId(jobId: string) {
-  const q = await prisma.quantity.findUnique({ where: { jobId }, include: { accessories: true } })
+  const q = await prisma.quantity.findFirst({ where: { jobId, deletedAt: null }, include: { accessories: { where: { deletedAt: null } } } })
   if (q?.accessories) return q.accessories
 
   const computed = await computeJobQuantities(jobId)
@@ -27,7 +27,7 @@ export async function getQuantityAccessoriesByJobId(jobId: string) {
   const result = await prisma.quantity.upsert({
     where: { jobId },
     create: { jobId, accessories: { create: computed.accessories as any } } as any,
-    update: { accessories: { upsert: { create: computed.accessories as any, update: computed.accessories as any } } } as any,
+    update: { deletedAt: null, accessories: { upsert: { create: computed.accessories as any, update: { ...computed.accessories as any, deletedAt: null } } } } as any,
     include: { accessories: true },
   })
   return result.accessories
@@ -40,7 +40,7 @@ export async function updateQuantityAccessories(jobId: string, data: UpdateQuant
 
   const result = await prisma.quantity.update({
     where: { jobId },
-    data: { accessories: { upsert: { create: mergedData as any, update: mergedData as any } } } as any,
+    data: { deletedAt: null, accessories: { upsert: { create: mergedData as any, update: { ...mergedData as any, deletedAt: null } } } } as any,
     include: { accessories: true },
   })
   return result.accessories
@@ -48,14 +48,14 @@ export async function updateQuantityAccessories(jobId: string, data: UpdateQuant
 
 /** Deletes the accessories section. Throws P2025 if the parent quantity or section is not found. */
 export async function deleteQuantityAccessories(jobId: string) {
-  const q = await prisma.quantity.findUnique({ where: { jobId }, select: { id: true } })
+  const q = await prisma.quantity.findFirst({ where: { jobId, deletedAt: null }, select: { id: true } })
   if (!q) throw Object.assign(new Error('Not found'), { code: 'P2025' })
-  return prisma.quantityAccessories.delete({ where: { quantityId: q.id } })
+  return prisma.quantityAccessories.update({ where: { quantityId: q.id }, data: { deletedAt: new Date() } })
 }
 
 /** Paginated list of accessories sections for jobs owned by userId. */
 export async function getQuantityAccessories(userId: string, page: number, pageSize: number) {
-  const where = { quantity: { job: { userId } } }
+  const where = { quantity: { job: { userId }, deletedAt: null }, deletedAt: null }
   const [data, total] = await Promise.all([
     prisma.quantityAccessories.findMany({
       where,

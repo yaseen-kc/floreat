@@ -10,13 +10,13 @@ export function upsertLoad(jobId: string, data: CreateLoadInput) {
   return prisma.load.upsert({
     where: { jobId },
     create: { jobId, ...data },
-    update: { ...data },
+    update: { ...data, deletedAt: null, deletedBy: null, deletionBatchId: null },
   })
 }
 
 /** Returns a paginated list of the user's loads ordered by most recent first. */
 export async function getLoads(userId: string, page: number, pageSize: number) {
-  const where = { job: { userId } }
+  const where = { job: { userId }, deletedAt: null }
   const [data, total] = await Promise.all([
     prisma.load.findMany({ where, skip: (page - 1) * pageSize, take: pageSize, orderBy: { createdAt: 'desc' } }),
     prisma.load.count({ where }),
@@ -26,15 +26,15 @@ export async function getLoads(userId: string, page: number, pageSize: number) {
 
 /** Finds a load by its associated job ID. Returns null if not found. */
 export function getLoadByJobId(jobId: string) {
-  return prisma.load.findUnique({ where: { jobId } })
+  return prisma.load.findFirst({ where: { jobId, deletedAt: null } })
 }
 
 /** Updates a load by its associated job ID. Throws P2025 if not found. */
 export function updateLoad(jobId: string, data: Record<string, unknown>) {
-  return prisma.load.update({ where: { jobId }, data })
+  return prisma.load.update({ where: { jobId }, data: { ...data, deletedAt: null, deletedBy: null, deletionBatchId: null } })
 }
 
 /** Deletes a load by its associated job ID. Throws P2025 if not found. */
 export function deleteLoad(jobId: string) {
-  return prisma.load.delete({ where: { jobId } })
+  return prisma.load.update({ where: { jobId }, data: { deletedAt: new Date() } })
 }

@@ -10,13 +10,13 @@ export function upsertQuotation(jobId: string, data: CreateQuotationInput) {
   return prisma.quotation.upsert({
     where: { jobId },
     create: { jobId, ...data },
-    update: { ...data },
+    update: { ...data, deletedAt: null, deletedBy: null, deletionBatchId: null },
   })
 }
 
 /** Returns a paginated list of the user's quotations ordered by most recent first. */
 export async function getQuotations(userId: string, page: number, pageSize: number, global = false) {
-  const where = global ? { grandTotal: { not: null } } : { grandTotal: { not: null }, job: { userId } }
+  const where = global ? { grandTotal: { not: null }, deletedAt: null } : { grandTotal: { not: null }, job: { userId }, deletedAt: null }
   const [data, total] = await Promise.all([
     prisma.quotation.findMany({
       where,
@@ -45,7 +45,7 @@ export async function getQuotations(userId: string, page: number, pageSize: numb
 
 /** Finds a quotation by its associated job ID. Returns null if not found. */
 export function getQuotationByJobId(jobId: string) {
-  return prisma.quotation.findUnique({ where: { jobId } })
+  return prisma.quotation.findFirst({ where: { jobId, deletedAt: null } })
 }
 
 /** Updates a quotation by its associated job ID. Throws P2025 if not found. */
@@ -59,11 +59,11 @@ export async function updateQuotation(jobId: string, data: Record<string, unknow
 export async function deleteQuotation(jobId: string) {
   const draft = await prisma.quotation.findFirst({ where: { jobId, status: 'DRAFT' }, select: { jobId: true } })
   if (!draft) throw Object.assign(new Error('Quotation not found'), { code: 'P2025' })
-  return prisma.quotation.delete({ where: { jobId } })
+  return prisma.quotation.update({ where: { jobId }, data: { deletedAt: new Date() } })
 }
 
 export async function transitionQuotation(jobId: string, actorId: string, status: 'SUBMITTED' | 'APPROVED' | 'REJECTED', comment?: string) {
-  const current = await prisma.quotation.findUnique({ where: { jobId } })
+  const current = await prisma.quotation.findFirst({ where: { jobId, deletedAt: null } })
   if (!current) throw Object.assign(new Error('Quotation not found'), { code: 'P2025' })
   const valid = (current.status === 'DRAFT' && status === 'SUBMITTED') ||
     (current.status === 'SUBMITTED' && (status === 'APPROVED' || status === 'REJECTED'))

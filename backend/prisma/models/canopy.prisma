@@ -33,6 +33,9 @@ enum CanopySheetType {
 
 model Canopy {
   id    String @id @default(cuid())
+  deletedAt DateTime?
+  deletedBy String?
+  deletionBatchId String?
   jobId String @unique
   job   Job    @relation(fields: [jobId], references: [id], onDelete: Cascade)
 
@@ -46,6 +49,9 @@ model Canopy {
 
 model CanopyItem {
   id       String @id @default(cuid())
+  deletedAt DateTime?
+  deletedBy String?
+  deletionBatchId String?
   canopyId String
   canopy   Canopy @relation(fields: [canopyId], references: [id], onDelete: Cascade)
 

@@ -590,6 +590,13 @@ registerOperation({
 
 for (const resource of resourceDefinitions) registerResourceOperations(resource)
 
+registerOperation({
+  method: 'post', path: '/api/admin/deleted/{batchId}/restore', operationId: 'restoreDeletedBatch', tag: 'Administration', auth: true,
+  summary: 'Restore a deleted batch', description: 'Restores a soft-deleted job subtree by deletion batch identifier.',
+  params: z.object({ batchId: z.string().meta({ example: 'deletion-batch-id' }) }),
+  responseSchema: z.object({ count: z.number().int().nonnegative() }), responseDescription: 'Number of restored records.', notFound: true,
+})
+
 export const documentedRouteKeys = [...documentedOperations].sort()
 
 export function buildOpenApiDocument() {

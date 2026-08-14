@@ -58,7 +58,6 @@ export async function checkDocumentation(): Promise<void> {
 
     const generatedOpenApi = await readFile(resolve(tempDirectory, 'openapi.json'), 'utf8')
     const committedOpenApi = await readFile(resolve(defaultDocsDirectory, 'openapi.json'), 'utf8')
-    const generatedPostman = await readFile(resolve(tempDirectory, 'floreat-api.postman_collection.json'), 'utf8')
     if (canonicalJson(JSON.parse(generatedOpenApi)) !== canonicalJson(JSON.parse(committedOpenApi))) throw new Error('Generated OpenAPI documentation is stale. Run npm run docs:generate and commit the results.')
 
     const generatedPostman = JSON.parse(await readFile(resolve(tempDirectory, 'floreat-api.postman_collection.json'), 'utf8')) as { item?: PostmanNode[] }

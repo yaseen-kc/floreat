@@ -136,7 +136,7 @@
                     "type": "text/plain"
                   },
                   "key": "status",
-                  "value": "DEACTIVATED"
+                  "value": "ACTIVE"
                 },
                 {
                   "disabled": false,
@@ -6051,6 +6051,59 @@
               }
             ],
             "method": "GET",
+            "body": {}
+          },
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ]
+    },
+    {
+      "name": "Administration",
+      "description": "",
+      "item": [
+        {
+          "name": "Restore a deleted batch",
+          "request": {
+            "name": "Restore a deleted batch",
+            "description": {
+              "content": "Restores a soft-deleted job subtree by deletion batch identifier.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "admin",
+                "deleted",
+                ":batchId",
+                "restore"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "type": "any",
+                  "value": "deletion-batch-id",
+                  "key": "batchId",
+                  "disabled": false,
+                  "description": {
+                    "content": "(Required) ",
+                    "type": "text/plain"
+                  }
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
             "body": {}
           },
           "event": [],

@@ -52,6 +52,9 @@ enum AreaDeductionFor {
 
 model Stair {
   id    String @id @default(cuid())
+  deletedAt DateTime?
+  deletedBy String?
+  deletionBatchId String?
   jobId String @unique
   job   Job    @relation(fields: [jobId], references: [id], onDelete: Cascade)
 
@@ -66,6 +69,9 @@ model Stair {
 
 model StairItem {
   id      String @id @default(cuid())
+  deletedAt DateTime?
+  deletedBy String?
+  deletionBatchId String?
   stairId String
   stair   Stair  @relation(fields: [stairId], references: [id], onDelete: Cascade)
 
@@ -89,6 +95,9 @@ model StairItem {
 
 model AreaDeduction {
   id      String @id @default(cuid())
+  deletedAt DateTime?
+  deletedBy String?
+  deletionBatchId String?
   stairId String
   stair   Stair  @relation(fields: [stairId], references: [id], onDelete: Cascade)
 

@@ -24,32 +24,32 @@ export async function computeJobAmount(jobId: string): Promise<CreateAmountInput
     prisma.job.findUnique({
       where: { id: jobId },
       include: {
-        roof: { include: { sidewalls: { orderBy: [{ side: 'asc' }, { id: 'asc' }] } } },
-        mezzanine: { include: { floors: { orderBy: [{ code: 'asc' }, { id: 'asc' }] }, extensions: { orderBy: [{ code: 'asc' }, { id: 'asc' }] } } },
-        stair: { include: { stairs: { orderBy: [{ code: 'asc' }, { id: 'asc' }] }, areaDeductions: { orderBy: { id: 'asc' } } } },
-        canopy: { include: { canopies: { orderBy: { id: 'asc' } } } },
-        accessories: true,
+        roof: { where: { deletedAt: null }, include: { sidewalls: { where: { deletedAt: null }, orderBy: [{ side: 'asc' }, { id: 'asc' }] } } },
+        mezzanine: { where: { deletedAt: null }, include: { floors: { where: { deletedAt: null }, orderBy: [{ code: 'asc' }, { id: 'asc' }] }, extensions: { where: { deletedAt: null }, orderBy: [{ code: 'asc' }, { id: 'asc' }] } } },
+        stair: { where: { deletedAt: null }, include: { stairs: { where: { deletedAt: null }, orderBy: [{ code: 'asc' }, { id: 'asc' }] }, areaDeductions: { where: { deletedAt: null }, orderBy: { id: 'asc' } } } },
+        canopy: { where: { deletedAt: null }, include: { canopies: { where: { deletedAt: null }, orderBy: { id: 'asc' } } } },
+        accessories: { where: { deletedAt: null } },
         joint: {
           include: {
-            jointBoltRoof: { orderBy: [{ roofJointId: 'asc' }, { id: 'asc' }] },
-            jointBoltMezzanine: { orderBy: [{ mezzanineJointId: 'asc' }, { id: 'asc' }] },
-            foundationBoltRoof: { orderBy: [{ foundationJointId: 'asc' }, { id: 'asc' }] },
+            jointBoltRoof: { where: { deletedAt: null }, orderBy: [{ roofJointId: 'asc' }, { id: 'asc' }] },
+            jointBoltMezzanine: { where: { deletedAt: null }, orderBy: [{ mezzanineJointId: 'asc' }, { id: 'asc' }] },
+            foundationBoltRoof: { where: { deletedAt: null }, orderBy: [{ foundationJointId: 'asc' }, { id: 'asc' }] },
           },
         },
         quantity: {
           include: {
-            pebRoof: true,
-            cladding: true,
-            canopy: true,
-            accessories: true,
-            mezzanine: true,
-            stair: true,
-            additionalBolts: true,
+            pebRoof: { where: { deletedAt: null } },
+            cladding: { where: { deletedAt: null } },
+            canopy: { where: { deletedAt: null } },
+            accessories: { where: { deletedAt: null } },
+            mezzanine: { where: { deletedAt: null } },
+            stair: { where: { deletedAt: null } },
+            additionalBolts: { where: { deletedAt: null } },
           },
         },
       },
     }),
-    prisma.rate.findMany({ where: { jobId } }),
+    prisma.rate.findMany({ where: { jobId, deletedAt: null } }),
   ])
 
   if (!job) return null

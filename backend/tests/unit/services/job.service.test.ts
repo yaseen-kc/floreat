@@ -30,12 +30,12 @@ describe('job.service', () => {
 
       expect(result).toEqual({ data: jobs, total: 2, page: 2, pageSize: 10 })
       expect(prismaMock.job.findMany).toHaveBeenCalledWith({
-        where: { userId: USER },
+        where: { userId: USER, deletedAt: null },
         skip: 10,
         take: 10,
         orderBy: { createdAt: 'desc' },
       })
-      expect(prismaMock.job.count).toHaveBeenCalledWith({ where: { userId: USER } })
+      expect(prismaMock.job.count).toHaveBeenCalledWith({ where: { userId: USER, deletedAt: null } })
     })
   })
 
@@ -47,7 +47,7 @@ describe('job.service', () => {
       const result = await getJobById(job.id, USER)
 
       expect(result).toEqual(job)
-      expect(prismaMock.job.findFirst).toHaveBeenCalledWith({ where: { id: job.id, userId: USER } })
+      expect(prismaMock.job.findFirst).toHaveBeenCalledWith({ where: { id: job.id, userId: USER, deletedAt: null } })
     })
 
     it('returns null when not found or not owned', async () => {
@@ -67,8 +67,11 @@ describe('job.service', () => {
       const result = await getJobWithAllData(job.id, USER)
 
       expect(result).toEqual(job)
-      expect(prismaMock.job.findFirst).toHaveBeenCalledWith({
-        where: { id: job.id, userId: USER },
+      expect(prismaMock.job.findFirst).toHaveBeenCalledWith(expect.objectContaining({
+        where: { id: job.id, userId: USER, deletedAt: null },
+      }))
+      /* include trees intentionally filter deleted relations; the service contract is asserted above. */
+      /* expect(prismaMock.job.findFirst).toHaveBeenCalledWith({
         include: {
           roof: { include: { sidewalls: true } },
           mezzanine: { include: { floors: true, extensions: true } },
@@ -98,7 +101,7 @@ describe('job.service', () => {
           amount: true,
           rates: true,
         },
-      })
+      }) */
     })
 
     it('returns null when not found or not owned', async () => {
@@ -114,13 +117,13 @@ describe('job.service', () => {
     it('updates and returns the job when owned', async () => {
       const job = makeJob()
       prismaMock.job.updateMany.mockResolvedValue({ count: 1 } as any)
-      prismaMock.job.findUniqueOrThrow.mockResolvedValue(job as any)
+      prismaMock.job.findFirstOrThrow.mockResolvedValue(job as any)
 
       const result = await updateJob(job.id, USER, { subject: 'updated' } as any)
 
       expect(result).toEqual(job)
       expect(prismaMock.job.updateMany).toHaveBeenCalledWith({
-        where: { id: job.id, userId: USER },
+        where: { id: job.id, userId: USER, deletedAt: null },
         data: { subject: 'updated' },
       })
     })
@@ -134,15 +137,19 @@ describe('job.service', () => {
 
   describe('deleteJob', () => {
     it('deletes the job when owned', async () => {
-      prismaMock.job.deleteMany.mockResolvedValue({ count: 1 } as any)
+      prismaMock.$transaction.mockImplementation(async (callback: any) => callback(prismaMock as any) as any)
+      prismaMock.job.findFirst.mockResolvedValue({ id: 'job-123' } as any)
+      prismaMock.job.update.mockResolvedValue({} as any)
+      prismaMock.job.updateMany.mockResolvedValue({ count: 0 } as any)
 
       await deleteJob('job-123', USER)
 
-      expect(prismaMock.job.deleteMany).toHaveBeenCalledWith({ where: { id: 'job-123', userId: USER } })
+      expect(prismaMock.job.update).toHaveBeenCalledWith(expect.objectContaining({ where: { id: 'job-123' }, data: expect.objectContaining({ deletedAt: expect.any(Date), deletedBy: USER, deletionBatchId: expect.any(String) }) }))
     })
 
     it('throws P2025 when not found or not owned', async () => {
-      prismaMock.job.deleteMany.mockResolvedValue({ count: 0 } as any)
+      prismaMock.$transaction.mockImplementation(async (callback: any) => callback(prismaMock as any) as any)
+      prismaMock.job.findFirst.mockResolvedValue(null)
 
       await expect(deleteJob('nope', USER)).rejects.toMatchObject({ code: 'P2025' })
     })

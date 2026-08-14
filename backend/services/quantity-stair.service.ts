@@ -10,7 +10,7 @@ export async function upsertQuantityStair(jobId: string, data: CreateQuantitySta
   const result = await prisma.quantity.upsert({
     where: { jobId },
     create: { jobId, stair: { create: mergedData as any } } as any,
-    update: { stair: { upsert: { create: mergedData as any, update: mergedData as any } } } as any,
+    update: { deletedAt: null, stair: { upsert: { create: mergedData as any, update: { ...mergedData as any, deletedAt: null } } } } as any,
     include: { stair: true },
   })
   return result.stair
@@ -18,7 +18,7 @@ export async function upsertQuantityStair(jobId: string, data: CreateQuantitySta
 
 /** Returns the stair section for a job, calculating defaults server-side if not yet persisted. */
 export async function getQuantityStairByJobId(jobId: string) {
-  const q = await prisma.quantity.findUnique({ where: { jobId }, include: { stair: true } })
+  const q = await prisma.quantity.findFirst({ where: { jobId, deletedAt: null }, include: { stair: { where: { deletedAt: null } } } })
   if (q?.stair) return q.stair
 
   const computed = await computeJobQuantities(jobId)
@@ -27,7 +27,7 @@ export async function getQuantityStairByJobId(jobId: string) {
   const result = await prisma.quantity.upsert({
     where: { jobId },
     create: { jobId, stair: { create: computed.stair as any } } as any,
-    update: { stair: { upsert: { create: computed.stair as any, update: computed.stair as any } } } as any,
+    update: { deletedAt: null, stair: { upsert: { create: computed.stair as any, update: { ...computed.stair as any, deletedAt: null } } } } as any,
     include: { stair: true },
   })
   return result.stair
@@ -40,7 +40,7 @@ export async function updateQuantityStair(jobId: string, data: UpdateQuantitySta
 
   const result = await prisma.quantity.update({
     where: { jobId },
-    data: { stair: { upsert: { create: mergedData as any, update: mergedData as any } } } as any,
+    data: { deletedAt: null, stair: { upsert: { create: mergedData as any, update: { ...mergedData as any, deletedAt: null } } } } as any,
     include: { stair: true },
   })
   return result.stair
@@ -48,14 +48,14 @@ export async function updateQuantityStair(jobId: string, data: UpdateQuantitySta
 
 /** Deletes the stair section. Throws P2025 if the parent quantity or section is not found. */
 export async function deleteQuantityStair(jobId: string) {
-  const q = await prisma.quantity.findUnique({ where: { jobId }, select: { id: true } })
+  const q = await prisma.quantity.findFirst({ where: { jobId, deletedAt: null }, select: { id: true } })
   if (!q) throw Object.assign(new Error('Not found'), { code: 'P2025' })
-  return prisma.quantityStair.delete({ where: { quantityId: q.id } })
+  return prisma.quantityStair.update({ where: { quantityId: q.id }, data: { deletedAt: new Date() } })
 }
 
 /** Paginated list of stair sections for jobs owned by userId. */
 export async function getQuantityStairs(userId: string, page: number, pageSize: number) {
-  const where = { quantity: { job: { userId } } }
+  const where = { quantity: { job: { userId }, deletedAt: null }, deletedAt: null }
   const [data, total] = await Promise.all([
     prisma.quantityStair.findMany({
       where,

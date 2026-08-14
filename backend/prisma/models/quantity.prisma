@@ -2,6 +2,9 @@
 
 model Quantity {
   id    String @id @default(cuid())
+  deletedAt DateTime?
+  deletedBy String?
+  deletionBatchId String?
   jobId String @unique
   job   Job    @relation(fields: [jobId], references: [id], onDelete: Cascade)
 
@@ -26,6 +29,9 @@ model Quantity {
 
 model QuantityPebRoof {
   id         String   @id @default(cuid())
+  deletedAt DateTime?
+  deletedBy String?
+  deletionBatchId String?
   quantityId String   @unique
   quantity   Quantity @relation(fields: [quantityId], references: [id], onDelete: Cascade)
 
@@ -121,6 +127,9 @@ model QuantityPebRoof {
 
 model QuantityCladding {
   id         String   @id @default(cuid())
+  deletedAt DateTime?
+  deletedBy String?
+  deletionBatchId String?
   quantityId String   @unique
   quantity   Quantity @relation(fields: [quantityId], references: [id], onDelete: Cascade)
 
@@ -159,6 +168,9 @@ model QuantityCladding {
 
 model QuantityCanopy {
   id         String   @id @default(cuid())
+  deletedAt DateTime?
+  deletedBy String?
+  deletionBatchId String?
   quantityId String   @unique
   quantity   Quantity @relation(fields: [quantityId], references: [id], onDelete: Cascade)
 
@@ -177,6 +189,9 @@ model QuantityCanopy {
 
 model QuantityAccessories {
   id         String   @id @default(cuid())
+  deletedAt DateTime?
+  deletedBy String?
+  deletionBatchId String?
   quantityId String   @unique
   quantity   Quantity @relation(fields: [quantityId], references: [id], onDelete: Cascade)
 
@@ -213,6 +228,9 @@ model QuantityAccessories {
 
 model QuantityMezzanine {
   id         String   @id @default(cuid())
+  deletedAt DateTime?
+  deletedBy String?
+  deletionBatchId String?
   quantityId String   @unique
   quantity   Quantity @relation(fields: [quantityId], references: [id], onDelete: Cascade)
 
@@ -236,6 +254,9 @@ model QuantityMezzanine {
 
 model QuantityStair {
   id         String   @id @default(cuid())
+  deletedAt DateTime?
+  deletedBy String?
+  deletionBatchId String?
   quantityId String   @unique
   quantity   Quantity @relation(fields: [quantityId], references: [id], onDelete: Cascade)
 
@@ -250,6 +271,9 @@ model QuantityStair {
 
 model QuantityAdditionalBolts {
   id         String   @id @default(cuid())
+  deletedAt DateTime?
+  deletedBy String?
+  deletionBatchId String?
   quantityId String   @unique
   quantity   Quantity @relation(fields: [quantityId], references: [id], onDelete: Cascade)
 

@@ -21,7 +21,7 @@ async function refreshAmount(jobId: string) {
   await prisma.amount.upsert({
     where: { jobId },
     create: { jobId, ...computed, calculationVersion: 'amount-v1', sourceUpdatedAt: new Date(), rateVersion: 1, isStale: false },
-    update: { ...computed, calculationVersion: 'amount-v1', sourceUpdatedAt: new Date(), rateVersion: 1, isStale: false },
+    update: { ...computed, calculationVersion: 'amount-v1', sourceUpdatedAt: new Date(), rateVersion: 1, isStale: false, deletedAt: null, deletedBy: null, deletionBatchId: null },
   })
 }
 
@@ -33,18 +33,18 @@ export async function createRate(jobId: string, data: CreateRateInput) {
 
 export async function replaceRates(jobId: string, data: BulkRateInput) {
   const rates = await prisma.$transaction(async (tx) => {
-    await tx.rate.deleteMany({ where: { jobId } })
+    await tx.rate.updateMany({ where: { jobId, deletedAt: null }, data: { deletedAt: new Date() } })
     for (const row of data.rates) {
       await tx.rate.create({ data: { jobId, ...row, ...computeBreakdown(row) } })
     }
-    return tx.rate.findMany({ where: { jobId }, orderBy: { createdAt: 'asc' } })
+    return tx.rate.findMany({ where: { jobId, deletedAt: null }, orderBy: { createdAt: 'asc' } })
   })
   await refreshAmount(jobId)
   return rates
 }
 
 export async function getRates(jobId: string, page: number, pageSize: number) {
-  const where = { jobId }
+  const where = { jobId, deletedAt: null }
   const [rows, total] = await Promise.all([
     prisma.rate.findMany({ where, skip: (page - 1) * pageSize, take: pageSize, orderBy: { createdAt: 'desc' } }),
     prisma.rate.count({ where }),
@@ -53,11 +53,11 @@ export async function getRates(jobId: string, page: number, pageSize: number) {
 }
 
 export function getRateById(jobId: string, id: string) {
-  return prisma.rate.findFirst({ where: { id, jobId } })
+  return prisma.rate.findFirst({ where: { id, jobId, deletedAt: null } })
 }
 
 export async function updateRate(jobId: string, id: string, data: UpdateRateInput) {
-  const existing = await prisma.rate.findFirst({ where: { id, jobId } })
+  const existing = await prisma.rate.findFirst({ where: { id, jobId, deletedAt: null } })
   if (!existing) throw Object.assign(new Error('Record not found'), { code: 'P2025' })
   const breakdown = computeBreakdown({
     material: data.material !== undefined ? data.material : toNum(existing.material),
@@ -75,9 +75,9 @@ export async function updateRate(jobId: string, id: string, data: UpdateRateInpu
 }
 
 export async function deleteRate(jobId: string, id: string) {
-  const existing = await prisma.rate.findFirst({ where: { id, jobId } })
+  const existing = await prisma.rate.findFirst({ where: { id, jobId, deletedAt: null } })
   if (!existing) throw Object.assign(new Error('Record not found'), { code: 'P2025' })
-  const rate = await prisma.rate.delete({ where: { id } })
+  const rate = await prisma.rate.update({ where: { id }, data: { deletedAt: new Date() } })
   await refreshAmount(jobId)
   return rate
 }

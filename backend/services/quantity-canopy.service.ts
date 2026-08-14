@@ -10,7 +10,7 @@ export async function upsertQuantityCanopy(jobId: string, data: CreateQuantityCa
   const result = await prisma.quantity.upsert({
     where: { jobId },
     create: { jobId, canopy: { create: mergedData as any } } as any,
-    update: { canopy: { upsert: { create: mergedData as any, update: mergedData as any } } } as any,
+    update: { deletedAt: null, canopy: { upsert: { create: mergedData as any, update: { ...mergedData as any, deletedAt: null } } } } as any,
     include: { canopy: true },
   })
   return result.canopy
@@ -18,7 +18,7 @@ export async function upsertQuantityCanopy(jobId: string, data: CreateQuantityCa
 
 /** Returns the canopy section for a job, calculating defaults server-side if not yet persisted. */
 export async function getQuantityCanopyByJobId(jobId: string) {
-  const q = await prisma.quantity.findUnique({ where: { jobId }, include: { canopy: true } })
+  const q = await prisma.quantity.findFirst({ where: { jobId, deletedAt: null }, include: { canopy: { where: { deletedAt: null } } } })
   if (q?.canopy) return q.canopy
 
   const computed = await computeJobQuantities(jobId)
@@ -27,7 +27,7 @@ export async function getQuantityCanopyByJobId(jobId: string) {
   const result = await prisma.quantity.upsert({
     where: { jobId },
     create: { jobId, canopy: { create: computed.canopy as any } } as any,
-    update: { canopy: { upsert: { create: computed.canopy as any, update: computed.canopy as any } } } as any,
+    update: { deletedAt: null, canopy: { upsert: { create: computed.canopy as any, update: { ...computed.canopy as any, deletedAt: null } } } } as any,
     include: { canopy: true },
   })
   return result.canopy
@@ -40,7 +40,7 @@ export async function updateQuantityCanopy(jobId: string, data: UpdateQuantityCa
 
   const result = await prisma.quantity.update({
     where: { jobId },
-    data: { canopy: { upsert: { create: mergedData as any, update: mergedData as any } } } as any,
+    data: { deletedAt: null, canopy: { upsert: { create: mergedData as any, update: { ...mergedData as any, deletedAt: null } } } } as any,
     include: { canopy: true },
   })
   return result.canopy
@@ -48,14 +48,14 @@ export async function updateQuantityCanopy(jobId: string, data: UpdateQuantityCa
 
 /** Deletes the canopy section. Throws P2025 if the parent quantity or section is not found. */
 export async function deleteQuantityCanopy(jobId: string) {
-  const q = await prisma.quantity.findUnique({ where: { jobId }, select: { id: true } })
+  const q = await prisma.quantity.findFirst({ where: { jobId, deletedAt: null }, select: { id: true } })
   if (!q) throw Object.assign(new Error('Not found'), { code: 'P2025' })
-  return prisma.quantityCanopy.delete({ where: { quantityId: q.id } })
+  return prisma.quantityCanopy.update({ where: { quantityId: q.id }, data: { deletedAt: new Date() } })
 }
 
 /** Paginated list of canopy sections for jobs owned by userId. */
 export async function getQuantityCanopies(userId: string, page: number, pageSize: number) {
-  const where = { quantity: { job: { userId } } }
+  const where = { quantity: { job: { userId }, deletedAt: null }, deletedAt: null }
   const [data, total] = await Promise.all([
     prisma.quantityCanopy.findMany({
       where,

@@ -58,7 +58,7 @@ export async function upsertQuantity(jobId: string, data: CreateQuantityInput) {
   const result = await prisma.quantity.upsert({
     where: { jobId },
     create: { jobId, calculationVersion: 'quantity-v1', sourceUpdatedAt: new Date(), rateVersion: 1, isStale: false, ...buildCreateSections(merged) } as Prisma.QuantityUncheckedCreateInput,
-    update: { calculationVersion: 'quantity-v1', sourceUpdatedAt: new Date(), rateVersion: 1, isStale: false, ...buildUpsertSections(merged) } as Prisma.QuantityUpdateInput,
+    update: { calculationVersion: 'quantity-v1', sourceUpdatedAt: new Date(), rateVersion: 1, isStale: false, deletedAt: null, deletedBy: null, deletionBatchId: null, ...buildUpsertSections(merged) } as Prisma.QuantityUpdateInput,
     include: includeSections,
   })
   await upsertAmount(jobId, {} as any)
@@ -67,9 +67,9 @@ export async function upsertQuantity(jobId: string, data: CreateQuantityInput) {
 
 /** Returns a paginated list of the user's quantities ordered by most recent first. */
 export async function getQuantities(userId: string, page: number, pageSize: number) {
-  const where = { job: { userId } }
+  const where = { job: { userId }, deletedAt: null }
   const [data, total] = await Promise.all([
-    prisma.quantity.findMany({ where, skip: (page - 1) * pageSize, take: pageSize, orderBy: { createdAt: 'desc' }, include: includeSections }),
+    prisma.quantity.findMany({ where, skip: (page - 1) * pageSize, take: pageSize, orderBy: { createdAt: 'desc' }, include: { pebRoof: { where: { deletedAt: null } }, cladding: { where: { deletedAt: null } }, canopy: { where: { deletedAt: null } }, accessories: { where: { deletedAt: null } }, mezzanine: { where: { deletedAt: null } }, stair: { where: { deletedAt: null } }, additionalBolts: { where: { deletedAt: null } } } }),
     prisma.quantity.count({ where }),
   ])
   return { data, total, page, pageSize }
@@ -77,7 +77,7 @@ export async function getQuantities(userId: string, page: number, pageSize: numb
 
 /** Finds a quantity by its associated job ID without creating rows on GET. */
 export async function getQuantityByJobId(jobId: string) {
-  const q = await prisma.quantity.findUnique({ where: { jobId }, include: includeSections })
+  const q = await prisma.quantity.findFirst({ where: { jobId, deletedAt: null }, include: { pebRoof: { where: { deletedAt: null } }, cladding: { where: { deletedAt: null } }, canopy: { where: { deletedAt: null } }, accessories: { where: { deletedAt: null } }, mezzanine: { where: { deletedAt: null } }, stair: { where: { deletedAt: null } }, additionalBolts: { where: { deletedAt: null } } } })
   return q
 }
 
@@ -97,5 +97,5 @@ export async function updateQuantity(jobId: string, data: UpdateQuantityInput) {
 
 /** Deletes a quantity by its associated job ID. Throws P2025 if not found. */
 export function deleteQuantity(jobId: string) {
-  return prisma.quantity.delete({ where: { jobId } })
+  return prisma.quantity.update({ where: { jobId }, data: { deletedAt: new Date() } })
 }

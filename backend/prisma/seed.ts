@@ -165,7 +165,7 @@ async function main() {
     await prisma.spec.upsert({
       where: { jobId },
       create: { jobId, products: { createMany: { data: products } } },
-      update: { products: { deleteMany: {}, createMany: { data: products } } },
+        update: { products: { updateMany: { where: { deletedAt: null }, data: { deletedAt: new Date() } }, createMany: { data: products } } },
     })
   }
   console.log('✓ Product specifications seeded')
@@ -284,7 +284,7 @@ async function main() {
     await prisma.roof.upsert({
       where: { jobId },
       create: { jobId, ...data, sidewalls: { createMany: { data: sw } } },
-      update: { ...data, sidewalls: { deleteMany: {}, createMany: { data: sw } } },
+      update: { ...data, sidewalls: { updateMany: { where: { deletedAt: null }, data: { deletedAt: new Date() } }, createMany: { data: sw } } },
     })
   }
   console.log('✓ Roofs & Sidewalls seeded')
@@ -358,8 +358,8 @@ async function main() {
       where: { jobId },
       create: { jobId, floors: { createMany: { data: floors } }, extensions: { createMany: { data: extensions } } },
       update: {
-        floors: { deleteMany: {}, createMany: { data: floors } },
-        extensions: { deleteMany: {}, createMany: { data: extensions } },
+        floors: { updateMany: { where: { deletedAt: null }, data: { deletedAt: new Date() } }, createMany: { data: floors } },
+        extensions: { updateMany: { where: { deletedAt: null }, data: { deletedAt: new Date() } }, createMany: { data: extensions } },
       },
     })
   }
@@ -415,7 +415,7 @@ async function main() {
     await prisma.canopy.upsert({
       where: { jobId },
       create: { jobId, canopies: { createMany: { data: items } } },
-      update: { canopies: { deleteMany: {}, createMany: { data: items } } },
+      update: { canopies: { updateMany: { where: { deletedAt: null }, data: { deletedAt: new Date() } }, createMany: { data: items } } },
     })
   }
   console.log('✓ Canopies seeded')
@@ -508,8 +508,8 @@ async function main() {
       where: { jobId },
       create: { jobId, stairs: { createMany: { data: items } }, areaDeductions: { createMany: { data: areaDeductions } } },
       update: {
-        stairs: { deleteMany: {}, createMany: { data: items } },
-        areaDeductions: { deleteMany: {}, createMany: { data: areaDeductions } },
+        stairs: { updateMany: { where: { deletedAt: null }, data: { deletedAt: new Date() } }, createMany: { data: items } },
+        areaDeductions: { updateMany: { where: { deletedAt: null }, data: { deletedAt: new Date() } }, createMany: { data: areaDeductions } },
       },
     })
   }
@@ -750,9 +750,9 @@ async function main() {
       },
       update: {
         ...data,
-        jointBoltRoof: { deleteMany: {}, createMany: { data: jointBoltRoof } },
-        jointBoltMezzanine: { deleteMany: {}, createMany: { data: jointBoltMezzanine } },
-        foundationBoltRoof: { deleteMany: {}, createMany: { data: foundationBoltRoof } },
+        jointBoltRoof: { updateMany: { where: { deletedAt: null }, data: { deletedAt: new Date() } }, createMany: { data: jointBoltRoof } },
+        jointBoltMezzanine: { updateMany: { where: { deletedAt: null }, data: { deletedAt: new Date() } }, createMany: { data: jointBoltMezzanine } },
+        foundationBoltRoof: { updateMany: { where: { deletedAt: null }, data: { deletedAt: new Date() } }, createMany: { data: foundationBoltRoof } },
       },
     })
   }
@@ -1074,9 +1074,8 @@ async function main() {
       ...(stair && { stair: { create: stair } }),
       ...(additionalBolts && { additionalBolts: { create: additionalBolts } }),
     }
-    // 1-to-1 sub-models don't support nested `deleteMany` on update, so recreate
     // the whole record for idempotency — the cascade drops all children.
-    await prisma.quantity.deleteMany({ where: { jobId } })
+    await prisma.quantity.updateMany({ where: { jobId, deletedAt: null }, data: { deletedAt: new Date() } })
     await prisma.quantity.create({ data: { jobId, ...nested } as any })
   }
   console.log('✓ Quantities seeded')
@@ -1112,7 +1111,7 @@ async function main() {
     },
   ]
   for (const { jobId, ...data } of amounts) {
-    await prisma.amount.deleteMany({ where: { jobId } })
+    await prisma.amount.updateMany({ where: { jobId, deletedAt: null }, data: { deletedAt: new Date() } })
     await prisma.amount.create({ data: { jobId, ...data } })
   }
   console.log('✓ Amounts seeded')

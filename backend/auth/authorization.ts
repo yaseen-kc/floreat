@@ -22,6 +22,7 @@ export const PERMISSIONS = {
   USER_INVITATION_REVOKE: 'user:invitation:revoke',
   ROLE_ASSIGN: 'user:role:assign',
   ADMIN_MANAGE: 'admin:manage',
+  SOFT_DELETE_RESTORE: 'soft-delete:restore',
 } as const
 export type Permission = (typeof PERMISSIONS)[keyof typeof PERMISSIONS]
 

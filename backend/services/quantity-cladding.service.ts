@@ -10,7 +10,7 @@ export async function upsertQuantityCladding(jobId: string, data: CreateQuantity
   const result = await prisma.quantity.upsert({
     where: { jobId },
     create: { jobId, cladding: { create: mergedData as any } } as any,
-    update: { cladding: { upsert: { create: mergedData as any, update: mergedData as any } } } as any,
+    update: { deletedAt: null, cladding: { upsert: { create: mergedData as any, update: { ...mergedData as any, deletedAt: null } } } } as any,
     include: { cladding: true },
   })
   return result.cladding
@@ -18,7 +18,7 @@ export async function upsertQuantityCladding(jobId: string, data: CreateQuantity
 
 /** Returns the cladding section for a job, calculating defaults server-side if not yet persisted. */
 export async function getQuantityCladdingByJobId(jobId: string) {
-  const q = await prisma.quantity.findUnique({ where: { jobId }, include: { cladding: true } })
+  const q = await prisma.quantity.findFirst({ where: { jobId, deletedAt: null }, include: { cladding: { where: { deletedAt: null } } } })
   if (q?.cladding) return q.cladding
 
   const computed = await computeJobQuantities(jobId)
@@ -27,7 +27,7 @@ export async function getQuantityCladdingByJobId(jobId: string) {
   const result = await prisma.quantity.upsert({
     where: { jobId },
     create: { jobId, cladding: { create: computed.cladding as any } } as any,
-    update: { cladding: { upsert: { create: computed.cladding as any, update: computed.cladding as any } } } as any,
+    update: { deletedAt: null, cladding: { upsert: { create: computed.cladding as any, update: { ...computed.cladding as any, deletedAt: null } } } } as any,
     include: { cladding: true },
   })
   return result.cladding
@@ -40,7 +40,7 @@ export async function updateQuantityCladding(jobId: string, data: UpdateQuantity
 
   const result = await prisma.quantity.update({
     where: { jobId },
-    data: { cladding: { upsert: { create: mergedData as any, update: mergedData as any } } } as any,
+    data: { deletedAt: null, cladding: { upsert: { create: mergedData as any, update: { ...mergedData as any, deletedAt: null } } } } as any,
     include: { cladding: true },
   })
   return result.cladding
@@ -48,14 +48,14 @@ export async function updateQuantityCladding(jobId: string, data: UpdateQuantity
 
 /** Deletes the cladding section. Throws P2025 if the parent quantity or section is not found. */
 export async function deleteQuantityCladding(jobId: string) {
-  const q = await prisma.quantity.findUnique({ where: { jobId }, select: { id: true } })
+  const q = await prisma.quantity.findFirst({ where: { jobId, deletedAt: null }, select: { id: true } })
   if (!q) throw Object.assign(new Error('Not found'), { code: 'P2025' })
-  return prisma.quantityCladding.delete({ where: { quantityId: q.id } })
+  return prisma.quantityCladding.update({ where: { quantityId: q.id }, data: { deletedAt: new Date() } })
 }
 
 /** Paginated list of cladding sections for jobs owned by userId. */
 export async function getQuantityCladdings(userId: string, page: number, pageSize: number) {
-  const where = { quantity: { job: { userId } } }
+  const where = { quantity: { job: { userId }, deletedAt: null }, deletedAt: null }
   const [data, total] = await Promise.all([
     prisma.quantityCladding.findMany({
       where,

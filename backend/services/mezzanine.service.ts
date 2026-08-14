@@ -4,6 +4,7 @@
  */
 import { prisma } from '../lib/prisma.js'
 import type { CreateMezzanineInput } from '../schemas/mezzanine.schema.js'
+import { replaceChildren } from './soft-delete.service.js'
 
 export class InvalidMezzanineExtensionFloorError extends Error {
   constructor(invalidFloors: string[]) {
@@ -46,20 +47,11 @@ export async function upsertMezzanine(jobId: string, data: CreateMezzanineInput)
   const extensionData = extensions?.map(e => ({ ...e, code: e.code as any })) ?? []
   validateExtensionFloors(floors, extensions)
 
-  const result = await prisma.mezzanine.upsert({
-    where: { jobId },
-    create: {
-      jobId,
-      ...rest,
-      floors: { createMany: { data: floorData } },
-      extensions: { createMany: { data: extensionData } },
-    },
-    update: {
-      ...rest,
-      floors: { deleteMany: {}, createMany: { data: floorData } },
-      extensions: { deleteMany: {}, createMany: { data: extensionData } },
-    },
-    include: { floors: true, extensions: true },
+  const result = await prisma.$transaction(async (tx) => {
+    const mezz = await tx.mezzanine.upsert({ where: { jobId }, create: { jobId, ...rest }, update: { ...rest, deletedAt: null, deletedBy: null, deletionBatchId: null } })
+    await replaceChildren(tx, 'mezzanineFloor', 'mezzanineId', mezz.id, floorData)
+    await replaceChildren(tx, 'mezzanineFloorExtension', 'mezzanineId', mezz.id, extensionData)
+    return (await tx.mezzanine.findUnique({ where: { id: mezz.id }, include: { floors: { where: { deletedAt: null } }, extensions: { where: { deletedAt: null } } } })) ?? mezz
   })
   return mapMezzOutput(result)
 }
@@ -68,15 +60,15 @@ export async function upsertMezzanine(jobId: string, data: CreateMezzanineInput)
 export async function getMezzanines(userId: string, page: number, pageSize: number) {
   const where = { job: { userId } }
   const [data, total] = await Promise.all([
-    prisma.mezzanine.findMany({ where, skip: (page - 1) * pageSize, take: pageSize, orderBy: { createdAt: 'desc' }, include: { floors: true, extensions: true } }),
-    prisma.mezzanine.count({ where }),
+    prisma.mezzanine.findMany({ where: { ...where, deletedAt: null }, skip: (page - 1) * pageSize, take: pageSize, orderBy: { createdAt: 'desc' }, include: { floors: { where: { deletedAt: null } }, extensions: { where: { deletedAt: null } } } }),
+    prisma.mezzanine.count({ where: { ...where, deletedAt: null } }),
   ])
   return { data: data.map(mapMezzOutput), total, page, pageSize }
 }
 
 /** Finds a mezzanine by its associated job ID. Returns null if not found. */
 export async function getMezzanineByJobId(jobId: string) {
-  const mezz = await prisma.mezzanine.findUnique({ where: { jobId }, include: { floors: true, extensions: true } })
+  const mezz = await prisma.mezzanine.findFirst({ where: { jobId, deletedAt: null }, include: { floors: { where: { deletedAt: null } }, extensions: { where: { deletedAt: null } } } })
   return mapMezzOutput(mezz)
 }
 
@@ -87,23 +79,25 @@ export async function updateMezzanine(jobId: string, data: Record<string, any>) 
 
   let floorsForValidation = floors
   if (extensions !== undefined && floors === undefined) {
-    const existing = await prisma.mezzanine.findUnique({ where: { jobId }, select: { floors: { select: { floor: true } } } })
+    const existing = await prisma.mezzanine.findFirst({ where: { jobId, deletedAt: null }, select: { floors: { where: { deletedAt: null }, select: { floor: true } } } })
     floorsForValidation = existing?.floors
   }
   validateExtensionFloors(floorsForValidation, extensions)
 
   if (floors !== undefined) {
-    updateData.floors = { deleteMany: {}, createMany: { data: floors.map((f: any) => ({ ...f, code: f.code as any })) } }
   }
   if (extensions !== undefined) {
-    updateData.extensions = { deleteMany: {}, createMany: { data: extensions.map((e: any) => ({ ...e, code: e.code as any })) } }
   }
-
-  const result = await prisma.mezzanine.update({ where: { jobId }, data: updateData, include: { floors: true, extensions: true } })
+  const result = await prisma.$transaction(async (tx) => {
+    const mezz = await tx.mezzanine.update({ where: { jobId }, data: updateData })
+    if (floors !== undefined) await replaceChildren(tx, 'mezzanineFloor', 'mezzanineId', mezz.id, floors.map((f: any) => ({ ...f, code: f.code as any })))
+    if (extensions !== undefined) await replaceChildren(tx, 'mezzanineFloorExtension', 'mezzanineId', mezz.id, extensions.map((e: any) => ({ ...e, code: e.code as any })))
+    return (await tx.mezzanine.findUnique({ where: { id: mezz.id }, include: { floors: { where: { deletedAt: null } }, extensions: { where: { deletedAt: null } } } })) ?? mezz
+  })
   return mapMezzOutput(result)
 }
 
 /** Deletes a mezzanine by its associated job ID. Throws if not found. */
 export function deleteMezzanine(jobId: string) {
-  return prisma.mezzanine.delete({ where: { jobId } })
+  return prisma.mezzanine.update({ where: { jobId }, data: { deletedAt: new Date() } })
 }
