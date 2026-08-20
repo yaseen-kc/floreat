@@ -11,16 +11,14 @@ describe('roof.service', () => {
       const { jobId, ...rest } = input
       const sidewalls = [{ side: 'FRONT' as const, wallType: 'BRICK' as const, thickness: 0.23, height: 3.5 }]
       const roof = makeRoof({ jobId: 'job-1', sidewalls })
-      prismaMock.roof.upsert.mockResolvedValue(roof as any)
+      prismaMock.roof.findFirst.mockResolvedValue(null)
+      prismaMock.roof.create.mockResolvedValue(roof as any)
 
       const result = await upsertRoof('job-1', { ...rest, sidewalls })
 
       expect(result).toEqual(roof)
-      expect(prismaMock.roof.upsert).toHaveBeenCalledWith({
-        where: { jobId: 'job-1' },
-        create: { jobId: 'job-1', ...rest, sidewalls: { createMany: { data: sidewalls } } },
-        update: { ...rest, sidewalls: { deleteMany: {}, createMany: { data: sidewalls } } },
-        include: { sidewalls: true },
+      expect(prismaMock.roof.create).toHaveBeenCalledWith({
+        data: { jobId: 'job-1', ...rest },
       })
     })
 
@@ -28,24 +26,40 @@ describe('roof.service', () => {
       const input = makeRoofInput('job-2')
       const { jobId, ...rest } = input
       const roof = makeRoof({ jobId: 'job-2' })
-      prismaMock.roof.upsert.mockResolvedValue(roof as any)
+      prismaMock.roof.findFirst.mockResolvedValue(null)
+      prismaMock.roof.create.mockResolvedValue(roof as any)
 
       const result = await upsertRoof('job-2', rest)
 
       expect(result).toEqual(roof)
-      expect(prismaMock.roof.upsert).toHaveBeenCalledWith({
-        where: { jobId: 'job-2' },
-        create: { jobId: 'job-2', ...rest, sidewalls: { createMany: { data: [] } } },
-        update: { ...rest, sidewalls: { deleteMany: {}, createMany: { data: [] } } },
-        include: { sidewalls: true },
+      expect(prismaMock.roof.create).toHaveBeenCalledWith({
+        data: { jobId: 'job-2', ...rest },
       })
+    })
+
+    it('updates the active roof by id instead of using a partial-index upsert', async () => {
+      const input = makeRoofInput('job-2b')
+      const { jobId, ...rest } = input
+      const existing = makeRoof({ id: 'roof-existing', jobId })
+      prismaMock.roof.findFirst.mockResolvedValue({ id: existing.id } as any)
+      prismaMock.roof.update.mockResolvedValue(existing as any)
+
+      await upsertRoof(jobId, rest)
+
+      expect(prismaMock.roof.update).toHaveBeenCalledWith({
+        where: { id: existing.id },
+        data: { ...rest, deletedAt: null, deletedBy: null, deletionBatchId: null },
+      })
+      expect(prismaMock.roof.upsert).not.toHaveBeenCalled()
+      expect(prismaMock.roof.create).not.toHaveBeenCalled()
     })
 
     it('forces sideColumnsMidFrameCount/EndFrameCount to equal their claddingExtension counterparts', async () => {
       const input = makeRoofInput('job-3')
       const { jobId, ...rest } = input
       const roof = makeRoof({ jobId: 'job-3' })
-      prismaMock.roof.upsert.mockResolvedValue(roof as any)
+      prismaMock.roof.findFirst.mockResolvedValue(null)
+      prismaMock.roof.create.mockResolvedValue(roof as any)
 
       // Client sends mismatched side-column counts — the service overrides both.
       await upsertRoof('job-3', {
@@ -63,11 +77,8 @@ describe('roof.service', () => {
         claddingExtensionEndFrameCount: 2,
         sideColumnsEndFrameCount: 2,
       }
-      expect(prismaMock.roof.upsert).toHaveBeenCalledWith({
-        where: { jobId: 'job-3' },
-        create: { jobId: 'job-3', ...expected, sidewalls: { createMany: { data: [] } } },
-        update: { ...expected, sidewalls: { deleteMany: {}, createMany: { data: [] } } },
-        include: { sidewalls: true },
+      expect(prismaMock.roof.create).toHaveBeenCalledWith({
+        data: { jobId: 'job-3', ...expected },
       })
     })
 
@@ -75,7 +86,8 @@ describe('roof.service', () => {
       const input = makeRoofInput('job-4')
       const { jobId, ...rest } = input
       const roof = makeRoof({ jobId: 'job-4' })
-      prismaMock.roof.upsert.mockResolvedValue(roof as any)
+      prismaMock.roof.findFirst.mockResolvedValue(null)
+      prismaMock.roof.create.mockResolvedValue(roof as any)
 
       // Client sends a tampered/stale sideColumnsWidthHeight — the service must
       // overwrite it with the value derived from eaveHeight/roofSlope/claddingExt.
@@ -94,11 +106,8 @@ describe('roof.service', () => {
         claddingExtensionWidthHeight: 1,
         sideColumnsWidthHeight: 5.824, // 6 − 1 × tan(10°), computed server-side
       }
-      expect(prismaMock.roof.upsert).toHaveBeenCalledWith({
-        where: { jobId: 'job-4' },
-        create: { jobId: 'job-4', ...expected, sidewalls: { createMany: { data: [] } } },
-        update: { ...expected, sidewalls: { deleteMany: {}, createMany: { data: [] } } },
-        include: { sidewalls: true },
+      expect(prismaMock.roof.create).toHaveBeenCalledWith({
+        data: { jobId: 'job-4', ...expected },
       })
     })
   })
@@ -225,7 +234,8 @@ describe('roof.service', () => {
   describe('accessories recompute trigger', () => {
     it('upsertRoof recomputes accessory quantities when an accessories row exists', async () => {
       const { jobId, ...rest } = makeRoofInput('job-1')
-      prismaMock.roof.upsert.mockResolvedValue(makeRoof({ jobId: 'job-1' }) as any)
+      prismaMock.roof.findFirst.mockResolvedValue(null)
+      prismaMock.roof.create.mockResolvedValue(makeRoof({ jobId: 'job-1' }) as any)
       prismaMock.accessories.findUnique.mockResolvedValue({ id: 'acc-1' } as any)
       prismaMock.roof.findUnique.mockResolvedValue(
         makeRoof({ jobId: 'job-1', sidewalls: [{ side: 'FRONT', height: 3.5 }, { side: 'LEFT', height: 3.5 }] }) as any,
@@ -242,7 +252,8 @@ describe('roof.service', () => {
 
     it('upsertRoof does not touch accessories when the job has none', async () => {
       const { jobId, ...rest } = makeRoofInput('job-2')
-      prismaMock.roof.upsert.mockResolvedValue(makeRoof({ jobId: 'job-2' }) as any)
+      prismaMock.roof.findFirst.mockResolvedValue(null)
+      prismaMock.roof.create.mockResolvedValue(makeRoof({ jobId: 'job-2' }) as any)
       prismaMock.accessories.findUnique.mockResolvedValue(null)
 
       await upsertRoof('job-2', rest)

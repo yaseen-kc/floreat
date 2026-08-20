@@ -8,6 +8,7 @@ import { Prisma } from '../generated/prisma/client.js'
 import type { CreateQuantityInput, UpdateQuantityInput } from '../schemas/quantity.schema.js'
 import { computeJobQuantities } from './quantity-calc.helper.js'
 import { upsertAmount } from './amount.service.js'
+import { upsertActiveRow } from './soft-delete.service.js'
 
 const SECTIONS = [
   'pebRoof', 'cladding', 'canopy', 'accessories', 'mezzanine', 'stair', 'additionalBolts',
@@ -50,16 +51,38 @@ function buildUpsertSections(merged: Record<string, any>) {
   return nested
 }
 
+const SECTION_MODELS: Record<string, string> = {
+  pebRoof: 'quantityPebRoof',
+  cladding: 'quantityCladding',
+  canopy: 'quantityCanopy',
+  accessories: 'quantityAccessories',
+  mezzanine: 'quantityMezzanine',
+  stair: 'quantityStair',
+  additionalBolts: 'quantityAdditionalBolts',
+}
+
 /** Creates or updates the Quantity for a job, calculating server-side defaults. */
 export async function upsertQuantity(jobId: string, data: CreateQuantityInput) {
   const computed = await computeJobQuantities(jobId)
   const merged = mergeSectionData(computed, data)
 
-  const result = await prisma.quantity.upsert({
-    where: { jobId },
-    create: { jobId, calculationVersion: 'quantity-v1', sourceUpdatedAt: new Date(), rateVersion: 1, isStale: false, ...buildCreateSections(merged) } as Prisma.QuantityUncheckedCreateInput,
-    update: { calculationVersion: 'quantity-v1', sourceUpdatedAt: new Date(), rateVersion: 1, isStale: false, deletedAt: null, deletedBy: null, deletionBatchId: null, ...buildUpsertSections(merged) } as Prisma.QuantityUpdateInput,
-    include: includeSections,
+  const result = await prisma.$transaction(async (tx) => {
+    const fields = { calculationVersion: 'quantity-v1', sourceUpdatedAt: new Date(), rateVersion: 1, isStale: false }
+    const quantity = await upsertActiveRow(
+      tx,
+      'quantity',
+      'jobId',
+      jobId,
+      { jobId, ...fields } as Prisma.QuantityUncheckedCreateInput,
+      { ...fields, deletedAt: null, deletedBy: null, deletionBatchId: null } as Prisma.QuantityUpdateInput,
+    )
+    for (const key of SECTIONS) {
+      const section = merged[key]
+      if (section !== undefined) {
+        await upsertActiveRow(tx, SECTION_MODELS[key], 'quantityId', quantity.id, { quantityId: quantity.id, ...section }, section)
+      }
+    }
+    return tx.quantity.findUnique({ where: { id: quantity.id }, include: includeSections })
   })
   await upsertAmount(jobId, {} as any)
   return result
@@ -86,10 +109,20 @@ export async function updateQuantity(jobId: string, data: UpdateQuantityInput) {
   const computed = await computeJobQuantities(jobId)
   const merged = mergeSectionData(computed, data)
 
-  const result = await prisma.quantity.update({
-    where: { jobId },
-    data: { calculationVersion: 'quantity-v1', sourceUpdatedAt: new Date(), rateVersion: 1, isStale: false, ...buildUpsertSections(merged) } as Prisma.QuantityUpdateInput,
-    include: includeSections,
+  const result = await prisma.$transaction(async (tx) => {
+    const quantity = await tx.quantity.findFirst({ where: { jobId, deletedAt: null }, select: { id: true } })
+    if (!quantity) throw Object.assign(new Error('Quantity not found'), { code: 'P2025' })
+    const updated = await tx.quantity.update({
+      where: { id: quantity.id },
+      data: { calculationVersion: 'quantity-v1', sourceUpdatedAt: new Date(), rateVersion: 1, isStale: false },
+    })
+    for (const key of SECTIONS) {
+      const section = merged[key]
+      if (section !== undefined) {
+        await upsertActiveRow(tx, SECTION_MODELS[key], 'quantityId', updated.id, { quantityId: updated.id, ...section }, section)
+      }
+    }
+    return tx.quantity.findUnique({ where: { id: updated.id }, include: includeSections })
   })
   await upsertAmount(jobId, {} as any)
   return result

@@ -48,7 +48,13 @@ export async function upsertMezzanine(jobId: string, data: CreateMezzanineInput)
   validateExtensionFloors(floors, extensions)
 
   const result = await prisma.$transaction(async (tx) => {
-    const mezz = await tx.mezzanine.upsert({ where: { jobId }, create: { jobId, ...rest }, update: { ...rest, deletedAt: null, deletedBy: null, deletionBatchId: null } })
+    // The active-row unique index is partial (`deletedAt IS NULL`), so Prisma's
+    // `upsert` cannot use it as a PostgreSQL ON CONFLICT target. Resolve the
+    // active row explicitly and use the primary key for updates instead.
+    const existing = await tx.mezzanine.findFirst({ where: { jobId, deletedAt: null }, select: { id: true } })
+    const mezz = existing
+      ? await tx.mezzanine.update({ where: { id: existing.id }, data: { ...rest, deletedAt: null, deletedBy: null, deletionBatchId: null } })
+      : await tx.mezzanine.create({ data: { jobId, ...rest } })
     await replaceChildren(tx, 'mezzanineFloor', 'mezzanineId', mezz.id, floorData)
     await replaceChildren(tx, 'mezzanineFloorExtension', 'mezzanineId', mezz.id, extensionData)
     return (await tx.mezzanine.findUnique({ where: { id: mezz.id }, include: { floors: { where: { deletedAt: null } }, extensions: { where: { deletedAt: null } } } })) ?? mezz

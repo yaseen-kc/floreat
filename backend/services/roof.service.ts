@@ -32,7 +32,13 @@ export async function upsertRoof(jobId: string, data: CreateRoofInput) {
   else delete rest.sideColumnsWidthHeight
 
   const roof = await prisma.$transaction(async (tx) => {
-    const result = await tx.roof.upsert({ where: { jobId }, create: { jobId, ...rest }, update: { ...rest, deletedAt: null, deletedBy: null, deletionBatchId: null } })
+    // The active-row unique index is partial (`deletedAt IS NULL`), so Prisma's
+    // `upsert` cannot use it as a PostgreSQL ON CONFLICT target. Resolve the
+    // active row explicitly and use the primary key for updates instead.
+    const existing = await tx.roof.findFirst({ where: { jobId, deletedAt: null }, select: { id: true } })
+    const result = existing
+      ? await tx.roof.update({ where: { id: existing.id }, data: { ...rest, deletedAt: null, deletedBy: null, deletionBatchId: null } })
+      : await tx.roof.create({ data: { jobId, ...rest } })
     await replaceChildren(tx, 'sidewall', 'roofId', result.id, sidewallData)
     return (await tx.roof.findUnique({ where: { id: result.id }, include: { sidewalls: { where: { deletedAt: null } } } })) ?? result
   })

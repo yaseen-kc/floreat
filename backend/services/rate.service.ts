@@ -3,6 +3,7 @@ import { prisma } from '../lib/prisma.js'
 import { deriveRateBreakdown } from '@floreat/shared/calc'
 import type { BulkRateInput, CreateRateInput, UpdateRateInput } from '../schemas/rate.schema.js'
 import { computeJobAmount } from './amount-calc.helper.js'
+import { upsertActiveRow } from './soft-delete.service.js'
 
 const toNum = (v: unknown): number | undefined => (v == null ? undefined : Number(v))
 
@@ -18,11 +19,8 @@ function computeBreakdown(row: Partial<CreateRateInput> & Record<string, unknown
 async function refreshAmount(jobId: string) {
   const computed = await computeJobAmount(jobId)
   if (!computed) return
-  await prisma.amount.upsert({
-    where: { jobId },
-    create: { jobId, ...computed, calculationVersion: 'amount-v1', sourceUpdatedAt: new Date(), rateVersion: 1, isStale: false },
-    update: { ...computed, calculationVersion: 'amount-v1', sourceUpdatedAt: new Date(), rateVersion: 1, isStale: false, deletedAt: null, deletedBy: null, deletionBatchId: null },
-  })
+  const fields = { ...computed, calculationVersion: 'amount-v1', sourceUpdatedAt: new Date(), rateVersion: 1, isStale: false }
+  await upsertActiveRow(prisma, 'amount', 'jobId', jobId, { jobId, ...fields }, { ...fields, deletedAt: null, deletedBy: null, deletionBatchId: null })
 }
 
 export async function createRate(jobId: string, data: CreateRateInput) {

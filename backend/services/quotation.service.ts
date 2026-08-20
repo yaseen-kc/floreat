@@ -4,14 +4,11 @@
  */
 import { prisma } from '../lib/prisma.js'
 import type { CreateQuotationInput } from '../schemas/quotation.schema.js'
+import { upsertActiveRow } from './soft-delete.service.js'
 
 /** Creates or updates a quotation for a given job. */
 export function upsertQuotation(jobId: string, data: CreateQuotationInput) {
-  return prisma.quotation.upsert({
-    where: { jobId },
-    create: { jobId, ...data },
-    update: { ...data, deletedAt: null, deletedBy: null, deletionBatchId: null },
-  })
+  return upsertActiveRow(prisma, 'quotation', 'jobId', jobId, { jobId, ...data }, { ...data, deletedAt: null, deletedBy: null, deletionBatchId: null })
 }
 
 /** Returns a paginated list of the user's quotations ordered by most recent first. */

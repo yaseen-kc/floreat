@@ -4,7 +4,7 @@
  */
 import { prisma } from '../lib/prisma.js'
 import type { CreateStairInput } from '../schemas/stair.schema.js'
-import { replaceChildren } from './soft-delete.service.js'
+import { replaceChildren, upsertActiveRow } from './soft-delete.service.js'
 
 /** Creates or updates a stair for a given job. Stairs and deductions are replaced entirely on update. */
 export async function upsertStair(jobId: string, data: CreateStairInput) {
@@ -13,7 +13,7 @@ export async function upsertStair(jobId: string, data: CreateStairInput) {
   const deductionData = areaDeductions ?? []
 
   return prisma.$transaction(async (tx) => {
-    const stair = await tx.stair.upsert({ where: { jobId }, create: { jobId, ...rest }, update: { ...rest, deletedAt: null, deletedBy: null, deletionBatchId: null } })
+    const stair = await upsertActiveRow(tx, 'stair', 'jobId', jobId, { jobId, ...rest }, { ...rest, deletedAt: null, deletedBy: null, deletionBatchId: null })
     await replaceChildren(tx, 'stairItem', 'stairId', stair.id, stairData)
     await replaceChildren(tx, 'areaDeduction', 'stairId', stair.id, deductionData)
     return (await tx.stair.findUnique({ where: { id: stair.id }, include: { stairs: { where: { deletedAt: null } }, areaDeductions: { where: { deletedAt: null } } } })) ?? stair

@@ -4,14 +4,11 @@
  */
 import { prisma } from '../lib/prisma.js'
 import type { CreateLoadInput } from '../schemas/load.schema.js'
+import { upsertActiveRow } from './soft-delete.service.js'
 
 /** Creates or updates a load for a given job. */
 export function upsertLoad(jobId: string, data: CreateLoadInput) {
-  return prisma.load.upsert({
-    where: { jobId },
-    create: { jobId, ...data },
-    update: { ...data, deletedAt: null, deletedBy: null, deletionBatchId: null },
-  })
+  return upsertActiveRow(prisma, 'load', 'jobId', jobId, { jobId, ...data }, { ...data, deletedAt: null, deletedBy: null, deletionBatchId: null })
 }
 
 /** Returns a paginated list of the user's loads ordered by most recent first. */

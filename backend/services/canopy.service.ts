@@ -4,7 +4,7 @@
  */
 import { prisma } from '../lib/prisma.js'
 import type { CreateCanopyInput } from '../schemas/canopy.schema.js'
-import { replaceChildren } from './soft-delete.service.js'
+import { replaceChildren, upsertActiveRow } from './soft-delete.service.js'
 
 /** Creates or updates a canopy for a given job. Canopies are replaced entirely on update. */
 export async function upsertCanopy(jobId: string, data: CreateCanopyInput) {
@@ -12,7 +12,7 @@ export async function upsertCanopy(jobId: string, data: CreateCanopyInput) {
   const canopyData = canopies ?? []
 
   return prisma.$transaction(async (tx) => {
-    const canopy = await tx.canopy.upsert({ where: { jobId }, create: { jobId, ...rest }, update: { ...rest, deletedAt: null, deletedBy: null, deletionBatchId: null } })
+    const canopy = await upsertActiveRow(tx, 'canopy', 'jobId', jobId, { jobId, ...rest }, { ...rest, deletedAt: null, deletedBy: null, deletionBatchId: null })
     await replaceChildren(tx, 'canopyItem', 'canopyId', canopy.id, canopyData)
     return (await tx.canopy.findUnique({ where: { id: canopy.id }, include: { canopies: { where: { deletedAt: null } } } })) ?? canopy
   })

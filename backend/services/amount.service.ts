@@ -5,6 +5,7 @@
 import { prisma } from '../lib/prisma.js'
 import type { CreateAmountInput, UpdateAmountInput } from '../schemas/amount.schema.js'
 import { computeJobAmount } from './amount-calc.helper.js'
+import { upsertActiveRow } from './soft-delete.service.js'
 
 /** Creates or updates the Amount for a job, deriving server-authoritative calculations. */
 export async function upsertAmount(jobId: string, _data: CreateAmountInput) {
@@ -13,11 +14,8 @@ export async function upsertAmount(jobId: string, _data: CreateAmountInput) {
   // Amount fields are derived from the canonical job/rate snapshot. Accepting
   // client values here would let a caller replace quantities, rates, or totals.
   const merged = computed
-  return prisma.amount.upsert({
-    where: { jobId },
-    create: { jobId, ...merged, calculationVersion: 'amount-v1', sourceUpdatedAt: new Date(), rateVersion: 1, isStale: false },
-    update: { ...merged, calculationVersion: 'amount-v1', sourceUpdatedAt: new Date(), rateVersion: 1, isStale: false, deletedAt: null, deletedBy: null, deletionBatchId: null },
-  })
+  const fields = { ...merged, calculationVersion: 'amount-v1', sourceUpdatedAt: new Date(), rateVersion: 1, isStale: false }
+  return upsertActiveRow(prisma, 'amount', 'jobId', jobId, { jobId, ...fields }, { ...fields, deletedAt: null, deletedBy: null, deletionBatchId: null })
 }
 
 

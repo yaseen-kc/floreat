@@ -4,7 +4,7 @@
  */
 import { prisma } from '../lib/prisma.js'
 import type { CreateSpecInput, UpdateSpecInput } from '../schemas/spec.schema.js'
-import { replaceChildren } from './soft-delete.service.js'
+import { replaceChildren, upsertActiveRow } from './soft-delete.service.js'
 
 /** Creates or updates the spec for a given job. Products are replaced entirely on update. */
 export async function upsertSpec(jobId: string, data: CreateSpecInput) {
@@ -12,7 +12,7 @@ export async function upsertSpec(jobId: string, data: CreateSpecInput) {
   const productData = products ?? []
 
   return prisma.$transaction(async (tx) => {
-    const spec = await tx.spec.upsert({ where: { jobId }, create: { jobId }, update: { deletedAt: null, deletedBy: null, deletionBatchId: null } })
+    const spec = await upsertActiveRow(tx, 'spec', 'jobId', jobId, { jobId }, { deletedAt: null, deletedBy: null, deletionBatchId: null })
     await replaceChildren(tx, 'specProduct', 'specId', spec.id, productData)
     return (await tx.spec.findUnique({ where: { id: spec.id }, include: { products: { where: { deletedAt: null } } } })) ?? spec
   })

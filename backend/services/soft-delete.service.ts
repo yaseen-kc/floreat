@@ -1,6 +1,25 @@
 import { randomUUID } from 'node:crypto'
 import { prisma } from '../lib/prisma.js'
 
+/**
+ * Updates an active soft-deletable one-to-one row by primary key, or creates it
+ * when no active row exists. Partial unique indexes cannot be ON CONFLICT
+ * targets, so this is the database-compatible replacement for Prisma upsert.
+ */
+export async function upsertActiveRow(
+  tx: any,
+  modelName: string,
+  key: string,
+  value: string,
+  createData: Record<string, unknown>,
+  updateData: Record<string, unknown> = createData,
+) {
+  const model = tx[modelName]
+  const existing = await model.findFirst({ where: { [key]: value, deletedAt: null }, select: { id: true } })
+  if (existing) return model.update({ where: { id: existing.id }, data: updateData })
+  return model.create({ data: createData })
+}
+
 export type DeleteContext = { deletedBy?: string; deletionBatchId?: string }
 export const activeWhere = { deletedAt: null } as const
 export const newDeletionBatchId = () => randomUUID()

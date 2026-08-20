@@ -6,6 +6,7 @@
 import { prisma } from '../lib/prisma.js'
 import { deriveAccessoryQuantities, deriveLineItemQuantity } from '@floreat/shared/calc'
 import type { CreateAccessoriesInput } from '../schemas/accessories.schema.js'
+import { upsertActiveRow } from './soft-delete.service.js'
 
 /** The six server-derived quantity columns, mapped to `null` when the calc can't produce a value. */
 type DerivedQuantities = {
@@ -125,17 +126,14 @@ export async function upsertAccessories(jobId: string, data: CreateAccessoriesIn
     foldedPlateQuantity: deriveLineItemQuantity(rest.foldedPlateLength, rest.foldedPlateWidth, rest.foldedPlateNos) ?? null,
   }
 
-  return prisma.accessories.upsert({
-    where: { jobId },
-    create: {
-      jobId,
-      ...scalars,
-      deletedAt: null, deletedBy: null, deletionBatchId: null,
-    },
-    update: {
-      ...scalars,
-    },
-  })
+  return upsertActiveRow(
+    prisma,
+    'accessories',
+    'jobId',
+    jobId,
+    { jobId, ...scalars, deletedAt: null, deletedBy: null, deletionBatchId: null },
+    { ...scalars, deletedAt: null, deletedBy: null, deletionBatchId: null },
+  )
 }
 
 /** Returns a paginated list of the user's accessories ordered by most recent first. */

@@ -10,46 +10,43 @@ describe('mezzanine.service', () => {
       const floors = [makeMezzanineFloor()]
       const extensions = [makeMezzanineExtension()]
       const mezzanine = makeMezzanine({ jobId: 'job-1', floors, extensions })
-      prismaMock.mezzanine.upsert.mockResolvedValue(mezzanine as any)
+      prismaMock.mezzanine.findFirst.mockResolvedValue(null)
+      prismaMock.mezzanine.create.mockResolvedValue(mezzanine as any)
 
       const result = await upsertMezzanine('job-1', { floors, extensions })
 
       expect(result).toEqual(mezzanine)
-      expect(prismaMock.mezzanine.upsert).toHaveBeenCalledWith({
-        where: { jobId: 'job-1' },
-        create: {
-          jobId: 'job-1',
-          floors: { createMany: { data: floors.map(f => ({ ...f, code: f.code as string })) } },
-          extensions: { createMany: { data: extensions.map(e => ({ ...e, code: e.code as string })) } },
-        },
-        update: {
-          floors: { deleteMany: {}, createMany: { data: floors.map(f => ({ ...f, code: f.code as string })) } },
-          extensions: { deleteMany: {}, createMany: { data: extensions.map(e => ({ ...e, code: e.code as string })) } },
-        },
-        include: { floors: true, extensions: true },
+      expect(prismaMock.mezzanine.create).toHaveBeenCalledWith({
+        data: { jobId: 'job-1' },
       })
     })
 
     it('handles upsert with no floors or extensions', async () => {
       const mezzanine = makeMezzanine({ jobId: 'job-2' })
-      prismaMock.mezzanine.upsert.mockResolvedValue(mezzanine as any)
+      prismaMock.mezzanine.findFirst.mockResolvedValue(null)
+      prismaMock.mezzanine.create.mockResolvedValue(mezzanine as any)
 
       const result = await upsertMezzanine('job-2', {})
 
       expect(result).toEqual(mezzanine)
-      expect(prismaMock.mezzanine.upsert).toHaveBeenCalledWith({
-        where: { jobId: 'job-2' },
-        create: {
-          jobId: 'job-2',
-          floors: { createMany: { data: [] } },
-          extensions: { createMany: { data: [] } },
-        },
-        update: {
-          floors: { deleteMany: {}, createMany: { data: [] } },
-          extensions: { deleteMany: {}, createMany: { data: [] } },
-        },
-        include: { floors: true, extensions: true },
+      expect(prismaMock.mezzanine.create).toHaveBeenCalledWith({
+        data: { jobId: 'job-2' },
       })
+    })
+
+    it('updates the active mezzanine by id instead of using a partial-index upsert', async () => {
+      const mezzanine = makeMezzanine({ id: 'mezz-existing', jobId: 'job-2b' })
+      prismaMock.mezzanine.findFirst.mockResolvedValue({ id: mezzanine.id } as any)
+      prismaMock.mezzanine.update.mockResolvedValue(mezzanine as any)
+
+      await upsertMezzanine('job-2b', {})
+
+      expect(prismaMock.mezzanine.update).toHaveBeenCalledWith({
+        where: { id: mezzanine.id },
+        data: { deletedAt: null, deletedBy: null, deletionBatchId: null },
+      })
+      expect(prismaMock.mezzanine.upsert).not.toHaveBeenCalled()
+      expect(prismaMock.mezzanine.create).not.toHaveBeenCalled()
     })
 
     it('rejects an extension floor that is not configured on a mezzanine floor', async () => {
@@ -58,7 +55,7 @@ describe('mezzanine.service', () => {
         extensions: [makeMezzanineExtension({ floor: 'FLOOR_2' })],
       })).rejects.toThrow('FLOOR_2')
 
-      expect(prismaMock.mezzanine.upsert).not.toHaveBeenCalled()
+      expect(prismaMock.mezzanine.create).not.toHaveBeenCalled()
     })
   })
 

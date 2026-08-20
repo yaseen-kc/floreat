@@ -11,7 +11,7 @@
 import { prisma } from '../lib/prisma.js'
 import { deriveJointBolts, type RoofBoltRow, type MezzanineBoltRow } from '@floreat/shared/calc'
 import type { CreateJointInput } from '../schemas/joint.schema.js'
-import { replaceChildren } from './soft-delete.service.js'
+import { replaceChildren, upsertActiveRow } from './soft-delete.service.js'
 
 const include = { jointBoltRoof: true, jointBoltMezzanine: true, foundationBoltRoof: true }
 
@@ -30,7 +30,7 @@ export async function upsertJoint(jobId: string, data: CreateJointInput) {
   const foundationBoltRoofData = foundationBoltRoof ?? []
 
   return prisma.$transaction(async (tx) => {
-    const joint = await tx.joint.upsert({ where: { jobId }, create: { jobId, ...rest }, update: { ...rest, deletedAt: null, deletedBy: null, deletionBatchId: null } })
+    const joint = await upsertActiveRow(tx, 'joint', 'jobId', jobId, { jobId, ...rest }, { ...rest, deletedAt: null, deletedBy: null, deletionBatchId: null })
     await replaceChildren(tx, 'jointBoltRoof', 'jointId', joint.id, jointBoltRoofData)
     await replaceChildren(tx, 'jointBoltMezzanine', 'jointId', joint.id, jointBoltMezzanineData)
     await replaceChildren(tx, 'foundationBoltRoof', 'jointId', joint.id, foundationBoltRoofData)
